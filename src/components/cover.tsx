@@ -37,9 +37,9 @@ export function Cover({ cover, name, category }: { cover?: { url: string; credit
     const Icon = ICONS[category] ?? ((p) => <Store {...p} aria-hidden />);
     return (
       <div className={`venue-placeholder cat-${category}`} aria-hidden>
-        <div className="mx-auto flex h-full max-w-6xl items-center justify-between px-6">
-          <span className="font-serif text-7xl leading-none font-semibold">{name.charAt(0)}</span>
-          <Icon className="h-10 w-10 opacity-70" />
+        <div className="mx-auto flex h-full max-w-2xl items-start justify-between px-6 pt-4 lg:max-w-6xl md:pt-5">
+          <span className="font-serif text-6xl leading-none font-semibold md:text-7xl">{name.charAt(0)}</span>
+          <span className="flex h-14 w-14 items-center justify-center rounded-full border border-current/25 md:h-16 md:w-16"><Icon className="h-7 w-7 opacity-80 md:h-8 md:w-8" /></span>
         </div>
       </div>
     );

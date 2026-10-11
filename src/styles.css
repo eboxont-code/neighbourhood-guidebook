@@ -173,8 +173,12 @@
   background: var(--credit-bg); color: var(--primary-foreground); font-size: 0.75rem;
 }
 @utility venue-placeholder {
-  height: 140px; background: var(--ph-bg, var(--muted)); color: var(--ph-ink, var(--muted-foreground)); border-bottom: 1px solid var(--border);
-  @media (min-width: 768px) { height: 200px; }
+  height: 104px; color: var(--ph-ink, var(--muted-foreground)); border-bottom: 1px solid var(--border);
+  background:
+    radial-gradient(circle at 85% 50%, color-mix(in oklab, var(--panel) 45%, transparent) 0 64px, transparent 65px),
+    repeating-linear-gradient(135deg, transparent 0 18px, color-mix(in oklab, var(--ph-ink, var(--foreground)) 6%, transparent) 18px 19px),
+    var(--ph-bg, var(--muted));
+  @media (min-width: 768px) { height: 136px; }
 }
 @utility cat-salons { --ph-bg: var(--cat-salons); --ph-ink: var(--cat-salons-ink); }
 @utility cat-barbers { --ph-bg: var(--cat-barbers); --ph-ink: var(--cat-barbers-ink); }
