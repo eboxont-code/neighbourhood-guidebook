@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useI18n } from "@/lib/i18n";
 
-export function Cover({ cover }: { cover?: { url: string; credit: string } }) {
+export function Cover({ cover }: { cover?: { url: string; credit: string } | undefined }) {
   const { t } = useI18n();
   const [failed, setFailed] = useState(false);
   const img = useRef<HTMLImageElement>(null);
