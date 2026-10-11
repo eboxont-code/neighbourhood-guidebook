@@ -79,6 +79,7 @@ function ShopPage() {
         <p>{t("source")}: {b.sourceNotes}</p>
         <p>{t(`verif_${b.verification}`)}</p>
       </section>
-    </Page>
+      </main>
+    </div>
   );
 }
