@@ -28,3 +28,15 @@ describe("search fields", () => {
     expect(searchBusinesses("barbers").map((b) => b.slug).sort()).toEqual(["deezy-cuts-baluwatar", "the-new-barber-boudha", "the-new-barber-durbar-marg", "the-new-barber-thamel"]);
   });
 });
+
+describe("hours provenance", () => {
+  it("hours not from the shop's own page are marked unverified", () => {
+    for (const slug of ["toni-and-guy-durbar-mall", "tranquility-spa", "serene-durbar-marg"]) {
+      expect(businesses.find((b) => b.slug === slug)?.hoursVerified).toBe(false);
+    }
+    expect(businesses.find((b) => b.slug === "aavaran-durbar-marg")?.hoursVerified).toBe(true);
+  });
+  it("shops with no published hours have none", () => {
+    expect(businesses.find((b) => b.slug === "lavish-durbar-marg")?.hours).toBeUndefined();
+  });
+});

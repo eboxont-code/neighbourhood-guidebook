@@ -2,7 +2,7 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { NotFoundView, pageMeta } from "@/components/site";
 import { Cover } from "@/components/cover";
 import type { ReactNode } from "react";
-import { getArea, getBusiness, getCategory, telLink, websiteStatusSentence } from "@/data/directory";
+import { directionsLink, getArea, getBusiness, getCategory, telLink, websiteStatusSentence } from "@/data/directory";
 import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/s/$slug")({
@@ -58,12 +58,28 @@ function ShopPage() {
 
         <dl className="mt-6 divide-y divide-border border-y border-border">
           <Row label={t("hours")}>
-            {b.hours?.length ? b.hours.map((h) => <div key={h.days}>{h.days} {h.time}</div>) : <span className="text-muted-foreground">{t("noHours")}</span>}
+            {b.hours?.length ? (
+              <>
+                {b.hours.map((h, i) => <div key={i}>{h.days && <span className="mr-2">{h.days}</span>}{h.time}</div>)}
+                {b.hoursSource && (
+                  <p className={`mt-1 text-xs ${b.hoursVerified ? "text-muted-foreground" : "text-unverified"}`}>
+                    {b.hoursVerified ? t("hoursFrom") : t("hoursUnverified")} {b.hoursSource}
+                  </p>
+                )}
+              </>
+            ) : <span className="text-muted-foreground">{t("noHours")}</span>}
           </Row>
           <Row label={t("websiteStatus")}>
             {websiteStatusSentence(b, lang)}
           </Row>
+          {b.otherPhones?.length ? <Row label={t("otherPhones")}>{b.otherPhones.map((p) => <div key={p}>{p}</div>)}</Row> : null}
           {b.address && <Row label={t("address")}>{b.address}</Row>}
+          {directionsLink(b) && (
+            <Row label={t("directions")}>
+              <a href={directionsLink(b)} target="_blank" rel="noopener noreferrer" className="text-primary underline">{t("openMaps")}</a>
+            </Row>
+          )}
+          {b.social?.length ? <Row label={t("social")}>{b.social.map((x) => <div key={x}>{x}</div>)}</Row> : null}
           <Row label={t("source")}>{b.sourceNotes}</Row>
           {b.description && <Row label={t("note")}>{b.description}</Row>}
         </dl>
