@@ -1,8 +1,9 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { CardList, NotFoundView, Page, pageMeta } from "@/components/site";
 import { businesses, getArea } from "@/data/directory";
+import { useI18n } from "@/lib/i18n";
 
-export const Route = createFileRoute("/area/$areaSlug")({
+export const Route = createFileRoute("/a/$areaSlug")({
   loader: ({ params }) => {
     const area = getArea(params.areaSlug);
     if (!area) throw notFound();
@@ -15,10 +16,11 @@ export const Route = createFileRoute("/area/$areaSlug")({
 
 function AreaPage() {
   const { area } = Route.useLoaderData();
+  const { t } = useI18n();
   return (
     <Page>
       <h1 className="mb-4 font-serif text-3xl font-semibold">{area.name}, {area.city}</h1>
-      <CardList items={businesses.filter((b) => b.area === area.slug)} />
+      {businesses.some((b) => b.area === area.slug) ? <CardList items={businesses.filter((b) => b.area === area.slug)} /> : <p className="text-muted-foreground">{t("noneListed")}</p>}
     </Page>
   );
 }

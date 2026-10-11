@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { Monogram, NotFoundView, Page, pageMeta } from "@/components/site";
-import { getArea, getBusiness, getCategory, mapsLink, telLink, websiteStatusSentence, whatsappLink } from "@/data/directory";
+import { formatDate, getArea, getBusiness, getCategory, mapsLink, telLink, websiteStatusSentence, whatsappLink } from "@/data/directory";
 import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/s/$slug")({
@@ -33,9 +33,9 @@ function ShopPage() {
         <div className="venue-panel">
           <h1 className="font-serif text-3xl leading-tight font-semibold">{b.name}</h1>
           <p className="mt-1 text-sm">
-            <Link to="/category/$categorySlug" params={{ categorySlug: cat.slug }} className="text-primary underline">{lang === "ne" ? cat.nameNe : cat.name}</Link>
+            <Link to="/c/$categorySlug" params={{ categorySlug: cat.slug }} className="text-primary underline">{lang === "ne" ? cat.nameNe : cat.name}</Link>
             {" · "}
-            <Link to="/area/$areaSlug" params={{ areaSlug: area.slug }} className="text-primary underline">{area.name}</Link>
+            <Link to="/a/$areaSlug" params={{ areaSlug: area.slug }} className="text-primary underline">{area.name}</Link>
           </p>
           {b.phone && <p className="mt-1 text-sm">{b.phone}</p>}
           {b.address && <p className="mt-1 text-sm text-muted-foreground">{b.address}</p>}
@@ -76,6 +76,7 @@ function ShopPage() {
         <h2 className="section-label">{t("about")}</h2>
         <p>{websiteStatusSentence(b, lang)}</p>
         <p>{t("source")}: {b.sourceNotes}</p>
+        {b.lastChecked && <p>{t("lastChecked")}: {formatDate(b.lastChecked)}</p>}
         <p>{t(`verif_${b.verification}`)}</p>
       </section>
       </main>

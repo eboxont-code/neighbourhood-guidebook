@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { CardList, Page, SearchBox, pageMeta } from "@/components/site";
-import { areasInUse, businesses, categoriesInUse } from "@/data/directory";
+import { areas, businesses, categories } from "@/data/directory";
 import { useI18n } from "@/lib/i18n";
 import { SITE_NAME } from "@/config";
 
@@ -18,13 +18,13 @@ function Home() {
       <section className="mt-6">
         <h2 className="section-label">{t("categories")}</h2>
         <div className="flex flex-wrap gap-2">
-          {categoriesInUse().map((c) => <Link key={c.slug} to="/category/$categorySlug" params={{ categorySlug: c.slug }} className="chip">{lang === "ne" ? c.nameNe : c.name}</Link>)}
+          {categories.map((c) => <Link key={c.slug} to="/c/$categorySlug" params={{ categorySlug: c.slug }} className="chip">{lang === "ne" ? c.nameNe : c.name}</Link>)}
         </div>
       </section>
       <section className="mt-5">
         <h2 className="section-label">{t("areas")}</h2>
         <div className="flex flex-wrap gap-2">
-          {areasInUse().map((a) => <Link key={a.slug} to="/area/$areaSlug" params={{ areaSlug: a.slug }} className="chip">{a.name}</Link>)}
+          {areas.map((a) => <Link key={a.slug} to="/a/$areaSlug" params={{ areaSlug: a.slug }} className="chip">{a.name}</Link>)}
         </div>
       </section>
       <section className="mt-6">
