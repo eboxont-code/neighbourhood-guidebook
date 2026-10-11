@@ -10,33 +10,154 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as SearchRouteImport } from './routes/search'
+import { Route as SuggestCorrectionRouteImport } from './routes/suggest-correction'
+import { Route as WebsiteHelpRouteImport } from './routes/website-help'
+import { Route as AreaAreaSlugRouteImport } from './routes/area.$areaSlug'
+import { Route as CategoryCategorySlugRouteImport } from './routes/category.$categorySlug'
+import { Route as SSlugRouteImport } from './routes/s.$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SearchRoute = SearchRouteImport.update({
+  id: '/search',
+  path: '/search',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SuggestCorrectionRoute = SuggestCorrectionRouteImport.update({
+  id: '/suggest-correction',
+  path: '/suggest-correction',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WebsiteHelpRoute = WebsiteHelpRouteImport.update({
+  id: '/website-help',
+  path: '/website-help',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AreaAreaSlugRoute = AreaAreaSlugRouteImport.update({
+  id: '/area/$areaSlug',
+  path: '/area/$areaSlug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CategoryCategorySlugRoute = CategoryCategorySlugRouteImport.update({
+  id: '/category/$categorySlug',
+  path: '/category/$categorySlug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SSlugRoute = SSlugRouteImport.update({
+  id: '/s/$slug',
+  path: '/s/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/contact': typeof ContactRoute
+  '/privacy': typeof PrivacyRoute
+  '/search': typeof SearchRoute
+  '/suggest-correction': typeof SuggestCorrectionRoute
+  '/website-help': typeof WebsiteHelpRoute
+  '/area/$areaSlug': typeof AreaAreaSlugRoute
+  '/category/$categorySlug': typeof CategoryCategorySlugRoute
+  '/s/$slug': typeof SSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/contact': typeof ContactRoute
+  '/privacy': typeof PrivacyRoute
+  '/search': typeof SearchRoute
+  '/suggest-correction': typeof SuggestCorrectionRoute
+  '/website-help': typeof WebsiteHelpRoute
+  '/area/$areaSlug': typeof AreaAreaSlugRoute
+  '/category/$categorySlug': typeof CategoryCategorySlugRoute
+  '/s/$slug': typeof SSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/contact': typeof ContactRoute
+  '/privacy': typeof PrivacyRoute
+  '/search': typeof SearchRoute
+  '/suggest-correction': typeof SuggestCorrectionRoute
+  '/website-help': typeof WebsiteHelpRoute
+  '/area/$areaSlug': typeof AreaAreaSlugRoute
+  '/category/$categorySlug': typeof CategoryCategorySlugRoute
+  '/s/$slug': typeof SSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/contact'
+    | '/privacy'
+    | '/search'
+    | '/suggest-correction'
+    | '/website-help'
+    | '/area/$areaSlug'
+    | '/category/$categorySlug'
+    | '/s/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/about'
+    | '/contact'
+    | '/privacy'
+    | '/search'
+    | '/suggest-correction'
+    | '/website-help'
+    | '/area/$areaSlug'
+    | '/category/$categorySlug'
+    | '/s/$slug'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/contact'
+    | '/privacy'
+    | '/search'
+    | '/suggest-correction'
+    | '/website-help'
+    | '/area/$areaSlug'
+    | '/category/$categorySlug'
+    | '/s/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
+  ContactRoute: typeof ContactRoute
+  PrivacyRoute: typeof PrivacyRoute
+  SearchRoute: typeof SearchRoute
+  SuggestCorrectionRoute: typeof SuggestCorrectionRoute
+  WebsiteHelpRoute: typeof WebsiteHelpRoute
+  AreaAreaSlugRoute: typeof AreaAreaSlugRoute
+  CategoryCategorySlugRoute: typeof CategoryCategorySlugRoute
+  SSlugRoute: typeof SSlugRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +169,83 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/search': {
+      id: '/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/suggest-correction': {
+      id: '/suggest-correction'
+      path: '/suggest-correction'
+      fullPath: '/suggest-correction'
+      preLoaderRoute: typeof SuggestCorrectionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/website-help': {
+      id: '/website-help'
+      path: '/website-help'
+      fullPath: '/website-help'
+      preLoaderRoute: typeof WebsiteHelpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/area/$areaSlug': {
+      id: '/area/$areaSlug'
+      path: '/area/$areaSlug'
+      fullPath: '/area/$areaSlug'
+      preLoaderRoute: typeof AreaAreaSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/category/$categorySlug': {
+      id: '/category/$categorySlug'
+      path: '/category/$categorySlug'
+      fullPath: '/category/$categorySlug'
+      preLoaderRoute: typeof CategoryCategorySlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/s/$slug': {
+      id: '/s/$slug'
+      path: '/s/$slug'
+      fullPath: '/s/$slug'
+      preLoaderRoute: typeof SSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
+  ContactRoute: ContactRoute,
+  PrivacyRoute: PrivacyRoute,
+  SearchRoute: SearchRoute,
+  SuggestCorrectionRoute: SuggestCorrectionRoute,
+  WebsiteHelpRoute: WebsiteHelpRoute,
+  AreaAreaSlugRoute: AreaAreaSlugRoute,
+  CategoryCategorySlugRoute: CategoryCategorySlugRoute,
+  SSlugRoute: SSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
