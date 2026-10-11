@@ -14,7 +14,7 @@ function WebsiteHelp() {
       <h1 className="font-serif text-3xl font-semibold">{t("helpTitle")}</h1>
       <p className="mt-4 leading-relaxed">{t("helpBody1")}</p>
       <p className="mt-3 leading-relaxed">{t("helpBody2")}</p>
-      <Link to="/contact" search={{ business: "", listing: "" }} className="action-btn action-primary mt-6 inline-flex w-full px-6 sm:w-auto">
+      <Link to="/contact" className="action-btn action-primary mt-6 inline-flex w-full px-6 sm:w-auto">
         {t("helpCta")}
       </Link>
     </Page>
