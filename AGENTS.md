@@ -14,3 +14,5 @@
 - Form submissions insert straight from the browser into insert-only tables (anonymous INSERT allowed, no read access); zod limits mirror the table CHECK limits.
 - Renamed listing or category slugs stay reachable through the redirect maps in src/data/directory.ts, so old links keep working.
 - Open/closed status is computed only after mount in Asia/Kathmandu time, so the first HTML never mismatches.
+- Form spam is stopped by a hidden honeypot in the browser and a BEFORE INSERT database trigger that rate-limits by hashed IP and per-tab key; no captcha, so real people see no extra step.
+- Page head tags come from pageMeta in src/lib/seo.ts and listing JSON-LD from businessJsonLd, built only from recorded fields so nothing is invented.
