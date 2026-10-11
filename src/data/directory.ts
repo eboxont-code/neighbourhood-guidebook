@@ -25,7 +25,7 @@ export interface Business {
   hours?: { days: string; time: string }[];
   hoursSource?: string; // where the hours came from
   hoursVerified?: boolean; // true only when the hours come from the shop's own page or post
-  otherPhones?: string[];
+  otherPhones?: { number: string; note?: "fromOtherListings" }[];
   social?: string[]; // "Platform handle", e.g. "Instagram name"
   directions?: string; // Google Maps link; falls back to the address
   sourceNotes: string;
@@ -39,7 +39,6 @@ export const categories: Category[] = [
   { slug: "salons", name: "Salons", nameNe: "सैलुन" },
   { slug: "barbers", name: "Barbers", nameNe: "हजाम" },
   { slug: "spas", name: "Spas", nameNe: "स्पा" },
-  { slug: "salon-and-spa", name: "Salon and spa", nameNe: "सैलुन र स्पा" },
   { slug: "clinics", name: "Clinics", nameNe: "क्लिनिक" },
 ];
 
@@ -51,7 +50,6 @@ export const areas: Area[] = [
   { slug: "boudha", name: "Boudha", city: "Kathmandu" },
   { slug: "thamel", name: "Thamel", city: "Kathmandu" },
   { slug: "lazimpat", name: "Lazimpat", city: "Kathmandu" },
-  { slug: "kathmandu", name: "Kathmandu", city: "Kathmandu" },
 ];
 
 const CHECKED = "2026-10-11";
@@ -84,15 +82,15 @@ export const businesses: Business[] = [
     social: ["Instagram munney_salon", "Facebook munneysalondurbarmarg", "TikTok @munneysalon"],
     directions: "https://www.google.com/maps/search/?api=1&query=Munney+Salon+Durbar+Marg+Kathmandu", sourceNotes: "Their Instagram; website as listed on their Facebook" },
   { ...base, id: "b6", slug: "tranquility-spa", cover: { url: "https://www.tranquilityspa.com.np/uploads/images/galleries/03534099-dc1e-46d4-b007-0a62f39a0cf9.jpg", credit: "tranquilityspa.com.np" },
-    name: "Tranquility Spa", category: "spas", area: "kathmandu", address: "Lazimpat Road, opposite MBL Tower, Kathmandu (one of several branches)",
-    phone: "9802021285", otherPhones: ["01-4425386 (other listings)", "01-5318396 (other listings)"],
+    name: "Tranquility Spa", category: "spas", area: "lazimpat", address: "Lazimpat Road, opposite MBL Tower, Kathmandu (one of several branches)",
+    phone: "9802021285", otherPhones: [{ number: "01-4425386", note: "fromOtherListings" }, { number: "01-5318396", note: "fromOtherListings" }],
     website: "https://www.tranquilityspa.com.np", websiteStatus: "working", lastChecked: CHECKED,
     hours: [{ days: "Every day", time: "08:00–21:00" }], hoursSource: "one directory listing", hoursVerified: false,
     
     description: "Nepal’s largest spa chain, recognised by the Nepal Tourism Board.",
     directions: "https://www.google.com/maps/search/?api=1&query=Tranquility+Spa+Kathmandu", sourceNotes: "Their own website" },
-  { ...base, id: "b7", slug: "plush-kamaladi", name: "Plush Unisex Salon", category: "salons", area: "lazimpat",
-    address: "Lazimpat, near Radisson, Kathmandu", phone: "9808428150", otherPhones: ["01-4168710"],
+  { ...base, id: "b7", slug: "plush-lazimpat", name: "Plush Unisex Salon", category: "salons", area: "lazimpat",
+    address: "Lazimpat, near Radisson, Kathmandu", phone: "9808428150", otherPhones: [{ number: "01-4168710" }],
     website: "https://plushsalon.com.np", websiteStatus: "not_checked",
     hours: [{ days: "Every day", time: "10:00–20:00" }], hoursSource: "their post", hoursVerified: true,
     social: ["Instagram plush_unisex_salon_np", "Facebook plushktm"],
@@ -102,8 +100,8 @@ export const businesses: Business[] = [
     phone: "9704549439", websiteStatus: "none_found",
     hours: [{ days: "", time: "08:00–20:00" }], hoursSource: "an earlier TikTok post", hoursVerified: true, social: ["TikTok deezycuts.np"],
     directions: "https://www.google.com/maps/search/?api=1&query=Deezy+Cuts+Baluwatar+Kathmandu", sourceNotes: "Their TikTok" },
-  { ...base, id: "b9", slug: "serene-durbar-marg", name: "Serene Salon & Spa", category: "salon-and-spa", area: "durbar-marg",
-    address: "Yak & Yeti Lane, Durbar Marg, Kathmandu", phone: "01-5322702", otherPhones: ["9802335552"], websiteStatus: "none_found",
+  { ...base, id: "b9", slug: "serene-durbar-marg", name: "Serene Salon & Spa", category: "salons", area: "durbar-marg",
+    address: "Yak & Yeti Lane, Durbar Marg, Kathmandu", phone: "01-5322702", otherPhones: [{ number: "9802335552" }], websiteStatus: "none_found",
     hours: [{ days: "Every day", time: "09:00–22:00" }], hoursSource: "a directory listing", hoursVerified: false,
     social: ["Instagram serenewellnessnepal", "Facebook serenewellnessnepal"],
     directions: "https://www.google.com/maps/search/?api=1&query=Serene+Salon+Spa+Yak+Yeti+Lane+Durbar+Marg", sourceNotes: "Their Instagram and Facebook page" },
@@ -113,17 +111,17 @@ export const businesses: Business[] = [
     description: "Spa bookings go through the hotel. The phone is the hotel's number.",
     directions: "https://www.google.com/maps/search/?api=1&query=Hyatt+Regency+Kathmandu+Club+Oasis", sourceNotes: "The hotel's official contact page" },
   { ...base, id: "b11", slug: "lavish-durbar-marg", name: "Lavish Salon & Academy", category: "salons", area: "durbar-marg",
-    address: "Hitipokhari, Durbar Marg, Kathmandu", phone: "01-4542030", otherPhones: ["9808018075"], websiteStatus: "none_found",
+    address: "Hitipokhari, Durbar Marg, Kathmandu", phone: "01-4542030", otherPhones: [{ number: "9808018075" }], websiteStatus: "none_found",
     social: ["Instagram lavishsalon.np"], directions: "https://www.google.com/maps/search/?api=1&query=Lavish+Salon+Academy+Durbar+Marg", sourceNotes: "Their Instagram" },
   { ...base, id: "b12", slug: "nuad-thai-lazimpat", name: "Nuad Thai Spa, Panipokhari", category: "spas", area: "lazimpat",
     address: "Panipokhari, Lazimpat, Kathmandu", phone: "01-4002808", websiteStatus: "none_found", social: ["Instagram nuadthaispa.nepal"],
     directions: "https://www.google.com/maps/search/?api=1&query=Nuad+Thai+Spa+Panipokhari+Lazimpat", sourceNotes: "Their Instagram" },
-  { ...base, id: "b13", slug: "kathmandu-spa-thamel", cover: { url: "https://www.kathmanduspa.com.np/wp-content/uploads/2019/12/Massage-therapy-e1575457181795.jpg", credit: "kathmanduspa.com.np" },
+  { ...base, id: "b13", slug: "kathmandu-spa-thamel",
     name: "Kathmandu Spa", category: "spas", area: "thamel", address: "Bhagawati Marg, Thamel, Kathmandu", phone: "01-4522661",
     website: "https://kathmanduspa.com.np", websiteStatus: "not_checked", social: ["Facebook kathmanduspa"],
     directions: "https://www.google.com/maps/search/?api=1&query=Kathmandu+Spa+Thamel", sourceNotes: "Their Facebook page (Kathmandu Spa Pvt. Ltd.)" },
   { ...base, id: "b14", slug: "kaya-healing-thamel", name: "Kaya Healing Spa", category: "spas", area: "thamel",
-    address: "Hotel Northfield, Chaksibari Marg, Thamel, Kathmandu", phone: "9803038823", otherPhones: ["01-5355882"],
+    address: "Hotel Northfield, Chaksibari Marg, Thamel, Kathmandu", phone: "9803038823", otherPhones: [{ number: "01-5355882" }],
     website: "https://www.kayaspa.com.np", websiteStatus: "failed", social: ["Instagram kayaspa.thamel"],
     directions: "https://www.google.com/maps/search/?api=1&query=Kaya+Healing+Spa+Thamel", sourceNotes: "Their Instagram" },
   { ...base, id: "b15", slug: "crest-club-lazimpat", name: "Crest Club and Spa", category: "spas", area: "lazimpat",
@@ -143,12 +141,12 @@ export const businesses: Business[] = [
     address: "Level 2, Durbar Marg, Kathmandu", phone: "01-5339065", websiteStatus: "none_found",
     hours: [{ days: "", time: "10:00–20:00" }], hoursSource: "his page", hoursVerified: true, social: ["Facebook collage.sakil"],
     directions: "https://www.google.com/maps/search/?api=1&query=Bliss+by+Sakil+Kunwar+Durbar+Marg", sourceNotes: "Sakil Kunwar's Facebook page" },
-  { ...base, id: "b19", slug: "annapurna-salon-durbar-marg", name: "Annapurna Salon & Spa", category: "salon-and-spa", area: "durbar-marg",
+  { ...base, id: "b19", slug: "annapurna-salon-durbar-marg", name: "Annapurna Salon & Spa", category: "salons", area: "durbar-marg",
     address: "3rd Floor, Annapurna Arcade, Durbar Marg, Kathmandu", phone: "9818981221", website: "https://annapurnasalon.com.np",
     websiteStatus: "not_checked", hours: [{ days: "Sunday to Saturday", time: "9:30–19:00" }], hoursSource: "their own contact page", hoursVerified: true,
     sourceNotes: "Their own website (contact page)" },
-  { ...base, id: "b20", slug: "hair-n-shanti-kamaladi", name: "Hair n Shanti, Kamaladi", category: "salons", area: "durbar-marg",
-    address: "Siddhartha Complex, Kamaladi, Durbar Marg, Kathmandu", phone: "+97714428463", website: "https://hairnshantinepal.com",
+  { ...base, id: "b20", slug: "hair-n-shanti-kamaladi", name: "Hair n Shanti, Kamaladi", category: "salons", area: "kamaladi",
+    address: "Siddhartha Complex, Kamaladi, Durbar Marg, Kathmandu", phone: "01-4428463", website: "https://hairnshantinepal.com",
     websiteStatus: "not_checked", sourceNotes: "Their own website (contacts page)" },
 ];
 
@@ -198,10 +196,17 @@ export function websiteStatusSentence(b: Business, lang: "en" | "ne" = "en"): st
 }
 
 export const whatsappLink = (n: string) =>
-  `https://wa.me/${n.replace(/\D/g, "")}?text=${encodeURIComponent("Hello, I found you on the directory.")}`;
+  `https://wa.me/${intlDigits(n)}?text=${encodeURIComponent("Hello, I found you on the directory.")}`;
 export const mapsLink = (addr: string) =>
   `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addr)}`;
-export const telLink = (p: string) => `tel:${p}`;
+/** Digits only, in international form: 01-5367872 -> 97715367872, 9802323990 -> 9779802323990. */
+export function intlDigits(p: string): string {
+  let d = p.replace(/\D/g, "");
+  if (d.startsWith("977")) d = d.slice(3);
+  if (d.startsWith("0")) d = d.slice(1);
+  return `977${d}`;
+}
+export const telLink = (p: string) => `tel:+${intlDigits(p)}`;
 
 export const directionsLink = (b: Business) => b.directions ?? (b.address ? mapsLink(b.address) : undefined);
 
@@ -221,3 +226,68 @@ export function socialLinks(b: Business) {
 // A website is shown only when one is listed and its status is known from a check.
 export const showWebsite = (b: Business) => Boolean(b.website) && (b.websiteStatus === "working" || b.websiteStatus === "failed");
 export const websiteButton = (b: Business) => Boolean(b.website) && b.websiteStatus === "working";
+
+export const slugRedirects: Record<string, string> = { "plush-kamaladi": "plush-lazimpat" };
+export const categoryRedirects: Record<string, string> = { "salon-and-spa": "salons" };
+
+export type WebsiteLabel = "webWorking" | "webDown" | "webNone" | "webNotChecked";
+export function websiteShortLabel(b: Business): WebsiteLabel {
+  if (b.websiteStatus === "working") return "webWorking";
+  if (b.websiteStatus === "failed") return "webDown";
+  if (b.websiteStatus === "none_found" || b.websiteStatus === "owner_no_site") return "webNone";
+  return "webNotChecked";
+}
+
+// ---- Hours: open/closed in Kathmandu time ----
+const DAY_INDEX: Record<string, number> = { sun: 0, mon: 1, tue: 2, wed: 3, thu: 4, fri: 5, sat: 6 };
+const EVERY_DAY = ["", "every day", "daily", "sunday to saturday", "sun–sat", "sun-sat"];
+
+/** Days of week (0 = Sunday) covered by a days label, or null if it can't be read. */
+export function parseDays(label: string): number[] | null {
+  const l = label.trim().toLowerCase();
+  if (EVERY_DAY.includes(l)) return [0, 1, 2, 3, 4, 5, 6];
+  const m = l.match(/^([a-z]{3})[a-z]*\s*(?:[–-]|to)\s*([a-z]{3})[a-z]*$/);
+  if (m) {
+    const a = DAY_INDEX[m[1]!], b = DAY_INDEX[m[2]!];
+    if (a === undefined || b === undefined) return null;
+    const out: number[] = [];
+    for (let d = a; ; d = (d + 1) % 7) { out.push(d); if (d === b) break; }
+    return out;
+  }
+  const one = DAY_INDEX[l.slice(0, 3)];
+  return one !== undefined && /^[a-z]+$/.test(l) ? [one] : null;
+}
+
+/** Minutes since midnight for "HH:MM–HH:MM", or null; "Closed" returns "closed". */
+export function parseRange(time: string): [number, number] | "closed" | null {
+  if (/^closed$/i.test(time.trim())) return "closed";
+  const m = time.trim().match(/^(\d{1,2}):(\d{2})\s*[–-]\s*(\d{1,2}):(\d{2})$/);
+  if (!m) return null;
+  return [Number(m[1]) * 60 + Number(m[2]), Number(m[3]) * 60 + Number(m[4])];
+}
+
+export function kathmanduNow(now: Date): { day: number; minutes: number } {
+  const parts = new Intl.DateTimeFormat("en-US", { timeZone: "Asia/Kathmandu", weekday: "short", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).formatToParts(now);
+  const get = (t: string) => parts.find((p) => p.type === t)?.value ?? "";
+  return { day: DAY_INDEX[get("weekday").toLowerCase().slice(0, 3)] ?? 0, minutes: Number(get("hour")) * 60 + Number(get("minute")) };
+}
+
+export type HoursStatus =
+  | { kind: "none" }
+  | { kind: "open" | "closed"; today: string }
+  | { kind: "text"; today: string };
+
+export function hoursStatus(hours: Business["hours"], now: Date): HoursStatus {
+  if (!hours?.length) return { kind: "none" };
+  const { day, minutes } = kathmanduNow(now);
+  for (const h of hours) {
+    const days = parseDays(h.days);
+    if (!days) return { kind: "text", today: hours.map((x) => `${x.days} ${x.time}`.trim()).join(", ") };
+    if (!days.includes(day)) continue;
+    const r = parseRange(h.time);
+    if (r === "closed") return { kind: "closed", today: h.time };
+    if (!r) return { kind: "text", today: h.time };
+    return { kind: minutes >= r[0] && minutes < r[1] ? "open" : "closed", today: h.time };
+  }
+  return { kind: "closed", today: "" };
+}

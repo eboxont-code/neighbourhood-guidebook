@@ -1,6 +1,7 @@
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
+@source inline("cat-salons cat-barbers cat-spas cat-clinics");
 
 @custom-variant dark (&:is(.dark *));
 
@@ -92,6 +93,15 @@
   --cover: oklch(0.86 0.01 70);
   --shadow-panel: 0 8px 24px -12px oklch(0.27 0.008 60 / 0.25);
   --unverified: oklch(0.5 0.12 60);
+  --cat-salons: oklch(0.88 0.04 20);
+  --cat-salons-ink: oklch(0.38 0.08 20);
+  --cat-barbers: oklch(0.86 0.02 240);
+  --cat-barbers-ink: oklch(0.32 0.04 250);
+  --cat-spas: oklch(0.88 0.045 150);
+  --cat-spas-ink: oklch(0.33 0.07 155);
+  --cat-clinics: oklch(0.89 0.035 200);
+  --cat-clinics-ink: oklch(0.34 0.06 210);
+  --credit-bg: oklch(0.27 0.008 60 / 0.6);
   --banner: oklch(0.93 0.05 85);
   --banner-foreground: oklch(0.38 0.06 70);
 }
@@ -144,7 +154,7 @@
   @media (min-width: 768px) { height: 320px; }
 }
 @utility venue-panel {
-  position: relative; margin-top: -24px; padding: 1rem 1.125rem; border-radius: calc(var(--radius) + 4px);
+  position: relative; margin-top: 1rem; padding: 1rem 1.125rem; border-radius: calc(var(--radius) + 4px);
   background: var(--panel); border: 1px solid var(--border); box-shadow: var(--shadow-panel);
 }
 @utility fact-row {
@@ -152,5 +162,19 @@
 }
 @utility cover-credit {
   position: absolute; top: 0.5rem; right: 0.5rem; padding: 0.125rem 0.5rem; border-radius: 999px;
-  background: oklch(0.27 0.008 60 / 0.6); color: var(--primary-foreground); font-size: 0.75rem;
+  background: var(--credit-bg); color: var(--primary-foreground); font-size: 0.75rem;
 }
+@utility venue-placeholder {
+  height: 140px; background: var(--ph-bg, var(--muted)); color: var(--ph-ink, var(--muted-foreground)); border-bottom: 1px solid var(--border);
+  @media (min-width: 768px) { height: 200px; }
+}
+@utility cat-salons { --ph-bg: var(--cat-salons); --ph-ink: var(--cat-salons-ink); }
+@utility cat-barbers { --ph-bg: var(--cat-barbers); --ph-ink: var(--cat-barbers-ink); }
+@utility cat-spas { --ph-bg: var(--cat-spas); --ph-ink: var(--cat-spas-ink); }
+@utility cat-clinics { --ph-bg: var(--cat-clinics); --ph-ink: var(--cat-clinics-ink); }
+@utility field {
+  display: block; width: 100%; min-height: 3rem; padding: 0.625rem 0.75rem; border-radius: var(--radius);
+  border: 1px solid var(--input); background: var(--card); font-size: 1rem; color: var(--foreground);
+  &:focus { outline: 2px solid var(--ring); outline-offset: 1px; }
+}
+@utility venue-panel-overlap { margin-top: -1.25rem; }

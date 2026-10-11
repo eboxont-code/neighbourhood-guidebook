@@ -1,7 +1,25 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { TextPage, pageMeta } from "@/components/site";
+import { Page, pageMeta } from "@/components/site";
+import { ContactForm } from "@/components/forms";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/contact")({
-  head: () => pageMeta("Contact", "How to reach the people behind the directory."),
-  component: () => <TextPage title="Contact" body="A contact address is not set up yet for this prototype. When the directory opens, this page will list a way to reach the team. There is no form here, so nothing you type is sent anywhere." />,
+  validateSearch: (s: Record<string, unknown>): { business?: string; listing?: string } => ({
+    ...(typeof s["business"] === "string" ? { business: s["business"].slice(0, 150) } : {}),
+    ...(typeof s["listing"] === "string" ? { listing: s["listing"].slice(0, 100) } : {}),
+  }),
+  head: () => pageMeta("Contact", "Get in touch about the directory, a listing, or a website."),
+  component: ContactPage,
 });
+
+function ContactPage() {
+  const { business = "", listing = "" } = Route.useSearch();
+  const { t } = useI18n();
+  return (
+    <Page>
+      <h1 className="font-serif text-3xl font-semibold">{t("contactTitle")}</h1>
+      <p className="mt-3 mb-6 leading-relaxed">{t("contactIntro")}</p>
+      <ContactForm key={`${business}|${listing}`} business={business} listing={listing} />
+    </Page>
+  );
+}

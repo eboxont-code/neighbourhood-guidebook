@@ -2,7 +2,7 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { SITE_NAME } from "@/config";
 import { useI18n } from "@/lib/i18n";
-import { getArea, getCategory, websiteStatusSentence, type Business } from "@/data/directory";
+import { getArea, getCategory, hoursStatus, websiteShortLabel, type Business } from "@/data/directory";
 
 export function Header() {
   const { lang, setLang } = useI18n();
@@ -29,12 +29,44 @@ export function Footer() {
   return (
     <footer className="mt-12 border-t border-border">
       <div className="mx-auto max-w-2xl px-4 py-6 text-sm">
-        <nav className="flex flex-wrap gap-x-4 gap-y-2">
-          {links.map(([to, label]) => <Link key={to} to={to} className="text-muted-foreground hover:text-foreground">{label}</Link>)}
+        <nav className="grid grid-cols-2 gap-x-4 gap-y-1 sm:flex sm:flex-wrap sm:gap-x-2">
+          {links.map(([to, label]) => (
+            <Link key={to} to={to} className="-mx-2 inline-flex min-h-11 items-center rounded-md px-2 text-muted-foreground hover:bg-muted hover:text-foreground sm:mx-0">{label}</Link>
+          ))}
         </nav>
         <p className="mt-4 text-xs text-muted-foreground">{SITE_NAME} · {t("noindex")}</p>
       </div>
     </footer>
+  );
+}
+
+/** Current time, only after mount, so server and browser render the same first HTML. */
+export function useNow(): Date | null {
+  const [now, setNow] = useState<Date | null>(null);
+  useEffect(() => {
+    setNow(new Date());
+    const id = setInterval(() => setNow(new Date()), 60_000);
+    return () => clearInterval(id);
+  }, []);
+  return now;
+}
+
+export function HoursLine({ b }: { b: Business }) {
+  const { t } = useI18n();
+  const now = useNow();
+  if (!b.hours?.length) return <span className="text-muted-foreground">{t("hoursNotListed")}</span>;
+  const unverified = b.hoursSource && !b.hoursVerified ? <span className="text-unverified"> · {t("unverifiedShort")}</span> : null;
+  const st = now ? hoursStatus(b.hours, now) : null;
+  if (!st || st.kind === "text" || st.kind === "none") {
+    const text = st && st.kind === "text" ? st.today : b.hours.map((h) => `${h.days} ${h.time}`.trim()).join(", ");
+    return <span>{text}{unverified}</span>;
+  }
+  return (
+    <span>
+      <span className={st.kind === "open" ? "font-semibold text-primary" : "text-muted-foreground"}>{t(st.kind === "open" ? "openNow" : "closedNow")}</span>
+      {st.today && <span> · {st.today}</span>}
+      {unverified}
+    </span>
   );
 }
 
@@ -76,14 +108,17 @@ export function BusinessCard({ b }: { b: Business }) {
   const { lang, t } = useI18n();
   const cat = getCategory(b.category);
   const area = getArea(b.area);
+  const web = websiteShortLabel(b);
   return (
     <li>
-      <Link to="/s/$slug" params={{ slug: b.slug }} className="flex gap-3 py-3 hover:bg-muted/60">
+      <Link to="/s/$slug" params={{ slug: b.slug }} className="flex gap-3 py-4 hover:bg-muted/60">
         <Monogram name={b.name} />
-        <div className="min-w-0">
+        <div className="min-w-0 flex-1 space-y-0.5">
           <p className="font-serif text-lg leading-tight font-semibold">{b.name}</p>
           <p className="text-sm text-muted-foreground">{lang === "ne" ? cat?.nameNe : cat?.name} · {area?.name}</p>
-          <p className="text-sm">{b.phone ?? websiteStatusSentence(b, lang)}</p>
+          {b.phone && <p className="text-sm">{b.phone}</p>}
+          <p className="text-sm"><HoursLine b={b} /></p>
+          <p className={`text-xs ${web === "webWorking" ? "text-primary" : web === "webDown" ? "text-unverified" : "text-muted-foreground"}`}>{t(web)}</p>
         </div>
       </Link>
     </li>
@@ -111,9 +146,9 @@ export function NotFoundView() {
 
 export const pageMeta = (title: string, description: string) => ({
   meta: [
-    { title: `${title} — ${SITE_NAME}` },
+    { title: `${title} · ${SITE_NAME}` },
     { name: "description", content: description },
-    { property: "og:title", content: `${title} — ${SITE_NAME}` },
+    { property: "og:title", content: `${title} · ${SITE_NAME}` },
     { property: "og:description", content: description },
   ],
 });
