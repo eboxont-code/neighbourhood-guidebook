@@ -27,15 +27,15 @@ function CityPage() {
         <h1 className="font-serif text-3xl font-semibold">{lang === "ne" ? city.nameNe : city.name}</h1>
         <p className="mt-3 leading-relaxed">{t(`intro_city_${city.slug}` as Key)}</p>
       </div>
-      <section className="mt-6">
+      <section className="mt-4">
         <h2 className="section-label">{t("areasIn")}</h2>
-        <div className="flex flex-wrap gap-2">
+        <div className="chip-row">
           {areasInUse(city.slug).map((a) => <Link key={a.slug} to="/$city/$section" params={{ city: city.slug, section: a.slug }} className="chip">{placeName(a, lang)}</Link>)}
         </div>
       </section>
-      <section className="mt-4 mb-8">
+      <section className="mt-3 mb-5">
         <h2 className="section-label">{t("typesIn")}</h2>
-        <div className="flex flex-wrap gap-2">
+        <div className="chip-row">
           {categoriesIn(items).map((c) => <Link key={c.slug} to="/$city/$section" params={{ city: city.slug, section: c.slug }} className="chip">{lang === "ne" ? c.nameNe : c.name}</Link>)}
         </div>
       </section>
