@@ -9,7 +9,7 @@ export function MapView({ items, className = "h-[60vh] lg:h-[70vh]", zoom, note 
   const { t, lang } = useI18n();
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
-  const labels = useMemo(() => ({ open: t("mapOpen"), attribution: t("mapAttribution"), lang }), [t, lang]);
+  const labels = useMemo(() => ({ open: t("mapOpen"), attribution: t("mapAttribution"), lang }), [lang]); // eslint-disable-line react-hooks/exhaustive-deps
   const pins = items.filter(hasPin);
   if (!pins.length) return <p className="rounded-lg border border-border bg-card p-4 text-muted-foreground">{t("mapNoPins")}</p>;
   return (
