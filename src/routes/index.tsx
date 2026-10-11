@@ -1,24 +1,36 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { CardList, Page, SearchBox, pageMeta } from "@/components/site";
+import { areasInUse, businesses, categoriesInUse } from "@/data/directory";
+import { useI18n } from "@/lib/i18n";
+import { SITE_NAME } from "@/config";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
 export const Route = createFileRoute("/")({
-  component: Index,
+  head: () => pageMeta("Local business directory", `${SITE_NAME} lists local shops in Kathmandu with phone, hours and website checks.`),
+  component: Home,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
-function Index() {
+function Home() {
+  const { t, lang } = useI18n();
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
+    <Page>
+      <p className="mb-4 text-lg leading-snug">{t("tagline")}</p>
+      <SearchBox />
+      <section className="mt-6">
+        <h2 className="section-label">{t("categories")}</h2>
+        <div className="flex flex-wrap gap-2">
+          {categoriesInUse().map((c) => <Link key={c.slug} to="/category/$categorySlug" params={{ categorySlug: c.slug }} className="chip">{lang === "ne" ? c.nameNe : c.name}</Link>)}
+        </div>
+      </section>
+      <section className="mt-5">
+        <h2 className="section-label">{t("areas")}</h2>
+        <div className="flex flex-wrap gap-2">
+          {areasInUse().map((a) => <Link key={a.slug} to="/area/$areaSlug" params={{ areaSlug: a.slug }} className="chip">{a.name}</Link>)}
+        </div>
+      </section>
+      <section className="mt-6">
+        <h2 className="section-label">{t("listings")}</h2>
+        <CardList items={businesses.slice(0, 4)} />
+      </section>
+    </Page>
   );
 }
