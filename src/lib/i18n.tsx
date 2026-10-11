@@ -15,7 +15,7 @@ const dict = {
     notFoundBody: "We couldn't find that page.", goHome: "Go home",
     verif_not_verified: "Not verified.", verif_source_checked: "Checked against a source.", verif_business_confirmed: "Confirmed by the business.",
     footAbout: "About the directory", footSuggest: "Suggest a correction", footHelp: "Website help", footPrivacy: "Privacy", footContact: "Contact",
-    noindex: "Prototype with sample data.", inArea: "in",
+    noindex: "Prototype. Details come from each business’s public pages.", inArea: "in",
   },
   ne: {
     tagline: "काठमाडौंका स्थानीय पसल र सेवा — फोन, समय, र वेबसाइट जाँच भएको छ कि छैन।",
@@ -28,7 +28,7 @@ const dict = {
     notFoundBody: "त्यो पृष्ठ भेटिएन।", goHome: "गृहपृष्ठमा जानुहोस्",
     verif_not_verified: "प्रमाणित छैन।", verif_source_checked: "स्रोतसँग जाँच गरिएको।", verif_business_confirmed: "व्यवसायले पुष्टि गरेको।",
     footAbout: "निर्देशिकाबारे", footSuggest: "सुधार सुझाव", footHelp: "वेबसाइट सहयोग", footPrivacy: "गोपनीयता", footContact: "सम्पर्क",
-    noindex: "नमुना डाटासहितको प्रोटोटाइप।", inArea: "मा",
+    noindex: "प्रोटोटाइप। विवरण प्रत्येक व्यवसायको सार्वजनिक पृष्ठबाट।", inArea: "मा",
   },
 } as const;
 

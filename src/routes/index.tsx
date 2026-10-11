@@ -29,7 +29,7 @@ function Home() {
       </section>
       <section className="mt-6">
         <h2 className="section-label">{t("listings")}</h2>
-        <CardList items={businesses.slice(0, 4)} />
+        <CardList items={businesses} />
       </section>
     </Page>
   );
