@@ -44,7 +44,6 @@ export function Page({ children }: { children: ReactNode }) {
 
 export function SampleBanner() {
   const { t } = useI18n();
-  return <p className="sample-banner">{t("sample")}</p>;
 }
 
 export function Monogram({ name, size = "md" }: { name: string; size?: "md" | "lg" }) {
@@ -75,7 +74,6 @@ export function BusinessCard({ b }: { b: Business }) {
         <div className="min-w-0">
           <p className="font-serif text-lg leading-tight font-semibold">{b.name}</p>
           <p className="text-sm text-muted-foreground">{lang === "ne" ? cat?.nameNe : cat?.name} · {area?.name}</p>
-          <p className="text-xs text-primary">{t("sample")}</p>
           <p className="text-sm">{b.phone ?? websiteStatusSentence(b, lang)}</p>
         </div>
       </Link>

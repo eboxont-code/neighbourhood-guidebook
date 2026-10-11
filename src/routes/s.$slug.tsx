@@ -1,5 +1,5 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { Monogram, NotFoundView, Page, SampleBanner, pageMeta } from "@/components/site";
+import { Monogram, NotFoundView, Page, pageMeta } from "@/components/site";
 import { getArea, getBusiness, getCategory, mapsLink, telLink, websiteStatusSentence, whatsappLink } from "@/data/directory";
 import { useI18n } from "@/lib/i18n";
 
@@ -13,7 +13,7 @@ export const Route = createFileRoute("/s/$slug")({
     if (!loaderData) return { meta: [{ title: "Not found" }] };
     const b = loaderData.business;
     const area = getArea(b.area)?.name ?? "";
-    return pageMeta(b.name, `${b.name}, ${getCategory(b.category)?.name} in ${area}. Sample listing.`);
+    return pageMeta(b.name, `${b.name}, ${getCategory(b.category)?.name} in ${area}. Listing.`);
   },
   notFoundComponent: NotFoundView,
   component: ShopPage,
@@ -40,7 +40,6 @@ function ShopPage() {
           {b.phone && <p className="mt-1 text-sm">{b.phone}</p>}
           {b.address && <p className="mt-1 text-sm text-muted-foreground">{b.address}</p>}
         </div>
-      <div className="mt-4"><SampleBanner /></div>
       {b.description && <p className="mt-4 leading-relaxed">{b.description}</p>}
 
       <div className="mt-5 grid grid-cols-2 gap-2">
