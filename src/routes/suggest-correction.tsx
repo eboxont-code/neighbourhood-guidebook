@@ -6,7 +6,7 @@ import { useI18n } from "@/lib/i18n";
 export const Route = createFileRoute("/suggest-correction")({
   validateSearch: (s: Record<string, unknown>): { listing?: string } =>
     typeof s["listing"] === "string" ? { listing: s["listing"].slice(0, 100) } : {},
-  head: () => pageMeta("Suggest a correction", "Tell us if a phone number, opening hours or website on a listing is wrong."),
+  head: () => pageMeta("Suggest a correction", "Tell us if a phone number, opening hours or website on a listing is wrong.", "/suggest-correction"),
   component: CorrectionPage,
 });
 

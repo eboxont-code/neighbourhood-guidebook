@@ -5,7 +5,11 @@ import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/search")({
   validateSearch: (s: Record<string, unknown>) => ({ q: typeof s["q"] === "string" ? s["q"] : "" }),
-  head: () => pageMeta("Search", "Search local businesses by name, category, area or service."),
+  head: ({ match }) => {
+    const q = (match.search as { q?: string }).q?.trim();
+    return q ? pageMeta(`Search: ${q.slice(0, 60)}`, `Kathmandu businesses matching "${q.slice(0, 60)}".`, "/search")
+      : pageMeta("Search", "Search Kathmandu salons, barbers, spas and clinics by name, category, area or service.", "/search");
+  },
   component: SearchPage,
 });
 
