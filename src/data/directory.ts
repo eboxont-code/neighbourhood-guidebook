@@ -48,7 +48,7 @@ export const businesses: Business[] = [
     address: "Sample Marg 1, New Baneshwor, Kathmandu", phone: "+977 1 5550101", whatsapp: "9779800000001",
     website: "https://example.com", websiteStatus: "working",
     description: "A fictional salon used to show how a listing looks.",
-    services: [{ name: "Haircut" }, { name: "Hair colouring" }, { name: "Threading" }],
+    services: [{ name: "Haircut", price: "Rs 500" }, { name: "Hair colouring", price: "Rs 2,500" }, { name: "Threading" }],
     hours: [{ days: "Sun–Fri", time: "9:00–19:00" }, { days: "Sat", time: "Closed" }],
     sourceNotes: "Invented for this prototype.", verification: "source_checked", lastChecked: "2026-09-20", demo: true,
   },
