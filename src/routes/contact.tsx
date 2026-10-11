@@ -8,7 +8,7 @@ export const Route = createFileRoute("/contact")({
     ...(typeof s["business"] === "string" ? { business: s["business"].slice(0, 150) } : {}),
     ...(typeof s["listing"] === "string" ? { listing: s["listing"].slice(0, 100) } : {}),
   }),
-  head: () => pageMeta("Contact", "Get in touch about the directory, a listing, or a website."),
+  head: () => pageMeta("Contact", "Send a note about the directory, a listing, or a website for your business.", "/contact"),
   component: ContactPage,
 });
 

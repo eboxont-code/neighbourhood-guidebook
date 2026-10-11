@@ -20,5 +20,7 @@ describe("App routing", () => {
     expect(router.matchRoutes("/c/salons").at(-1)?.routeId).toBe("/c/$categorySlug");
     expect(router.matchRoutes("/a/kamaladi").at(-1)?.routeId).toBe("/a/$areaSlug");
     expect(router.matchRoutes("/s/plush-lazimpat").at(-1)?.routeId).toBe("/s/$slug");
+    expect(router.matchRoutes("/for-businesses").at(-1)?.routeId).toBe("/for-businesses");
+    expect(router.matchRoutes("/website-help").at(-1)?.routeId).toBe("/website-help");
   });
 });

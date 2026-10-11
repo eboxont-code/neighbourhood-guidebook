@@ -9,7 +9,7 @@ export const Route = createFileRoute("/a/$areaSlug")({
     if (!area) throw notFound();
     return { area };
   },
-  head: ({ loaderData }) => loaderData ? pageMeta(`Businesses in ${loaderData.area.name}`, `Local businesses in ${loaderData.area.name}, ${loaderData.area.city}.`) : { meta: [{ title: "Not found" }] },
+  head: ({ loaderData }) => loaderData ? pageMeta(`Businesses in ${loaderData.area.name}, ${loaderData.area.city}`, `Salons, barbers, spas and clinics in ${loaderData.area.name}, ${loaderData.area.city}, with phone numbers, hours and website checks.`, `/a/${loaderData.area.slug}`) : { meta: [{ title: "Not found" }] },
   notFoundComponent: NotFoundView,
   component: AreaPage,
 });

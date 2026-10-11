@@ -5,7 +5,7 @@ import { useI18n } from "@/lib/i18n";
 import { SITE_NAME } from "@/config";
 
 export const Route = createFileRoute("/")({
-  head: () => pageMeta("Local business directory", `${SITE_NAME} lists local shops in Kathmandu with phone numbers, opening hours and website checks.`),
+  head: () => pageMeta("Salons, barbers, spas and clinics in Kathmandu", `${SITE_NAME} lists local shops in Kathmandu with phone numbers, opening hours and website checks.`, "/"),
   component: Home,
 });
 

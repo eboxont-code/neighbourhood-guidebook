@@ -1,7 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { TextPage, pageMeta } from "@/components/site";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/privacy")({
-  head: () => pageMeta("Privacy", "How this directory handles your information."),
-  component: () => <TextPage title="Privacy" body="This prototype has no accounts and collects no personal information. The only thing it stores is your language choice, kept in your own browser. Links to calls, WhatsApp, websites and maps take you to those services, which have their own policies." />,
+  head: () => pageMeta("Privacy", "What this directory stores when you use it or send a form, and what it doesn't.", "/privacy"),
+  component: Privacy,
 });
+
+function Privacy() {
+  const { t } = useI18n();
+  return <TextPage title={t("footPrivacy")} body={t("privacyBody")} />;
+}

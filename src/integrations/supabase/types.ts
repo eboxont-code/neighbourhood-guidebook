@@ -17,6 +17,7 @@ export type Database = {
       contact_messages: {
         Row: {
           business_name: string | null
+          client_key: string | null
           created_at: string
           id: string
           message: string
@@ -27,6 +28,7 @@ export type Database = {
         }
         Insert: {
           business_name?: string | null
+          client_key?: string | null
           created_at?: string
           id?: string
           message: string
@@ -37,6 +39,7 @@ export type Database = {
         }
         Update: {
           business_name?: string | null
+          client_key?: string | null
           created_at?: string
           id?: string
           message?: string
@@ -49,6 +52,7 @@ export type Database = {
       }
       correction_reports: {
         Row: {
+          client_key: string | null
           contact: string | null
           created_at: string
           id: string
@@ -56,6 +60,7 @@ export type Database = {
           whats_wrong: string
         }
         Insert: {
+          client_key?: string | null
           contact?: string | null
           created_at?: string
           id?: string
@@ -63,11 +68,30 @@ export type Database = {
           whats_wrong: string
         }
         Update: {
+          client_key?: string | null
           contact?: string | null
           created_at?: string
           id?: string
           listing_slug?: string
           whats_wrong?: string
+        }
+        Relationships: []
+      }
+      form_rate_log: {
+        Row: {
+          created_at: string
+          id: number
+          key_hash: string
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          key_hash: string
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          key_hash?: string
         }
         Relationships: []
       }

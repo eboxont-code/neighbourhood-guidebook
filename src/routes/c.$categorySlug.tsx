@@ -11,7 +11,7 @@ export const Route = createFileRoute("/c/$categorySlug")({
     if (!category) throw notFound();
     return { category };
   },
-  head: ({ loaderData }) => loaderData ? pageMeta(loaderData.category.name, `${loaderData.category.name} listed in the directory.`) : { meta: [{ title: "Not found" }] },
+  head: ({ loaderData }) => loaderData ? pageMeta(`${loaderData.category.name} in Kathmandu`, `${loaderData.category.name} in Kathmandu, with phone numbers, opening hours and whether each website works.`, `/c/${loaderData.category.slug}`) : { meta: [{ title: "Not found" }] },
   notFoundComponent: NotFoundView,
   component: CategoryPage,
 });

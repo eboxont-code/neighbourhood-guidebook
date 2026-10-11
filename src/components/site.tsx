@@ -5,15 +5,19 @@ import { useI18n } from "@/lib/i18n";
 import { getArea, getCategory, hoursStatus, websiteShortLabel, type Business } from "@/data/directory";
 
 export function Header() {
-  const { lang, setLang } = useI18n();
+  const { lang, setLang, t } = useI18n();
   return (
     <header className="border-b border-border">
       <div className="mx-auto flex max-w-2xl items-center justify-between px-4 py-3">
         <Link to="/" className="font-serif text-xl font-semibold">{SITE_NAME}</Link>
-        <div className="flex items-center text-sm" role="group" aria-label="Language">
+        <div className="flex items-center gap-1 text-sm">
+        <Link to="/for-businesses" className="inline-flex min-h-11 items-center rounded-md px-2 text-muted-foreground hover:text-foreground" activeProps={{ className: "text-foreground font-semibold" }}>{t("navBusinesses")}</Link>
+        <span aria-hidden className="mx-1 h-5 w-px bg-border" />
+        <div className="flex items-center" role="group" aria-label="Language">
           <button onClick={() => setLang("en")} aria-pressed={lang === "en"} className={`px-2 py-2 ${lang === "en" ? "font-semibold text-primary" : "text-muted-foreground"}`}>EN</button>
           <span className="text-muted-foreground">|</span>
           <button onClick={() => setLang("ne")} aria-pressed={lang === "ne"} className={`px-2 py-2 ${lang === "ne" ? "font-semibold text-primary" : "text-muted-foreground"}`}>ने</button>
+        </div>
         </div>
       </div>
     </header>
@@ -23,7 +27,7 @@ export function Header() {
 export function Footer() {
   const { t } = useI18n();
   const links = [
-    ["/about", t("footAbout")], ["/suggest-correction", t("footSuggest")], ["/website-help", t("footHelp")],
+    ["/about", t("footAbout")], ["/suggest-correction", t("footSuggest")], ["/for-businesses", t("footClaim")],
     ["/privacy", t("footPrivacy")], ["/contact", t("footContact")],
   ] as const;
   return (
@@ -74,9 +78,6 @@ export function Page({ children }: { children: ReactNode }) {
   return <main className="mx-auto max-w-2xl px-4 py-6">{children}</main>;
 }
 
-export function SampleBanner() {
-  const { t } = useI18n();
-}
 
 export function Monogram({ name, size = "md" }: { name: string; size?: "md" | "lg" }) {
   return <div aria-hidden className={`monogram ${size === "lg" ? "h-16 w-16 text-3xl" : "h-12 w-12 text-xl"}`}>{name.charAt(0)}</div>;
@@ -144,11 +145,4 @@ export function NotFoundView() {
   );
 }
 
-export const pageMeta = (title: string, description: string) => ({
-  meta: [
-    { title: `${title} · ${SITE_NAME}` },
-    { name: "description", content: description },
-    { property: "og:title", content: `${title} · ${SITE_NAME}` },
-    { property: "og:description", content: description },
-  ],
-});
+export { pageMeta } from "@/lib/seo";
