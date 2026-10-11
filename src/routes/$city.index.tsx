@@ -1,7 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { NotFoundView, Page, pageMeta } from "@/components/site";
 import { Directory } from "@/components/directory";
-import { areasInUse, businessesIn, categoriesIn, getCity } from "@/data/directory";
+import { placeName, areasInUse, businessesIn, categoriesIn, getCity } from "@/data/directory";
 import { useI18n, type Key } from "@/lib/i18n";
 
 export const Route = createFileRoute("/$city/")({
@@ -11,7 +11,7 @@ export const Route = createFileRoute("/$city/")({
     return { city };
   },
   head: ({ loaderData }) => loaderData
-    ? pageMeta(`Local businesses in ${loaderData.city.name}`, `Salons, cafés, restaurants, gyms, hotels and more in ${loaderData.city.name}, by neighbourhood, with phone numbers, hours and directions.`, `/${loaderData.city.slug}`)
+    ? pageMeta(`${loaderData.city.name} by neighbourhood: salons, cafés, hotels and more`, `Places in ${loaderData.city.name} from Thamel and Boudha to Durbar Marg and Lazimpat, with phone numbers, opening hours and directions you can check.`, `/${loaderData.city.slug}`)
     : { meta: [{ title: "Not found" }, { name: "robots", content: "noindex" }] },
   notFoundComponent: NotFoundView,
   component: CityPage,
@@ -30,7 +30,7 @@ function CityPage() {
       <section className="mt-6">
         <h2 className="section-label">{t("areasIn")}</h2>
         <div className="flex flex-wrap gap-2">
-          {areasInUse(city.slug).map((a) => <Link key={a.slug} to="/$city/$section" params={{ city: city.slug, section: a.slug }} className="chip">{a.name}</Link>)}
+          {areasInUse(city.slug).map((a) => <Link key={a.slug} to="/$city/$section" params={{ city: city.slug, section: a.slug }} className="chip">{placeName(a, lang)}</Link>)}
         </div>
       </section>
       <section className="mt-4 mb-8">

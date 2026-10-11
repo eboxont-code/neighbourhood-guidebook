@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from "react";
-import { areasIn, categoriesIn, type Business } from "@/data/directory";
+import { areasIn, categoriesIn, placeName, type Business } from "@/data/directory";
 import { useI18n } from "@/lib/i18n";
 import { CardList } from "@/components/site";
 import { MapView } from "@/components/map-view";
@@ -9,8 +9,8 @@ function FilterGroup({ label, options, value, onChange }: { label: string; optio
   if (options.length < 2) return null;
   return (
     <div>
-      <h2 className="section-label">{label}</h2>
-      <div className="flex flex-wrap gap-2 lg:flex-col lg:items-stretch">
+      <h2 className="section-label mb-1.5">{label}</h2>
+      <div className="chip-row lg:flex-col lg:items-stretch">
         {[{ slug: "", label: t("filterAll") }, ...options].map((o) => (
           <button key={o.slug || "all"} type="button" aria-pressed={value === o.slug} onClick={() => onChange(o.slug)}
             className={`chip min-h-11 lg:justify-start ${value === o.slug ? "chip-on" : ""}`}>{o.label}</button>
@@ -28,13 +28,13 @@ export function Directory({ items, filterType = true, filterArea = true, aside }
   const [view, setView] = useState<"list" | "map">("list");
   const shown = items.filter((b) => (!cat || b.category === cat) && (!area || b.area === area));
   const types = filterType ? categoriesIn(items).map((c) => ({ slug: c.slug, label: lang === "ne" ? c.nameNe : c.name })) : [];
-  const areaOpts = filterArea ? areasIn(items).map((a) => ({ slug: a.slug, label: a.name })) : [];
+  const areaOpts = filterArea ? areasIn(items).map((a) => ({ slug: a.slug, label: placeName(a, lang) })) : [];
   const hasFilters = types.length > 1 || areaOpts.length > 1;
 
   return (
     <div className={`gap-8 ${hasFilters || aside ? "lg:grid lg:grid-cols-[14rem_minmax(0,1fr)]" : ""}`}>
       {(hasFilters || aside) && (
-        <aside className="mb-5 space-y-5 lg:sticky lg:top-4 lg:mb-0 lg:self-start" aria-label={t("filterBy")}>
+        <aside className="mb-4 space-y-3 lg:sticky lg:space-y-5 lg:top-4 lg:mb-0 lg:self-start" aria-label={t("filterBy")}>
           <FilterGroup label={t("filterType")} options={types} value={cat} onChange={setCat} />
           <FilterGroup label={t("filterArea")} options={areaOpts} value={area} onChange={setArea} />
           {aside}

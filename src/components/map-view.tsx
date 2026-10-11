@@ -17,7 +17,7 @@ export function MapView({ items, className = "h-[60vh] lg:h-[70vh]", zoom, note 
       <div role="region" aria-label={t("mapLabel")} className={`map-frame ${className}`}>
         {mounted && <Suspense fallback={null}><ListingMap items={pins} labels={labels} {...(zoom ? { zoom } : {})} /></Suspense>}
       </div>
-      {note && <p className="mt-2 text-xs text-muted-foreground">{t("mapPinsNote")}</p>}
+      {note && <p className="mt-2 text-sm text-muted-foreground">{(pins.length === items.length ? t("mapCountAll") : t("mapCount")).replace("{n}", String(pins.length)).replace("{m}", String(items.length))}</p>}
     </div>
   );
 }

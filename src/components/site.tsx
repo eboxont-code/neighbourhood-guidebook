@@ -2,7 +2,7 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { SITE_NAME } from "@/config";
 import { useI18n } from "@/lib/i18n";
-import { getArea, getCategory, hoursStatus, websiteShortLabel, type Business } from "@/data/directory";
+import { dayLabel, getArea, getCategory, hoursStatus, placeName, timeLabel, websiteShortLabel, type Business } from "@/data/directory";
 
 export function Header() {
   const { lang, setLang, t } = useI18n();
@@ -11,12 +11,12 @@ export function Header() {
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
         <Link to="/" className="font-serif text-xl font-semibold">{SITE_NAME}</Link>
         <div className="flex items-center gap-1 text-sm">
-        <Link to="/for-businesses" className="inline-flex min-h-11 items-center rounded-md px-2 text-muted-foreground hover:text-foreground" activeProps={{ className: "text-foreground font-semibold" }}>{t("navBusinesses")}</Link>
+        <Link to="/for-businesses" className="inline-flex min-h-11 items-center rounded-md px-3 text-[15px] text-muted-foreground hover:bg-muted hover:text-foreground" activeProps={{ className: "text-foreground font-semibold" }}>{t("navBusinesses")}</Link>
         <span aria-hidden className="mx-1 h-5 w-px bg-border" />
         <div className="flex items-center" role="group" aria-label="Language">
-          <button onClick={() => setLang("en")} aria-pressed={lang === "en"} className={`px-2 py-2 ${lang === "en" ? "font-semibold text-primary" : "text-muted-foreground"}`}>EN</button>
-          <span className="text-muted-foreground">|</span>
-          <button onClick={() => setLang("ne")} aria-pressed={lang === "ne"} className={`px-2 py-2 ${lang === "ne" ? "font-semibold text-primary" : "text-muted-foreground"}`}>ने</button>
+          <button onClick={() => setLang("en")} aria-pressed={lang === "en"} className={`inline-flex min-h-11 min-w-11 items-center justify-center rounded-md text-[15px] ${lang === "en" ? "bg-accent font-semibold text-accent-foreground" : "text-muted-foreground hover:bg-muted"}`}>EN</button>
+          <span aria-hidden className="text-border">|</span>
+          <button onClick={() => setLang("ne")} aria-pressed={lang === "ne"} className={`inline-flex min-h-11 min-w-11 items-center justify-center rounded-md text-[15px] ${lang === "ne" ? "bg-accent font-semibold text-accent-foreground" : "text-muted-foreground hover:bg-muted"}`}>ने</button>
         </div>
         </div>
       </div>
@@ -33,12 +33,12 @@ export function Footer() {
   return (
     <footer className="mt-12 border-t border-border">
       <div className="mx-auto max-w-6xl px-4 py-6 text-sm">
-        <nav className="grid grid-cols-2 gap-x-4 gap-y-1 sm:flex sm:flex-wrap sm:gap-x-2">
+        <nav className="grid grid-cols-2 gap-x-4 gap-y-2 sm:flex sm:flex-wrap sm:gap-x-4">
           {links.map(([to, label]) => (
             <Link key={to} to={to} className="-mx-2 inline-flex min-h-11 items-center rounded-md px-2 text-muted-foreground hover:bg-muted hover:text-foreground sm:mx-0">{label}</Link>
           ))}
         </nav>
-        <p className="mt-4 text-xs text-muted-foreground">{SITE_NAME} · {t("noindex")}</p>
+        <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{SITE_NAME} · {t("noindex")}</p>
       </div>
     </footer>
   );
@@ -56,19 +56,19 @@ export function useNow(): Date | null {
 }
 
 export function HoursLine({ b }: { b: Business }) {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const now = useNow();
   if (!b.hours?.length) return <span className="text-muted-foreground">{t("hoursNotListed")}</span>;
   const unverified = b.hoursSource && !b.hoursVerified ? <span className="text-unverified"> · {t("unverifiedShort")}</span> : null;
   const st = now ? hoursStatus(b.hours, now) : null;
   if (!st || st.kind === "text" || st.kind === "none") {
-    const text = st && st.kind === "text" ? st.today : b.hours.map((h) => `${h.days} ${h.time}`.trim()).join(", ");
+    const text = st && st.kind === "text" ? st.today : b.hours.map((h) => `${dayLabel(h.days, lang)} ${timeLabel(h.time, lang)}`.trim()).join(", ");
     return <span>{text}{unverified}</span>;
   }
   return (
     <span>
       <span className={st.kind === "open" ? "font-semibold text-primary" : "text-muted-foreground"}>{t(st.kind === "open" ? "openNow" : "closedNow")}</span>
-      {st.today && <span> · {st.today}</span>}
+      {st.today && <span> · {timeLabel(st.today, lang)}</span>}
       {unverified}
     </span>
   );
@@ -116,10 +116,10 @@ export function BusinessCard({ b }: { b: Business }) {
         <Monogram name={b.name} />
         <div className="min-w-0 flex-1 space-y-0.5">
           <p className="font-serif text-lg leading-tight font-semibold">{b.name}</p>
-          <p className="text-sm text-muted-foreground">{lang === "ne" ? cat?.nameNe : cat?.name} · {area?.name}</p>
+          <p className="text-sm text-muted-foreground">{lang === "ne" ? cat?.nameNe : cat?.name} · {placeName(area, lang)}</p>
           {b.phone && <p className="text-sm">{b.phone}</p>}
           <p className="text-sm"><HoursLine b={b} /></p>
-          <p className={`text-xs ${web === "webWorking" ? "text-primary" : web === "webDown" ? "text-unverified" : "text-muted-foreground"}`}>{t(web)}</p>
+          <p className={`text-sm ${web === "webWorking" ? "text-primary" : web === "webDown" ? "text-unverified" : "text-muted-foreground"}`}>{t(web)}</p>
         </div>
       </Link>
     </li>
