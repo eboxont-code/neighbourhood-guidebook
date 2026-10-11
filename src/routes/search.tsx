@@ -4,7 +4,7 @@ import { searchBusinesses } from "@/data/directory";
 import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/search")({
-  validateSearch: (s: Record<string, unknown>) => ({ q: typeof s.q === "string" ? s.q : "" }),
+  validateSearch: (s: Record<string, unknown>) => ({ q: typeof s["q"] === "string" ? s["q"] : "" }),
   head: () => pageMeta("Search", "Search local businesses by name, category, area or service."),
   component: SearchPage,
 });
