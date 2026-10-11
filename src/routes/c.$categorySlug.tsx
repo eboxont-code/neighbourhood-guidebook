@@ -1,10 +1,12 @@
-import { createFileRoute, notFound } from "@tanstack/react-router";
+import { createFileRoute, notFound, redirect } from "@tanstack/react-router";
 import { CardList, NotFoundView, Page, pageMeta } from "@/components/site";
-import { businesses, getCategory } from "@/data/directory";
+import { businesses, categoryRedirects, getCategory } from "@/data/directory";
 import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/c/$categorySlug")({
   loader: ({ params }) => {
+    const moved = categoryRedirects[params.categorySlug];
+    if (moved) throw redirect({ to: "/c/$categorySlug", params: { categorySlug: moved }, statusCode: 301 });
     const category = getCategory(params.categorySlug);
     if (!category) throw notFound();
     return { category };

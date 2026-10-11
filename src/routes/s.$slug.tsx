@@ -1,12 +1,14 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound, redirect } from "@tanstack/react-router";
 import { NotFoundView, pageMeta } from "@/components/site";
 import { Cover } from "@/components/cover";
 import type { ReactNode } from "react";
-import { directionsLink, showWebsite, socialLinks, websiteButton, getArea, getBusiness, getCategory, telLink, websiteStatusSentence } from "@/data/directory";
+import { directionsLink, slugRedirects, showWebsite, socialLinks, websiteButton, getArea, getBusiness, getCategory, telLink, websiteStatusSentence } from "@/data/directory";
 import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/s/$slug")({
   loader: ({ params }) => {
+    const moved = slugRedirects[params.slug];
+    if (moved) throw redirect({ to: "/s/$slug", params: { slug: moved }, statusCode: 301 });
     const business = getBusiness(params.slug);
     if (!business) throw notFound();
     return { business };
@@ -37,9 +39,9 @@ function ShopPage() {
   const area = getArea(b.area)!;
   return (
     <div>
-      <Cover cover={b.cover} />
+      <Cover cover={b.cover} name={b.name} category={b.category} />
       <main className="mx-auto max-w-2xl px-4 pb-6">
-        <div className="venue-panel">
+        <div className={`venue-panel ${b.cover ? "" : "venue-panel-overlap"}`}>
           <h1 className="font-serif text-3xl leading-tight font-semibold break-words">{b.name}</h1>
           <p className="mt-1 text-sm">
             <Link to="/c/$categorySlug" params={{ categorySlug: cat.slug }} className="text-primary underline">{lang === "ne" ? cat.nameNe : cat.name}</Link>
@@ -77,7 +79,16 @@ function ShopPage() {
             )}
             <span className={showWebsite(b) ? "text-sm text-muted-foreground" : ""}>{websiteStatusSentence(b, lang)}</span>
           </Row>
-          {b.otherPhones?.length ? <Row label={t("otherPhones")}>{b.otherPhones.map((p) => <div key={p}>{p}</div>)}</Row> : null}
+          {b.otherPhones?.length ? (
+            <Row label={t("otherPhones")}>
+              {b.otherPhones.map((p) => (
+                <div key={p.number}>
+                  <a href={telLink(p.number)} className="text-primary underline">{p.number}</a>
+                  {p.note && <span className="text-muted-foreground"> · {t(p.note)}</span>}
+                </div>
+              ))}
+            </Row>
+          ) : null}
           {b.address && <Row label={t("address")}>{b.address}</Row>}
           {directionsLink(b) && (
             <Row label={t("directions")}>
@@ -96,6 +107,17 @@ function ShopPage() {
           <Row label={t("source")}>{b.sourceNotes}</Row>
           {b.description && <Row label={t("note")}>{b.description}</Row>}
         </dl>
+
+        <div className="mt-6 space-y-3 text-sm">
+          <p>
+            <span className="text-muted-foreground">{t("spotMistake")} </span>
+            <Link to="/suggest-correction" search={{ listing: b.slug }} className="text-primary underline">{t("suggestThis")}</Link>
+          </p>
+          <p>
+            <Link to="/contact" search={{ business: b.name, listing: b.slug }} className="text-primary underline">{t("isYourBusiness")}</Link>
+            <span className="text-muted-foreground"> {t("isYourBusinessBody")}</span>
+          </p>
+        </div>
       </main>
     </div>
   );
