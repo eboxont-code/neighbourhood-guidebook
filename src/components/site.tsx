@@ -111,9 +111,9 @@ export function NotFoundView() {
 
 export const pageMeta = (title: string, description: string) => ({
   meta: [
-    { title: `${title} — ${SITE_NAME}` },
+    { title: `${title} · ${SITE_NAME}` },
     { name: "description", content: description },
-    { property: "og:title", content: `${title} — ${SITE_NAME}` },
+    { property: "og:title", content: `${title} · ${SITE_NAME}` },
     { property: "og:description", content: description },
   ],
 });
