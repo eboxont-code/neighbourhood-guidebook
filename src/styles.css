@@ -178,3 +178,7 @@
   &:focus { outline: 2px solid var(--ring); outline-offset: 1px; }
 }
 @utility venue-panel-overlap { margin-top: -1.25rem; }
+@utility owner-note {
+  padding: 0.875rem 1rem; border-radius: var(--radius); background: var(--muted);
+  border-left: 3px solid var(--border);
+}

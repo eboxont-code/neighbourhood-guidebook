@@ -2,8 +2,9 @@ import { createFileRoute, Link, notFound, redirect } from "@tanstack/react-route
 import { NotFoundView, pageMeta } from "@/components/site";
 import { Cover } from "@/components/cover";
 import type { ReactNode } from "react";
-import { directionsLink, slugRedirects, showWebsite, socialLinks, websiteButton, getArea, getBusiness, getCategory, telLink, websiteStatusSentence } from "@/data/directory";
+import { directionsLink, slugRedirects, showWebsite, socialLinks, websiteButton, getArea, getBusiness, getCategory, telLink, websiteStatusSentence, type Business } from "@/data/directory";
 import { useI18n } from "@/lib/i18n";
+import { businessJsonLd } from "@/lib/seo";
 
 export const Route = createFileRoute("/s/$slug")({
   loader: ({ params }) => {
@@ -14,10 +15,13 @@ export const Route = createFileRoute("/s/$slug")({
     return { business };
   },
   head: ({ loaderData }) => {
-    if (!loaderData) return { meta: [{ title: "Not found" }] };
+    if (!loaderData) return { meta: [{ title: "Not found" }, { name: "robots", content: "noindex" }] };
     const b = loaderData.business;
     const area = getArea(b.area)?.name ?? "";
-    return pageMeta(b.name, `${b.name}, ${getCategory(b.category)?.name} in ${area}. Listing.`);
+    const cat = getCategory(b.category)?.name.replace(/s$/, "").toLowerCase() ?? "business";
+    const bits = [b.phone ? `phone ${b.phone}` : "", b.hours?.length ? "opening hours" : "", "website check"].filter(Boolean).join(", ");
+    const head = pageMeta(`${b.name}, ${area}`, `${b.name} is a ${cat} in ${area}, Kathmandu. See the ${bits}, and where each detail came from.`, `/s/${b.slug}`, { type: "business.business", ...(b.cover ? { image: b.cover.url } : {}) });
+    return { ...head, scripts: [{ type: "application/ld+json", children: JSON.stringify(businessJsonLd(b)) }] };
   },
   notFoundComponent: NotFoundView,
   component: ShopPage,
@@ -108,17 +112,28 @@ function ShopPage() {
           {b.description && <Row label={t("note")}>{b.description}</Row>}
         </dl>
 
-        <div className="mt-6 space-y-3 text-sm">
-          <p>
-            <span className="text-muted-foreground">{t("spotMistake")} </span>
-            <Link to="/suggest-correction" search={{ listing: b.slug }} className="text-primary underline">{t("suggestThis")}</Link>
-          </p>
-          <p>
-            <Link to="/contact" search={{ business: b.name, listing: b.slug }} className="text-primary underline">{t("isYourBusiness")}</Link>
-            <span className="text-muted-foreground"> {t("isYourBusinessBody")}</span>
-          </p>
-        </div>
+        <OwnerPanel b={b} />
+
+        <p className="mt-5 text-sm">
+          <span className="text-muted-foreground">{t("spotMistake")} </span>
+          <Link to="/suggest-correction" search={{ listing: b.slug }} className="text-primary underline">{t("suggestThis")}</Link>
+        </p>
       </main>
     </div>
+  );
+}
+
+function OwnerPanel({ b }: { b: Business }) {
+  const { t } = useI18n();
+  return (
+    <aside aria-labelledby="owner-note" className="owner-note mt-8">
+      <p className="section-label mb-1">{t("ownerKicker")}</p>
+      <h2 id="owner-note" className="font-serif text-lg font-semibold">{t("ownerTitle")}</h2>
+      <p className="mt-1 text-sm leading-relaxed">{t(`owner_${b.websiteStatus}`)}</p>
+      <div className="mt-2 flex flex-col text-sm sm:flex-row sm:gap-5">
+        <Link to="/contact" search={{ business: b.name, listing: b.slug }} className="inline-flex min-h-11 items-center text-primary underline">{t("ownerContact")}</Link>
+        <Link to="/for-businesses" className="inline-flex min-h-11 items-center text-primary underline">{t("ownerMore")}</Link>
+      </div>
+    </aside>
   );
 }
