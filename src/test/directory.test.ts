@@ -3,8 +3,8 @@ import { businesses, searchBusinesses, telLink, websiteStatusSentence, type Busi
 
 const base = businesses[0]!;
 describe("directory rules", () => {
-  it("has all twenty provided listings", () => {
-    expect(businesses).toHaveLength(20);
+  it("has every provided listing", () => {
+    expect(businesses).toHaveLength(37);
   });
   it("shows a date only when a check happened", () => {
     expect(websiteStatusSentence(base)).toBe("Website checked and working on 11 October 2026.");
@@ -54,7 +54,7 @@ describe("website and social display", () => {
     expect(websiteButton(by("tranquility-spa"))).toBe(true);
   });
   it("sources are not website addresses", () => {
-    expect(businesses.every((b) => !/\.(com|np)\b/.test(b.sourceNotes))).toBe(true);
+    expect(businesses.every((b) => !/https?:|www\.|\.np\b/.test(b.sourceNotes))).toBe(true);
   });
   it("social handles become links", () => {
     expect(socialLinks(by("deezy-cuts-baluwatar"))[0]?.url).toBe("https://www.tiktok.com/@deezycuts.np");

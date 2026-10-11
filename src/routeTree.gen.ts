@@ -17,6 +17,8 @@ import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as SuggestCorrectionRouteImport } from './routes/suggest-correction'
 import { Route as WebsiteHelpRouteImport } from './routes/website-help'
+import { Route as CityIndexRouteImport } from './routes/$city.index'
+import { Route as CitySectionRouteImport } from './routes/$city.$section'
 import { Route as AAreaSlugRouteImport } from './routes/a.$areaSlug'
 import { Route as CCategorySlugRouteImport } from './routes/c.$categorySlug'
 import { Route as SSlugRouteImport } from './routes/s.$slug'
@@ -61,6 +63,16 @@ const WebsiteHelpRoute = WebsiteHelpRouteImport.update({
   path: '/website-help',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CityIndexRoute = CityIndexRouteImport.update({
+  id: '/$city/',
+  path: '/$city/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CitySectionRoute = CitySectionRouteImport.update({
+  id: '/$city/$section',
+  path: '/$city/$section',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AAreaSlugRoute = AAreaSlugRouteImport.update({
   id: '/a/$areaSlug',
   path: '/a/$areaSlug',
@@ -86,9 +98,11 @@ export interface FileRoutesByFullPath {
   '/search': typeof SearchRoute
   '/suggest-correction': typeof SuggestCorrectionRoute
   '/website-help': typeof WebsiteHelpRoute
+  '/$city/$section': typeof CitySectionRoute
   '/a/$areaSlug': typeof AAreaSlugRoute
   '/c/$categorySlug': typeof CCategorySlugRoute
   '/s/$slug': typeof SSlugRoute
+  '/$city/': typeof CityIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -99,9 +113,11 @@ export interface FileRoutesByTo {
   '/search': typeof SearchRoute
   '/suggest-correction': typeof SuggestCorrectionRoute
   '/website-help': typeof WebsiteHelpRoute
+  '/$city/$section': typeof CitySectionRoute
   '/a/$areaSlug': typeof AAreaSlugRoute
   '/c/$categorySlug': typeof CCategorySlugRoute
   '/s/$slug': typeof SSlugRoute
+  '/$city': typeof CityIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -113,9 +129,11 @@ export interface FileRoutesById {
   '/search': typeof SearchRoute
   '/suggest-correction': typeof SuggestCorrectionRoute
   '/website-help': typeof WebsiteHelpRoute
+  '/$city/$section': typeof CitySectionRoute
   '/a/$areaSlug': typeof AAreaSlugRoute
   '/c/$categorySlug': typeof CCategorySlugRoute
   '/s/$slug': typeof SSlugRoute
+  '/$city/': typeof CityIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -128,9 +146,11 @@ export interface FileRouteTypes {
     | '/search'
     | '/suggest-correction'
     | '/website-help'
+    | '/$city/$section'
     | '/a/$areaSlug'
     | '/c/$categorySlug'
     | '/s/$slug'
+    | '/$city/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -141,9 +161,11 @@ export interface FileRouteTypes {
     | '/search'
     | '/suggest-correction'
     | '/website-help'
+    | '/$city/$section'
     | '/a/$areaSlug'
     | '/c/$categorySlug'
     | '/s/$slug'
+    | '/$city'
   id:
     | '__root__'
     | '/'
@@ -154,9 +176,11 @@ export interface FileRouteTypes {
     | '/search'
     | '/suggest-correction'
     | '/website-help'
+    | '/$city/$section'
     | '/a/$areaSlug'
     | '/c/$categorySlug'
     | '/s/$slug'
+    | '/$city/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -168,9 +192,11 @@ export interface RootRouteChildren {
   SearchRoute: typeof SearchRoute
   SuggestCorrectionRoute: typeof SuggestCorrectionRoute
   WebsiteHelpRoute: typeof WebsiteHelpRoute
+  CitySectionRoute: typeof CitySectionRoute
   AAreaSlugRoute: typeof AAreaSlugRoute
   CCategorySlugRoute: typeof CCategorySlugRoute
   SSlugRoute: typeof SSlugRoute
+  CityIndexRoute: typeof CityIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -231,6 +257,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WebsiteHelpRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/$city/': {
+      id: '/$city/'
+      path: '/$city'
+      fullPath: '/$city/'
+      preLoaderRoute: typeof CityIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/$city/$section': {
+      id: '/$city/$section'
+      path: '/$city/$section'
+      fullPath: '/$city/$section'
+      preLoaderRoute: typeof CitySectionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/a/$areaSlug': {
       id: '/a/$areaSlug'
       path: '/a/$areaSlug'
@@ -264,9 +304,11 @@ const rootRouteChildren: RootRouteChildren = {
   SearchRoute: SearchRoute,
   SuggestCorrectionRoute: SuggestCorrectionRoute,
   WebsiteHelpRoute: WebsiteHelpRoute,
+  CitySectionRoute: CitySectionRoute,
   AAreaSlugRoute: AAreaSlugRoute,
   CCategorySlugRoute: CCategorySlugRoute,
   SSlugRoute: SSlugRoute,
+  CityIndexRoute: CityIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

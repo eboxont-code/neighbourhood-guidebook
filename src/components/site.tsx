@@ -8,7 +8,7 @@ export function Header() {
   const { lang, setLang, t } = useI18n();
   return (
     <header className="border-b border-border">
-      <div className="mx-auto flex max-w-2xl items-center justify-between px-4 py-3">
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
         <Link to="/" className="font-serif text-xl font-semibold">{SITE_NAME}</Link>
         <div className="flex items-center gap-1 text-sm">
         <Link to="/for-businesses" className="inline-flex min-h-11 items-center rounded-md px-2 text-muted-foreground hover:text-foreground" activeProps={{ className: "text-foreground font-semibold" }}>{t("navBusinesses")}</Link>
@@ -32,7 +32,7 @@ export function Footer() {
   ] as const;
   return (
     <footer className="mt-12 border-t border-border">
-      <div className="mx-auto max-w-2xl px-4 py-6 text-sm">
+      <div className="mx-auto max-w-6xl px-4 py-6 text-sm">
         <nav className="grid grid-cols-2 gap-x-4 gap-y-1 sm:flex sm:flex-wrap sm:gap-x-2">
           {links.map(([to, label]) => (
             <Link key={to} to={to} className="-mx-2 inline-flex min-h-11 items-center rounded-md px-2 text-muted-foreground hover:bg-muted hover:text-foreground sm:mx-0">{label}</Link>
@@ -74,8 +74,8 @@ export function HoursLine({ b }: { b: Business }) {
   );
 }
 
-export function Page({ children }: { children: ReactNode }) {
-  return <main className="mx-auto max-w-2xl px-4 py-6">{children}</main>;
+export function Page({ children, wide = false }: { children: ReactNode; wide?: boolean }) {
+  return <main className={`mx-auto px-4 py-6 ${wide ? "max-w-6xl" : "max-w-2xl"}`}>{children}</main>;
 }
 
 
@@ -112,7 +112,7 @@ export function BusinessCard({ b }: { b: Business }) {
   const web = websiteShortLabel(b);
   return (
     <li>
-      <Link to="/s/$slug" params={{ slug: b.slug }} className="flex gap-3 py-4 hover:bg-muted/60">
+      <Link to="/s/$slug" params={{ slug: b.slug }} className="card-link flex gap-3 py-4 hover:bg-muted/60">
         <Monogram name={b.name} />
         <div className="min-w-0 flex-1 space-y-0.5">
           <p className="font-serif text-lg leading-tight font-semibold">{b.name}</p>
@@ -127,7 +127,7 @@ export function BusinessCard({ b }: { b: Business }) {
 }
 
 export function CardList({ items }: { items: Business[] }) {
-  return <ul className="divide-y divide-border border-y border-border">{items.map((b) => <BusinessCard key={b.id} b={b} />)}</ul>;
+  return <ul className="card-list">{items.map((b) => <BusinessCard key={b.id} b={b} />)}</ul>;
 }
 
 export function TextPage({ title, body }: { title: string; body: string }) {
