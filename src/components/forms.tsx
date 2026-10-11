@@ -22,7 +22,7 @@ export const correctionSchema = z.object({
 
 type Status = "idle" | "sending" | "done" | "error";
 
-function Field({ id, label, required, hint, error, children }: { id: string; label: string; required?: boolean; hint?: string; error?: string; children: ReactNode }) {
+function Field({ id, label, required, hint, error, children }: { id: string; label: string; required?: boolean; hint?: string | undefined; error?: string | undefined; children: ReactNode }) {
   const { t } = useI18n();
   return (
     <div>
@@ -58,7 +58,7 @@ function errorsFrom(issues: z.ZodIssue[], t: (k: Key) => string) {
 export function ContactForm({ business, listing }: { business: string; listing: string }) {
   const { t } = useI18n();
   const [v, setV] = useState({ name: "", business_name: business, phone: "", message: "" });
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [errors, setErrors] = useState<{ [k: string]: string | undefined }>({});
   const [status, setStatus] = useState<Status>("idle");
   if (status === "done") return <Done text={t("thanksContact")} />;
 
@@ -74,16 +74,16 @@ export function ContactForm({ business, listing }: { business: string; listing: 
 
   return (
     <form onSubmit={submit} noValidate className="space-y-5">
-      <Field id="name" label={t("fName")} required error={errors.name}>
+      <Field id="name" label={t("fName")} required error={errors["name"]}>
         <input id="name" className="field" autoComplete="name" maxLength={100} value={v.name} onChange={(e) => setV({ ...v, name: e.target.value })} />
       </Field>
-      <Field id="business" label={t("fBusiness")} hint={t("fBusinessHint")} error={errors.business_name}>
+      <Field id="business" label={t("fBusiness")} hint={t("fBusinessHint")} error={errors["business_name"]}>
         <input id="business" className="field" maxLength={150} value={v.business_name} onChange={(e) => setV({ ...v, business_name: e.target.value })} />
       </Field>
-      <Field id="phone" label={t("fPhone")} hint={t("fPhoneHint")} error={errors.phone}>
+      <Field id="phone" label={t("fPhone")} hint={t("fPhoneHint")} error={errors["phone"]}>
         <input id="phone" className="field" type="tel" inputMode="tel" autoComplete="tel" maxLength={30} value={v.phone} onChange={(e) => setV({ ...v, phone: e.target.value })} />
       </Field>
-      <Field id="message" label={t("fMessage")} required error={errors.message}>
+      <Field id="message" label={t("fMessage")} required error={errors["message"]}>
         <textarea id="message" className="field min-h-36" maxLength={2000} value={v.message} onChange={(e) => setV({ ...v, message: e.target.value })} />
       </Field>
       {status === "error" && <p className="text-destructive" role="alert">{t("sendError")}</p>}
@@ -97,7 +97,7 @@ export function ContactForm({ business, listing }: { business: string; listing: 
 export function CorrectionForm({ listing }: { listing: string }) {
   const { t } = useI18n();
   const [v, setV] = useState({ listing_slug: businesses.some((b) => b.slug === listing) ? listing : "", whats_wrong: "", contact: "" });
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [errors, setErrors] = useState<{ [k: string]: string | undefined }>({});
   const [status, setStatus] = useState<Status>("idle");
   if (status === "done") return <Done text={t("thanksCorrection")} />;
 
@@ -114,16 +114,16 @@ export function CorrectionForm({ listing }: { listing: string }) {
   const sorted = [...businesses].sort((a, b) => a.name.localeCompare(b.name));
   return (
     <form onSubmit={submit} noValidate className="space-y-5">
-      <Field id="listing" label={t("fListing")} required error={errors.listing_slug}>
+      <Field id="listing" label={t("fListing")} required error={errors["listing_slug"]}>
         <select id="listing" className="field" value={v.listing_slug} onChange={(e) => setV({ ...v, listing_slug: e.target.value })}>
           <option value="">{t("fChoose")}</option>
           {sorted.map((b) => <option key={b.slug} value={b.slug}>{b.name}</option>)}
         </select>
       </Field>
-      <Field id="wrong" label={t("fWrong")} required hint={t("fWrongHint")} error={errors.whats_wrong}>
+      <Field id="wrong" label={t("fWrong")} required hint={t("fWrongHint")} error={errors["whats_wrong"]}>
         <textarea id="wrong" className="field min-h-36" maxLength={2000} value={v.whats_wrong} onChange={(e) => setV({ ...v, whats_wrong: e.target.value })} />
       </Field>
-      <Field id="contact" label={t("fContact")} hint={t("fContactHint")} error={errors.contact}>
+      <Field id="contact" label={t("fContact")} hint={t("fContactHint")} error={errors["contact"]}>
         <input id="contact" className="field" maxLength={150} value={v.contact} onChange={(e) => setV({ ...v, contact: e.target.value })} />
       </Field>
       {status === "error" && <p className="text-destructive" role="alert">{t("sendError")}</p>}
