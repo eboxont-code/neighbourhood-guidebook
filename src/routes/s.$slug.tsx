@@ -1,5 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { Monogram, NotFoundView, Page, pageMeta } from "@/components/site";
+import { NotFoundView, pageMeta } from "@/components/site";
+import { Cover } from "@/components/cover";
+import type { ReactNode } from "react";
 import { getArea, getBusiness, getCategory, telLink, websiteStatusSentence } from "@/data/directory";
 import { useI18n } from "@/lib/i18n";
 
@@ -19,7 +21,7 @@ export const Route = createFileRoute("/s/$slug")({
   component: ShopPage,
 });
 
-function Row({ label, children }: { label: string; children: React.ReactNode }) {
+function Row({ label, children }: { label: string; children: ReactNode }) {
   return (
     <div className="fact-row">
       <dt className="text-sm text-muted-foreground">{label}</dt>
@@ -37,7 +39,7 @@ function ShopPage() {
     <div>
       <Cover cover={b.cover} />
       <main className="mx-auto max-w-2xl px-4 pb-6">
-        <div className={`venue-panel ${b.cover ? "" : ""}`}>
+        <div className="venue-panel">
           <h1 className="font-serif text-3xl leading-tight font-semibold break-words">{b.name}</h1>
           <p className="mt-1 text-sm">
             <Link to="/c/$categorySlug" params={{ categorySlug: cat.slug }} className="text-primary underline">{lang === "ne" ? cat.nameNe : cat.name}</Link>
