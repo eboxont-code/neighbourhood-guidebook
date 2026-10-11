@@ -164,13 +164,13 @@
   background: var(--credit-bg); color: var(--primary-foreground); font-size: 0.75rem;
 }
 @utility venue-placeholder {
-  height: 140px; background: var(--muted); color: var(--muted-foreground); border-bottom: 1px solid var(--border);
+  height: 140px; background: var(--ph-bg, var(--muted)); color: var(--ph-ink, var(--muted-foreground)); border-bottom: 1px solid var(--border);
   @media (min-width: 768px) { height: 200px; }
 }
-@utility cat-salons { background: var(--cat-salons); color: var(--cat-salons-ink); }
-@utility cat-barbers { background: var(--cat-barbers); color: var(--cat-barbers-ink); }
-@utility cat-spas { background: var(--cat-spas); color: var(--cat-spas-ink); }
-@utility cat-clinics { background: var(--cat-clinics); color: var(--cat-clinics-ink); }
+@utility cat-salons { --ph-bg: var(--cat-salons); --ph-ink: var(--cat-salons-ink); }
+@utility cat-barbers { --ph-bg: var(--cat-barbers); --ph-ink: var(--cat-barbers-ink); }
+@utility cat-spas { --ph-bg: var(--cat-spas); --ph-ink: var(--cat-spas-ink); }
+@utility cat-clinics { --ph-bg: var(--cat-clinics); --ph-ink: var(--cat-clinics-ink); }
 @utility field {
   display: block; width: 100%; min-height: 3rem; padding: 0.625rem 0.75rem; border-radius: var(--radius);
   border: 1px solid var(--input); background: var(--card); font-size: 1rem; color: var(--foreground);
