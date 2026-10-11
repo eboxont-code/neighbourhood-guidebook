@@ -101,6 +101,13 @@ export const businesses: Business[] = [
   { ...base, id: "b18", slug: "bliss-sakil-durbar-marg", name: "Bliss by Sakil Kunwar", category: "salons", area: "durbar-marg",
     address: "Level 2, Durbar Marg, Kathmandu", phone: "01-5339065", websiteStatus: "not_checked",
     hours: [{ days: "Open", time: "10:00–20:00" }], sourceNotes: "Sakil Kunwar Facebook page" },
+  { ...base, id: "b19", slug: "annapurna-salon-durbar-marg", name: "Annapurna Salon & Spa", category: "salon-and-spa", area: "durbar-marg",
+    address: "3rd Floor, Annapurna Arcade, Durbar Marg, Kathmandu", phone: "9818981221", website: "https://annapurnasalon.com.np",
+    websiteStatus: "not_checked", hours: [{ days: "Sunday to Saturday", time: "9:30–19:00" }],
+    sourceNotes: "annapurnasalon.com.np/contact-us.html" },
+  { ...base, id: "b20", slug: "hair-n-shanti-kamaladi", name: "Hair n Shanti, Kamaladi", category: "salons", area: "durbar-marg",
+    address: "Siddhartha Complex, Kamaladi, Durbar Marg, Kathmandu", phone: "+97714428463", website: "https://hairnshantinepal.com",
+    websiteStatus: "not_checked", sourceNotes: "hairnshantinepal.com/contacts" },
 ];
 
 export const getCategory = (slug: string) => categories.find((c) => c.slug === slug);
