@@ -1,33 +1,41 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Page, SearchBox, pageMeta } from "@/components/site";
 import { Directory } from "@/components/directory";
-import { areasInUse, businesses, citiesInUse } from "@/data/directory";
+import { businesses, citiesInUse, placeName } from "@/data/directory";
 import { useI18n } from "@/lib/i18n";
 import { SITE_NAME } from "@/config";
 
 export const Route = createFileRoute("/")({
-  head: () => pageMeta("Local businesses in Kathmandu", `${SITE_NAME} is a local guide to salons, cafés, restaurants, gyms, hotels and more in Kathmandu, with phone numbers, opening hours and directions.`, "/"),
+  head: () => pageMeta("A local guide to everyday businesses in Nepal", `${SITE_NAME} is a local guide to everyday businesses in Nepal, starting with Kathmandu: phone numbers, opening hours, directions and whether each website works.`, "/"),
   component: Home,
 });
 
 function Home() {
   const { t, lang } = useI18n();
+  const cities = citiesInUse();
   return (
     <Page wide>
       <div className="max-w-2xl">
-        <h1 className="text-lg leading-snug font-normal">{t("tagline")}</h1>
-        <p className="mt-1 mb-4 text-sm text-muted-foreground">{t("coverageNote")}</p>
+        <h1 className="text-[17px] leading-snug font-normal sm:text-lg">{t("tagline")}</h1>
+        <p className="mt-1 mb-3 text-sm text-muted-foreground">
+          {t("coverageNote")}{" "}
+          {cities.length === 1 && (
+            <Link to="/$city" params={{ city: cities[0]!.slug }} className="inline-flex min-h-11 items-center text-primary underline sm:min-h-0">
+              {t("seeAreas").replace("{city}", placeName(cities[0], lang))}
+            </Link>
+          )}
+        </p>
         <SearchBox />
       </div>
-      <section className="mt-6">
-        <h2 className="section-label">{t("cities")}</h2>
-        <div className="flex flex-wrap gap-2">
-          {citiesInUse().map((c) => <Link key={c.slug} to="/$city" params={{ city: c.slug }} className="chip">{lang === "ne" ? c.nameNe : c.name}</Link>)}
-          {areasInUse("kathmandu").map((a) => <Link key={a.slug} to="/$city/$section" params={{ city: a.city, section: a.slug }} className="chip text-muted-foreground">{a.name}</Link>)}
-        </div>
-      </section>
-      <section className="mt-8">
-        <h2 className="section-label">{t("listings")}</h2>
+      {cities.length > 1 && (
+        <section className="mt-5">
+          <h2 className="section-label">{t("cities")}</h2>
+          <div className="chip-row">
+            {cities.map((c) => <Link key={c.slug} to="/$city" params={{ city: c.slug }} className="chip">{placeName(c, lang)}</Link>)}
+          </div>
+        </section>
+      )}
+      <section className="mt-5">
         <Directory items={businesses} />
       </section>
     </Page>

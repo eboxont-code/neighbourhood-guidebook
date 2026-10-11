@@ -3,7 +3,7 @@ import { NotFoundView, pageMeta } from "@/components/site";
 import { Cover } from "@/components/cover";
 import type { ReactNode } from "react";
 import { MapView } from "@/components/map-view";
-import { getCity, hasPin, whatsappLink, directionsLink, slugRedirects, showWebsite, socialLinks, websiteButton, getArea, getBusiness, getCategory, telLink, websiteStatusSentence, type Business } from "@/data/directory";
+import { dayLabel, placeName, timeLabel, getCity, hasPin, whatsappLink, directionsLink, slugRedirects, showWebsite, socialLinks, websiteButton, getArea, getBusiness, getCategory, telLink, websiteStatusSentence, type Business } from "@/data/directory";
 import { useI18n } from "@/lib/i18n";
 import { businessJsonLd } from "@/lib/seo";
 
@@ -51,7 +51,7 @@ function ShopPage() {
           <p className="mt-1 text-sm">
             <Link to="/$city/$section" params={{ city: area.city, section: cat.slug }} className="text-primary underline">{lang === "ne" ? cat.nameNe : cat.name}</Link>
             {" · "}
-            <Link to="/$city/$section" params={{ city: area.city, section: area.slug }} className="text-primary underline">{area.name}</Link>
+            <Link to="/$city/$section" params={{ city: area.city, section: area.slug }} className="text-primary underline">{placeName(area, lang)}</Link>
           </p>
           {b.phone && <p className="mt-1">{b.phone}</p>}
         </div>
@@ -76,9 +76,9 @@ function ShopPage() {
           <Row label={t("hours")}>
             {b.hours?.length ? (
               <>
-                {b.hours.map((h, i) => <div key={i}>{h.days && <span className="mr-2">{h.days}</span>}{h.time}</div>)}
+                {b.hours.map((h, i) => <div key={i}><span className="mr-2">{dayLabel(h.days, lang)}</span>{timeLabel(h.time, lang)}</div>)}
                 {b.hoursSource && (
-                  <p className={`mt-1 text-xs ${b.hoursVerified ? "text-muted-foreground" : "text-unverified"}`}>
+                  <p className={`mt-1 text-sm ${b.hoursVerified ? "text-muted-foreground" : "text-unverified"}`}>
                     {b.hoursVerified ? t("hoursFrom") : t("hoursUnverified")} {b.hoursSource}
                   </p>
                 )}

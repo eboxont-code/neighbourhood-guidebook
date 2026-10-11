@@ -81,7 +81,7 @@
   --secondary: oklch(0.92 0.018 80);
   --secondary-foreground: oklch(0.27 0.008 60);
   --muted: oklch(0.93 0.016 80);
-  --muted-foreground: oklch(0.48 0.012 60);
+  --muted-foreground: oklch(0.44 0.012 60);
   --accent: oklch(0.92 0.03 150);
   --accent-foreground: oklch(0.3 0.06 155);
   --destructive: oklch(0.55 0.2 27);
@@ -173,8 +173,12 @@
   background: var(--credit-bg); color: var(--primary-foreground); font-size: 0.75rem;
 }
 @utility venue-placeholder {
-  height: 140px; background: var(--ph-bg, var(--muted)); color: var(--ph-ink, var(--muted-foreground)); border-bottom: 1px solid var(--border);
-  @media (min-width: 768px) { height: 200px; }
+  height: 104px; color: var(--ph-ink, var(--muted-foreground)); border-bottom: 1px solid var(--border);
+  background:
+    radial-gradient(circle at calc(100% - 3.25rem) 2.75rem, color-mix(in oklab, var(--panel) 40%, transparent) 0 40px, transparent 41px),
+    repeating-linear-gradient(135deg, transparent 0 18px, color-mix(in oklab, var(--ph-ink, var(--foreground)) 6%, transparent) 18px 19px),
+    var(--ph-bg, var(--muted));
+  @media (min-width: 768px) { height: 136px; }
 }
 @utility cat-salons { --ph-bg: var(--cat-salons); --ph-ink: var(--cat-salons-ink); }
 @utility cat-barbers { --ph-bg: var(--cat-barbers); --ph-ink: var(--cat-barbers-ink); }
@@ -217,3 +221,20 @@
 .map-pop-name { font-family: var(--font-serif); font-weight: 600; font-size: 1rem; margin: 0; }
 .map-pop-meta { margin: 0.125rem 0 0.375rem; color: var(--muted-foreground); }
 .map-pop-link { display: inline-flex; min-height: 44px; align-items: center; color: var(--primary); text-decoration: underline; font-weight: 600; }
+.map-pin { display: flex; align-items: center; justify-content: center; background: transparent; border: 0; }
+.map-pin span { width: 24px; height: 24px; }
+.map-cluster { display: flex; align-items: center; justify-content: center; background: transparent; }
+.map-cluster span { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 999px; background: var(--primary); color: var(--primary-foreground); border: 3px solid var(--panel); font-weight: 600; font-size: 15px; box-shadow: 0 1px 6px oklch(0.27 0.008 60 / 0.4); }
+@utility map-loading {
+  position: absolute; inset: 0; z-index: 500; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.75rem;
+  background: repeating-linear-gradient(135deg, var(--muted) 0 14px, var(--card) 14px 28px); color: var(--muted-foreground); font-size: 0.95rem; pointer-events: none;
+}
+@utility map-loading-dot {
+  width: 14px; height: 14px; border-radius: 999px; background: var(--primary); animation: map-pulse 1.2s ease-in-out infinite;
+}
+@keyframes map-pulse { 0%, 100% { opacity: 0.35; transform: scale(0.85); } 50% { opacity: 1; transform: scale(1.15); } }
+@utility chip-row {
+  display: flex; gap: 0.5rem; overflow-x: auto; margin: 0 -1rem; padding: 0 1rem 0.25rem; scrollbar-width: none;
+  & > * { flex-shrink: 0; white-space: nowrap; }
+  @media (min-width: 1024px) { flex-wrap: wrap; overflow: visible; margin: 0; padding: 0; & > * { flex-shrink: 1; } }
+}

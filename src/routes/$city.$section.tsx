@@ -1,7 +1,7 @@
 import { createFileRoute, Link, notFound, redirect } from "@tanstack/react-router";
 import { NotFoundView, Page, pageMeta } from "@/components/site";
 import { Directory } from "@/components/directory";
-import { businessesIn, categoryRedirects, getArea, getCategory, getCity, resolveSection } from "@/data/directory";
+import { placeName, businessesIn, categoryRedirects, getArea, getCategory, getCity, resolveSection } from "@/data/directory";
 import { useI18n, type Key } from "@/lib/i18n";
 
 export const Route = createFileRoute("/$city/$section")({
@@ -47,7 +47,7 @@ function SectionPage() {
       <Page wide>
         <div className="mb-6 max-w-2xl">
           {crumb}
-          <h1 className="mt-1 font-serif text-3xl font-semibold">{a.name}</h1>
+          <h1 className="mt-1 font-serif text-3xl font-semibold">{placeName(a, lang)}</h1>
           <p className="mt-3 leading-relaxed">{t(`intro_${a.slug.replace(/-/g, "_")}` as Key)}</p>
         </div>
         <Directory key={a.slug} items={items} filterArea={false} />
