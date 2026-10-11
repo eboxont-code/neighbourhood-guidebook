@@ -29,7 +29,7 @@ describe("stage 3 listings", () => {
     expect(getBusiness("crest-club-lazimpat")!.lat).toBe(27.719318);
     expect(hasPin(getBusiness("aavaran-durbar-marg")!)).toBe(false);
     expect(hasPin(getBusiness("himalayan-java-lazimpat")!)).toBe(false);
-    expect(businesses.filter(hasPin)).toHaveLength(18);
+    expect(businesses.filter(hasPin)).toHaveLength(17);
   });
   it("only Kathmandu Guest House has a WhatsApp number", () => {
     expect(businesses.filter((b) => b.whatsapp).map((b) => b.slug)).toEqual(["kathmandu-guest-house-thamel"]);

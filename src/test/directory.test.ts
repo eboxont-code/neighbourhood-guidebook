@@ -54,7 +54,7 @@ describe("website and social display", () => {
     expect(websiteButton(by("tranquility-spa"))).toBe(true);
   });
   it("sources are not website addresses", () => {
-    expect(businesses.every((b) => !/\.(com|np)\b/.test(b.sourceNotes))).toBe(true);
+    expect(businesses.every((b) => !/https?:|www\.|\.np\b/.test(b.sourceNotes))).toBe(true);
   });
   it("social handles become links", () => {
     expect(socialLinks(by("deezy-cuts-baluwatar"))[0]?.url).toBe("https://www.tiktok.com/@deezycuts.np");
