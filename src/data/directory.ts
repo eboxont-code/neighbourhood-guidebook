@@ -27,6 +27,7 @@ export interface Business {
   verification: Verification;
   lastChecked?: string; // ISO date, only when a check happened
   demo: boolean;
+  cover?: { url: string; credit: string }; // only photos the business published
 }
 
 export const categories: Category[] = [
@@ -52,7 +53,7 @@ const CHECKED = "2026-10-11";
 const base = { services: [], verification: "source_checked" as Verification, demo: false };
 
 export const businesses: Business[] = [
-  { ...base, id: "b1", slug: "aavaran-durbar-marg", name: "Aavaran Skin & Hair Clinic", category: "clinics", area: "durbar-marg",
+  { ...base, id: "b1", slug: "aavaran-durbar-marg", cover: { url: "https://www.aavaranskin.com/uploaded_images/seo/aavaran-skin-clinic-225940.JPG", credit: "aavaranskin.com" }, name: "Aavaran Skin & Hair Clinic", category: "clinics", area: "durbar-marg",
     phone: "9802323990", website: "https://www.aavaranskin.com", websiteStatus: "working", lastChecked: CHECKED, sourceNotes: "aavaranskin.com" },
   { ...base, id: "b2", slug: "the-new-barber-durbar-marg", name: "The New Barber, Durbar Marg branch", category: "barbers", area: "durbar-marg",
     phone: "01-5367872", websiteStatus: "failed", lastChecked: CHECKED,
@@ -64,7 +65,7 @@ export const businesses: Business[] = [
     address: "3rd Floor, Durbar Mall, Durbar Marg, Kathmandu", phone: "9851088880", websiteStatus: "not_checked", sourceNotes: "Instagram toniandguynepal" },
   { ...base, id: "b5", slug: "munney-durbar-marg", name: "Munney Salon, Durbar Marg", category: "salons", area: "durbar-marg",
     phone: "9819412614", websiteStatus: "not_checked", hours: [{ days: "Open", time: "10:00–20:00" }], sourceNotes: "Instagram munney_salon" },
-  { ...base, id: "b6", slug: "tranquility-spa", name: "Tranquility Spa", category: "spas", area: "kathmandu",
+  { ...base, id: "b6", slug: "tranquility-spa", cover: { url: "https://www.tranquilityspa.com.np/uploads/images/galleries/03534099-dc1e-46d4-b007-0a62f39a0cf9.jpg", credit: "tranquilityspa.com.np" }, name: "Tranquility Spa", category: "spas", area: "kathmandu",
     phone: "9802021285", website: "https://www.tranquilityspa.com.np", websiteStatus: "working", lastChecked: CHECKED,
     description: "Nepal’s largest spa chain, recognised by the Nepal Tourism Board.", sourceNotes: "tranquilityspa.com.np" },
   { ...base, id: "b7", slug: "plush-kamaladi", name: "Plush Unisex Salon", category: "salons", area: "kamaladi",
@@ -84,7 +85,7 @@ export const businesses: Business[] = [
     address: "Hitipokhari, Durbar Marg, Kathmandu", phone: "01-4542030", websiteStatus: "not_checked", sourceNotes: "Instagram lavishsalon.np" },
   { ...base, id: "b12", slug: "nuad-thai-lazimpat", name: "Nuad Thai Spa, Panipokhari", category: "spas", area: "lazimpat",
     address: "Panipokhari, Lazimpat, Kathmandu", phone: "01-4002808", websiteStatus: "not_checked", sourceNotes: "Instagram nuadthaispa.nepal" },
-  { ...base, id: "b13", slug: "kathmandu-spa-thamel", name: "Kathmandu Spa", category: "spas", area: "thamel",
+  { ...base, id: "b13", slug: "kathmandu-spa-thamel", cover: { url: "https://www.kathmanduspa.com.np/wp-content/uploads/2019/12/Massage-therapy-e1575457181795.jpg", credit: "kathmanduspa.com.np" }, name: "Kathmandu Spa", category: "spas", area: "thamel",
     address: "Bhagawati Marg, Thamel, Kathmandu", phone: "01-4522661", website: "https://kathmanduspa.com.np", websiteStatus: "not_checked",
     sourceNotes: "Facebook Kathmandu Spa Pvt. Ltd." },
   { ...base, id: "b14", slug: "kaya-healing-thamel", name: "Kaya Healing Spa", category: "spas", area: "thamel",
