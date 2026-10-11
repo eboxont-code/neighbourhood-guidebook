@@ -70,7 +70,7 @@ const dict = {
     fbQ5: "I already have a website, but it's broken or out of date.", fbA5: "That's common. We can look at what you have and either fix it or suggest starting fresh, whichever makes more sense for you.",
     fbCtaTitle: "Tell us about your business", fbCtaBody: "A few lines is enough. We'll reply and take it from there. There's no obligation.",
     fbCta: "Ask for a quote",
-    aboutBody: "This is a plain list of local businesses in Kathmandu: name, type, area, phone, hours and website, with a note on whether each website was checked. It's meant to sit beside your map app, not replace it. Each listing shows where its details came from. The directory is run by Boxont, who also build simple websites for local businesses.",
+    aboutBody: "This is a plain list of local businesses in Kathmandu: name, type, area, phone, hours and website, with a note on whether each website was checked. It's meant to sit beside your map app, not replace it. Each listing shows where its details came from. The directory is run by {site}, who also build simple websites for local businesses.",
     privacyBody: "There are no accounts here. Your language choice is kept in your own browser. If you send the contact or correction form, we store what you write so we can reply, and we don't share it. We also keep a short-lived, anonymised record of form use to stop spam. Links to calls, websites and maps take you to those services, which have their own policies.",
   },
   ne: {
@@ -139,7 +139,7 @@ const dict = {
     fbQ5: "मेरो वेबसाइट छ, तर बिग्रेको वा पुरानो छ।", fbA5: "यस्तो धेरैलाई हुन्छ। हामी भएको साइट हेरेर कि त मिलाउँछौं, कि नयाँ बनाउन सुझाव दिन्छौं, जुन तपाईंलाई ठीक लाग्छ।",
     fbCtaTitle: "आफ्नो व्यवसायबारे बताउनुहोस्", fbCtaBody: "केही लाइन लेखे पुग्छ। हामी जवाफ दिन्छौं। कुनै बाध्यता छैन।",
     fbCta: "मूल्य सोध्नुहोस्",
-    aboutBody: "यो काठमाडौंका स्थानीय व्यवसायको साधारण सूची हो: नाम, प्रकार, क्षेत्र, फोन, समय र वेबसाइट, र वेबसाइट जाँचिएको छ कि छैन भन्ने टिप्पणी। यो तपाईंको नक्सा एपको साथमा प्रयोग गर्न हो, त्यसको सट्टा होइन। हरेक सूचीमा विवरण कहाँबाट आयो देखाइन्छ। यो निर्देशिका Boxont ले चलाउँछ, जसले स्थानीय व्यवसायका लागि साधारण वेबसाइट पनि बनाउँछ।",
+    aboutBody: "यो काठमाडौंका स्थानीय व्यवसायको साधारण सूची हो: नाम, प्रकार, क्षेत्र, फोन, समय र वेबसाइट, र वेबसाइट जाँचिएको छ कि छैन भन्ने टिप्पणी। यो तपाईंको नक्सा एपको साथमा प्रयोग गर्न हो, त्यसको सट्टा होइन। हरेक सूचीमा विवरण कहाँबाट आयो देखाइन्छ। यो निर्देशिका {site} ले चलाउँछ, जसले स्थानीय व्यवसायका लागि साधारण वेबसाइट पनि बनाउँछ।",
     privacyBody: "यहाँ कुनै खाता छैन। तपाईंको भाषा छनोट तपाईंकै ब्राउजरमा राखिन्छ। सम्पर्क वा सुधार फारम पठाउनुभयो भने, जवाफ दिन हामी तपाईंले लेखेको कुरा राख्छौं, र कसैलाई दिँदैनौं। स्प्याम रोक्न फारम प्रयोगको छोटो अवधिको, नाम नखुल्ने रेकर्ड पनि राख्छौं। फोन, वेबसाइट र नक्साका लिङ्कले ती सेवामा लैजान्छन्, जसका आफ्नै नीति छन्।",
   },
 } as const;
