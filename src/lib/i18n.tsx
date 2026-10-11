@@ -6,7 +6,7 @@ const KEY = "dir-lang";
 const dict = {
   en: {
     tagline: "Local shops and services in Kathmandu — phone, hours, and whether their website was checked.",
-    searchPlaceholder: "Search name, category, area, service", search: "Search",
+    searchPlaceholder: "Search name, area, or service", search: "Search",
     categories: "Categories", areas: "Areas", listings: "Listings", sample: "Sample listing. Not a real business.",
     call: "Call", website: "Visit website", whatsapp: "WhatsApp", directions: "Get directions",
     hours: "Hours", noHours: "Hours not recorded.", services: "Services", about: "About this record",
@@ -19,7 +19,7 @@ const dict = {
   },
   ne: {
     tagline: "काठमाडौंका स्थानीय पसल र सेवा — फोन, समय, र वेबसाइट जाँच भएको छ कि छैन।",
-    searchPlaceholder: "नाम, प्रकार, क्षेत्र, सेवा खोज्नुहोस्", search: "खोज्नुहोस्",
+    searchPlaceholder: "नाम, क्षेत्र वा सेवा खोज्नुहोस्", search: "खोज्नुहोस्",
     categories: "प्रकारहरू", areas: "क्षेत्रहरू", listings: "सूची", sample: "नमुना सूची। वास्तविक व्यवसाय होइन।",
     call: "फोन गर्नुहोस्", website: "वेबसाइट हेर्नुहोस्", whatsapp: "ह्वाट्सएप", directions: "बाटो हेर्नुहोस्",
     hours: "खुल्ने समय", noHours: "समय रेकर्ड गरिएको छैन।", services: "सेवाहरू", about: "यस रेकर्डबारे",

@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { SITE_NAME } from "@/config";
 import { useI18n } from "@/lib/i18n";
 import { getArea, getCategory, websiteStatusSentence, type Business } from "@/data/directory";
@@ -50,13 +50,22 @@ export function Monogram({ name, size = "md" }: { name: string; size?: "md" | "l
   return <div aria-hidden className={`monogram ${size === "lg" ? "h-16 w-16 text-3xl" : "h-12 w-12 text-xl"}`}>{name.charAt(0)}</div>;
 }
 
-export function SearchBox({ initial = "" }: { initial?: string }) {
+export function SearchBox({ initial = "", autoFocus = false }: { initial?: string; autoFocus?: boolean }) {
   const { t } = useI18n();
   const [q, setQ] = useState(initial);
   const navigate = useNavigate();
+  const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  useEffect(() => () => clearTimeout(timer.current), []);
+  const go = (value: string, replace: boolean) => navigate({ to: "/search", search: { q: value }, replace });
   return (
-    <form role="search" className="flex gap-2" onSubmit={(e) => { e.preventDefault(); navigate({ to: "/search", search: { q } }); }}>
-      <input value={q} onChange={(e) => setQ(e.target.value)} name="q" aria-label={t("search")} placeholder={t("searchPlaceholder")}
+    <form role="search" className="flex gap-2" onSubmit={(e) => { e.preventDefault(); clearTimeout(timer.current); go(q, false); }}>
+      <input value={q} autoFocus={autoFocus} name="q" type="search" aria-label={t("search")} placeholder={t("searchPlaceholder")}
+        onChange={(e) => {
+          const v = e.target.value;
+          setQ(v);
+          clearTimeout(timer.current);
+          timer.current = setTimeout(() => go(v, true), 300);
+        }}
         className="h-12 min-w-0 flex-1 rounded-md border border-input bg-card px-3 text-base outline-none focus:ring-2 focus:ring-ring" />
       <button type="submit" className="action-btn action-primary px-4">{t("search")}</button>
     </form>

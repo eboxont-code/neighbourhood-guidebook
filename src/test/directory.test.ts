@@ -21,3 +21,10 @@ describe("directory rules", () => {
     expect(businesses.find((b) => b.slug === "deezy-cuts-baluwatar")?.address).toBeUndefined();
   });
 });
+
+describe("search fields", () => {
+  it("matches by area and by category", () => {
+    expect(searchBusinesses("baluwatar").map((b) => b.slug)).toEqual(["deezy-cuts-baluwatar"]);
+    expect(searchBusinesses("barbers").map((b) => b.slug).sort()).toEqual(["deezy-cuts-baluwatar", "the-new-barber-durbar-marg"]);
+  });
+});

@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { CardList, Page, SearchBox, pageMeta } from "@/components/site";
-import { searchBusinesses } from "@/data/directory";
+import { businesses, searchBusinesses } from "@/data/directory";
 import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/search")({
@@ -15,9 +15,9 @@ function SearchPage() {
   const results = searchBusinesses(q);
   return (
     <Page>
-      <SearchBox key={q} initial={q} />
+      <SearchBox initial={q} autoFocus />
       <div className="mt-6">
-        {!q.trim() ? <p className="text-muted-foreground">{t("enterQuery")}</p>
+        {!q.trim() ? <CardList items={businesses} />
           : results.length === 0 ? (
             <div className="rounded-md border border-dashed border-border p-6 text-center">
               <p className="font-semibold">{t("noResults")} “{q}”.</p>
