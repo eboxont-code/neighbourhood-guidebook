@@ -293,7 +293,7 @@ export function intlDigits(p: string): string {
 }
 export const telLink = (p: string) => `tel:+${intlDigits(p)}`;
 
-export const directionsLink = (b: Business) => b.directions ?? (b.address ? mapsLink(b.address) : undefined);
+export const directionsLink = (b: Business) => b.directions ?? (b.address ? mapsLink(`${b.name}, ${b.address}`) : undefined);
 
 const SOCIAL_BASE: Record<string, (h: string) => string> = {
   Instagram: (h) => `https://www.instagram.com/${h}/`,
