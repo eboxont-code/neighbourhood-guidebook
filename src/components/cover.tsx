@@ -12,11 +12,11 @@ export function Cover({ cover }: { cover?: { url: string; credit: string } | und
   }, []);
   const show = cover && !failed;
   return (
-    <figure>
+    <figure className="relative">
       <div className="venue-cover">
         {show && <img ref={img} src={cover.url} alt="" onError={() => setFailed(true)} className="h-full w-full object-cover" />}
       </div>
-      {show && <figcaption className="mx-auto max-w-2xl px-4 pt-1 text-right text-xs text-muted-foreground">{t("photo")}: {cover.credit}</figcaption>}
+      {show && <figcaption className="cover-credit">{t("photo")}: {cover.credit}</figcaption>}
     </figure>
   );
 }

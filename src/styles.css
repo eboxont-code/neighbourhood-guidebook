@@ -148,3 +148,7 @@
 @utility fact-row {
   display: grid; grid-template-columns: 7rem 1fr; gap: 0.75rem; padding: 0.75rem 0;
 }
+@utility cover-credit {
+  position: absolute; top: 0.5rem; right: 0.5rem; padding: 0.125rem 0.5rem; border-radius: 999px;
+  background: oklch(0.27 0.008 60 / 0.6); color: var(--primary-foreground); font-size: 0.75rem;
+}
