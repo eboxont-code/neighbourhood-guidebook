@@ -40,3 +40,22 @@ describe("hours provenance", () => {
     expect(businesses.find((b) => b.slug === "lavish-durbar-marg")?.hours).toBeUndefined();
   });
 });
+
+import { showWebsite, socialLinks, websiteButton } from "@/data/directory";
+describe("website and social display", () => {
+  const by = (s: string) => businesses.find((b) => b.slug === s)!;
+  it("hides a listed website whose status is not checked", () => {
+    expect(showWebsite(by("munney-durbar-marg"))).toBe(false);
+    expect(showWebsite(by("aavaran-durbar-marg"))).toBe(true);
+  });
+  it("only a working website gets the button", () => {
+    expect(websiteButton(by("the-new-barber-durbar-marg"))).toBe(false);
+    expect(websiteButton(by("tranquility-spa"))).toBe(true);
+  });
+  it("sources are not website addresses", () => {
+    expect(businesses.every((b) => !/\.(com|np)\b/.test(b.sourceNotes))).toBe(true);
+  });
+  it("social handles become links", () => {
+    expect(socialLinks(by("deezy-cuts-baluwatar"))[0]?.url).toBe("https://www.tiktok.com/@deezycuts.np");
+  });
+});

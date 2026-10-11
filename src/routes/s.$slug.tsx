@@ -2,7 +2,7 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { NotFoundView, pageMeta } from "@/components/site";
 import { Cover } from "@/components/cover";
 import type { ReactNode } from "react";
-import { directionsLink, getArea, getBusiness, getCategory, telLink, websiteStatusSentence } from "@/data/directory";
+import { directionsLink, showWebsite, socialLinks, websiteButton, getArea, getBusiness, getCategory, telLink, websiteStatusSentence } from "@/data/directory";
 import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/s/$slug")({
@@ -49,10 +49,10 @@ function ShopPage() {
           {b.phone && <p className="mt-1">{b.phone}</p>}
         </div>
 
-        {(b.phone || b.website) && (
+        {(b.phone || websiteButton(b)) && (
           <div className="mt-4 flex gap-2">
             {b.phone && <a href={telLink(b.phone)} className="action-btn action-primary flex-1">{t("call")}</a>}
-            {b.website && <a href={b.website} target="_blank" rel="noopener noreferrer" className="action-btn action-secondary flex-1">{t("website")}</a>}
+            {websiteButton(b) && <a href={b.website} target="_blank" rel="noopener noreferrer" className="action-btn action-secondary flex-1">{t("website")}</a>}
           </div>
         )}
 
@@ -70,7 +70,12 @@ function ShopPage() {
             ) : <span className="text-muted-foreground">{t("noHours")}</span>}
           </Row>
           <Row label={t("websiteStatus")}>
-            {websiteStatusSentence(b, lang)}
+            {showWebsite(b) && (
+              <a href={b.website} target="_blank" rel="noopener noreferrer" className="block break-all text-primary underline">
+                {b.website!.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "")}
+              </a>
+            )}
+            <span className={showWebsite(b) ? "text-sm text-muted-foreground" : ""}>{websiteStatusSentence(b, lang)}</span>
           </Row>
           {b.otherPhones?.length ? <Row label={t("otherPhones")}>{b.otherPhones.map((p) => <div key={p}>{p}</div>)}</Row> : null}
           {b.address && <Row label={t("address")}>{b.address}</Row>}
@@ -79,7 +84,15 @@ function ShopPage() {
               <a href={directionsLink(b)} target="_blank" rel="noopener noreferrer" className="text-primary underline">{t("openMaps")}</a>
             </Row>
           )}
-          {b.social?.length ? <Row label={t("social")}>{b.social.map((x) => <div key={x}>{x}</div>)}</Row> : null}
+          {socialLinks(b).length > 0 && (
+            <Row label={t("social")}>
+              {socialLinks(b).map((x) => (
+                <a key={x.url} href={x.url} target="_blank" rel="noopener noreferrer" className="block break-all text-primary underline">
+                  {x.platform} {x.handle}
+                </a>
+              ))}
+            </Row>
+          )}
           <Row label={t("source")}>{b.sourceNotes}</Row>
           {b.description && <Row label={t("note")}>{b.description}</Row>}
         </dl>
