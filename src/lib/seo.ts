@@ -1,5 +1,5 @@
 import { SITE_NAME, SITE_URL } from "@/config";
-import { getArea, intlDigits, parseDays, parseRange, websiteButton, type Business } from "@/data/directory";
+import { getArea, getCity, intlDigits, parseDays, parseRange, websiteButton, type Business } from "@/data/directory";
 
 /** Per-page head tags: title, description, Open Graph, Twitter card and canonical. */
 export function pageMeta(title: string, description: string, path?: string, opts: { image?: string; type?: string } = {}) {
@@ -26,6 +26,10 @@ const SCHEMA_TYPE: Record<string, string> = {
   barbers: "HairSalon",
   spas: "DaySpa",
   clinics: "MedicalClinic",
+  cafes: "CafeOrCoffeeShop",
+  restaurants: "Restaurant",
+  gyms: "ExerciseGym",
+  hotels: "Hotel",
 };
 const DAY_CODES = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
 
@@ -57,7 +61,7 @@ export function businessJsonLd(b: Business): Record<string, unknown> {
     ld["address"] = {
       "@type": "PostalAddress",
       ...(b.address ? { streetAddress: b.address } : {}),
-      ...(area ? { addressLocality: area.name, addressRegion: area.city } : {}),
+      ...(area ? { addressLocality: area.name, addressRegion: getCity(area.city)?.name ?? area.city } : {}),
       addressCountry: "NP",
     };
   }
@@ -66,5 +70,6 @@ export function businessJsonLd(b: Business): Record<string, unknown> {
   const oh = openingHoursSpec(b);
   if (oh) ld["openingHours"] = oh;
   if (b.cover) ld["image"] = b.cover.url;
+  if (typeof b.lat === "number" && typeof b.lng === "number") ld["geo"] = { "@type": "GeoCoordinates", latitude: b.lat, longitude: b.lng };
   return ld;
 }

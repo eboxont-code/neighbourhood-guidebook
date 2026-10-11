@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { CardList, Page, SearchBox, pageMeta } from "@/components/site";
+import { Page, SearchBox, pageMeta } from "@/components/site";
+import { Directory } from "@/components/directory";
 import { businesses, searchBusinesses } from "@/data/directory";
 import { useI18n } from "@/lib/i18n";
 
@@ -18,13 +19,13 @@ function SearchPage() {
   const { t } = useI18n();
   const results = searchBusinesses(q);
   return (
-    <Page>
-      <SearchBox initial={q} autoFocus />
+    <Page wide>
+      <div className="max-w-2xl"><SearchBox initial={q} autoFocus /></div>
       <div className="mt-6">
-        {!q.trim() ? <CardList items={businesses} />
+        {!q.trim() ? <Directory items={businesses} />
           : results.length === 0 ? (
             <p>{t("noResults")}</p>
-          ) : (<><h1 className="section-label">{t("resultsFor")} “{q}”</h1><CardList items={results} /></>)}
+          ) : (<><h1 className="section-label">{t("resultsFor")} “{q}”</h1><Directory key={q} items={results} /></>)}
       </div>
     </Page>
   );

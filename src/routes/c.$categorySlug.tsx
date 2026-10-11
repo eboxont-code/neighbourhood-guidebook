@@ -3,7 +3,7 @@ import { NotFoundView } from "@/components/site";
 import { categoryRedirects, getCategory } from "@/data/directory";
 
 // Old category address; categories now live under a city. Kathmandu is the only city with listings so far.
-export const LEGACY_CATEGORY_CITY = "kathmandu";
+const LEGACY_CATEGORY_CITY = "kathmandu";
 
 export const Route = createFileRoute("/c/$categorySlug")({
   loader: ({ params }) => {
