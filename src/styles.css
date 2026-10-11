@@ -51,6 +51,7 @@
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
+  --color-unverified: var(--unverified);
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);
@@ -90,6 +91,7 @@
   --panel: oklch(1 0 0);
   --cover: oklch(0.86 0.01 70);
   --shadow-panel: 0 8px 24px -12px oklch(0.27 0.008 60 / 0.25);
+  --unverified: oklch(0.5 0.12 60);
   --banner: oklch(0.93 0.05 85);
   --banner-foreground: oklch(0.38 0.06 70);
 }
