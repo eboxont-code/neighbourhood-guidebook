@@ -16,3 +16,5 @@
 - Open/closed status is computed only after mount in Asia/Kathmandu time, so the first HTML never mismatches.
 - Form spam is stopped by a hidden honeypot in the browser and a BEFORE INSERT database trigger that rate-limits by hashed IP and per-tab key; no captcha, so real people see no extra step.
 - Page head tags come from pageMeta in src/lib/seo.ts and listing JSON-LD from businessJsonLd, built only from recorded fields so nothing is invented.
+- URLs are /{city}, /{city}/{area-or-category} and /s/{listing}; area and category slugs must never collide, and /a/* and /c/* redirect permanently into the city scheme.
+- Leaflet is imported only by src/components/listing-map.tsx, loaded lazily after mount through MapView, so server rendering never touches it.
