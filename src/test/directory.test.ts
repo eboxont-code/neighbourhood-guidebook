@@ -3,8 +3,8 @@ import { businesses, searchBusinesses, telLink, websiteStatusSentence, type Busi
 
 const base = businesses[0]!;
 describe("directory rules", () => {
-  it("has all twenty provided listings", () => {
-    expect(businesses).toHaveLength(20);
+  it("has every provided listing", () => {
+    expect(businesses).toHaveLength(37);
   });
   it("shows a date only when a check happened", () => {
     expect(websiteStatusSentence(base)).toBe("Website checked and working on 11 October 2026.");

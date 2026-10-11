@@ -18,6 +18,10 @@ describe("App routing", () => {
   it("matches the new short category and area routes", () => {
     const router = createRouter({ routeTree, context: { queryClient: new QueryClient() } });
     expect(router.matchRoutes("/c/salons").at(-1)?.routeId).toBe("/c/$categorySlug");
+    expect(router.matchRoutes("/kathmandu").at(-1)?.routeId).toBe("/$city/");
+    expect(router.matchRoutes("/kathmandu/thamel").at(-1)?.routeId).toBe("/$city/$section");
+    expect(router.matchRoutes("/about").at(-1)?.routeId).toBe("/about");
+    expect(router.matchRoutes("/search").at(-1)?.routeId).toBe("/search");
     expect(router.matchRoutes("/a/kamaladi").at(-1)?.routeId).toBe("/a/$areaSlug");
     expect(router.matchRoutes("/s/plush-lazimpat").at(-1)?.routeId).toBe("/s/$slug");
     expect(router.matchRoutes("/for-businesses").at(-1)?.routeId).toBe("/for-businesses");
