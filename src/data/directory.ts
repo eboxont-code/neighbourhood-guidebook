@@ -8,7 +8,7 @@ export type Verification = "not_verified" | "source_checked" | "business_confirm
 
 export interface Category { slug: string; name: string; nameNe: string }
 export interface City { slug: string; name: string; nameNe: string }
-export interface Area { slug: string; name: string; city: string } // city slug
+export interface Area { slug: string; name: string; nameNe: string; city: string } // city slug
 
 export interface Business {
   id: string;
@@ -56,13 +56,13 @@ export const categories: Category[] = [
 ];
 
 export const areas: Area[] = [
-  { slug: "durbar-marg", name: "Durbar Marg", city: "kathmandu" },
-  { slug: "naxal", name: "Naxal", city: "kathmandu" },
-  { slug: "kamaladi", name: "Kamaladi", city: "kathmandu" },
-  { slug: "baluwatar", name: "Baluwatar", city: "kathmandu" },
-  { slug: "boudha", name: "Boudha", city: "kathmandu" },
-  { slug: "thamel", name: "Thamel", city: "kathmandu" },
-  { slug: "lazimpat", name: "Lazimpat", city: "kathmandu" },
+  { slug: "durbar-marg", name: "Durbar Marg", nameNe: "दरबारमार्ग", city: "kathmandu" },
+  { slug: "naxal", name: "Naxal", nameNe: "नक्साल", city: "kathmandu" },
+  { slug: "kamaladi", name: "Kamaladi", nameNe: "कमलादी", city: "kathmandu" },
+  { slug: "baluwatar", name: "Baluwatar", nameNe: "बालुवाटार", city: "kathmandu" },
+  { slug: "boudha", name: "Boudha", nameNe: "बौद्ध", city: "kathmandu" },
+  { slug: "thamel", name: "Thamel", nameNe: "ठमेल", city: "kathmandu" },
+  { slug: "lazimpat", name: "Lazimpat", nameNe: "लाजिम्पाट", city: "kathmandu" },
 ];
 
 const CHECKED = "2026-10-11";
@@ -376,3 +376,22 @@ export function hoursStatus(hours: Business["hours"], now: Date): HoursStatus {
   }
   return { kind: "closed", today: "" };
 }
+
+/** Area or city name in the interface language. Business names and addresses are never translated. */
+export const placeName = (p: { name: string; nameNe: string } | undefined, lang: "en" | "ne") => (p ? (lang === "ne" ? p.nameNe : p.name) : "");
+
+const DAYS_NE: Record<string, string> = {
+  "": "हरेक दिन", "every day": "हरेक दिन", daily: "हरेक दिन", "sunday to saturday": "आइतबारदेखि शनिबारसम्म",
+  sun: "आइत", mon: "सोम", tue: "मंगल", wed: "बुध", thu: "बिही", fri: "शुक्र", sat: "शनि",
+};
+/** Interface wording for a recorded days label ("Sun–Fri", "Every day"); unknown labels stay as written. */
+export function dayLabel(label: string, lang: "en" | "ne"): string {
+  const l = label.trim().toLowerCase();
+  if (lang === "en") return label.trim() === "" ? "Every day" : label;
+  if (DAYS_NE[l]) return DAYS_NE[l]!;
+  const m = l.match(/^([a-z]{3})[a-z]*\s*(?:[–-]|to)\s*([a-z]{3})[a-z]*$/);
+  if (m && DAYS_NE[m[1]!] && DAYS_NE[m[2]!]) return `${DAYS_NE[m[1]!]}–${DAYS_NE[m[2]!]}`;
+  return label;
+}
+/** "Closed" is the only time word the data uses; times themselves stay as written. */
+export const timeLabel = (time: string, lang: "en" | "ne") => (lang === "ne" && /^closed$/i.test(time.trim()) ? "बन्द" : time);
