@@ -21,7 +21,7 @@ export interface Business {
   website?: string;
   websiteStatus: WebsiteStatus;
   description?: string;
-  services: string[];
+  services: { name: string; price?: string }[];
   hours?: { days: string; time: string }[];
   sourceNotes: string;
   verification: Verification;
@@ -48,14 +48,14 @@ export const businesses: Business[] = [
     address: "Sample Marg 1, New Baneshwor, Kathmandu", phone: "+977 1 5550101", whatsapp: "9779800000001",
     website: "https://example.com", websiteStatus: "working",
     description: "A fictional salon used to show how a listing looks.",
-    services: ["Haircut", "Hair colouring", "Threading"],
+    services: [{ name: "Haircut" }, { name: "Hair colouring" }, { name: "Threading" }],
     hours: [{ days: "Sun–Fri", time: "9:00–19:00" }, { days: "Sat", time: "Closed" }],
     sourceNotes: "Invented for this prototype.", verification: "source_checked", lastChecked: "2026-09-20", demo: true,
   },
   {
     id: "b2", slug: "sample-sharp-barbers", name: "Sample Sharp Barbers", category: "barbers", area: "new-baneshwor",
     phone: "+977 1 5550102", websiteStatus: "owner_no_site",
-    services: ["Haircut", "Beard trim", "Shave"],
+    services: [{ name: "Haircut" }, { name: "Beard trim" }, { name: "Shave" }],
     hours: [{ days: "Daily", time: "8:00–20:00" }],
     sourceNotes: "Invented for this prototype.", verification: "business_confirmed", lastChecked: "2026-09-28", demo: true,
   },
@@ -64,13 +64,13 @@ export const businesses: Business[] = [
     address: "Sample Chowk 4, New Baneshwor, Kathmandu", phone: "+977 1 5550103",
     website: "https://example.org", websiteStatus: "failed",
     description: "A fictional pharmacy for the prototype.",
-    services: ["Prescriptions", "Blood pressure check"],
+    services: [{ name: "Prescriptions" }, { name: "Blood pressure check" }],
     sourceNotes: "Invented for this prototype.", verification: "not_verified", lastChecked: "2026-10-02", demo: true,
   },
   {
     id: "b4", slug: "placeholder-stitch-tailors", name: "Placeholder Stitch Tailors", category: "tailors", area: "koteshwor",
     whatsapp: "9779800000004", websiteStatus: "none_found",
-    services: ["Alterations", "Kurta stitching"],
+    services: [{ name: "Alterations" }, { name: "Kurta stitching" }],
     hours: [{ days: "Sun–Fri", time: "10:00–18:00" }],
     sourceNotes: "Invented for this prototype.", verification: "not_verified", demo: true,
   },
@@ -94,7 +94,7 @@ export function searchBusinesses(query: string): Business[] {
   return businesses.filter((b) => {
     const cat = getCategory(b.category);
     const area = getArea(b.area);
-    const hay = [b.name, cat?.name, cat?.nameNe, area?.name, ...b.services].join(" ").toLowerCase();
+    const hay = [b.name, cat?.name, cat?.nameNe, area?.name, ...b.services.map((x) => x.name)].join(" ").toLowerCase();
     return q.split(/\s+/).every((w) => hay.includes(w));
   });
 }
