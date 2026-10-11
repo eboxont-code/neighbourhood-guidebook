@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Leaf, Scissors, Stethoscope, Store } from "lucide-react";
+import { BedDouble, Coffee, Dumbbell, Leaf, Scissors, Stethoscope, Store, UtensilsCrossed } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 
 function RazorIcon({ className }: { className?: string }) {
@@ -14,6 +14,10 @@ function RazorIcon({ className }: { className?: string }) {
 
 const ICONS: Record<string, (p: { className?: string }) => React.ReactElement> = {
   salons: (p) => <Scissors {...p} aria-hidden />,
+  cafes: (p) => <Coffee {...p} aria-hidden />,
+  restaurants: (p) => <UtensilsCrossed {...p} aria-hidden />,
+  gyms: (p) => <Dumbbell {...p} aria-hidden />,
+  hotels: (p) => <BedDouble {...p} aria-hidden />,
   barbers: (p) => <RazorIcon {...p} />,
   spas: (p) => <Leaf {...p} aria-hidden />,
   clinics: (p) => <Stethoscope {...p} aria-hidden />,
@@ -33,7 +37,7 @@ export function Cover({ cover, name, category }: { cover?: { url: string; credit
     const Icon = ICONS[category] ?? ((p) => <Store {...p} aria-hidden />);
     return (
       <div className={`venue-placeholder cat-${category}`} aria-hidden>
-        <div className="mx-auto flex h-full max-w-2xl items-center justify-between px-6">
+        <div className="mx-auto flex h-full max-w-6xl items-center justify-between px-6">
           <span className="font-serif text-7xl leading-none font-semibold">{name.charAt(0)}</span>
           <Icon className="h-10 w-10 opacity-70" />
         </div>
