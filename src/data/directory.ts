@@ -43,6 +43,8 @@ export const areas: Area[] = [
   { slug: "kamaladi", name: "Kamaladi", city: "Kathmandu" },
   { slug: "baluwatar", name: "Baluwatar", city: "Kathmandu" },
   { slug: "boudha", name: "Boudha", city: "Kathmandu" },
+  { slug: "thamel", name: "Thamel", city: "Kathmandu" },
+  { slug: "lazimpat", name: "Lazimpat", city: "Kathmandu" },
   { slug: "kathmandu", name: "Kathmandu", city: "Kathmandu" },
 ];
 
@@ -52,7 +54,7 @@ const base = { services: [], verification: "source_checked" as Verification, dem
 export const businesses: Business[] = [
   { ...base, id: "b1", slug: "aavaran-durbar-marg", name: "Aavaran Skin & Hair Clinic", category: "clinics", area: "durbar-marg",
     phone: "9802323990", website: "https://www.aavaranskin.com", websiteStatus: "working", lastChecked: CHECKED, sourceNotes: "aavaranskin.com" },
-  { ...base, id: "b2", slug: "the-new-barber-durbar-marg", name: "The New Barber, Durbar Marg", category: "barbers", area: "durbar-marg",
+  { ...base, id: "b2", slug: "the-new-barber-durbar-marg", name: "The New Barber, Durbar Marg branch", category: "barbers", area: "durbar-marg",
     phone: "01-5367872", websiteStatus: "failed", lastChecked: CHECKED,
     hours: [{ days: "Open", time: "From 10:00, last booking 18:00" }], sourceNotes: "Instagram thenewbarber.nepal" },
   { ...base, id: "b3", slug: "femina-flaunt-naxal", name: "Femina Flaunt Studio Salon", category: "salons", area: "naxal",
@@ -78,6 +80,27 @@ export const businesses: Business[] = [
     address: "Hyatt Regency Kathmandu, Taragaon, Boudha, Kathmandu", phone: "01-5171234",
     website: "https://www.hyatt.com/hyatt-regency/en-US/kathm-hyatt-regency-kathmandu", websiteStatus: "not_checked",
     description: "Spa bookings go through the hotel.", sourceNotes: "Hyatt Regency Kathmandu official contact" },
+  { ...base, id: "b11", slug: "lavish-durbar-marg", name: "Lavish Salon & Academy", category: "salons", area: "durbar-marg",
+    address: "Hitipokhari, Durbar Marg, Kathmandu", phone: "01-4542030", websiteStatus: "not_checked", sourceNotes: "Instagram lavishsalon.np" },
+  { ...base, id: "b12", slug: "nuad-thai-lazimpat", name: "Nuad Thai Spa, Panipokhari", category: "spas", area: "lazimpat",
+    address: "Panipokhari, Lazimpat, Kathmandu", phone: "01-4002808", websiteStatus: "not_checked", sourceNotes: "Instagram nuadthaispa.nepal" },
+  { ...base, id: "b13", slug: "kathmandu-spa-thamel", name: "Kathmandu Spa", category: "spas", area: "thamel",
+    address: "Bhagawati Marg, Thamel, Kathmandu", phone: "01-4522661", website: "https://kathmanduspa.com.np", websiteStatus: "not_checked",
+    sourceNotes: "Facebook Kathmandu Spa Pvt. Ltd." },
+  { ...base, id: "b14", slug: "kaya-healing-thamel", name: "Kaya Healing Spa", category: "spas", area: "thamel",
+    address: "Hotel Northfield, Chaksibari Marg, Thamel, Kathmandu", phone: "9803038823", website: "https://www.kayaspa.com.np",
+    websiteStatus: "not_checked", sourceNotes: "Instagram kayaspa.thamel" },
+  { ...base, id: "b15", slug: "crest-club-lazimpat", name: "Crest Club and Spa", category: "spas", area: "lazimpat",
+    address: "Dusit Princess Kathmandu, Lazimpat, Kathmandu", phone: "9802352729", websiteStatus: "not_checked", sourceNotes: "Instagram crestclubandspa" },
+  { ...base, id: "b16", slug: "the-new-barber-thamel", name: "The New Barber, Thamel branch", category: "barbers", area: "thamel",
+    phone: "01-5908499", websiteStatus: "not_checked", hours: [{ days: "Open", time: "From 10:00, last booking 18:00" }],
+    description: "Same brand as the Durbar Marg shop, different branch.", sourceNotes: "Instagram thenewbarber.nepal" },
+  { ...base, id: "b17", slug: "the-new-barber-boudha", name: "The New Barber, Boudha branch", category: "barbers", area: "boudha",
+    phone: "01-4567713", websiteStatus: "not_checked", hours: [{ days: "Open", time: "From 10:00, last booking 18:00" }],
+    description: "Same brand as the Durbar Marg shop, different branch.", sourceNotes: "Instagram thenewbarber.nepal" },
+  { ...base, id: "b18", slug: "bliss-sakil-durbar-marg", name: "Bliss by Sakil Kunwar", category: "salons", area: "durbar-marg",
+    address: "Level 2, Durbar Marg, Kathmandu", phone: "01-5339065", websiteStatus: "not_checked",
+    hours: [{ days: "Open", time: "10:00–20:00" }], sourceNotes: "Sakil Kunwar Facebook page" },
 ];
 
 export const getCategory = (slug: string) => categories.find((c) => c.slug === slug);

@@ -3,8 +3,8 @@ import { businesses, searchBusinesses, telLink, websiteStatusSentence, type Busi
 
 const base = businesses[0]!;
 describe("directory rules", () => {
-  it("has exactly the ten provided listings", () => {
-    expect(businesses).toHaveLength(10);
+  it("has all eighteen provided listings", () => {
+    expect(businesses).toHaveLength(18);
   });
   it("shows a date only when a check happened", () => {
     expect(websiteStatusSentence(base)).toBe("Website checked and working on 11 October 2026.");
@@ -25,6 +25,6 @@ describe("directory rules", () => {
 describe("search fields", () => {
   it("matches by area and by category", () => {
     expect(searchBusinesses("baluwatar").map((b) => b.slug)).toEqual(["deezy-cuts-baluwatar"]);
-    expect(searchBusinesses("barbers").map((b) => b.slug).sort()).toEqual(["deezy-cuts-baluwatar", "the-new-barber-durbar-marg"]);
+    expect(searchBusinesses("barbers").map((b) => b.slug).sort()).toEqual(["deezy-cuts-baluwatar", "the-new-barber-boudha", "the-new-barber-durbar-marg", "the-new-barber-thamel"]);
   });
 });
