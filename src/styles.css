@@ -356,6 +356,6 @@
   &:focus-visible::after { outline: 3px solid var(--ring); outline-offset: -3px; }
 }
 @utility sticky-bar {
-  position: sticky; top: 3.5rem; z-index: 800; background: color-mix(in oklab, var(--background) 92%, transparent); backdrop-filter: blur(12px);
+  position: sticky; top: 3.75rem; z-index: 800; background: color-mix(in oklab, var(--background) 92%, transparent); backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
 }

@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { CategoryTiles, Page, SearchBox, pageMeta } from "@/components/site";
-import { Directory } from "@/components/directory";
-import { businesses, categoriesIn, citiesInUse, placeName } from "@/data/directory";
+import { CategoryTiles, Page, SearchBox, pageMeta, useNow } from "@/components/site";
+import { AreaTiles, BusinessBand, Carousel, SectionHead, SeeAll } from "@/components/blocks";
+import { areasInUse, businesses, businessesIn, categoriesIn, citiesInUse, placeName } from "@/data/directory";
+import { isOpen } from "@/lib/filters";
 import { useI18n } from "@/lib/i18n";
 import { SITE_NAME } from "@/config";
 
@@ -10,44 +11,59 @@ export const Route = createFileRoute("/")({
   component: Home,
 });
 
+/** Mixes categories so a row reads as a picked selection from across the city, not one type. */
+function spread<T extends { category: string }>(list: T[], max: number): T[] {
+  const byCat = new Map<string, T[]>();
+  for (const b of list) byCat.set(b.category, [...(byCat.get(b.category) ?? []), b]);
+  const out: T[] = [];
+  while (out.length < max && [...byCat.values()].some((v) => v.length)) for (const v of byCat.values()) { const x = v.shift(); if (x && out.length < max) out.push(x); }
+  return out;
+}
+
 function Home() {
   const { t, lang } = useI18n();
+  const now = useNow();
   const cities = citiesInUse();
-  const city = cities[0]?.slug ?? "kathmandu";
+  const city = cities[0]!;
+  const items = businessesIn(city.slug);
+  const open = now ? items.filter((b) => isOpen(b, now)) : [];
+  const useOpen = open.length >= 3;
+  const row = spread(useOpen ? open : items.filter((b) => b.hoursVerified && b.hours?.length), 10);
+  const cityName = placeName(city, lang);
   return (
     <>
       <section className="app-hero">
-        <div className="mx-auto max-w-6xl px-4 pt-4 pb-10 lg:pt-10 lg:pb-16">
+        <div className="mx-auto max-w-6xl px-4 pt-5 pb-8 lg:pt-12 lg:pb-14">
           <div className="max-w-2xl">
             <h1 className="text-[1.375rem] leading-tight font-semibold sm:text-[1.75rem] lg:text-[2.125rem]">{t("heroTitle")}</h1>
-            <p className="mt-1 mb-3 text-sm leading-snug text-[var(--hero-muted)] sm:text-base">{t("tagline")}</p>
+            <p className="mt-1 mb-4 text-sm leading-snug text-[var(--hero-muted)] sm:text-base">{t("coverageNote")}</p>
             <SearchBox />
-            <p className="mt-1.5 text-[13px] leading-snug text-[var(--hero-muted)] sm:text-sm">
-              {t("coverageNote")}{" "}
-              {cities.length === 1 && (
-                <Link to="/$city" params={{ city }} className="-my-3 inline-block py-3 font-semibold text-[var(--hero-foreground)] underline underline-offset-2">
-                  {t("seeAreas").replace("{city}", placeName(cities[0], lang))}
-                </Link>
-              )}
-            </p>
           </div>
         </div>
       </section>
       <Page wide>
-        <div className="-mt-7 rounded-2xl border border-border bg-card p-3 sm:p-4 shadow-[var(--shadow-lift)] sm:p-5 lg:-mt-9">
-          <CategoryTiles city={city} cats={categoriesIn(businesses)} />
-        </div>
-        {cities.length > 1 && (
-          <section className="mt-5">
-            <h2 className="section-label">{t("cities")}</h2>
-            <div className="chip-row">
-              {cities.map((c) => <Link key={c.slug} to="/$city" params={{ city: c.slug }} className="chip">{placeName(c, lang)}</Link>)}
-            </div>
+        <div className="space-y-10 lg:space-y-14">
+          <section>
+            <SectionHead title={t("exploreAreas")} sub={`${cityName} · ${businesses.length > 1 ? t("placesN").replace("{n}", String(items.length)) : ""}`}
+              action={<SeeAll to="/$city" params={{ city: city.slug }}>{t("seeAll")}</SeeAll>} />
+            <AreaTiles city={city.slug} items={items} list={areasInUse(city.slug)} />
           </section>
-        )}
-        <section className="mt-7">
-          <Directory items={businesses} typeOnDesktopOnly />
-        </section>
+
+          <section>
+            <SectionHead title={useOpen ? t("openNow") : t("confirmedTitle")} sub={useOpen ? t("openNowSub") : t("confirmedSub")} />
+            <Carousel items={row} label={useOpen ? t("openNow") : t("confirmedTitle")} />
+          </section>
+
+          <div className="rounded-2xl border border-border bg-card p-3 sm:p-4">
+            <CategoryTiles city={city.slug} cats={categoriesIn(items)} />
+          </div>
+
+          <BusinessBand />
+
+          <div className="text-center">
+            <Link to="/$city" params={{ city: city.slug }} className="action-btn action-secondary">{t("seeAllIn").replace("{city}", cityName)}</Link>
+          </div>
+        </div>
       </Page>
     </>
   );
