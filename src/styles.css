@@ -340,7 +340,7 @@
   @media (min-width: 1024px) { flex-wrap: wrap; overflow: visible; margin: 0; padding: 0; & > * { flex-shrink: 1; } }
 }
 @utility area-tile {
-  position: relative; display: flex; flex-direction: column; justify-content: flex-end; gap: 0.125rem; min-height: 5.5rem; padding: 0.875rem 1rem;
+  position: relative; display: flex; flex-direction: column; justify-content: flex-end; gap: 0.125rem; min-height: 4.25rem; padding: 0.75rem 0.875rem;
   border-radius: 1rem; border: 1px solid color-mix(in oklab, var(--ph-ink) 12%, transparent); overflow: hidden;
   background:
     repeating-linear-gradient(135deg, transparent 0 9px, color-mix(in oklab, var(--ph-ink) 6%, transparent) 9px 10px),
