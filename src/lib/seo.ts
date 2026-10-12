@@ -1,5 +1,5 @@
 import { SITE_NAME, SITE_URL } from "@/config";
-import { getArea, getCity, intlDigits, parseDays, parseRange, websiteButton, type Business } from "@/data/directory";
+import { getArea, getCategory, getCity, intlDigits, parseDays, parseRange, websiteButton, type Business } from "@/data/directory";
 
 /** Per-page head tags: title, description, Open Graph, Twitter card and canonical. */
 export function pageMeta(title: string, description: string, path?: string, opts: { image?: string; type?: string } = {}) {
@@ -72,4 +72,21 @@ export function businessJsonLd(b: Business): Record<string, unknown> {
   if (b.cover) ld["image"] = b.cover.url;
   if (typeof b.lat === "number" && typeof b.lng === "number") ld["geo"] = { "@type": "GeoCoordinates", latitude: b.lat, longitude: b.lng };
   return ld;
+}
+
+/** BreadcrumbList JSON-LD: Home > City > Area > Category > Listing, using the real URLs. */
+export function breadcrumbJsonLd(b: Business): Record<string, unknown> {
+  const area = getArea(b.area);
+  const city = area ? getCity(area.city) : undefined;
+  const cat = getCategory(b.category);
+  const items: [string, string][] = [["Home", "/"]];
+  if (city) items.push([city.name, `/${city.slug}`]);
+  if (city && area) items.push([area.name, `/${city.slug}/${area.slug}`]);
+  if (city && cat) items.push([cat.name, `/${city.slug}/${cat.slug}`]);
+  items.push([b.name, `/s/${b.slug}`]);
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map(([name, path], i) => ({ "@type": "ListItem", position: i + 1, name, item: `${SITE_URL}${path}` })),
+  };
 }

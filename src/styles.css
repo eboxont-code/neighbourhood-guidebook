@@ -315,15 +315,15 @@
   background: color-mix(in oklab, var(--card) 94%, transparent); backdrop-filter: blur(14px);
   border-top: 1px solid var(--border);
 }
-.map-pin span { display: block; width: 24px; height: 24px; border-radius: 999px 999px 999px 4px; transform: rotate(-45deg); background: var(--primary); border: 2.5px solid var(--panel); box-shadow: 0 3px 8px oklch(0.22 0.03 262 / 0.4); }
-.map-pin span::after { content: ""; position: absolute; inset: 5.5px; border-radius: 999px; background: var(--brand-accent); }
+.map-pin span { display: block; width: 30px; height: 22px; border-radius: 999px; background: var(--foreground); border: 2px solid var(--panel); box-shadow: 0 3px 10px oklch(0.2 0.03 262 / 0.35); }
+.map-pin span::after { content: ""; position: absolute; left: 50%; top: 50%; width: 7px; height: 7px; margin: -3.5px 0 0 -3.5px; border-radius: 999px; background: var(--panel); }
 .map-pin span { position: relative; }
 .map-pop-name { font-family: var(--font-sans); font-weight: 600; font-size: 1rem; margin: 0; }
 .map-pop-meta { margin: 0.125rem 0 0.375rem; color: var(--muted-foreground); }
 .map-pop-link { display: inline-flex; min-height: 44px; align-items: center; color: var(--primary); text-decoration: underline; font-weight: 700; }
 .map-pin { display: flex; align-items: center; justify-content: center; background: transparent; border: 0; }
 .map-cluster { display: flex; align-items: center; justify-content: center; background: transparent; }
-.map-cluster span { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 999px; background: var(--primary); color: var(--primary-foreground); border: 3px solid var(--panel); font-weight: 600; font-size: 14px; box-shadow: 0 0 0 5px color-mix(in oklab, var(--primary) 18%, transparent), 0 2px 6px oklch(0.24 0.025 262 / 0.25); }
+.map-cluster span { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 999px; background: var(--foreground); color: var(--panel); border: 3px solid var(--panel); font-weight: 600; font-size: 14px; box-shadow: 0 0 0 5px color-mix(in oklab, var(--primary) 18%, transparent), 0 2px 6px oklch(0.24 0.025 262 / 0.25); }
 .leaflet-popup-content-wrapper { border-radius: 1rem !important; box-shadow: var(--shadow-lift) !important; }
 @utility map-loading {
   position: absolute; inset: 0; z-index: 500; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.75rem;
@@ -358,4 +358,71 @@
 @utility sticky-bar {
   position: sticky; top: 3.75rem; z-index: 800; background: color-mix(in oklab, var(--background) 92%, transparent); backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
+}
+
+/* ---- Fresha-inspired layer: monochrome pills, image-first cards, alternating section bands ---- */
+@utility band { padding-block: 2rem; @media (min-width: 1024px) { padding-block: 2.75rem; } }
+@utility band-alt { background: var(--muted); }
+@utility venue-card {
+  position: relative; list-style: none;
+  transition: transform 160ms ease;
+  &:active { transform: scale(0.985); }
+  &:hover img { transform: scale(1.03); }
+}
+@utility venue-thumb {
+  position: relative; overflow: hidden; border-radius: 0.875rem; background:
+    radial-gradient(120% 90% at 0% 0%, color-mix(in oklab, var(--panel) 70%, transparent) 0, transparent 60%),
+    linear-gradient(150deg, var(--ph-bg, var(--muted)) 0%, color-mix(in oklab, var(--ph-bg, var(--muted)) 70%, var(--ph-ink, var(--foreground)) 14%) 100%);
+  display: flex; align-items: center; justify-content: center;
+  & img { transition: transform 300ms ease; }
+}
+@utility venue-mono {
+  position: relative; display: flex; align-items: center; justify-content: center; width: 3.25rem; height: 3.25rem; border-radius: 999px;
+  background: var(--panel); color: var(--ph-ink, var(--foreground)); font-size: 1.375rem; font-weight: 600; box-shadow: var(--shadow-card);
+}
+@utility venue-mono-icon {
+  position: absolute; right: -0.25rem; bottom: -0.25rem; display: flex; align-items: center; justify-content: center; width: 1.375rem; height: 1.375rem;
+  border-radius: 999px; background: var(--foreground); color: var(--panel); border: 2px solid var(--panel);
+}
+@utility venue-badge {
+  display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.2rem 0.55rem; border-radius: 999px; white-space: nowrap;
+  background: color-mix(in oklab, var(--panel) 94%, transparent); color: var(--foreground); font-size: 0.75rem; font-weight: 600; line-height: 1.4;
+  box-shadow: 0 1px 3px oklch(0.2 0.03 262 / 0.14);
+}
+@utility round-btn {
+  display: inline-flex; align-items: center; justify-content: center; width: 2.75rem; height: 2.75rem; border-radius: 999px; flex-shrink: 0;
+  background: color-mix(in oklab, var(--panel) 94%, transparent); color: var(--foreground); box-shadow: 0 1px 4px oklch(0.2 0.03 262 / 0.16);
+  backdrop-filter: blur(8px); transition: transform 140ms ease;
+  &:active { transform: scale(0.92); }
+}
+@utility pill-field {
+  display: flex; align-items: center; gap: 0.75rem; width: 100%; min-height: 3.25rem; padding: 0 1.125rem; border-radius: 999px;
+  background: var(--muted); color: var(--foreground); font-size: 0.9375rem; text-align: left;
+  border: 1px solid transparent; transition: border-color 160ms ease, background-color 160ms ease;
+  &:focus-within { border-color: var(--foreground); background: var(--card); }
+  & input, & select { min-width: 0; flex: 1; background: transparent; outline: none; min-height: 3rem; appearance: none; }
+}
+@utility action-dark { background: var(--foreground); color: var(--panel); &:hover { filter: brightness(1.25); } }
+@media (max-width: 1023.98px) {
+  .fullmap { position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 960; background: var(--background); }
+  .fullmap .map-frame { height: 100%; border-radius: 0; border: 0; }
+}
+}
+@utility sheet {
+  position: relative; margin-top: -1.5rem; border-radius: 1.25rem 1.25rem 0 0; background: var(--background);
+  @media (min-width: 1024px) { margin-top: -2.5rem; }
+}
+@utility day-row { display: flex; align-items: center; gap: 0.75rem; min-height: 2.5rem; font-size: 0.9375rem; }
+@utility toast {
+  position: fixed; left: 50%; bottom: calc(var(--bottom-nav-h) + env(safe-area-inset-bottom) + 1rem); z-index: 980; transform: translateX(-50%);
+  padding: 0.6rem 1rem; border-radius: 999px; background: var(--foreground); color: var(--panel); font-size: 0.875rem; font-weight: 600;
+  animation: rise-in 200ms ease both; box-shadow: var(--shadow-lift);
+}
+.fullmap > div { height: 100%; }
+.fullmap > div > p { position: absolute; top: calc(env(safe-area-inset-top) + 0.75rem); left: 0.75rem; right: 0.75rem; z-index: 600; margin: 0; padding: 0.5rem 0.875rem; border-radius: 999px; background: color-mix(in oklab, var(--panel) 94%, transparent); box-shadow: var(--shadow-card); font-size: 0.8125rem; color: var(--foreground); text-align: center; }
+.fullmap .leaflet-bottom.leaflet-right { bottom: calc(env(safe-area-inset-bottom) + 4.5rem); }
+@media (min-width: 1024px) {
+  .fullmap > div { height: auto; }
+  .fullmap > div > p { position: static; padding: 0; margin-top: 0.5rem; background: none; box-shadow: none; text-align: left; color: var(--muted-foreground); font-size: 0.875rem; }
+  .fullmap .leaflet-bottom.leaflet-right { bottom: 0; }
 }

@@ -4,6 +4,8 @@ import { ArrowRight, Phone } from "lucide-react";
 import { categories, getArea, getCategory, placeName, telLink, type Area, type Business } from "@/data/directory";
 import { useI18n } from "@/lib/i18n";
 import { HoursLine, Monogram } from "@/components/site";
+import { VenueRow } from "@/components/venue";
+import { distanceTo, formatDistance, useLocation } from "@/lib/geo";
 
 const TONES = categories.map((c) => c.slug);
 /** A stable tone per area, borrowed from the category palette so areas read as the same family. */
@@ -64,11 +66,7 @@ export function PlaceCard({ b }: { b: Business }) {
 }
 
 export function Carousel({ items, label }: { items: Business[]; label: string }) {
-  return (
-    <ul aria-label={label} className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pt-1 pb-3 [scrollbar-width:none] lg:mx-0 lg:px-0">
-      {items.map((b) => <PlaceCard key={b.id} b={b} />)}
-    </ul>
-  );
+  return <VenueRow items={items} label={label} />;
 }
 
 /** Dense list row: many fit on a phone screen. */
@@ -76,16 +74,18 @@ export function CompactRow({ b }: { b: Business }) {
   const { t, lang } = useI18n();
   const cat = getCategory(b.category);
   const area = getArea(b.area);
+  const { here } = useLocation();
+  const d = distanceTo(b, here);
   return (
     <li className="relative flex items-center gap-3 px-4 py-3 transition-colors hover:bg-muted/60">
       <Monogram name={b.name} category={b.category} size="sm" />
       <div className="min-w-0 flex-1">
         <Link to="/s/$slug" params={{ slug: b.slug }} className="stretched-row block truncate text-[15px] font-semibold">{b.name}</Link>
-        <p className="truncate text-[13px] text-muted-foreground">{lang === "ne" ? cat?.nameNe : cat?.name} · {placeName(area, lang)}</p>
-        <p className="mt-0.5 truncate text-[13px]"><HoursLine b={b} /></p>
+        <p className="text-[13px] text-muted-foreground">{lang === "ne" ? cat?.nameNe : cat?.name} · {placeName(area, lang)}{d !== null && <> · <span className="whitespace-nowrap">{formatDistance(d, lang)}</span></>}</p>
+        <p className="mt-0.5 text-[13px] leading-relaxed"><HoursLine b={b} /></p>
       </div>
       {b.phone && (
-        <a href={telLink(b.phone)} aria-label={`${t("call")} ${b.name} ${b.phone}`} className="press relative z-10 flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-border text-primary hover:bg-accent">
+        <a href={telLink(b.phone)} aria-label={`${t("call")} ${b.name} ${b.phone}`} className="press relative z-10 flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-foreground text-panel">
           <Phone aria-hidden className="h-4 w-4" />
         </a>
       )}

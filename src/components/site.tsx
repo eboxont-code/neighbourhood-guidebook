@@ -1,5 +1,5 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { Briefcase, Globe, Home, MapPin, Phone, Search, SearchX } from "lucide-react";
+import { Briefcase, Compass, Globe, Heart, Home, MapPin, Phone, Search, SearchX, type LucideIcon } from "lucide-react";
 import { CatIcon } from "@/components/cover";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { SITE_NAME } from "@/config";
@@ -35,7 +35,8 @@ function navItems(t: (k: Key) => string) {
   return [
     { key: "home", label: t("navHome"), icon: Home, link: { to: "/" as const } },
     { key: "search", label: t("navSearch"), icon: Search, link: { to: "/search" as const, search: { q: "" } } },
-    { key: "areas", label: t("navAreas"), icon: MapPin, link: { to: "/$city" as const, params: { city } } },
+    { key: "areas", label: t("navAreas"), icon: Compass, link: { to: "/$city" as const, params: { city } } },
+    { key: "saved", label: t("navSaved"), icon: Heart, link: { to: "/saved" as const } },
     { key: "biz", label: t("navBusinesses"), icon: Briefcase, link: { to: "/for-businesses" as const } },
   ];
 }
@@ -68,7 +69,7 @@ export function BottomNav() {
   if (path.startsWith("/s/")) return null;
   return (
     <nav aria-label={t("navMain")} className="bottom-nav lg:hidden">
-      <div className="mx-auto grid h-[3.75rem] max-w-md grid-cols-4">
+      <div className="mx-auto grid h-[3.75rem] max-w-md grid-cols-5">
         {navItems(t).map((n) => (
           <Link key={n.key} {...n.link} aria-label={n.label} activeOptions={{ exact: n.key === "home", includeSearch: false }} className="group flex min-h-11 flex-col items-center justify-center gap-0.5 text-[11px] font-medium text-muted-foreground transition-colors" activeProps={{ className: "!text-primary" }}>
             <span className="flex h-7 w-12 items-center justify-center rounded-full transition-colors group-aria-[current=page]:bg-accent"><n.icon className="h-[18px] w-[18px]" strokeWidth={1.75} aria-hidden /></span>
@@ -87,7 +88,7 @@ export function Footer() {
     ["/privacy", t("footPrivacy")], ["/contact", t("footContact")],
   ] as const;
   return (
-    <footer className="mt-16 border-t border-border bg-card">
+    <footer className="border-t border-border bg-card">
       <div className="mx-auto max-w-6xl px-4 py-8 text-sm">
         <Brand />
         <nav className="mt-4 grid grid-cols-2 gap-x-4 gap-y-1 sm:flex sm:flex-wrap sm:gap-x-2">
@@ -132,7 +133,7 @@ export function HoursLine({ b }: { b: Business }) {
 }
 
 export function Page({ children, wide = false }: { children: ReactNode; wide?: boolean }) {
-  return <main className={`page-enter mx-auto px-4 py-6 ${wide ? "max-w-6xl" : "max-w-2xl"}`}>{children}</main>;
+  return <main className={`page-enter mx-auto px-5 py-6 ${wide ? "max-w-6xl" : "max-w-2xl"}`}>{children}</main>;
 }
 
 
@@ -222,12 +223,14 @@ export function CategoryTiles({ city, cats }: { city: string; cats: { slug: stri
   );
 }
 
-export function EmptyState({ title, body }: { title: string; body?: string }) {
+/** One empty-state pattern everywhere: outline icon, one-line heading, short hint, one button. */
+export function EmptyState({ title, body, icon: Icon = SearchX, action, as: H = "p" }: { title: string; body?: string; icon?: LucideIcon; action?: ReactNode; as?: "p" | "h1" | "h2" }) {
   return (
-    <div className="rounded-2xl bg-card px-6 py-10 text-center shadow-[var(--shadow-card)]">
-      <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-accent text-accent-foreground"><SearchX aria-hidden className="h-8 w-8" /></span>
-      <p className="mt-4 text-lg font-semibold">{title}</p>
-      {body && <p className="mt-1 text-muted-foreground">{body}</p>}
+    <div className="flex flex-col items-center px-6 py-12 text-center">
+      <span className="flex h-16 w-16 items-center justify-center rounded-full bg-muted text-foreground"><Icon aria-hidden className="h-7 w-7" strokeWidth={1.6} /></span>
+      <H className="mt-4 text-lg font-semibold tracking-tight">{title}</H>
+      {body && <p className="mt-1 max-w-sm text-[15px] leading-snug text-muted-foreground">{body}</p>}
+      {action && <div className="mt-5">{action}</div>}
     </div>
   );
 }
@@ -240,12 +243,7 @@ export function NotFoundView() {
   const { t } = useI18n();
   return (
     <Page>
-      <div className="rounded-2xl bg-card px-6 py-12 text-center shadow-[var(--shadow-card)]">
-        <span className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-brand-accent text-brand-accent-foreground"><MapPin aria-hidden className="h-10 w-10" /></span>
-        <h1 className="mt-5 text-2xl font-semibold">{t("notFound")}</h1>
-        <p className="mt-3 text-muted-foreground">{t("notFoundBody")}</p>
-        <Link to="/" className="action-btn action-primary mt-6 inline-flex px-6">{t("goHome")}</Link>
-      </div>
+      <EmptyState as="h1" icon={MapPin} title={t("notFound")} body={`${t("notFoundBody")} ${t("notFoundHint")}`} action={<Link to="/" className="action-btn action-primary px-6">{t("goHome")}</Link>} />
     </Page>
   );
 }

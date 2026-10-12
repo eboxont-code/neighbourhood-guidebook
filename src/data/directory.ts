@@ -37,6 +37,7 @@ export interface Business {
   sourceUrl?: string;
   lat?: number; // only from a reliable source; never guessed
   lng?: number;
+  addedOn?: string; // ISO date the listing entered the directory
 }
 
 /** Adding a city is a data-only change: add it here, then its areas and listings. */
@@ -219,6 +220,9 @@ export const businesses: Business[] = [
     address: "Boudha, Kathmandu", phone: "01-4588188", otherPhones: [{ number: "01-4567746" }], website: "https://hoteltibetintl.com", websiteStatus: "working", lastChecked: CHECKED,
     lat: 27.7202958, lng: 85.3595040, sourceNotes: "Their own website (contact page)", sourceUrl: "https://hoteltibetintl.com/inquiry/" },
 ];
+
+// When each listing actually entered the data: the first twenty at launch, the rest a day later.
+for (const b of businesses) b.addedOn ??= Number(b.id.slice(1)) <= 20 ? "2026-10-11" : "2026-10-12";
 
 export const getCategory = (slug: string) => categories.find((c) => c.slug === slug);
 export const getArea = (slug: string) => areas.find((a) => a.slug === slug);

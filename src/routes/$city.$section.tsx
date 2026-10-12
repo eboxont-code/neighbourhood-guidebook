@@ -1,8 +1,11 @@
 import { createFileRoute, Link, notFound, redirect, useNavigate } from "@tanstack/react-router";
 import { List, Map as MapIcon } from "lucide-react";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { Maximize2 } from "lucide-react";
 import { NotFoundView, Page, pageMeta, useNow } from "@/components/site";
-import { MapView } from "@/components/map-view";
+import { FullMap, MapView } from "@/components/map-view";
+import { EmptyState } from "@/components/site";
+import { requestLocation, sortByDistance, useLocation } from "@/lib/geo";
 import { CatIcon } from "@/components/cover";
 import { Carousel, RowList, SectionHead } from "@/components/blocks";
 import { placeName, areasIn, businessesIn, categoryRedirects, categoriesIn, getArea, getCategory, getCity, resolveSection } from "@/data/directory";
@@ -54,16 +57,24 @@ function AreaPage() {
   const items = businessesIn(city.slug).filter((b) => b.area === a.slug);
   const areaName = placeName(a, lang);
   const catName = (c: { name: string; nameNe: string }) => (lang === "ne" ? c.nameNe : c.name);
+  const { here } = useLocation();
+  const [full, setFull] = useState(false);
+  const close = useCallback(() => setFull(false), []);
+  const order = (list: typeof items) => (here ? sortByDistance(list, here) : list);
   return (
     <>
       <section className="app-hero">
-        <div className="mx-auto grid max-w-6xl gap-5 px-4 pt-2 pb-6 lg:grid-cols-[minmax(0,1fr)_26rem] lg:items-end lg:pt-6 lg:pb-10">
+        <div className="mx-auto grid max-w-6xl gap-5 px-5 pt-2 pb-6 lg:grid-cols-[minmax(0,1fr)_26rem] lg:items-end lg:pt-6 lg:pb-10">
           <div>
             <Crumb city={city.slug} name={lang === "ne" ? city.nameNe : city.name} />
             <h1 className="text-2xl font-semibold sm:text-3xl">{areaName}</h1>
             <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-[var(--hero-muted)]">{t(`intro_${a.slug.replace(/-/g, "_")}` as Key)}</p>
           </div>
-          <MapView items={items} className="h-44 lg:h-56" note={false} />
+          <div className="relative">
+            <MapView items={items} className="h-64 lg:h-72" />
+            <button type="button" onClick={() => setFull(true)} className="action-btn action-dark absolute top-3 right-3 z-[600] min-h-11 px-4 text-sm lg:hidden"><Maximize2 aria-hidden className="h-4 w-4" />{t("tapFullMap")}</button>
+          </div>
+          {full && <div className="lg:hidden"><FullMap items={items} onClose={close} closeLabel={t("closeMap")} /></div>}
         </div>
       </section>
       <Page wide>
@@ -74,7 +85,7 @@ function AreaPage() {
               <section key={c.slug}>
                 <SectionHead title={t("catInArea").replace("{cat}", catName(c)).replace("{area}", areaName)} sub={t(row.length === 1 ? "placesOne" : "placesN").replace("{n}", String(row.length))}
                   action={<Link to="/$city/$section" params={{ city: city.slug, section: c.slug }} search={{ area: a.slug }} className="-my-2 inline-flex min-h-11 shrink-0 items-center text-sm font-semibold text-primary hover:underline">{t("seeAll")} ›</Link>} />
-                <Carousel items={row} label={catName(c)} />
+                <Carousel items={order(row)} label={catName(c)} />
               </section>
             );
           })}
@@ -91,27 +102,33 @@ function CategoryPage() {
   const navigate = useNavigate({ from: Route.fullPath });
   const { t, lang } = useI18n();
   const now = useNow();
-  const [view, setView] = useState<"list" | "map">("list");
+  const loc = useLocation();
+  const view = f.view === "map" ? "map" : "list";
   const c = getCategory(sec.slug)!;
   const all = businessesIn(city.slug).filter((b) => b.category === c.slug);
-  const shown = applyCatFilters(all, f, now);
-  const set = (patch: { area?: string | undefined; open?: boolean | undefined; sort?: CatFilters["sort"] | undefined }) => navigate({ search: (prev: CatFilters) => { const n: Record<string, unknown> = { ...prev, ...patch }; Object.keys(n).forEach((k) => { if (!n[k]) delete n[k]; }); return n as CatFilters; }, replace: true });
+  const shown = applyCatFilters(all, f, now, loc.here);
+  useEffect(() => { if (f.sort === "near" && loc.state.status === "idle") requestLocation(); }, [f.sort]); // eslint-disable-line react-hooks/exhaustive-deps
+  const setView = (v: "list" | "map") => set({ view: v === "map" ? "map" : undefined });
+  const closeMap = useCallback(() => setView("list"), []); // eslint-disable-line react-hooks/exhaustive-deps
+  const cityName = lang === "ne" ? city.nameNe : city.name;
+  const set = (patch: { area?: string | undefined; open?: boolean | undefined; sort?: CatFilters["sort"] | undefined; view?: "map" | undefined }) => navigate({ search: (prev: CatFilters) => { const n: Record<string, unknown> = { ...prev, ...patch }; Object.keys(n).forEach((k) => { if (!n[k]) delete n[k]; }); return n as CatFilters; }, replace: true });
   const areaOpts = areasIn(all);
   const pill = (on: boolean) => `chip !min-h-11 !text-[13px] ${on ? "chip-on" : ""}`;
   return (
     <>
       <section className={`venue-placeholder cat-${c.slug} !h-auto`}>
-        <div className="mx-auto flex max-w-6xl items-end justify-between gap-4 px-4 pt-2 pb-5 lg:pt-6 lg:pb-8">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 pt-2 pb-6 lg:pt-8 lg:pb-10">
           <div className="min-w-0">
             <Crumb city={city.slug} name={lang === "ne" ? city.nameNe : city.name} light={false} />
             <h1 className="text-2xl font-semibold text-foreground sm:text-3xl">{lang === "ne" ? c.nameNe : c.name}</h1>
-            <p className="text-sm text-muted-foreground">{t(all.length === 1 ? "placesOne" : "placesN").replace("{n}", String(all.length))}</p>
+            <p className="mt-1 text-[15px] font-medium text-[var(--ph-ink)]">{t(all.length === 1 ? "catHeaderOne" : "catHeaderLine").replace("{n}", String(all.length)).replace("{city}", cityName)}</p>
+            <p className="mt-0.5 text-sm text-muted-foreground">{areasIn(all).map((a) => placeName(a, lang)).join(" · ")}</p>
           </div>
-          <span aria-hidden className="cat-tile-icon !h-12 !w-12 shrink-0"><CatIcon category={c.slug} className="h-6 w-6" /></span>
+          <span aria-hidden className="cat-tile-icon !h-16 !w-16 shrink-0 lg:!h-20 lg:!w-20"><CatIcon category={c.slug} className="h-7 w-7 lg:h-9 lg:w-9" /></span>
         </div>
       </section>
       <div className="sticky-bar">
-        <div className="mx-auto max-w-6xl px-4 py-2">
+        <div className="mx-auto max-w-6xl px-5 py-2">
           <div className="chip-row !flex-nowrap lg:!overflow-x-auto" role="group" aria-label={t("filterBy")}>
             {areaOpts.length > 1 && (
               <>
@@ -129,9 +146,10 @@ function CategoryPage() {
           <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
             <label className="flex items-center gap-2 text-sm text-muted-foreground">
               {t("sortLabel")}
-              <select value={f.sort ?? "name"} onChange={(e) => set({ sort: e.target.value === "open" ? "open" : undefined })} className="min-h-11 rounded-full border border-border bg-card px-3 text-sm text-foreground">
+              <select value={f.sort ?? "name"} onChange={(e) => set({ sort: e.target.value === "open" || e.target.value === "near" ? e.target.value : undefined })} className="min-h-11 rounded-full border border-border bg-card px-3 text-sm text-foreground">
                 <option value="name">{t("sortName")}</option>
                 <option value="open">{t("sortOpen")}</option>
+                <option value="near">{t("sortNear")}</option>
               </select>
             </label>
             <div className="seg w-28 shrink-0" role="group" aria-label={t("viewToggle")}>
@@ -146,12 +164,9 @@ function CategoryPage() {
           </div>
           <p className="mb-2 text-sm text-muted-foreground" aria-live="polite">{t("showing")} {shown.length} {t("ofTotal")} {all.length} {t("places")}</p>
           {shown.length === 0 ? (
-            <div className="rounded-2xl border border-border bg-card p-6 text-center">
-              <p className="font-medium">{t("noResults")}</p>
-              <button type="button" onClick={() => set({ area: undefined, open: undefined })} className="action-btn action-secondary mt-3 text-sm">{t("clearFilters")}</button>
-            </div>
+            <EmptyState title={t("noFilterTitle")} body={t("noFilterBody")} action={<button type="button" onClick={() => set({ area: undefined, open: undefined })} className="action-btn action-dark">{t("clearFilters")}</button>} />
           ) : (
-            <div key={view} className="page-enter">{view === "list" ? <RowList items={shown} /> : <MapView items={shown} />}</div>
+            <div key={view} className="page-enter">{view === "list" ? <RowList items={shown} /> : <FullMap items={shown} onClose={closeMap} closeLabel={t("showList")} />}</div>
           )}
         </div>
       </Page>

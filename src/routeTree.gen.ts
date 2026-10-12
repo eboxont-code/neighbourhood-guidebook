@@ -14,6 +14,7 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as ForBusinessesRouteImport } from './routes/for-businesses'
 import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as SavedRouteImport } from './routes/saved'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as SuggestCorrectionRouteImport } from './routes/suggest-correction'
 import { Route as WebsiteHelpRouteImport } from './routes/website-help'
@@ -46,6 +47,11 @@ const ForBusinessesRoute = ForBusinessesRouteImport.update({
 const PrivacyRoute = PrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SavedRoute = SavedRouteImport.update({
+  id: '/saved',
+  path: '/saved',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SearchRoute = SearchRouteImport.update({
@@ -95,6 +101,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/for-businesses': typeof ForBusinessesRoute
   '/privacy': typeof PrivacyRoute
+  '/saved': typeof SavedRoute
   '/search': typeof SearchRoute
   '/suggest-correction': typeof SuggestCorrectionRoute
   '/website-help': typeof WebsiteHelpRoute
@@ -110,6 +117,7 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/for-businesses': typeof ForBusinessesRoute
   '/privacy': typeof PrivacyRoute
+  '/saved': typeof SavedRoute
   '/search': typeof SearchRoute
   '/suggest-correction': typeof SuggestCorrectionRoute
   '/website-help': typeof WebsiteHelpRoute
@@ -126,6 +134,7 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/for-businesses': typeof ForBusinessesRoute
   '/privacy': typeof PrivacyRoute
+  '/saved': typeof SavedRoute
   '/search': typeof SearchRoute
   '/suggest-correction': typeof SuggestCorrectionRoute
   '/website-help': typeof WebsiteHelpRoute
@@ -143,6 +152,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/for-businesses'
     | '/privacy'
+    | '/saved'
     | '/search'
     | '/suggest-correction'
     | '/website-help'
@@ -158,6 +168,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/for-businesses'
     | '/privacy'
+    | '/saved'
     | '/search'
     | '/suggest-correction'
     | '/website-help'
@@ -173,6 +184,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/for-businesses'
     | '/privacy'
+    | '/saved'
     | '/search'
     | '/suggest-correction'
     | '/website-help'
@@ -189,6 +201,7 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   ForBusinessesRoute: typeof ForBusinessesRoute
   PrivacyRoute: typeof PrivacyRoute
+  SavedRoute: typeof SavedRoute
   SearchRoute: typeof SearchRoute
   SuggestCorrectionRoute: typeof SuggestCorrectionRoute
   WebsiteHelpRoute: typeof WebsiteHelpRoute
@@ -234,6 +247,13 @@ declare module '@tanstack/react-router' {
       path: '/privacy'
       fullPath: '/privacy'
       preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/saved': {
+      id: '/saved'
+      path: '/saved'
+      fullPath: '/saved'
+      preLoaderRoute: typeof SavedRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/search': {
@@ -301,6 +321,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   ForBusinessesRoute: ForBusinessesRoute,
   PrivacyRoute: PrivacyRoute,
+  SavedRoute: SavedRoute,
   SearchRoute: SearchRoute,
   SuggestCorrectionRoute: SuggestCorrectionRoute,
   WebsiteHelpRoute: WebsiteHelpRoute,
