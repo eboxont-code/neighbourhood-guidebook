@@ -146,11 +146,10 @@ function ShopPage() {
     } catch { /* cancelled */ }
   };
   const back = () => { if (window.history.length > 1) router.history.back(); else router.navigate({ to: "/$city/$section", params: { city: area.city, section: area.slug } }); };
-  const nearby = here && hasPin(b)
+  // By distance from this place where it has coordinates, otherwise other places in the same area.
+  const near = hasPin(b)
     ? sortByDistance(businesses.filter((x) => x.id !== b.id && hasPin(x)), { lat: b.lat!, lng: b.lng! }).slice(0, 10)
     : businesses.filter((x) => x.area === b.area && x.id !== b.id);
-  const nearbyByPin = hasPin(b) ? sortByDistance(businesses.filter((x) => x.id !== b.id), { lat: b.lat!, lng: b.lng! }).filter(hasPin).slice(0, 10) : nearby;
-  const near = hasPin(b) ? nearbyByPin : nearby;
   const goTab = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
 
   return (
