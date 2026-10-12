@@ -17,9 +17,9 @@ function ContactPage() {
   const { t } = useI18n();
   return (
     <Page>
-      <h1 className="font-serif text-3xl font-semibold">{t("contactTitle")}</h1>
-      <p className="mt-3 mb-6 leading-relaxed">{t("contactIntro")}</p>
-      <ContactForm key={`${business}|${listing}`} business={business} listing={listing} />
+      <h1 className="text-3xl font-extrabold sm:text-4xl">{t("contactTitle")}</h1>
+      <p className="mt-3 mb-6 leading-relaxed text-muted-foreground">{t("contactIntro")}</p>
+      <div className="form-card"><ContactForm key={`${business}|${listing}`} business={business} listing={listing} /></div>
     </Page>
   );
 }
