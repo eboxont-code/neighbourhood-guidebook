@@ -9,6 +9,9 @@ const TONES = categories.map((c) => c.slug);
 /** A stable tone per area, borrowed from the category palette so areas read as the same family. */
 export const areaTone = (slug: string, i: number) => `cat-${TONES[(i * 3 + slug.length) % TONES.length]}`;
 
+/** First sentence of an existing intro, so a card line makes no new claim. */
+export const firstSentence = (s: string) => (s.match(/^.*?[.।](\s|$)/)?.[0] ?? s).trim();
+
 export function count(t: (k: never) => string, n: number) {
   const tt = t as (k: string) => string;
   return n === 1 ? tt("placesOne") : tt("placesN").replace("{n}", String(n));

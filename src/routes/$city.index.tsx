@@ -2,7 +2,7 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { NotFoundView, Page, pageMeta } from "@/components/site";
 import { MapView } from "@/components/map-view";
 import { CatIcon } from "@/components/cover";
-import { areaTone, count, SectionHead } from "@/components/blocks";
+import { areaTone, count, firstSentence, SectionHead } from "@/components/blocks";
 import { placeName, areasInUse, getArea, businessesIn, categoriesIn, getCity } from "@/data/directory";
 import { useI18n, type Key } from "@/lib/i18n";
 
@@ -18,9 +18,6 @@ export const Route = createFileRoute("/$city/")({
   notFoundComponent: NotFoundView,
   component: CityPage,
 });
-
-/** First sentence of an existing intro, so the card line makes no new claim. */
-export const firstSentence = (s: string) => (s.match(/^.*?[.।](\s|$)/)?.[0] ?? s).trim();
 
 function CityPage() {
   const { city } = Route.useLoaderData();
