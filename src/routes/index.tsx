@@ -17,12 +17,12 @@ function Home() {
   return (
     <>
       <section className="app-hero">
-        <div className="mx-auto max-w-6xl px-4 pt-4 pb-11 lg:pt-12 lg:pb-20">
+        <div className="mx-auto max-w-6xl px-4 pt-4 pb-10 lg:pt-10 lg:pb-16">
           <div className="max-w-2xl">
-            <h1 className="text-[1.375rem] leading-tight font-semibold sm:text-3xl lg:text-4xl">{t("heroTitle")}</h1>
-            <p className="mt-1 mb-3 text-sm leading-snug opacity-90 sm:text-base">{t("tagline")}</p>
+            <h1 className="text-[1.375rem] leading-tight font-semibold sm:text-[1.75rem] lg:text-[2.125rem]">{t("heroTitle")}</h1>
+            <p className="mt-1 mb-3 text-sm leading-snug text-[var(--hero-muted)] sm:text-base">{t("tagline")}</p>
             <SearchBox />
-            <p className="mt-1.5 text-[13px] leading-snug opacity-90 sm:text-sm">
+            <p className="mt-1.5 text-[13px] leading-snug text-[var(--hero-muted)] sm:text-sm">
               {t("coverageNote")}{" "}
               {cities.length === 1 && (
                 <Link to="/$city" params={{ city }} className="inline-flex min-h-11 items-center font-bold underline underline-offset-2 sm:min-h-0">
@@ -34,7 +34,7 @@ function Home() {
         </div>
       </section>
       <Page wide>
-        <div className="-mt-12 rounded-3xl bg-card p-3 shadow-[var(--shadow-lift)] sm:p-5 lg:-mt-16">
+        <div className="-mt-7 rounded-2xl border border-border bg-card p-3 sm:p-4 shadow-[var(--shadow-lift)] sm:p-5 lg:-mt-9">
           <CategoryTiles city={city} cats={categoriesIn(businesses)} />
         </div>
         {cities.length > 1 && (
@@ -45,7 +45,7 @@ function Home() {
             </div>
           </section>
         )}
-        <section className="mt-6">
+        <section className="mt-7">
           <Directory items={businesses} typeOnDesktopOnly />
         </section>
       </Page>
