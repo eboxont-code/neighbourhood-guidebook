@@ -19,7 +19,7 @@ function Home() {
       <section className="app-hero">
         <div className="mx-auto max-w-6xl px-4 pt-4 pb-11 lg:pt-12 lg:pb-20">
           <div className="max-w-2xl">
-            <h1 className="text-[1.625rem] leading-tight font-extrabold sm:text-4xl lg:text-5xl">{t("heroTitle")}</h1>
+            <h1 className="text-[1.375rem] leading-tight font-semibold sm:text-3xl lg:text-4xl">{t("heroTitle")}</h1>
             <p className="mt-1 mb-3 text-sm leading-snug opacity-90 sm:text-base">{t("tagline")}</p>
             <SearchBox />
             <p className="mt-1.5 text-[13px] leading-snug opacity-90 sm:text-sm">

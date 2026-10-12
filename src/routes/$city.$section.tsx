@@ -50,7 +50,7 @@ function SectionPage() {
           <div className="mx-auto max-w-6xl px-4 pt-3 pb-8 lg:pt-6 lg:pb-12">
             <div className="max-w-2xl">
               {crumb}
-              <h1 className="mt-1 text-3xl font-extrabold sm:text-4xl">{placeName(a, lang)}</h1>
+              <h1 className="mt-1 text-2xl font-semibold sm:text-3xl">{placeName(a, lang)}</h1>
               <p className="mt-2 text-[15px] leading-relaxed opacity-90 sm:text-base">{t(`intro_${a.slug.replace(/-/g, "_")}` as Key)}</p>
             </div>
           </div>
@@ -66,7 +66,7 @@ function SectionPage() {
         <div className="mx-auto flex max-w-6xl items-end justify-between gap-4 px-4 pt-3 pb-6 lg:pt-6 lg:pb-10">
           <div className="min-w-0">
             {crumb}
-            <h1 className="mt-1 text-3xl font-extrabold text-foreground sm:text-4xl">{lang === "ne" ? c.nameNe : c.name}</h1>
+            <h1 className="mt-1 text-2xl font-semibold text-foreground sm:text-3xl">{lang === "ne" ? c.nameNe : c.name}</h1>
           </div>
           <span aria-hidden className="cat-tile-icon !h-16 !w-16 shrink-0"><CatIcon category={c.slug} className="h-8 w-8" /></span>
         </div>

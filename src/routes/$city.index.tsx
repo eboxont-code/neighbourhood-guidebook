@@ -26,7 +26,7 @@ function CityPage() {
       <section className="app-hero">
         <div className="mx-auto max-w-6xl px-4 pt-6 pb-14 lg:pt-10 lg:pb-20">
           <div className="max-w-2xl">
-            <h1 className="text-3xl font-extrabold sm:text-4xl">{lang === "ne" ? city.nameNe : city.name}</h1>
+            <h1 className="text-2xl font-semibold sm:text-3xl">{lang === "ne" ? city.nameNe : city.name}</h1>
             <p className="mt-2 text-[15px] leading-relaxed opacity-90 sm:text-base">{t(`intro_city_${city.slug}` as Key)}</p>
           </div>
         </div>

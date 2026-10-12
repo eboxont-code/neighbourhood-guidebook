@@ -21,10 +21,10 @@ export function Brand() {
   const { t } = useI18n();
   return (
     <Link to="/" className="flex min-h-11 min-w-0 items-center gap-2.5">
-      <span aria-hidden className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary text-xl font-extrabold text-primary-foreground shadow-[var(--shadow-card)]">
+      <span aria-hidden className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary text-xl font-semibold text-primary-foreground shadow-[var(--shadow-card)]">
         {SITE_NAME.charAt(0)}<span className="ml-px h-2 w-2 self-end mb-2 rounded-full bg-brand-accent" />
       </span>
-      <span className="truncate text-xl font-extrabold tracking-tight">{SITE_NAME}</span>
+      <span className="truncate text-xl font-semibold tracking-tight">{SITE_NAME}</span>
       <span className="shrink-0 rounded-full bg-brand-accent px-2 py-0.5 text-xs font-bold text-brand-accent-foreground">{t("brandTag")}</span>
     </Link>
   );
@@ -138,7 +138,7 @@ export function Page({ children, wide = false }: { children: ReactNode; wide?: b
 
 export function Monogram({ name, category, size = "md" }: { name: string; category?: string; size?: "md" | "lg" }) {
   return (
-    <div aria-hidden className={`monogram relative ${category ? `cat-${category}` : ""} ${size === "lg" ? "h-16 w-16 text-3xl" : "h-14 w-14 text-2xl"}`}>
+    <div aria-hidden className={`monogram relative ${category ? `cat-${category}` : ""} ${size === "lg" ? "h-16 w-16 text-2xl" : "h-14 w-14 text-2xl"}`}>
       {name.charAt(0)}
       {category && <span className="absolute -right-1 -bottom-1 flex h-6 w-6 items-center justify-center rounded-full border-2 border-card bg-[var(--ph-ink)] text-panel"><CatIcon category={category} className="h-3.5 w-3.5" /></span>}
     </div>
@@ -180,7 +180,7 @@ export function BusinessCard({ b }: { b: Business }) {
       <div className="flex gap-3.5">
         <Monogram name={b.name} category={b.category} />
         <div className="min-w-0 flex-1">
-          <Link to="/s/$slug" params={{ slug: b.slug }} className="stretched block text-[1.0625rem] leading-snug font-extrabold break-words">{b.name}</Link>
+          <Link to="/s/$slug" params={{ slug: b.slug }} className="stretched block text-[1.0625rem] leading-snug font-semibold break-words">{b.name}</Link>
           <p className="mt-0.5 text-sm font-medium text-muted-foreground">{lang === "ne" ? cat?.nameNe : cat?.name} · {placeName(area, lang)}</p>
           <p className="mt-2 text-sm"><HoursLine b={b} /></p>
         </div>
@@ -223,14 +223,14 @@ export function EmptyState({ title, body }: { title: string; body?: string }) {
   return (
     <div className="rounded-3xl bg-card px-6 py-10 text-center shadow-[var(--shadow-card)]">
       <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-accent text-accent-foreground"><SearchX aria-hidden className="h-8 w-8" /></span>
-      <p className="mt-4 text-lg font-extrabold">{title}</p>
+      <p className="mt-4 text-lg font-semibold">{title}</p>
       {body && <p className="mt-1 text-muted-foreground">{body}</p>}
     </div>
   );
 }
 
 export function TextPage({ title, body }: { title: string; body: string }) {
-  return <Page><h1 className="text-3xl font-extrabold sm:text-4xl">{title}</h1><div className="form-card mt-5"><p className="leading-relaxed">{body}</p></div></Page>;
+  return <Page><h1 className="text-2xl font-semibold sm:text-3xl">{title}</h1><div className="form-card mt-5"><p className="leading-relaxed">{body}</p></div></Page>;
 }
 
 export function NotFoundView() {
@@ -239,7 +239,7 @@ export function NotFoundView() {
     <Page>
       <div className="rounded-3xl bg-card px-6 py-12 text-center shadow-[var(--shadow-card)]">
         <span className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-brand-accent text-brand-accent-foreground"><MapPin aria-hidden className="h-10 w-10" /></span>
-        <h1 className="mt-5 text-3xl font-extrabold">{t("notFound")}</h1>
+        <h1 className="mt-5 text-2xl font-semibold">{t("notFound")}</h1>
         <p className="mt-3 text-muted-foreground">{t("notFoundBody")}</p>
         <Link to="/" className="action-btn action-primary mt-6 inline-flex px-6">{t("goHome")}</Link>
       </div>
