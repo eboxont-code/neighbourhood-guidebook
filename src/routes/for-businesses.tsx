@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Clock, Globe, Plus, Search, Smartphone } from "lucide-react";
+import { ArrowRight, Check, Clock, Globe, Plus, Search, Smartphone, X } from "lucide-react";
 import { Page, pageMeta } from "@/components/site";
 import { useI18n, type Key } from "@/lib/i18n";
 
@@ -25,28 +25,37 @@ function ForBusinesses() {
   return (
     <>
       <section className="app-hero">
-        <div className="page-enter mx-auto max-w-4xl px-4 pt-8 pb-14 lg:pt-14 lg:pb-20">
-          <p className="inline-flex rounded-full bg-card/15 px-3 py-1 text-sm font-bold">{t("fbKicker")}</p>
-          <h1 className="mt-3 text-3xl leading-tight font-semibold sm:text-4xl">{t("fbTitle")}</h1>
+        <div className="page-enter mx-auto max-w-4xl px-4 pt-8 pb-16 lg:pt-14 lg:pb-24">
+          <p className="inline-flex rounded-full bg-card/15 px-3 py-1 text-sm font-semibold">{t("fbTitle")}</p>
+          <h1 className="mt-3 max-w-3xl text-[1.75rem] leading-tight font-semibold sm:text-4xl">{t("fbHeroTitle")}</h1>
           <p className="mt-4 max-w-2xl text-lg leading-relaxed text-[var(--hero-muted)]">{t("fbIntro")}</p>
           <div className="mt-6">{cta()}</div>
         </div>
       </section>
 
       <Page wide>
-        <section className="-mt-8">
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <section className="-mt-8" aria-labelledby="compare">
+          <h2 id="compare" className="sr-only">{t("fbCompareTitle")}</h2>
+          <div className="grid gap-3 md:grid-cols-2">
+            <Mock good={false} />
+            <Mock good />
+          </div>
+          <p className="mt-2 text-center text-[13px] text-muted-foreground">{t("fbExampleNote")}</p>
+        </section>
+
+        <section className="mx-auto mt-12 max-w-3xl">
+          <H2>{t("fbWhyTitle")}</H2>
+          <ul className="mt-4 grid gap-2 sm:grid-cols-2">
             {why.map((k, i) => {
               const Icon = WHY_ICONS[i]!;
               return (
-                <div key={k} className="rounded-2xl border border-border bg-card p-5 shadow-[var(--shadow-card)]">
-                  <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent text-accent-foreground"><Icon aria-hidden className="h-5 w-5" strokeWidth={1.75} /></span>
-                  <p className="mt-3 leading-relaxed">{t(k)}</p>
-                </div>
+                <li key={k} className="flex gap-3 rounded-xl border border-border bg-card p-4">
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-accent text-accent-foreground"><Icon aria-hidden className="h-[18px] w-[18px]" strokeWidth={1.75} /></span>
+                  <span className="text-[15px] leading-relaxed">{t(k)}</span>
+                </li>
               );
             })}
-          </div>
-          <h2 className="sr-only">{t("fbWhyTitle")}</h2>
+          </ul>
         </section>
 
         <div className="mx-auto max-w-3xl">
@@ -89,5 +98,30 @@ function ForBusinesses() {
         </section>
       </Page>
     </>
+  );
+}
+
+/** A generic example card, never a real business from the directory. */
+function Mock({ good }: { good: boolean }) {
+  const { t } = useI18n();
+  const rows: Key[] = good ? ["fbAfter1", "fbAfter2", "fbAfter3"] : ["fbBefore1", "fbBefore2", "fbBefore3"];
+  return (
+    <figure className={`rounded-2xl border bg-card p-5 shadow-[var(--shadow-lift)] ${good ? "border-success/30" : "border-border"}`}>
+      <figcaption className={`status-chip ${good ? "status-success" : "status-neutral"}`}>{t(good ? "fbAfterLabel" : "fbBeforeLabel")}</figcaption>
+      <div className={`mt-4 flex items-center gap-3 ${good ? "" : "opacity-70"}`}>
+        <span aria-hidden className="monogram cat-salons h-12 w-12 text-xl">{t("fbExampleName").charAt(0)}</span>
+        <p className="text-base font-semibold">{t("fbExampleName")}</p>
+      </div>
+      <ul className="mt-4 space-y-2">
+        {rows.map((k) => (
+          <li key={k} className="flex items-start gap-2 text-[15px]">
+            <span className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full ${good ? "bg-success-soft text-success" : "bg-muted text-muted-foreground"}`}>
+              {good ? <Check aria-hidden className="h-3 w-3" /> : <X aria-hidden className="h-3 w-3" />}
+            </span>
+            {t(k)}
+          </li>
+        ))}
+      </ul>
+    </figure>
   );
 }

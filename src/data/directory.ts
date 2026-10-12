@@ -248,8 +248,9 @@ export function searchBusinesses(query: string): Business[] {
   return businesses.filter((b) => {
     const cat = getCategory(b.category);
     const area = getArea(b.area);
-    const hay = [b.name, cat?.name, cat?.nameNe, cat?.name.normalize("NFD").replace(/[\u0300-\u036f]/g, ""), area?.name, getCity(area?.city ?? "")?.name, ...b.services.map((x) => x.name)].join(" ").toLowerCase();
-    return q.split(/\s+/).every((w) => hay.includes(w));
+    const city = getCity(area?.city ?? "");
+    const hay = [b.name, cat?.name, cat?.nameNe, cat?.name.normalize("NFD").replace(/[\u0300-\u036f]/g, ""), area?.name, area?.nameNe, city?.name, city?.nameNe, ...b.services.map((x) => x.name)].join(" ").toLowerCase();
+    return q.split(/\s+/).filter((w) => w !== "in" && w !== "मा").every((w) => hay.includes(w.replace(/मा$/, "")));
   });
 }
 

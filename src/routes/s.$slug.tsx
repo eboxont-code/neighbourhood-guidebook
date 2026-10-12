@@ -1,7 +1,10 @@
 import { createFileRoute, Link, notFound, redirect } from "@tanstack/react-router";
 import { NotFoundView, pageMeta } from "@/components/site";
 import { CatIcon, Cover } from "@/components/cover";
-import { Globe, MessageCircle, Phone } from "lucide-react";
+import { Globe, Phone } from "lucide-react";
+import { HoursLine } from "@/components/site";
+import { Carousel, SectionHead } from "@/components/blocks";
+import { businesses } from "@/data/directory";
 import type { ReactNode } from "react";
 import { MapView } from "@/components/map-view";
 import { dayLabel, placeName, timeLabel, getCity, hasPin, whatsappLink, directionsLink, slugRedirects, showWebsite, socialLinks, websiteButton, getArea, getBusiness, getCategory, telLink, websiteStatusSentence, type Business } from "@/data/directory";
@@ -53,7 +56,8 @@ function ShopPage() {
             <Link to="/$city/$section" params={{ city: area.city, section: cat.slug }} className={`chip cat-${cat.slug} !border-transparent !bg-[var(--ph-bg)] !text-[var(--ph-ink)]`}><CatIcon category={cat.slug} className="h-4 w-4" />{lang === "ne" ? cat.nameNe : cat.name}</Link>
             <Link to="/$city/$section" params={{ city: area.city, section: area.slug }} className="chip">{placeName(area, lang)}</Link>
           </div>
-          {b.phone && <p className="mt-3 text-base font-semibold tabular-nums">{b.phone}</p>}
+          {b.hours?.length ? <p className="mt-3 text-sm" aria-label={t("keyFacts")}><HoursLine b={b} /></p> : null}
+          {b.phone && <p className="mt-2 text-base font-semibold tabular-nums">{b.phone}</p>}
         </div>
 
         <div style={{ gridArea: "aside" }} className="lg:sticky lg:top-20 lg:mt-4">
@@ -61,7 +65,6 @@ function ShopPage() {
             <div className="hidden gap-2 rounded-2xl bg-card p-4 shadow-[var(--shadow-card)] lg:flex lg:flex-col">
               {b.phone && <a href={telLink(b.phone)} className="action-btn action-primary flex-1"><Phone aria-hidden className="h-5 w-5" />{t("call")}</a>}
               {websiteButton(b) && <a href={b.website} target="_blank" rel="noopener noreferrer" className="action-btn action-secondary flex-1"><Globe aria-hidden className="h-5 w-5" />{t("website")}</a>}
-              {b.whatsapp && <a href={whatsappLink(b.whatsapp)} target="_blank" rel="noopener noreferrer" className="action-btn action-secondary flex-1"><MessageCircle aria-hidden className="h-5 w-5" />{t("whatsapp")}</a>}
             </div>
           )}
           {hasPin(b) && (
@@ -144,14 +147,14 @@ function ShopPage() {
           <span className="text-muted-foreground">{t("spotMistake")} </span>
           <Link to="/suggest-correction" search={{ listing: b.slug }} className="text-primary underline">{t("suggestThis")}</Link>
         </p>
+        <Nearby b={b} />
         </div>
       </main>
-      {(b.phone || websiteButton(b) || b.whatsapp) && (
+      {(b.phone || websiteButton(b)) && (
         <div className="bottom-nav lg:hidden" role="group" aria-label={t("quickActions")}>
           <div className="mx-auto flex max-w-2xl gap-2 px-4 py-2.5">
-            {b.phone && <a href={telLink(b.phone)} className="action-btn action-primary flex-[2] px-3"><Phone aria-hidden className="h-5 w-5" />{t("call")}</a>}
+            {b.phone && <a href={telLink(b.phone)} className="action-btn action-primary flex-1 px-3"><Phone aria-hidden className="h-5 w-5" />{t("call")}</a>}
             {websiteButton(b) && <a href={b.website} target="_blank" rel="noopener noreferrer" className="action-btn action-secondary flex-1 px-3 text-sm whitespace-nowrap"><Globe aria-hidden className="h-5 w-5" />{t("website")}</a>}
-            {b.whatsapp && <a href={whatsappLink(b.whatsapp)} target="_blank" rel="noopener noreferrer" className="action-btn action-secondary flex-1 px-3" aria-label={t("whatsapp")}><MessageCircle aria-hidden className="h-5 w-5" /></a>}
           </div>
         </div>
       )}
@@ -172,5 +175,18 @@ function OwnerPanel({ b }: { b: Business }) {
         <Link to="/for-businesses" className="inline-flex min-h-11 items-center text-primary underline">{t("ownerMore")}</Link>
       </div>
     </aside>
+  );
+}
+
+function Nearby({ b }: { b: Business }) {
+  const { t, lang } = useI18n();
+  const near = businesses.filter((x) => x.area === b.area && x.id !== b.id);
+  if (!near.length) return null;
+  const title = t("moreNearby").replace("{area}", placeName(getArea(b.area), lang));
+  return (
+    <section className="mt-10">
+      <SectionHead title={title} />
+      <Carousel items={near} label={title} />
+    </section>
   );
 }
