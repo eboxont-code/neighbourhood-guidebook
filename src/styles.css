@@ -403,9 +403,9 @@
   & input, & select { min-width: 0; flex: 1; background: transparent; outline: none; min-height: 3rem; appearance: none; }
 }
 @utility action-dark { background: var(--foreground); color: var(--panel); &:hover { filter: brightness(1.25); } }
-@utility fullmap {
-  position: fixed; inset: 0; z-index: 960; background: var(--background);
-  & .map-frame { height: 100%; border-radius: 0; border: 0; }
+.fullmap { position: fixed; inset: 0; z-index: 960; background: var(--background); }
+.fullmap .map-frame { height: 100%; border-radius: 0; border: 0; }
+@media (min-width: 1024px) { .fullmap { position: static; z-index: auto; background: transparent; } .fullmap .map-frame { border-radius: 1rem; border: 1px solid var(--border); } }
 }
 @utility sheet {
   position: relative; margin-top: -1.5rem; border-radius: 1.25rem 1.25rem 0 0; background: var(--background);

@@ -30,7 +30,7 @@ export function HeartButton({ slug, name, className = "" }: { slug: string; name
   const on = fav.has(slug);
   return (
     <button type="button" aria-pressed={on} aria-label={`${on ? t("unsave") : t("save")}: ${name}`} onClick={(e) => { e.preventDefault(); fav.toggle(slug); }}
-      className={`round-btn relative z-10 ${className}`}>
+      className={`round-btn z-10 ${className || "relative"}`}>
       <Heart aria-hidden className={`h-[18px] w-[18px] transition-transform ${on ? "scale-110 fill-current text-primary" : ""}`} strokeWidth={1.9} />
     </button>
   );
@@ -73,7 +73,7 @@ export function VenueCard({ b, wide = false }: { b: Business; wide?: boolean }) 
 
 export function VenueRow({ items, label }: { items: Business[]; label: string }) {
   return (
-    <ul aria-label={label} className="-mx-5 flex snap-x snap-mandatory gap-3.5 overflow-x-auto px-5 pt-1 pb-3 [scrollbar-width:none] lg:mx-0 lg:px-0">
+    <ul aria-label={label} className="-mx-5 flex snap-x snap-mandatory scroll-px-5 gap-3.5 overflow-x-auto px-5 pt-1 pb-3 [scrollbar-width:none] lg:mx-0 lg:px-0">
       {items.map((b) => <VenueCard key={b.id} b={b} />)}
     </ul>
   );
