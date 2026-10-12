@@ -70,9 +70,9 @@ export function BottomNav() {
     <nav aria-label={t("navMain")} className="bottom-nav lg:hidden">
       <div className="mx-auto grid h-[3.75rem] max-w-md grid-cols-4">
         {navItems(t).map((n) => (
-          <Link key={n.key} {...n.link} activeOptions={{ exact: n.key === "home", includeSearch: false }} className="group flex min-h-11 flex-col items-center justify-center gap-0.5 text-[11px] font-medium text-muted-foreground transition-colors" activeProps={{ className: "!text-primary" }}>
+          <Link key={n.key} {...n.link} aria-label={n.label} activeOptions={{ exact: n.key === "home", includeSearch: false }} className="group flex min-h-11 flex-col items-center justify-center gap-0.5 text-[11px] font-medium text-muted-foreground transition-colors" activeProps={{ className: "!text-primary" }}>
             <span className="flex h-7 w-12 items-center justify-center rounded-full transition-colors group-aria-[current=page]:bg-accent"><n.icon className="h-[18px] w-[18px]" strokeWidth={1.75} aria-hidden /></span>
-            <span className="max-w-full truncate px-1">{n.label}</span>
+            <span className="max-w-full truncate px-1">{n.key === "biz" ? t("navBizShort") : n.label}</span>
           </Link>
         ))}
       </div>

@@ -25,7 +25,7 @@ function Home() {
             <p className="mt-1.5 text-[13px] leading-snug text-[var(--hero-muted)] sm:text-sm">
               {t("coverageNote")}{" "}
               {cities.length === 1 && (
-                <Link to="/$city" params={{ city }} className="inline-flex min-h-11 items-center font-bold underline underline-offset-2 sm:min-h-0">
+                <Link to="/$city" params={{ city }} className="-my-3 inline-block py-3 font-semibold text-[var(--hero-foreground)] underline underline-offset-2">
                   {t("seeAreas").replace("{city}", placeName(cities[0], lang))}
                 </Link>
               )}
