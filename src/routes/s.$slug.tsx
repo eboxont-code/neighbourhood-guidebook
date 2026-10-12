@@ -151,13 +151,14 @@ function ShopPage() {
 
 function OwnerPanel({ b }: { b: Business }) {
   const { t } = useI18n();
+  const noSite = b.websiteStatus === "none_found" || b.websiteStatus === "owner_no_site" || b.websiteStatus === "failed";
   return (
     <aside aria-labelledby="owner-note" className="owner-note mt-8">
       <p className="section-label mb-1">{t("ownerKicker")}</p>
-      <h2 id="owner-note" className="font-serif text-lg font-semibold">{t("ownerTitle")}</h2>
+      <h2 id="owner-note" className="font-serif text-lg font-semibold">{noSite ? t("ownerNoSiteTitle") : t("ownerTitle")}</h2>
       <p className="mt-1 text-sm leading-relaxed">{t(`owner_${b.websiteStatus}`)}</p>
       <div className="mt-2 flex flex-col text-sm sm:flex-row sm:gap-5">
-        <Link to="/contact" search={{ business: b.name, listing: b.slug }} className="inline-flex min-h-11 items-center text-primary underline">{t("ownerContact")}</Link>
+        <Link to="/contact" search={{ business: b.name, listing: b.slug }} className="inline-flex min-h-11 items-center text-primary underline">{noSite ? t("ownerClaimSite") : t("ownerContact")}</Link>
         <Link to="/for-businesses" className="inline-flex min-h-11 items-center text-primary underline">{t("ownerMore")}</Link>
       </div>
     </aside>
