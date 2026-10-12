@@ -407,7 +407,6 @@
   .fullmap { position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 960; background: var(--background); }
   .fullmap .map-frame { height: 100%; border-radius: 0; border: 0; }
 }
-}
 @utility sheet {
   position: relative; margin-top: -1.5rem; border-radius: 1.25rem 1.25rem 0 0; background: var(--background);
   @media (min-width: 1024px) { margin-top: -2.5rem; }
