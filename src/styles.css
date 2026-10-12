@@ -339,3 +339,23 @@
   & > * { flex-shrink: 0; white-space: nowrap; }
   @media (min-width: 1024px) { flex-wrap: wrap; overflow: visible; margin: 0; padding: 0; & > * { flex-shrink: 1; } }
 }
+@utility area-tile {
+  position: relative; display: flex; flex-direction: column; justify-content: flex-end; gap: 0.125rem; min-height: 5.5rem; padding: 0.875rem 1rem;
+  border-radius: 1rem; border: 1px solid color-mix(in oklab, var(--ph-ink) 12%, transparent); overflow: hidden;
+  background:
+    repeating-linear-gradient(135deg, transparent 0 9px, color-mix(in oklab, var(--ph-ink) 6%, transparent) 9px 10px),
+    linear-gradient(150deg, var(--ph-bg) 0%, color-mix(in oklab, var(--ph-bg) 50%, var(--card)) 100%);
+  transition: transform 140ms ease, box-shadow 180ms ease;
+  &:hover { box-shadow: var(--shadow-card); }
+  &:active { transform: scale(0.97); }
+  @media (min-width: 1024px) { min-height: 6.5rem; }
+}
+@utility stretched-row {
+  &::after { content: ""; position: absolute; inset: 0; }
+  &:focus-visible { outline: none; }
+  &:focus-visible::after { outline: 3px solid var(--ring); outline-offset: -3px; }
+}
+@utility sticky-bar {
+  position: sticky; top: 3.5rem; z-index: 800; background: color-mix(in oklab, var(--background) 92%, transparent); backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}

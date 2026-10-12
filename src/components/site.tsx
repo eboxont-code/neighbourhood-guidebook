@@ -136,9 +136,9 @@ export function Page({ children, wide = false }: { children: ReactNode; wide?: b
 }
 
 
-export function Monogram({ name, category, size = "md" }: { name: string; category?: string; size?: "md" | "lg" }) {
+export function Monogram({ name, category, size = "md" }: { name: string; category?: string; size?: "sm" | "md" | "lg" }) {
   return (
-    <div aria-hidden className={`monogram relative ${category ? `cat-${category}` : ""} ${size === "lg" ? "h-14 w-14 text-2xl" : "h-12 w-12 text-xl"}`}>
+    <div aria-hidden className={`monogram relative ${category ? `cat-${category}` : ""} ${size === "lg" ? "h-14 w-14 text-2xl" : size === "sm" ? "h-10 w-10 text-base" : "h-12 w-12 text-xl"}`}>
       {name.charAt(0)}
       {category && <span className="absolute -right-1 -bottom-1 flex h-5 w-5 items-center justify-center rounded-full border-2 border-card bg-[var(--ph-ink)] text-panel"><CatIcon category={category} className="h-3 w-3" /></span>}
     </div>
