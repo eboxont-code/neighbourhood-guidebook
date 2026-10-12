@@ -151,10 +151,13 @@ export function SearchBox({ initial = "", autoFocus = false }: { initial?: strin
   const navigate = useNavigate();
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
   useEffect(() => () => clearTimeout(timer.current), []);
+  const input = useRef<HTMLInputElement>(null);
+  // Follow the URL when it changes from outside the box, such as tapping a suggestion.
+  useEffect(() => { if (document.activeElement !== input.current) setQ(initial); }, [initial]);
   const go = (value: string, replace: boolean) => navigate({ to: "/search", search: { q: value }, replace });
   return (
     <form role="search" className="relative flex items-center gap-2 rounded-full border border-border bg-card p-1 shadow-[var(--shadow-lift)]" onSubmit={(e) => { e.preventDefault(); clearTimeout(timer.current); go(q, false); }}>
-      <input value={q} autoFocus={autoFocus} name="q" type="search" aria-label={t("search")} placeholder={t("searchPlaceholder")}
+      <input ref={input} value={q} autoFocus={autoFocus} name="q" type="search" aria-label={t("search")} placeholder={t("searchPlaceholder")}
         onChange={(e) => {
           const v = e.target.value;
           setQ(v);
