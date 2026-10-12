@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Page, SearchBox, pageMeta } from "@/components/site";
+import { EmptyState, Page, SearchBox, pageMeta } from "@/components/site";
 import { Directory } from "@/components/directory";
 import { businesses, searchBusinesses } from "@/data/directory";
 import { useI18n } from "@/lib/i18n";
@@ -20,12 +20,12 @@ function SearchPage() {
   const results = searchBusinesses(q);
   return (
     <Page wide>
-      <div className="max-w-2xl"><SearchBox initial={q} autoFocus /></div>
+      <div className="app-hero -mx-4 -mt-6 px-4 pt-5 pb-6 sm:rounded-b-3xl"><div className="mx-auto max-w-2xl"><h1 className="mb-3 text-2xl font-extrabold">{t("navSearch")}</h1><SearchBox initial={q} autoFocus /></div></div>
       <div className="mt-6">
         {!q.trim() ? <Directory items={businesses} />
           : results.length === 0 ? (
-            <p>{t("noResults")}</p>
-          ) : (<><h1 className="section-label">{t("resultsFor")} “{q}”</h1><Directory key={q} items={results} /></>)}
+            <EmptyState title={t("noResultsTitle")} body={`${t("noResults")} ${t("tryOther")}`} />
+          ) : (<><h2 className="section-title">{t("resultsFor")} “{q}”</h2><Directory key={q} items={results} /></>)}
       </div>
     </Page>
   );
