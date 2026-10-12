@@ -13,7 +13,7 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { LangProvider } from "@/lib/i18n";
-import { Footer, Header, NotFoundView } from "@/components/site";
+import { BottomNav, Footer, Header, NotFoundView } from "@/components/site";
 
 function NotFoundComponent() {
   return (
@@ -94,7 +94,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   }),
   shellComponent: RootShell,
   component: RootComponent,
-  notFoundComponent: () => (<LangProvider><Header /><NotFoundView /><Footer /></LangProvider>),
+  notFoundComponent: () => (<LangProvider><Header /><NotFoundView /><Footer /><BottomNav /></LangProvider>),
   errorComponent: ErrorComponent,
 });
 
@@ -121,6 +121,7 @@ function RootComponent() {
         <Header />
         <Outlet />
         <Footer />
+        <BottomNav />
       </LangProvider>
     </QueryClientProvider>
   );
