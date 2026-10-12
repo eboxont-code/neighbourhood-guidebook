@@ -60,7 +60,7 @@ export function VenueCard({ b, wide = false }: { b: Business; wide?: boolean }) 
       <div className="relative">
         <Thumb b={b} className="aspect-[16/10]" />
         <Badges list={badgesFor(b, now, isOpen(b, now))} />
-        <HeartButton slug={b.slug} name={b.name} className="absolute top-1.5 right-1.5" />
+        <span className="absolute top-1.5 right-1.5 z-10"><HeartButton slug={b.slug} name={b.name} /></span>
       </div>
       <div className="px-1 pt-2.5 pb-1">
         <Link to="/s/$slug" params={{ slug: b.slug }} className="stretched line-clamp-2 text-[15px] leading-snug font-semibold">{b.name}</Link>
