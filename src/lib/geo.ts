@@ -71,14 +71,14 @@ function init() {
   } catch { /* storage may be off */ }
 }
 
-const snap = { state, dismissed };
+const snap: { state: LocState; dismissed: boolean } = { state, dismissed };
 let last = snap;
 function getSnap() {
   init();
   if (last.state !== state || last.dismissed !== dismissed) last = { state, dismissed };
   return last;
 }
-const serverSnap = { state: { status: "idle" } as LocState, dismissed: false };
+const serverSnap: { state: LocState; dismissed: boolean } = { state: { status: "idle" }, dismissed: false };
 
 export function requestLocation() {
   if (typeof navigator === "undefined" || !navigator.geolocation) { state = { status: "denied" }; emit(); return; }

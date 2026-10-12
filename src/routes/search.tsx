@@ -49,7 +49,7 @@ function SearchPage() {
     return () => clearTimeout(id);
   }, [q, results.length]);
   const clear = () => { try { localStorage.removeItem(KEY); } catch { /* ignore */ } setRecent([]); };
-  const set = (patch: Partial<SearchState>) => navigate({ search: (prev: SearchState) => { const n: Record<string, unknown> = { ...prev, ...patch }; Object.keys(n).forEach((k) => { if (k !== "q" && !n[k]) delete n[k]; }); return n as SearchState; }, replace: true });
+  const set = (patch: { [K in keyof SearchState]?: SearchState[K] | undefined }) => navigate({ search: (prev: SearchState) => { const n: Record<string, unknown> = { ...prev, ...patch }; Object.keys(n).forEach((k) => { if (k !== "q" && !n[k]) delete n[k]; }); return n as SearchState; }, replace: true });
   const closeMap = useCallback(() => set({ view: undefined }), []); // eslint-disable-line react-hooks/exhaustive-deps
   const pill = (on: boolean) => `chip !min-h-11 !text-[13px] ${on ? "chip-on" : ""}`;
   const summary = [q.trim(), s.area ? placeName(getArea(s.area), lang) : "", s.near ? t("sortNear") : "", s.open ? t("openNow") : ""].filter(Boolean).join(" · ");
