@@ -28,3 +28,22 @@ export function MapView({ items, className = "h-[60vh] lg:h-[70vh]", zoom, note 
     </div>
   );
 }
+
+/** Full-screen map on phones with a floating "Show list" pill; an ordinary inline map on desktop. */
+export function FullMap({ items, onClose, closeLabel }: { items: Business[]; onClose: () => void; closeLabel: string }) {
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 1023px)");
+    if (!mq.matches) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const esc = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    window.addEventListener("keydown", esc);
+    return () => { document.body.style.overflow = prev; window.removeEventListener("keydown", esc); };
+  }, [onClose]);
+  return (
+    <div className="fullmap page-enter lg:static lg:z-auto lg:bg-transparent lg:[&_.map-frame]:rounded-2xl lg:[&_.map-frame]:border">
+      <MapView items={items} className="h-full lg:h-[68vh]" />
+      <button type="button" onClick={onClose} className="action-btn action-dark absolute bottom-[calc(env(safe-area-inset-bottom)+1.25rem)] left-1/2 z-[600] -translate-x-1/2 px-5 shadow-[var(--shadow-lift)] lg:hidden">{closeLabel}</button>
+    </div>
+  );
+}
