@@ -56,7 +56,7 @@ function ShopPage() {
             <Link to="/$city/$section" params={{ city: area.city, section: cat.slug }} className={`chip cat-${cat.slug} !border-transparent !bg-[var(--ph-bg)] !text-[var(--ph-ink)]`}><CatIcon category={cat.slug} className="h-4 w-4" />{lang === "ne" ? cat.nameNe : cat.name}</Link>
             <Link to="/$city/$section" params={{ city: area.city, section: area.slug }} className="chip">{placeName(area, lang)}</Link>
           </div>
-          <p className="mt-3 text-sm" aria-label={t("keyFacts")}><HoursLine b={b} /></p>
+          {b.hours?.length ? <p className="mt-3 text-sm" aria-label={t("keyFacts")}><HoursLine b={b} /></p> : null}
           {b.phone && <p className="mt-2 text-base font-semibold tabular-nums">{b.phone}</p>}
         </div>
 
