@@ -1,7 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { NotFoundView, Page, pageMeta } from "@/components/site";
 import { Directory } from "@/components/directory";
-import { placeName, areasInUse, businessesIn, categoriesIn, getCity } from "@/data/directory";
+import { placeName, areasInUse, getArea, businessesIn, categoriesIn, getCity } from "@/data/directory";
 import { useI18n, type Key } from "@/lib/i18n";
 
 export const Route = createFileRoute("/$city/")({
@@ -11,7 +11,7 @@ export const Route = createFileRoute("/$city/")({
     return { city };
   },
   head: ({ loaderData }) => loaderData
-    ? pageMeta(`${loaderData.city.name} by neighbourhood: salons, cafés, hotels and more`, `Places in ${loaderData.city.name} from Thamel and Boudha to Durbar Marg and Lazimpat, with phone numbers, opening hours and directions you can check.`, `/${loaderData.city.slug}`)
+    ? cityMeta(loaderData.city.slug, loaderData.city.name)
     : { meta: [{ title: "Not found" }, { name: "robots", content: "noindex" }] },
   notFoundComponent: NotFoundView,
   component: CityPage,
@@ -42,4 +42,10 @@ function CityPage() {
       <Directory items={items} />
     </Page>
   );
+}
+
+function cityMeta(slug: string, name: string) {
+  const names = areasInUse(slug).map((a) => getArea(a.slug)?.name ?? a.slug).slice(0, 4);
+  const list = names.length > 1 ? `${names.slice(0, -1).join(", ")} and ${names[names.length - 1]}` : names[0] ?? name;
+  return pageMeta(`${name} by neighbourhood: salons, cafés, hotels and more`, `Everyday places in ${name}, area by area, including ${list}, with phone numbers, opening hours and directions you can check.`, `/${slug}`);
 }
