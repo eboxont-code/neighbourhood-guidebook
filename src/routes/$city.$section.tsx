@@ -4,7 +4,7 @@ import { useState } from "react";
 import { NotFoundView, Page, pageMeta, useNow } from "@/components/site";
 import { MapView } from "@/components/map-view";
 import { CatIcon } from "@/components/cover";
-import { Carousel, RowList, SectionHead, SeeAll } from "@/components/blocks";
+import { Carousel, RowList, SectionHead } from "@/components/blocks";
 import { placeName, areasIn, businessesIn, categoryRedirects, categoriesIn, getArea, getCategory, getCity, resolveSection } from "@/data/directory";
 import { applyCatFilters, parseCatSearch, type CatFilters } from "@/lib/filters";
 import { useI18n, type Key } from "@/lib/i18n";
@@ -73,7 +73,7 @@ function AreaPage() {
             return (
               <section key={c.slug}>
                 <SectionHead title={t("catInArea").replace("{cat}", catName(c)).replace("{area}", areaName)} sub={t(row.length === 1 ? "placesOne" : "placesN").replace("{n}", String(row.length))}
-                  action={<SeeAll to="/$city/$section" params={{ city: city.slug, section: c.slug }} search={{ area: a.slug }}>{t("seeAll")}</SeeAll>} />
+                  action={<Link to="/$city/$section" params={{ city: city.slug, section: c.slug }} search={{ area: a.slug }} className="-my-2 inline-flex min-h-11 shrink-0 items-center text-sm font-semibold text-primary hover:underline">{t("seeAll")} ›</Link>} />
                 <Carousel items={row} label={catName(c)} />
               </section>
             );
@@ -95,7 +95,7 @@ function CategoryPage() {
   const c = getCategory(sec.slug)!;
   const all = businessesIn(city.slug).filter((b) => b.category === c.slug);
   const shown = applyCatFilters(all, f, now);
-  const set = (patch: Partial<CatFilters>) => navigate({ search: (prev: CatFilters) => { const n = { ...prev, ...patch }; (Object.keys(n) as (keyof CatFilters)[]).forEach((k) => { if (!n[k]) delete n[k]; }); return n; }, replace: true });
+  const set = (patch: { area?: string | undefined; open?: boolean | undefined; sort?: CatFilters["sort"] | undefined }) => navigate({ search: (prev: CatFilters) => { const n: Record<string, unknown> = { ...prev, ...patch }; Object.keys(n).forEach((k) => { if (!n[k]) delete n[k]; }); return n as CatFilters; }, replace: true });
   const areaOpts = areasIn(all);
   const pill = (on: boolean) => `chip !min-h-11 !text-[13px] ${on ? "chip-on" : ""}`;
   return (
