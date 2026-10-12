@@ -25,22 +25,22 @@ function ForBusinesses() {
   return (
     <>
       <section className="app-hero">
-        <div className="page-enter mx-auto max-w-4xl px-4 pt-8 pb-16 lg:pt-16 lg:pb-24">
+        <div className="page-enter mx-auto max-w-4xl px-4 pt-8 pb-14 lg:pt-14 lg:pb-20">
           <p className="inline-flex rounded-full bg-card/15 px-3 py-1 text-sm font-bold">{t("fbKicker")}</p>
           <h1 className="mt-3 text-3xl leading-tight font-semibold sm:text-4xl">{t("fbTitle")}</h1>
-          <p className="mt-4 max-w-2xl text-lg leading-relaxed opacity-90">{t("fbIntro")}</p>
+          <p className="mt-4 max-w-2xl text-lg leading-relaxed text-[var(--hero-muted)]">{t("fbIntro")}</p>
           <div className="mt-6">{cta()}</div>
         </div>
       </section>
 
       <Page wide>
-        <section className="-mt-12">
+        <section className="-mt-8">
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {why.map((k, i) => {
               const Icon = WHY_ICONS[i]!;
               return (
-                <div key={k} className="rounded-3xl bg-card p-5 shadow-[var(--shadow-lift)]">
-                  <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-accent text-accent-foreground"><Icon aria-hidden className="h-6 w-6" /></span>
+                <div key={k} className="rounded-2xl border border-border bg-card p-5 shadow-[var(--shadow-card)]">
+                  <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent text-accent-foreground"><Icon aria-hidden className="h-5 w-5" strokeWidth={1.75} /></span>
                   <p className="mt-3 leading-relaxed">{t(k)}</p>
                 </div>
               );
@@ -50,24 +50,24 @@ function ForBusinesses() {
         </section>
 
         <div className="mx-auto max-w-3xl">
-          <section className="mt-14">
+          <section className="mt-12">
             <H2>{t("fbWhatTitle")}</H2>
             <p className="mt-3 text-lg leading-relaxed text-muted-foreground">{t("fbWhatBody")}</p>
           </section>
 
-          <section className="mt-14">
+          <section className="mt-12">
             <H2>{t("fbHowTitle")}</H2>
-            <ol className="relative mt-6 space-y-4 before:absolute before:top-6 before:bottom-6 before:left-6 before:w-0.5 before:bg-border">
+            <ol className="relative mt-6 space-y-4 before:absolute before:top-6 before:bottom-6 before:left-5 before:w-0.5 before:bg-border">
               {how.map((k, i) => (
                 <li key={k} className="relative flex gap-4">
-                  <span aria-hidden className="relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary text-lg font-semibold text-primary-foreground shadow-[var(--shadow-card)]">{i + 1}</span>
+                  <span aria-hidden className="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary text-base font-semibold text-primary-foreground shadow-[var(--shadow-card)]">{i + 1}</span>
                   <span className="flex-1 rounded-2xl bg-card p-4 leading-relaxed shadow-[var(--shadow-card)]">{t(k)}</span>
                 </li>
               ))}
             </ol>
           </section>
 
-          <section className="mt-14">
+          <section className="mt-12">
             <H2>{t("fbFaqTitle")}</H2>
             <div className="mt-5 space-y-3">
               {faq.map(([q, a]) => (
@@ -82,9 +82,9 @@ function ForBusinesses() {
           </section>
         </div>
 
-        <section className="app-hero mt-14 rounded-3xl p-6 sm:p-10">
+        <section className="app-hero mt-14 rounded-2xl p-6 sm:p-10">
           <h2 className="text-2xl font-semibold sm:text-2xl">{t("fbCtaTitle")}</h2>
-          <p className="mt-2 mb-5 max-w-2xl leading-relaxed opacity-90">{t("fbCtaBody")}</p>
+          <p className="mt-2 mb-5 max-w-2xl leading-relaxed text-[var(--hero-muted)]">{t("fbCtaBody")}</p>
           {cta()}
         </section>
       </Page>

@@ -221,7 +221,7 @@ export function CategoryTiles({ city, cats }: { city: string; cats: { slug: stri
 
 export function EmptyState({ title, body }: { title: string; body?: string }) {
   return (
-    <div className="rounded-3xl bg-card px-6 py-10 text-center shadow-[var(--shadow-card)]">
+    <div className="rounded-2xl bg-card px-6 py-10 text-center shadow-[var(--shadow-card)]">
       <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-accent text-accent-foreground"><SearchX aria-hidden className="h-8 w-8" /></span>
       <p className="mt-4 text-lg font-semibold">{title}</p>
       {body && <p className="mt-1 text-muted-foreground">{body}</p>}
@@ -237,7 +237,7 @@ export function NotFoundView() {
   const { t } = useI18n();
   return (
     <Page>
-      <div className="rounded-3xl bg-card px-6 py-12 text-center shadow-[var(--shadow-card)]">
+      <div className="rounded-2xl bg-card px-6 py-12 text-center shadow-[var(--shadow-card)]">
         <span className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-brand-accent text-brand-accent-foreground"><MapPin aria-hidden className="h-10 w-10" /></span>
         <h1 className="mt-5 text-2xl font-semibold">{t("notFound")}</h1>
         <p className="mt-3 text-muted-foreground">{t("notFoundBody")}</p>

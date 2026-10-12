@@ -51,7 +51,7 @@ function SectionPage() {
             <div className="max-w-2xl">
               {crumb}
               <h1 className="mt-1 text-2xl font-semibold sm:text-3xl">{placeName(a, lang)}</h1>
-              <p className="mt-2 text-[15px] leading-relaxed opacity-90 sm:text-base">{t(`intro_${a.slug.replace(/-/g, "_")}` as Key)}</p>
+              <p className="mt-2 text-[15px] leading-relaxed text-[var(--hero-muted)] sm:text-base">{t(`intro_${a.slug.replace(/-/g, "_")}` as Key)}</p>
             </div>
           </div>
         </section>

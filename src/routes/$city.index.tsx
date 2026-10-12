@@ -24,15 +24,15 @@ function CityPage() {
   return (
     <>
       <section className="app-hero">
-        <div className="mx-auto max-w-6xl px-4 pt-6 pb-14 lg:pt-10 lg:pb-20">
+        <div className="mx-auto max-w-6xl px-4 pt-5 pb-10 lg:pt-8 lg:pb-14">
           <div className="max-w-2xl">
             <h1 className="text-2xl font-semibold sm:text-3xl">{lang === "ne" ? city.nameNe : city.name}</h1>
-            <p className="mt-2 text-[15px] leading-relaxed opacity-90 sm:text-base">{t(`intro_city_${city.slug}` as Key)}</p>
+            <p className="mt-2 text-[15px] leading-relaxed text-[var(--hero-muted)] sm:text-base">{t(`intro_city_${city.slug}` as Key)}</p>
           </div>
         </div>
       </section>
       <Page wide>
-        <div className="-mt-14 rounded-3xl bg-card p-3.5 shadow-[var(--shadow-lift)] sm:p-5 lg:-mt-16">
+        <div className="-mt-7 rounded-2xl border border-border bg-card p-3 sm:p-4 lg:-mt-9">
           <CategoryTiles city={city.slug} cats={categoriesIn(items)} />
         </div>
         <section className="mt-6">
