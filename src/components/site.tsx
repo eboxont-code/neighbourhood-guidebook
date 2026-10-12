@@ -1,26 +1,82 @@
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
+import { Briefcase, Globe, Home, MapPin, Phone, Search, SearchX } from "lucide-react";
+import { CatIcon } from "@/components/cover";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { SITE_NAME } from "@/config";
-import { useI18n } from "@/lib/i18n";
-import { dayLabel, getArea, getCategory, hoursStatus, placeName, timeLabel, websiteShortLabel, type Business } from "@/data/directory";
+import { useI18n, type Key } from "@/lib/i18n";
+import { citiesInUse, telLink, dayLabel, getArea, getCategory, hoursStatus, placeName, timeLabel, websiteShortLabel, type Business } from "@/data/directory";
+
+function LangToggle() {
+  const { lang, setLang } = useI18n();
+  return (
+    <div className="seg w-[6.5rem] shrink-0" role="group" aria-label="Language">
+      <span aria-hidden className="seg-thumb" style={{ transform: lang === "ne" ? "translateX(100%)" : "none" }} />
+      <button onClick={() => setLang("en")} aria-pressed={lang === "en"} className={`relative min-h-11 rounded-full text-[15px] font-bold transition-colors ${lang === "en" ? "text-primary" : "text-muted-foreground"}`}>EN</button>
+      <button onClick={() => setLang("ne")} aria-pressed={lang === "ne"} className={`relative min-h-11 rounded-full text-[15px] font-bold transition-colors ${lang === "ne" ? "text-primary" : "text-muted-foreground"}`}>ने</button>
+    </div>
+  );
+}
+
+export function Brand() {
+  const { t } = useI18n();
+  return (
+    <Link to="/" className="flex min-h-11 min-w-0 items-center gap-2.5">
+      <span aria-hidden className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary text-xl font-extrabold text-primary-foreground shadow-[var(--shadow-card)]">
+        {SITE_NAME.charAt(0)}<span className="ml-px h-2 w-2 self-end mb-2 rounded-full bg-brand-accent" />
+      </span>
+      <span className="truncate text-xl font-extrabold tracking-tight">{SITE_NAME}</span>
+      <span className="shrink-0 rounded-full bg-brand-accent px-2 py-0.5 text-xs font-bold text-brand-accent-foreground">{t("brandTag")}</span>
+    </Link>
+  );
+}
+
+function navItems(t: (k: Key) => string) {
+  const city = citiesInUse()[0]?.slug ?? "kathmandu";
+  return [
+    { key: "home", label: t("navHome"), icon: Home, link: { to: "/" as const } },
+    { key: "search", label: t("navSearch"), icon: Search, link: { to: "/search" as const, search: { q: "" } } },
+    { key: "areas", label: t("navAreas"), icon: MapPin, link: { to: "/$city" as const, params: { city } } },
+    { key: "biz", label: t("navBusinesses"), icon: Briefcase, link: { to: "/for-businesses" as const } },
+  ];
+}
 
 export function Header() {
-  const { lang, setLang, t } = useI18n();
+  const { t } = useI18n();
   return (
-    <header className="border-b border-border">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-        <Link to="/" className="font-serif text-xl font-semibold">{SITE_NAME}</Link>
-        <div className="flex items-center gap-1 text-sm">
-        <Link to="/for-businesses" className="inline-flex min-h-11 items-center rounded-md px-3 text-[15px] text-muted-foreground hover:bg-muted hover:text-foreground" activeProps={{ className: "text-foreground font-semibold" }}>{t("navBusinesses")}</Link>
-        <span aria-hidden className="mx-1 h-5 w-px bg-border" />
-        <div className="flex items-center" role="group" aria-label="Language">
-          <button onClick={() => setLang("en")} aria-pressed={lang === "en"} className={`inline-flex min-h-11 min-w-11 items-center justify-center rounded-md text-[15px] ${lang === "en" ? "bg-accent font-semibold text-accent-foreground" : "text-muted-foreground hover:bg-muted"}`}>EN</button>
-          <span aria-hidden className="text-border">|</span>
-          <button onClick={() => setLang("ne")} aria-pressed={lang === "ne"} className={`inline-flex min-h-11 min-w-11 items-center justify-center rounded-md text-[15px] ${lang === "ne" ? "bg-accent font-semibold text-accent-foreground" : "text-muted-foreground hover:bg-muted"}`}>ने</button>
-        </div>
+    <header className="sticky top-0 z-[950] border-b border-border bg-card/90 backdrop-blur-md">
+      <div className="mx-auto grid max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 py-2 lg:flex lg:justify-between">
+        <Brand />
+        <div className="flex items-center gap-1">
+          <nav aria-label={t("navMain")} className="mr-2 hidden items-center gap-1 lg:flex">
+            {navItems(t).map((n) => (
+              <Link key={n.key} {...n.link} activeOptions={{ exact: n.key === "home", includeSearch: false }} className="inline-flex min-h-11 items-center gap-2 rounded-full px-4 text-[15px] font-semibold text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" activeProps={{ className: "bg-accent !text-accent-foreground" }}>
+                <n.icon className="h-4 w-4" aria-hidden />{n.label}
+              </Link>
+            ))}
+          </nav>
+          <LangToggle />
         </div>
       </div>
     </header>
+  );
+}
+
+/** Thumb-friendly bottom bar on phones; listing pages show their own action bar instead. */
+export function BottomNav() {
+  const { t } = useI18n();
+  const path = useRouterState({ select: (s) => s.location.pathname });
+  if (path.startsWith("/s/")) return null;
+  return (
+    <nav aria-label={t("navMain")} className="bottom-nav lg:hidden">
+      <div className="mx-auto grid h-16 max-w-md grid-cols-4">
+        {navItems(t).map((n) => (
+          <Link key={n.key} {...n.link} activeOptions={{ exact: n.key === "home", includeSearch: false }} className="group flex min-h-11 flex-col items-center justify-center gap-0.5 text-[12px] font-semibold text-muted-foreground transition-colors" activeProps={{ className: "!text-primary" }}>
+            <span className="flex h-8 w-14 items-center justify-center rounded-full transition-colors group-aria-[current=page]:bg-accent"><n.icon className="h-5 w-5" aria-hidden /></span>
+            <span className="max-w-full truncate px-1">{n.label}</span>
+          </Link>
+        ))}
+      </div>
+    </nav>
   );
 }
 
@@ -31,11 +87,12 @@ export function Footer() {
     ["/privacy", t("footPrivacy")], ["/contact", t("footContact")],
   ] as const;
   return (
-    <footer className="mt-12 border-t border-border">
-      <div className="mx-auto max-w-6xl px-4 py-6 text-sm">
-        <nav className="grid grid-cols-2 gap-x-4 gap-y-2 sm:flex sm:flex-wrap sm:gap-x-4">
+    <footer className="mt-14 bg-card">
+      <div className="mx-auto max-w-6xl px-4 py-8 text-sm">
+        <Brand />
+        <nav className="mt-4 grid grid-cols-2 gap-x-4 gap-y-1 sm:flex sm:flex-wrap sm:gap-x-2">
           {links.map(([to, label]) => (
-            <Link key={to} to={to} className="-mx-2 inline-flex min-h-11 items-center rounded-md px-2 text-muted-foreground hover:bg-muted hover:text-foreground sm:mx-0">{label}</Link>
+            <Link key={to} to={to} className="-mx-2 inline-flex min-h-11 items-center rounded-full px-3 font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground sm:mx-0">{label}</Link>
           ))}
         </nav>
         <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{SITE_NAME} · {t("noindex")}</p>
@@ -67,7 +124,7 @@ export function HoursLine({ b }: { b: Business }) {
   }
   return (
     <span>
-      <span className={st.kind === "open" ? "font-semibold text-primary" : "text-muted-foreground"}>{t(st.kind === "open" ? "openNow" : "closedNow")}</span>
+      <span className={`status-chip ${st.kind === "open" ? "status-success" : "status-neutral"}`}>{st.kind === "open" && <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-success" />}{t(st.kind === "open" ? "openNow" : "closedNow")}</span>
       {st.today && <span> · {timeLabel(st.today, lang)}</span>}
       {unverified}
     </span>
@@ -75,12 +132,17 @@ export function HoursLine({ b }: { b: Business }) {
 }
 
 export function Page({ children, wide = false }: { children: ReactNode; wide?: boolean }) {
-  return <main className={`mx-auto px-4 py-6 ${wide ? "max-w-6xl" : "max-w-2xl"}`}>{children}</main>;
+  return <main className={`page-enter mx-auto px-4 py-6 ${wide ? "max-w-6xl" : "max-w-2xl"}`}>{children}</main>;
 }
 
 
-export function Monogram({ name, size = "md" }: { name: string; size?: "md" | "lg" }) {
-  return <div aria-hidden className={`monogram ${size === "lg" ? "h-16 w-16 text-3xl" : "h-12 w-12 text-xl"}`}>{name.charAt(0)}</div>;
+export function Monogram({ name, category, size = "md" }: { name: string; category?: string; size?: "md" | "lg" }) {
+  return (
+    <div aria-hidden className={`monogram relative ${category ? `cat-${category}` : ""} ${size === "lg" ? "h-16 w-16 text-3xl" : "h-14 w-14 text-2xl"}`}>
+      {name.charAt(0)}
+      {category && <span className="absolute -right-1 -bottom-1 flex h-6 w-6 items-center justify-center rounded-full border-2 border-card bg-[var(--ph-ink)] text-panel"><CatIcon category={category} className="h-3.5 w-3.5" /></span>}
+    </div>
+  );
 }
 
 export function SearchBox({ initial = "", autoFocus = false }: { initial?: string; autoFocus?: boolean }) {
@@ -91,7 +153,7 @@ export function SearchBox({ initial = "", autoFocus = false }: { initial?: strin
   useEffect(() => () => clearTimeout(timer.current), []);
   const go = (value: string, replace: boolean) => navigate({ to: "/search", search: { q: value }, replace });
   return (
-    <form role="search" className="flex gap-2" onSubmit={(e) => { e.preventDefault(); clearTimeout(timer.current); go(q, false); }}>
+    <form role="search" className="relative flex items-center gap-2 rounded-full bg-card p-1.5 shadow-[var(--shadow-lift)]" onSubmit={(e) => { e.preventDefault(); clearTimeout(timer.current); go(q, false); }}>
       <input value={q} autoFocus={autoFocus} name="q" type="search" aria-label={t("search")} placeholder={t("searchPlaceholder")}
         onChange={(e) => {
           const v = e.target.value;
@@ -99,11 +161,14 @@ export function SearchBox({ initial = "", autoFocus = false }: { initial?: strin
           clearTimeout(timer.current);
           timer.current = setTimeout(() => go(v, true), 300);
         }}
-        className="h-12 min-w-0 flex-1 rounded-md border border-input bg-card px-3 text-base outline-none focus:ring-2 focus:ring-ring" />
-      <button type="submit" className="action-btn action-primary px-4">{t("search")}</button>
+        className="h-12 min-w-0 flex-1 rounded-full bg-transparent pr-2 pl-11 text-base text-foreground outline-none placeholder:text-muted-foreground" />
+      <Search aria-hidden className="pointer-events-none absolute top-1/2 left-5 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+      <button type="submit" className="action-btn action-primary min-h-12 shrink-0 px-4">{t("search")}</button>
     </form>
   );
 }
+
+const WEB_TONE: Record<string, string> = { webWorking: "status-success", webDown: "status-error", webNone: "status-neutral", webNotChecked: "status-warning" };
 
 export function BusinessCard({ b }: { b: Business }) {
   const { lang, t } = useI18n();
@@ -111,17 +176,23 @@ export function BusinessCard({ b }: { b: Business }) {
   const area = getArea(b.area);
   const web = websiteShortLabel(b);
   return (
-    <li>
-      <Link to="/s/$slug" params={{ slug: b.slug }} className="card-link flex gap-3 py-4 hover:bg-muted/60">
-        <Monogram name={b.name} />
-        <div className="min-w-0 flex-1 space-y-0.5">
-          <p className="font-serif text-lg leading-tight font-semibold">{b.name}</p>
-          <p className="text-sm text-muted-foreground">{lang === "ne" ? cat?.nameNe : cat?.name} · {placeName(area, lang)}</p>
-          {b.phone && <p className="text-sm">{b.phone}</p>}
-          <p className="text-sm"><HoursLine b={b} /></p>
-          <p className={`text-sm ${web === "webWorking" ? "text-primary" : web === "webDown" ? "text-unverified" : "text-muted-foreground"}`}>{t(web)}</p>
+    <li className="biz-card">
+      <div className="flex gap-3.5">
+        <Monogram name={b.name} category={b.category} />
+        <div className="min-w-0 flex-1">
+          <Link to="/s/$slug" params={{ slug: b.slug }} className="stretched block text-[1.0625rem] leading-snug font-extrabold break-words">{b.name}</Link>
+          <p className="mt-0.5 text-sm font-medium text-muted-foreground">{lang === "ne" ? cat?.nameNe : cat?.name} · {placeName(area, lang)}</p>
+          <p className="mt-2 text-sm"><HoursLine b={b} /></p>
         </div>
-      </Link>
+      </div>
+      <div className="mt-3 flex items-center justify-between gap-2 border-t border-border pt-3">
+        <span className={`status-chip ${WEB_TONE[web]}`}><Globe aria-hidden className="h-3.5 w-3.5" />{t(web)}</span>
+        {b.phone && (
+          <a href={telLink(b.phone)} className="press relative z-10 inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-full bg-accent px-4 text-sm font-bold text-accent-foreground hover:bg-primary hover:text-primary-foreground" aria-label={`${t("call")} ${b.name} ${b.phone}`}>
+            <Phone aria-hidden className="h-4 w-4" /><span className="tabular-nums">{b.phone}</span>
+          </a>
+        )}
+      </div>
     </li>
   );
 }
@@ -130,17 +201,48 @@ export function CardList({ items }: { items: Business[] }) {
   return <ul className="card-list">{items.map((b) => <BusinessCard key={b.id} b={b} />)}</ul>;
 }
 
+/** Colourful category tiles that link to each category page in a city. */
+export function CategoryTiles({ city, cats }: { city: string; cats: { slug: string; name: string; nameNe: string }[] }) {
+  const { t, lang } = useI18n();
+  return (
+    <section aria-label={t("browseTypes")}>
+      <h2 className="section-title !mb-2 !text-base sm:!text-xl">{t("browseTypes")}</h2>
+      <div className="grid grid-cols-4 gap-2.5 sm:gap-3 lg:grid-cols-8">
+        {cats.map((c) => (
+          <Link key={c.slug} to="/$city/$section" params={{ city, section: c.slug }} className={`cat-tile cat-${c.slug}`}>
+            <span className="cat-tile-icon"><CatIcon category={c.slug} className="h-5 w-5" /></span>
+            <span className="max-w-full break-words">{lang === "ne" ? c.nameNe : c.name}</span>
+          </Link>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+export function EmptyState({ title, body }: { title: string; body?: string }) {
+  return (
+    <div className="rounded-3xl bg-card px-6 py-10 text-center shadow-[var(--shadow-card)]">
+      <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-accent text-accent-foreground"><SearchX aria-hidden className="h-8 w-8" /></span>
+      <p className="mt-4 text-lg font-extrabold">{title}</p>
+      {body && <p className="mt-1 text-muted-foreground">{body}</p>}
+    </div>
+  );
+}
+
 export function TextPage({ title, body }: { title: string; body: string }) {
-  return <Page><h1 className="font-serif text-3xl font-semibold">{title}</h1><p className="mt-4 leading-relaxed">{body}</p></Page>;
+  return <Page><h1 className="text-3xl font-extrabold sm:text-4xl">{title}</h1><div className="form-card mt-5"><p className="leading-relaxed">{body}</p></div></Page>;
 }
 
 export function NotFoundView() {
   const { t } = useI18n();
   return (
     <Page>
-      <h1 className="font-serif text-3xl font-semibold">{t("notFound")}</h1>
-      <p className="mt-3 text-muted-foreground">{t("notFoundBody")}</p>
-      <Link to="/" className="action-btn action-primary mt-6 inline-flex px-5">{t("goHome")}</Link>
+      <div className="rounded-3xl bg-card px-6 py-12 text-center shadow-[var(--shadow-card)]">
+        <span className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-brand-accent text-brand-accent-foreground"><MapPin aria-hidden className="h-10 w-10" /></span>
+        <h1 className="mt-5 text-3xl font-extrabold">{t("notFound")}</h1>
+        <p className="mt-3 text-muted-foreground">{t("notFoundBody")}</p>
+        <Link to="/" className="action-btn action-primary mt-6 inline-flex px-6">{t("goHome")}</Link>
+      </div>
     </Page>
   );
 }

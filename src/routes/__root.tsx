@@ -13,7 +13,7 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { LangProvider } from "@/lib/i18n";
-import { Footer, Header, NotFoundView } from "@/components/site";
+import { BottomNav, Footer, Header, NotFoundView } from "@/components/site";
 
 function NotFoundComponent() {
   return (
@@ -87,14 +87,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&family=Mukta:wght@400;500;600&display=swap" },
+      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Mukta:wght@400;500;600;700;800&display=swap" },
       { rel: "stylesheet", href: appCss },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
     ],
   }),
   shellComponent: RootShell,
   component: RootComponent,
-  notFoundComponent: () => (<LangProvider><Header /><NotFoundView /><Footer /></LangProvider>),
+  notFoundComponent: () => (<LangProvider><Header /><NotFoundView /><Footer /><BottomNav /></LangProvider>),
   errorComponent: ErrorComponent,
 });
 
@@ -121,6 +121,7 @@ function RootComponent() {
         <Header />
         <Outlet />
         <Footer />
+        <BottomNav />
       </LangProvider>
     </QueryClientProvider>
   );

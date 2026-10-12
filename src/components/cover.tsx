@@ -12,7 +12,7 @@ function RazorIcon({ className }: { className?: string }) {
   );
 }
 
-const ICONS: Record<string, (p: { className?: string }) => React.ReactElement> = {
+export const ICONS: Record<string, (p: { className?: string }) => React.ReactElement> = {
   salons: (p) => <Scissors {...p} aria-hidden />,
   cafes: (p) => <Coffee {...p} aria-hidden />,
   restaurants: (p) => <UtensilsCrossed {...p} aria-hidden />,
@@ -22,6 +22,11 @@ const ICONS: Record<string, (p: { className?: string }) => React.ReactElement> =
   spas: (p) => <Leaf {...p} aria-hidden />,
   clinics: (p) => <Stethoscope {...p} aria-hidden />,
 };
+
+export function CatIcon({ category, className }: { category: string; className?: string }) {
+  const Icon = ICONS[category] ?? ((p: { className?: string }) => <Store {...p} aria-hidden />);
+  return <Icon {...(className ? { className } : {})} />;
+}
 
 export function Cover({ cover, name, category }: { cover?: { url: string; credit: string } | undefined; name: string; category: string }) {
   const { t } = useI18n();
@@ -34,12 +39,11 @@ export function Cover({ cover, name, category }: { cover?: { url: string; credit
   }, []);
 
   if (!cover || failed) {
-    const Icon = ICONS[category] ?? ((p) => <Store {...p} aria-hidden />);
     return (
       <div className={`venue-placeholder cat-${category}`} aria-hidden>
-        <div className="mx-auto flex h-full max-w-2xl items-start justify-between px-6 pt-4 lg:max-w-6xl md:pt-5">
-          <span className="font-serif text-6xl leading-none font-semibold md:text-7xl">{name.charAt(0)}</span>
-          <span className="flex h-14 w-14 items-center justify-center rounded-full border border-current/25 md:h-16 md:w-16"><Icon className="h-7 w-7 opacity-80 md:h-8 md:w-8" /></span>
+        <div className="mx-auto flex h-full max-w-2xl items-center justify-between gap-4 px-6 pb-8 lg:max-w-6xl">
+          <span className="flex h-24 w-24 items-center justify-center rounded-[1.75rem] bg-panel text-6xl leading-none font-extrabold shadow-[var(--shadow-lift)] md:h-28 md:w-28 md:text-7xl">{name.charAt(0)}</span>
+          <span className="flex h-16 w-16 items-center justify-center rounded-full bg-[var(--ph-ink)] text-panel shadow-[var(--shadow-card)] md:h-20 md:w-20"><CatIcon category={category} className="h-8 w-8 md:h-10 md:w-10" /></span>
         </div>
       </div>
     );

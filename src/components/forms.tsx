@@ -1,5 +1,6 @@
 import { useState, type ReactNode } from "react";
 import { z } from "zod";
+import { CheckCircle2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { businesses } from "@/data/directory";
 import { useI18n, type Key } from "@/lib/i18n";
@@ -49,8 +50,8 @@ function Honeypot({ value, onChange }: { value: string; onChange: (v: string) =>
 
 function SendStatus({ status }: { status: Status }) {
   const { t } = useI18n();
-  if (status === "error") return <p className="text-destructive" role="alert">{t("sendError")}</p>;
-  if (status === "limited") return <p className="text-unverified" role="alert">{t("rateLimited")}</p>;
+  if (status === "error") return <p className="rounded-2xl bg-error-soft p-3 font-semibold text-error" role="alert">{t("sendError")}</p>;
+  if (status === "limited") return <p className="rounded-2xl bg-warning-soft p-3 font-semibold text-warning" role="alert">{t("rateLimited")}</p>;
   return null;
 }
 
@@ -58,12 +59,12 @@ function Field({ id, label, required, hint, error, children }: { id: string; lab
   const { t } = useI18n();
   return (
     <div>
-      <label htmlFor={id} className="mb-1 block font-medium">
+      <label htmlFor={id} className="mb-1.5 block font-bold">
         {label} <span className="text-sm font-normal text-muted-foreground">({t(required ? "fRequired" : "fOptional")})</span>
       </label>
       {children}
       {hint && <p className="mt-1 text-sm text-muted-foreground">{hint}</p>}
-      {error && <p className="mt-1 text-sm text-destructive" role="alert">{error}</p>}
+      {error && <p className="mt-1.5 text-sm font-semibold text-error" role="alert">{error}</p>}
     </div>
   );
 }
@@ -71,8 +72,9 @@ function Field({ id, label, required, hint, error, children }: { id: string; lab
 function Done({ text }: { text: string }) {
   const { t } = useI18n();
   return (
-    <div className="rounded-lg border border-border bg-card p-5" role="status">
-      <p className="font-serif text-xl font-semibold">{t("thanksTitle")}</p>
+    <div className="page-enter text-center" role="status">
+      <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-success-soft text-success"><CheckCircle2 aria-hidden className="h-9 w-9" /></span>
+      <p className="mt-4 text-2xl font-extrabold">{t("thanksTitle")}</p>
       <p className="mt-2 leading-relaxed">{text}</p>
     </div>
   );
