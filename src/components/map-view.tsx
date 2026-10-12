@@ -1,3 +1,4 @@
+import { createPortal } from "react-dom";
 import { lazy, Suspense, useEffect, useMemo, useState } from "react";
 import { hasPin, type Business } from "@/data/directory";
 import { useI18n } from "@/lib/i18n";
@@ -40,10 +41,14 @@ export function FullMap({ items, onClose, closeLabel }: { items: Business[]; onC
     window.addEventListener("keydown", esc);
     return () => { document.body.style.overflow = prev; window.removeEventListener("keydown", esc); };
   }, [onClose]);
-  return (
+  const [mobile, setMobile] = useState(false);
+  useEffect(() => setMobile(window.matchMedia("(max-width: 1023.98px)").matches), []);
+  const node = (
     <div className="fullmap">
       <MapView items={items} className="h-full lg:h-[68vh]" />
       <button type="button" onClick={onClose} className="action-btn action-dark absolute bottom-[calc(env(safe-area-inset-bottom)+1.25rem)] left-1/2 z-[600] -translate-x-1/2 px-5 shadow-[var(--shadow-lift)] lg:hidden">{closeLabel}</button>
     </div>
   );
+  // On phones the map leaves the page flow entirely so nothing above it can clip or offset it.
+  return mobile ? createPortal(node, document.body) : node;
 }
