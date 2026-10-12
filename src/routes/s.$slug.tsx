@@ -48,17 +48,17 @@ function ShopPage() {
       <Cover cover={b.cover} name={b.name} category={b.category} />
       <main className="venue-layout mx-auto max-w-2xl px-4 pb-6 lg:max-w-6xl">
         <div style={{ gridArea: "panel" }} className={`venue-panel page-enter ${b.cover ? "" : "venue-panel-overlap"}`}>
-          <h1 className="text-[1.875rem] leading-tight font-extrabold break-words sm:text-4xl">{b.name}</h1>
+          <h1 className="text-[1.625rem] leading-tight font-semibold break-words sm:text-3xl">{b.name}</h1>
           <div className="mt-2 flex flex-wrap gap-2 text-sm">
             <Link to="/$city/$section" params={{ city: area.city, section: cat.slug }} className={`chip cat-${cat.slug} !border-transparent !bg-[var(--ph-bg)] !text-[var(--ph-ink)]`}><CatIcon category={cat.slug} className="h-4 w-4" />{lang === "ne" ? cat.nameNe : cat.name}</Link>
             <Link to="/$city/$section" params={{ city: area.city, section: area.slug }} className="chip">{placeName(area, lang)}</Link>
           </div>
-          {b.phone && <p className="mt-3 text-lg font-bold tabular-nums">{b.phone}</p>}
+          {b.phone && <p className="mt-3 text-base font-semibold tabular-nums">{b.phone}</p>}
         </div>
 
         <div style={{ gridArea: "aside" }} className="lg:sticky lg:top-20 lg:mt-4">
           {(b.phone || websiteButton(b)) && (
-            <div className="hidden gap-2 rounded-3xl bg-card p-4 shadow-[var(--shadow-card)] lg:flex lg:flex-col">
+            <div className="hidden gap-2 rounded-2xl bg-card p-4 shadow-[var(--shadow-card)] lg:flex lg:flex-col">
               {b.phone && <a href={telLink(b.phone)} className="action-btn action-primary flex-1"><Phone aria-hidden className="h-5 w-5" />{t("call")}</a>}
               {websiteButton(b) && <a href={b.website} target="_blank" rel="noopener noreferrer" className="action-btn action-secondary flex-1"><Globe aria-hidden className="h-5 w-5" />{t("website")}</a>}
               {b.whatsapp && <a href={whatsappLink(b.whatsapp)} target="_blank" rel="noopener noreferrer" className="action-btn action-secondary flex-1"><MessageCircle aria-hidden className="h-5 w-5" />{t("whatsapp")}</a>}
@@ -165,7 +165,7 @@ function OwnerPanel({ b }: { b: Business }) {
   return (
     <aside aria-labelledby="owner-note" className="owner-note mt-8">
       <p className="mb-1 inline-flex rounded-full bg-brand-accent px-2.5 py-0.5 text-xs font-bold text-brand-accent-foreground">{t("ownerKicker")}</p>
-      <h2 id="owner-note" className="text-lg font-extrabold">{noSite ? t("ownerNoSiteTitle") : t("ownerTitle")}</h2>
+      <h2 id="owner-note" className="text-lg font-semibold">{noSite ? t("ownerNoSiteTitle") : t("ownerTitle")}</h2>
       <p className="mt-1 text-sm leading-relaxed">{t(`owner_${b.websiteStatus}`)}</p>
       <div className="mt-3 flex flex-col gap-2 text-sm sm:flex-row sm:items-center sm:gap-5">
         <Link to="/contact" search={{ business: b.name, listing: b.slug }} className="action-btn action-primary min-h-11 text-sm">{noSite ? t("ownerClaimSite") : t("ownerContact")}</Link>

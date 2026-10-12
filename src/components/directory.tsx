@@ -34,7 +34,7 @@ export function Directory({ items, filterType = true, filterArea = true, typeOnD
   return (
     <div className={`gap-8 ${hasFilters || aside ? "lg:grid lg:grid-cols-[14rem_minmax(0,1fr)]" : ""}`}>
       {(hasFilters || aside) && (
-        <aside className="mb-4 space-y-3 lg:sticky lg:space-y-5 lg:top-20 lg:rounded-3xl lg:bg-card lg:p-4 lg:shadow-[var(--shadow-card)] lg:mb-0 lg:self-start" aria-label={t("filterBy")}>
+        <aside className="mb-4 space-y-3 lg:sticky lg:space-y-5 lg:top-20 lg:rounded-2xl lg:bg-card lg:p-4 lg:border lg:border-border lg:mb-0 lg:self-start" aria-label={t("filterBy")}>
           <div className={typeOnDesktopOnly ? "hidden lg:block" : ""}><FilterGroup label={t("filterType")} options={types} value={cat} onChange={setCat} /></div>
           <FilterGroup label={t("filterArea")} options={areaOpts} value={area} onChange={setArea} />
           {aside}

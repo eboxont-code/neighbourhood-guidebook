@@ -15,7 +15,7 @@ function CorrectionPage() {
   const { t } = useI18n();
   return (
     <Page>
-      <h1 className="text-3xl font-extrabold sm:text-4xl">{t("correctionTitle")}</h1>
+      <h1 className="text-2xl font-semibold sm:text-3xl">{t("correctionTitle")}</h1>
       <p className="mt-3 mb-6 leading-relaxed text-muted-foreground">{t("correctionIntro")}</p>
       <div className="form-card"><CorrectionForm key={listing} listing={listing} /></div>
     </Page>

@@ -20,7 +20,7 @@ function SearchPage() {
   const results = searchBusinesses(q);
   return (
     <Page wide>
-      <div className="app-hero -mx-4 -mt-6 px-4 pt-5 pb-6 sm:rounded-b-3xl"><div className="mx-auto max-w-2xl"><h1 className="mb-3 text-2xl font-extrabold">{t("navSearch")}</h1><SearchBox initial={q} autoFocus /></div></div>
+      <div className="app-hero -mx-4 -mt-6 px-4 pt-5 pb-6 sm:rounded-b-3xl"><div className="mx-auto max-w-2xl"><h1 className="mb-3 text-2xl font-semibold">{t("navSearch")}</h1><SearchBox initial={q} autoFocus /></div></div>
       <div className="mt-6">
         {!q.trim() ? <Directory items={businesses} />
           : results.length === 0 ? (

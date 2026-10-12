@@ -41,9 +41,8 @@ export function Cover({ cover, name, category }: { cover?: { url: string; credit
   if (!cover || failed) {
     return (
       <div className={`venue-placeholder cat-${category}`} aria-hidden>
-        <div className="mx-auto flex h-full max-w-2xl items-center justify-between gap-4 px-6 pb-8 lg:max-w-6xl">
-          <span className="flex h-24 w-24 items-center justify-center rounded-[1.75rem] bg-panel text-6xl leading-none font-extrabold shadow-[var(--shadow-lift)] md:h-28 md:w-28 md:text-7xl">{name.charAt(0)}</span>
-          <span className="flex h-16 w-16 items-center justify-center rounded-full bg-[var(--ph-ink)] text-panel shadow-[var(--shadow-card)] md:h-20 md:w-20"><CatIcon category={category} className="h-8 w-8 md:h-10 md:w-10" /></span>
+        <div className="mx-auto flex h-full max-w-2xl items-center gap-3 px-5 pb-7 lg:max-w-6xl">
+          <span className="relative flex h-16 w-16 items-center justify-center rounded-2xl border border-current/15 bg-panel text-[1.75rem] leading-none font-semibold shadow-[var(--shadow-card)] md:h-[4.5rem] md:w-[4.5rem]">{name.charAt(0)}<span className="absolute -right-1.5 -bottom-1.5 flex h-7 w-7 items-center justify-center rounded-full border-2 border-panel bg-[var(--ph-ink)] text-panel"><CatIcon category={category} className="h-3.5 w-3.5" /></span></span>
         </div>
       </div>
     );

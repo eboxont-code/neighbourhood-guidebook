@@ -74,7 +74,7 @@ function Done({ text }: { text: string }) {
   return (
     <div className="page-enter text-center" role="status">
       <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-success-soft text-success"><CheckCircle2 aria-hidden className="h-9 w-9" /></span>
-      <p className="mt-4 text-2xl font-extrabold">{t("thanksTitle")}</p>
+      <p className="mt-4 text-2xl font-semibold">{t("thanksTitle")}</p>
       <p className="mt-2 leading-relaxed">{text}</p>
     </div>
   );
