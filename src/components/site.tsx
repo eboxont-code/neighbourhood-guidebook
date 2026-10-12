@@ -163,7 +163,7 @@ export function SearchBox({ initial = "", autoFocus = false }: { initial?: strin
         }}
         className="h-12 min-w-0 flex-1 rounded-full bg-transparent pr-2 pl-11 text-base text-foreground outline-none placeholder:text-muted-foreground" />
       <Search aria-hidden className="pointer-events-none absolute top-1/2 left-5 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
-      <button type="submit" className="action-btn action-primary min-h-12 px-5">{t("search")}</button>
+      <button type="submit" className="action-btn action-primary min-h-12 shrink-0 px-4">{t("search")}</button>
     </form>
   );
 }
@@ -206,7 +206,7 @@ export function CategoryTiles({ city, cats }: { city: string; cats: { slug: stri
   const { t, lang } = useI18n();
   return (
     <section aria-label={t("browseTypes")}>
-      <h2 className="section-title">{t("browseTypes")}</h2>
+      <h2 className="section-title !mb-2 !text-base sm:!text-xl">{t("browseTypes")}</h2>
       <div className="grid grid-cols-4 gap-2.5 sm:gap-3 lg:grid-cols-8">
         {cats.map((c) => (
           <Link key={c.slug} to="/$city/$section" params={{ city, section: c.slug }} className={`cat-tile cat-${c.slug}`}>

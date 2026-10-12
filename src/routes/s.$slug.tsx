@@ -150,7 +150,7 @@ function ShopPage() {
         <div className="bottom-nav lg:hidden" role="group" aria-label={t("quickActions")}>
           <div className="mx-auto flex max-w-2xl gap-2 px-4 py-2.5">
             {b.phone && <a href={telLink(b.phone)} className="action-btn action-primary flex-[2] px-3"><Phone aria-hidden className="h-5 w-5" />{t("call")}</a>}
-            {websiteButton(b) && <a href={b.website} target="_blank" rel="noopener noreferrer" className="action-btn action-secondary flex-1 px-3"><Globe aria-hidden className="h-5 w-5" />{t("website")}</a>}
+            {websiteButton(b) && <a href={b.website} target="_blank" rel="noopener noreferrer" className="action-btn action-secondary flex-1 px-3 text-sm whitespace-nowrap"><Globe aria-hidden className="h-5 w-5" />{t("website")}</a>}
             {b.whatsapp && <a href={whatsappLink(b.whatsapp)} target="_blank" rel="noopener noreferrer" className="action-btn action-secondary flex-1 px-3" aria-label={t("whatsapp")}><MessageCircle aria-hidden className="h-5 w-5" /></a>}
           </div>
         </div>

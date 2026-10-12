@@ -17,12 +17,12 @@ function Home() {
   return (
     <>
       <section className="app-hero">
-        <div className="mx-auto max-w-6xl px-4 pt-5 pb-12 lg:pt-12 lg:pb-20">
+        <div className="mx-auto max-w-6xl px-4 pt-4 pb-11 lg:pt-12 lg:pb-20">
           <div className="max-w-2xl">
-            <h1 className="text-[1.75rem] leading-tight font-extrabold sm:text-4xl lg:text-5xl">{t("heroTitle")}</h1>
-            <p className="mt-1.5 mb-4 text-[15px] leading-snug opacity-90 sm:text-base">{t("tagline")}</p>
+            <h1 className="text-[1.625rem] leading-tight font-extrabold sm:text-4xl lg:text-5xl">{t("heroTitle")}</h1>
+            <p className="mt-1 mb-3 text-sm leading-snug opacity-90 sm:text-base">{t("tagline")}</p>
             <SearchBox />
-            <p className="mt-2 text-sm opacity-85">
+            <p className="mt-1.5 text-[13px] leading-snug opacity-90 sm:text-sm">
               {t("coverageNote")}{" "}
               {cities.length === 1 && (
                 <Link to="/$city" params={{ city }} className="inline-flex min-h-11 items-center font-bold underline underline-offset-2 sm:min-h-0">
@@ -34,7 +34,7 @@ function Home() {
         </div>
       </section>
       <Page wide>
-        <div className="-mt-12 rounded-3xl bg-card p-3.5 shadow-[var(--shadow-lift)] sm:p-5 lg:-mt-16">
+        <div className="-mt-12 rounded-3xl bg-card p-3 shadow-[var(--shadow-lift)] sm:p-5 lg:-mt-16">
           <CategoryTiles city={city} cats={categoriesIn(businesses)} />
         </div>
         {cities.length > 1 && (

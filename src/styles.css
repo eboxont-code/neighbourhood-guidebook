@@ -259,14 +259,14 @@
 @utility cat-gyms { --ph-bg: var(--cat-gyms); --ph-ink: var(--cat-gyms-ink); }
 @utility cat-hotels { --ph-bg: var(--cat-hotels); --ph-ink: var(--cat-hotels-ink); }
 @utility cat-tile {
-  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.4rem; min-height: 5.75rem; padding: 0.625rem 0.25rem;
-  border-radius: 1.25rem; background: var(--ph-bg); color: var(--ph-ink); font-size: 0.8125rem; font-weight: 700; text-align: center; line-height: 1.2;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.3rem; min-height: 4.75rem; padding: 0.5rem 0.125rem;
+  border-radius: 1.25rem; background: var(--ph-bg); color: var(--ph-ink); font-size: 0.75rem; font-weight: 700; text-align: center; line-height: 1.15; @media (min-width: 640px) { font-size: 0.875rem; min-height: 6rem; }
   box-shadow: var(--shadow-card); transition: transform 140ms ease, box-shadow 180ms ease;
   &:hover { box-shadow: var(--shadow-lift); transform: translateY(-2px); }
   &:active { transform: scale(0.95); }
 }
 @utility cat-tile-icon {
-  display: flex; align-items: center; justify-content: center; width: 2.75rem; height: 2.75rem; border-radius: 999px;
+  display: flex; align-items: center; justify-content: center; width: 2.25rem; height: 2.25rem; border-radius: 999px; @media (min-width: 640px) { width: 2.75rem; height: 2.75rem; }
   background: var(--ph-ink); color: var(--panel);
 }
 @utility field {
