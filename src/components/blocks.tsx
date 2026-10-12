@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
-import { ArrowRight, ChevronRight, Phone } from "lucide-react";
+import { ArrowRight, Phone } from "lucide-react";
 import { categories, getArea, getCategory, placeName, telLink, type Area, type Business } from "@/data/directory";
 import { useI18n } from "@/lib/i18n";
 import { HoursLine, Monogram } from "@/components/site";
@@ -27,10 +27,6 @@ export function SectionHead({ title, sub, action }: { title: string; sub?: strin
       {action}
     </div>
   );
-}
-
-export function SeeAll({ children, ...link }: { children: ReactNode } & React.ComponentProps<typeof Link>) {
-  return <Link {...link} className="-my-2 inline-flex min-h-11 shrink-0 items-center gap-0.5 text-sm font-semibold text-primary hover:underline">{children}<ChevronRight aria-hidden className="h-4 w-4" /></Link>;
 }
 
 /** Area tiles with their own tone and fine pattern. */

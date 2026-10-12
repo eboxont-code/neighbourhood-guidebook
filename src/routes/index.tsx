@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { CategoryTiles, Page, SearchBox, pageMeta, useNow } from "@/components/site";
-import { AreaTiles, BusinessBand, Carousel, SectionHead, SeeAll } from "@/components/blocks";
-import { areasInUse, businesses, businessesIn, categoriesIn, citiesInUse, placeName } from "@/data/directory";
+import { AreaTiles, BusinessBand, Carousel, SectionHead } from "@/components/blocks";
+import { areasInUse, businessesIn, categoriesIn, citiesInUse, placeName } from "@/data/directory";
 import { isOpen } from "@/lib/filters";
 import { useI18n } from "@/lib/i18n";
 import { SITE_NAME } from "@/config";
@@ -44,8 +44,8 @@ function Home() {
       <Page wide>
         <div className="space-y-10 lg:space-y-14">
           <section>
-            <SectionHead title={t("exploreAreas")} sub={`${cityName} · ${businesses.length > 1 ? t("placesN").replace("{n}", String(items.length)) : ""}`}
-              action={<SeeAll to="/$city" params={{ city: city.slug }}>{t("seeAll")}</SeeAll>} />
+            <SectionHead title={t("exploreAreas")} sub={`${cityName} · ${t("placesN").replace("{n}", String(items.length))}`}
+              action={<Link to="/$city" params={{ city: city.slug }} className="-my-2 inline-flex min-h-11 shrink-0 items-center text-sm font-semibold text-primary hover:underline">{t("seeAll")} ›</Link>} />
             <AreaTiles city={city.slug} items={items} list={areasInUse(city.slug)} />
           </section>
 
