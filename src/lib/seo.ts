@@ -90,3 +90,14 @@ export function breadcrumbJsonLd(b: Business): Record<string, unknown> {
     itemListElement: items.map(([name, path], i) => ({ "@type": "ListItem", position: i + 1, name, item: `${SITE_URL}${path}` })),
   };
 }
+
+/** BreadcrumbList for an area page: Home > City > Area. */
+export function areaBreadcrumbJsonLd(city: { slug: string; name: string }, area: { slug: string; name: string }) {
+  const items: [string, string][] = [["Home", "/"], [city.name, `/${city.slug}`], [area.name, `/${city.slug}/${area.slug}`]];
+  return { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: items.map(([name, path], i) => ({ "@type": "ListItem", position: i + 1, name, item: `${SITE_URL}${path}` })) };
+}
+
+/** ItemList of listings, name and URL only. */
+export function itemListJsonLd(name: string, items: Business[]) {
+  return { "@context": "https://schema.org", "@type": "ItemList", name, itemListElement: items.map((b, i) => ({ "@type": "ListItem", position: i + 1, name: b.name, url: `${SITE_URL}/s/${b.slug}` })) };
+}
