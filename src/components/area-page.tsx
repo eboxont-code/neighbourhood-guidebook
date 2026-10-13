@@ -6,7 +6,7 @@ import { FullMap, MapView } from "@/components/map-view";
 import { CatIcon } from "@/components/cover";
 import { areaTone, count, RowList } from "@/components/blocks";
 import { VenueRow } from "@/components/venue";
-import { businessesIn, categoriesIn, getArea, hasPin, placeName, type City } from "@/data/directory";
+import { businessesIn, categoriesIn, getArea, placeName, type City } from "@/data/directory";
 import { isOpen } from "@/lib/filters";
 import { sortByDistance, useLocation } from "@/lib/geo";
 import { areaFacts, otherAreas } from "@/lib/areas";
@@ -161,4 +161,3 @@ export function AreaGuide({ city, slug }: { city: City; slug: string }) {
   );
 }
 
-export { hasPin };

@@ -7,6 +7,8 @@ import { FullMap, MapView } from "@/components/map-view";
 import { EmptyState } from "@/components/site";
 import { requestLocation, sortByDistance, useLocation } from "@/lib/geo";
 import { CatIcon } from "@/components/cover";
+import { AreaGuide } from "@/components/area-page";
+import { areaBreadcrumbJsonLd, itemListJsonLd } from "@/lib/seo";
 import { Carousel, RowList, SectionHead } from "@/components/blocks";
 import { placeName, areasIn, businessesIn, categoryRedirects, categoriesIn, getArea, getCategory, getCity, resolveSection } from "@/data/directory";
 import { applyCatFilters, parseCatSearch, type CatFilters } from "@/lib/filters";
@@ -31,7 +33,11 @@ export const Route = createFileRoute("/$city/$section")({
     const path = `/${city.slug}/${sec.slug}`;
     if (sec.kind === "area") {
       const a = getArea(sec.slug)!;
-      return pageMeta(`Businesses in ${a.name}, ${city.name}`, `Local places in ${a.name}, ${city.name}, with phone numbers, opening hours, directions and whether each website works.`, path);
+      const items = businessesIn(city.slug).filter((b) => b.area === a.slug);
+      const types = categoriesIn(items).map((c) => c.name.toLowerCase());
+      const list = types.length > 3 ? `${types.slice(0, 3).join(", ")} and more` : types.length > 1 ? `${types.slice(0, -1).join(", ")} and ${types[types.length - 1]}` : types[0] ?? "local places";
+      const head = pageMeta(`Places in ${a.name}, ${city.name}: ${list}`, `Local places in ${a.name}, ${city.name}, with phone numbers, opening hours, directions and whether each website works.`, path);
+      return { ...head, scripts: [{ type: "application/ld+json", children: JSON.stringify(areaBreadcrumbJsonLd(city, a)) }, { type: "application/ld+json", children: JSON.stringify(itemListJsonLd(`Places in ${a.name}`, items)) }] };
     }
     const c = getCategory(sec.slug)!;
     return pageMeta(`${c.name} in ${city.name}`, `${c.name} in ${city.name}, with phone numbers, opening hours, directions and whether each website works.`, path);
@@ -49,50 +55,9 @@ function Crumb({ city, name, light = true }: { city: string; name: string; light
   return <Link to="/$city" params={{ city }} className={`-ml-1 inline-flex min-h-11 items-center gap-1 px-1 text-sm font-medium hover:underline ${light ? "text-[var(--hero-muted)]" : "text-muted-foreground"}`}>← {name}</Link>;
 }
 
-/** Neighbourhood feature: intro and mini map, then one row per category that has places here. */
 function AreaPage() {
   const { city, sec } = Route.useLoaderData();
-  const { t, lang } = useI18n();
-  const a = getArea(sec.slug)!;
-  const items = businessesIn(city.slug).filter((b) => b.area === a.slug);
-  const areaName = placeName(a, lang);
-  const catName = (c: { name: string; nameNe: string }) => (lang === "ne" ? c.nameNe : c.name);
-  const { here } = useLocation();
-  const [full, setFull] = useState(false);
-  const close = useCallback(() => setFull(false), []);
-  const order = (list: typeof items) => (here ? sortByDistance(list, here) : list);
-  return (
-    <>
-      <section className="app-hero">
-        <div className="mx-auto grid max-w-6xl gap-5 px-5 pt-2 pb-6 lg:grid-cols-[minmax(0,1fr)_26rem] lg:items-end lg:pt-6 lg:pb-10">
-          <div>
-            <Crumb city={city.slug} name={lang === "ne" ? city.nameNe : city.name} />
-            <h1 className="text-2xl font-semibold sm:text-3xl">{areaName}</h1>
-            <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-[var(--hero-muted)]">{t(`intro_${a.slug.replace(/-/g, "_")}` as Key)}</p>
-          </div>
-          <div className="relative">
-            <MapView items={items} className="h-64 lg:h-72" />
-            <button type="button" onClick={() => setFull(true)} className="action-btn action-dark absolute top-3 right-3 z-[600] min-h-11 px-4 text-sm lg:hidden"><Maximize2 aria-hidden className="h-4 w-4" />{t("tapFullMap")}</button>
-          </div>
-          {full && <div className="lg:hidden"><FullMap items={items} onClose={close} closeLabel={t("closeMap")} /></div>}
-        </div>
-      </section>
-      <Page wide>
-        <div className="space-y-9">
-          {categoriesIn(items).map((c) => {
-            const row = items.filter((b) => b.category === c.slug);
-            return (
-              <section key={c.slug}>
-                <SectionHead title={t("catInArea").replace("{cat}", catName(c)).replace("{area}", areaName)} sub={t(row.length === 1 ? "placesOne" : "placesN").replace("{n}", String(row.length))}
-                  action={<Link to="/$city/$section" params={{ city: city.slug, section: c.slug }} search={{ area: a.slug }} className="-my-2 inline-flex min-h-11 shrink-0 items-center text-sm font-semibold text-primary hover:underline">{t("seeAll")} ›</Link>} />
-                <Carousel items={order(row)} label={catName(c)} />
-              </section>
-            );
-          })}
-        </div>
-      </Page>
-    </>
-  );
+  return <AreaGuide city={city} slug={sec.slug} />;
 }
 
 /** Focused list: sticky filters in the URL, compact rows, list or map. */

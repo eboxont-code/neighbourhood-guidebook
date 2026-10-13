@@ -425,3 +425,7 @@
   .fullmap > div > p { position: static; padding: 0; margin-top: 0.5rem; background: none; box-shadow: none; text-align: left; color: var(--muted-foreground); font-size: 0.875rem; }
   .fullmap .leaflet-bottom.leaflet-right { bottom: 0; }
 }
+@utility hero-fact {
+  display: inline-flex; align-items: center; min-height: 2rem; padding: 0 0.75rem; border-radius: 999px; font-size: 0.8125rem; font-weight: 600;
+  color: var(--hero-foreground); background: color-mix(in oklab, var(--hero-foreground) 12%, transparent); border: 1px solid color-mix(in oklab, var(--hero-foreground) 18%, transparent);
+}
