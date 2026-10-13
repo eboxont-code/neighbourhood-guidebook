@@ -111,3 +111,15 @@ describe("URL params", () => {
     expect(parseCatSearch({ sort: "near", view: "map" })).toEqual({ sort: "near", view: "map" });
   });
 });
+
+import { areaFacts, otherAreas } from "@/lib/areas";
+describe("area guide", () => {
+  it("counts real facts and excludes the current area", () => {
+    const f = areaFacts("naxal", null);
+    expect(f.places).toBe(businesses.filter((b) => b.area === "naxal").length);
+    expect(f.open).toBe(0);
+    const o = otherAreas("kathmandu", "thamel");
+    expect(o.some((a) => a.slug === "thamel")).toBe(false);
+    expect(o.every((a) => businesses.some((b) => b.area === a.slug))).toBe(true);
+  });
+});
