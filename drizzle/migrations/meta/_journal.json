@@ -15,6 +15,13 @@
       "when": 1791720970921,
       "tag": "0001_form_rate_limit",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1791942532474,
+      "tag": "0002_listings_admin_and_roles",
+      "breakpoints": true
     }
   ]
 }
