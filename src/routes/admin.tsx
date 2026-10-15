@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import type { Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
+import type { Tables } from "@/integrations/supabase/types";
 import { areas, categories, placeName, type Business, type WebsiteStatus, type Verification } from "@/data/directory";
 import { rowToBusiness } from "@/lib/listings.functions";
 import { expireListings } from "@/lib/listings";
@@ -17,7 +18,7 @@ export const Route = createFileRoute("/admin")({
 type Row = { id: string; slug: string; name: string; city: string; area: string; category: string; status: string; sort_order: number; data: unknown };
 const card = "rounded-2xl border border-border bg-card p-4 sm:p-5";
 
-function Field({ label, hint, error, children }: { label: string; hint?: string; error?: string; children: ReactNode }) {
+function Field({ label, hint, error, children }: { label: string; hint?: string | undefined; error?: string | undefined; children: ReactNode }) {
   return (
     <label className="block">
       <span className="mb-1.5 block text-sm font-semibold">{label}</span>
@@ -202,23 +203,23 @@ function Editor({ row, all, onDone, onCancel }: { row: Row | null; all: Row[]; o
   async function save(e: React.FormEvent) {
     e.preventDefault(); setFail(null);
     const er: Record<string, Key> = {};
-    if (!v.name.trim()) er.name = "erName";
-    if (!validSlug(v.slug)) er.slug = "erSlug";
+    if (!v.name.trim()) er["name"] = "erName";
+    if (!validSlug(v.slug)) er["slug"] = "erSlug";
     const phone = v.phone.trim() ? normalizePhone(v.phone) : "";
-    if (phone === null) er.phone = "erPhone";
+    if (phone === null) er["phone"] = "erPhone";
     const others = lines(v.otherPhones).map(normalizePhone);
-    if (others.includes(null)) er.otherPhones = "erPhone";
+    if (others.includes(null)) er["otherPhones"] = "erPhone";
     const wa = v.whatsapp.trim() ? normalizePhone(v.whatsapp) : "";
-    if (wa === null) er.whatsapp = "erPhone";
+    if (wa === null) er["whatsapp"] = "erPhone";
     for (const k of ["website", "directions", "coverUrl", "sourceUrl"] as const) if (v[k].trim() && !validUrl(v[k].trim())) er[k] = "erUrl";
     const lat = v.lat.trim() ? Number(v.lat) : undefined, lng = v.lng.trim() ? Number(v.lng) : undefined;
-    if ((lat === undefined) !== (lng === undefined) || (lat !== undefined && !(Math.abs(lat) <= 90 && Math.abs(lng!) <= 180))) er.lat = "erCoord";
-    if (week?.some((d) => d.kind === "open" && (!d.from || !d.to))) er.hours = "erTime";
+    if ((lat === undefined) !== (lng === undefined) || (lat !== undefined && !(Math.abs(lat) <= 90 && Math.abs(lng!) <= 180))) er["lat"] = "erCoord";
+    if (week?.some((d) => d.kind === "open" && (!d.from || !d.to))) er["hours"] = "erTime";
     setErrors(er);
     if (Object.keys(er).length) { setFail("adFixErrors"); return; }
     const hours = week ? weekToHours(week) : b?.hours ?? [];
     const opt = (s: string) => s.trim() || undefined;
-    const data: Partial<Business> = {
+    const data: { [K in keyof Business]?: Business[K] | undefined } = {
       ...(b ? (({ id, slug, name, area, category, ...rest }) => rest)(b) : { services: [], demo: false, addedOn: new Date().toISOString().slice(0, 10) }),
       address: opt(v.address), phone: phone || undefined, otherPhones: others.length ? others.map((n) => ({ number: n! })) : undefined, whatsapp: wa || undefined,
       website: opt(v.website), websiteStatus: v.websiteStatus as WebsiteStatus, lastChecked: opt(v.lastChecked), description: opt(v.description),
@@ -311,7 +312,7 @@ function Editor({ row, all, onDone, onCancel }: { row: Row | null; all: Row[]; o
             )}
           </div>
         ))}
-        {errors.hours && <p role="alert" className="text-sm font-semibold text-error">{t(errors.hours)}</p>}
+        {errors["hours"] && <p role="alert" className="text-sm font-semibold text-error">{t(errors["hours"])}</p>}
         <Field label={t("adHoursSource")}>{inp("hoursSource")}</Field>
         <label className="flex min-h-11 items-center gap-3"><input type="checkbox" className="h-5 w-5" checked={v.hoursVerified} onChange={(e) => set("hoursVerified", e.target.checked)} />{t("adHoursVerified")}</label>
       </section>
@@ -367,7 +368,7 @@ function Editor({ row, all, onDone, onCancel }: { row: Row | null; all: Row[]; o
 
 function Messages() {
   const { t } = useI18n();
-  const [data, setData] = useState<{ c: Record<string, string | null>[]; r: Record<string, string | null>[] } | null>(null);
+  const [data, setData] = useState<{ c: Tables<"contact_messages">[]; r: Tables<"correction_reports">[] } | null>(null);
   const [failed, setFailed] = useState(false);
   async function load() {
     setFailed(false);
@@ -375,7 +376,7 @@ function Messages() {
       supabase.from("contact_messages").select("*").order("created_at", { ascending: false }).limit(200),
       supabase.from("correction_reports").select("*").order("created_at", { ascending: false }).limit(200),
     ]);
-    if (c.error || r.error) setFailed(true); else setData({ c: c.data as never, r: r.data as never });
+    if (c.error || r.error) setFailed(true); else setData({ c: c.data, r: r.data });
   }
   useEffect(() => { load(); }, []);
   if (failed) return <div className={card}><p>{t("adLoadError")}</p><button type="button" className="action-btn action-secondary mt-3" onClick={load}>{t("adRetry")}</button></div>;
