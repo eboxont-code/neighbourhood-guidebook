@@ -102,7 +102,7 @@ export function AreaGuide({ city, slug }: { city: City; slug: string }) {
                       <span aria-hidden className="cat-tile-icon !h-8 !w-8 shrink-0 !bg-[var(--ph-bg)]"><CatIcon category={c.slug} className="h-4 w-4" /></span>
                       <span className="min-w-0">{t("catInArea").replace("{cat}", catName(c)).replace("{area}", areaName)} <span className="text-sm font-normal text-muted-foreground">· {row.length}</span></span>
                     </h2>
-                    <Link to="/$city/$section" params={{ city: city.slug, section: c.slug }} search={{ area: a.slug }} className="-my-2 inline-flex min-h-11 shrink-0 items-center text-sm font-semibold text-foreground underline-offset-4 hover:underline">{t("seeAll")} ›</Link>
+                    <Link to="/$city/$section/$category" params={{ city: city.slug, section: a.slug, category: c.slug }} className="-my-2 inline-flex min-h-11 shrink-0 items-center text-sm font-semibold text-foreground underline-offset-4 hover:underline">{t("seeAll")} ›</Link>
                   </div>
                   {row.length >= 3 ? <VenueRow items={row} label={catName(c)} /> : <RowList items={row} />}
                 </section>

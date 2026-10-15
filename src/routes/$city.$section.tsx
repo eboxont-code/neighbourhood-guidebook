@@ -95,10 +95,10 @@ function CategoryPage() {
       <div className="sticky-bar">
         <div className="mx-auto max-w-6xl px-5 py-2">
           <div className="chip-row !flex-nowrap lg:!overflow-x-auto" role="group" aria-label={t("filterBy")}>
-            {areaOpts.length > 1 && (
+            {areaOpts.length > 0 && (
               <>
                 <button type="button" aria-pressed={!f.area} onClick={() => set({ area: undefined })} className={pill(!f.area)}>{t("allAreas")}</button>
-                {areaOpts.map((a) => <button key={a.slug} type="button" aria-pressed={f.area === a.slug} onClick={() => set({ area: f.area === a.slug ? undefined : a.slug })} className={pill(f.area === a.slug)}>{placeName(a, lang)}</button>)}
+                {areaOpts.map((a) => <Link key={a.slug} to="/$city/$section/$category" params={{ city: city.slug, section: a.slug, category: c.slug }} aria-current={f.area === a.slug ? "page" : undefined} className={pill(f.area === a.slug)}>{placeName(a, lang)}</Link>)}
                 <span aria-hidden className="w-px shrink-0 self-stretch bg-border" />
               </>
             )}

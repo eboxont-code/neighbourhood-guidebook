@@ -82,7 +82,7 @@ export function breadcrumbJsonLd(b: Business): Record<string, unknown> {
   const items: [string, string][] = [["Home", "/"]];
   if (city) items.push([city.name, `/${city.slug}`]);
   if (city && area) items.push([area.name, `/${city.slug}/${area.slug}`]);
-  if (city && cat) items.push([cat.name, `/${city.slug}/${cat.slug}`]);
+  if (city && area && cat) items.push([`${cat.name} in ${area.name}`, `/${city.slug}/${area.slug}/${cat.slug}`]);
   items.push([b.name, `/s/${b.slug}`]);
   return {
     "@context": "https://schema.org",
@@ -100,4 +100,10 @@ export function areaBreadcrumbJsonLd(city: { slug: string; name: string }, area:
 /** ItemList of listings, name and URL only. */
 export function itemListJsonLd(name: string, items: Business[]) {
   return { "@context": "https://schema.org", "@type": "ItemList", name, itemListElement: items.map((b, i) => ({ "@type": "ListItem", position: i + 1, name: b.name, url: `${SITE_URL}/s/${b.slug}` })) };
+}
+
+/** BreadcrumbList for an area + category page: Home > City > Area > Category in area. */
+export function comboBreadcrumbJsonLd(city: { slug: string; name: string }, area: { slug: string; name: string }, cat: { slug: string; name: string }) {
+  const items: [string, string][] = [["Home", "/"], [city.name, `/${city.slug}`], [area.name, `/${city.slug}/${area.slug}`], [`${cat.name} in ${area.name}`, `/${city.slug}/${area.slug}/${cat.slug}`]];
+  return { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: items.map(([name, path], i) => ({ "@type": "ListItem", position: i + 1, name, item: `${SITE_URL}${path}` })) };
 }

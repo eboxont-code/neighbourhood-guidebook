@@ -24,6 +24,7 @@ import { Route as CitySectionRouteImport } from './routes/$city.$section'
 import { Route as AAreaSlugRouteImport } from './routes/a.$areaSlug'
 import { Route as CCategorySlugRouteImport } from './routes/c.$categorySlug'
 import { Route as SSlugRouteImport } from './routes/s.$slug'
+import { Route as CitySectionCategoryRouteImport } from './routes/$city.$section_.$category'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -100,6 +101,11 @@ const SSlugRoute = SSlugRouteImport.update({
   path: '/s/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CitySectionCategoryRoute = CitySectionCategoryRouteImport.update({
+  id: '/$city/$section_/$category',
+  path: '/$city/$section/$category',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -117,6 +123,7 @@ export interface FileRoutesByFullPath {
   '/c/$categorySlug': typeof CCategorySlugRoute
   '/s/$slug': typeof SSlugRoute
   '/$city/': typeof CityIndexRoute
+  '/$city/$section/$category': typeof CitySectionCategoryRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -134,6 +141,7 @@ export interface FileRoutesByTo {
   '/c/$categorySlug': typeof CCategorySlugRoute
   '/s/$slug': typeof SSlugRoute
   '/$city': typeof CityIndexRoute
+  '/$city/$section/$category': typeof CitySectionCategoryRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -152,6 +160,7 @@ export interface FileRoutesById {
   '/c/$categorySlug': typeof CCategorySlugRoute
   '/s/$slug': typeof SSlugRoute
   '/$city/': typeof CityIndexRoute
+  '/$city/$section_/$category': typeof CitySectionCategoryRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -171,6 +180,7 @@ export interface FileRouteTypes {
     | '/c/$categorySlug'
     | '/s/$slug'
     | '/$city/'
+    | '/$city/$section/$category'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -188,6 +198,7 @@ export interface FileRouteTypes {
     | '/c/$categorySlug'
     | '/s/$slug'
     | '/$city'
+    | '/$city/$section/$category'
   id:
     | '__root__'
     | '/'
@@ -205,6 +216,7 @@ export interface FileRouteTypes {
     | '/c/$categorySlug'
     | '/s/$slug'
     | '/$city/'
+    | '/$city/$section_/$category'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -223,6 +235,7 @@ export interface RootRouteChildren {
   CCategorySlugRoute: typeof CCategorySlugRoute
   SSlugRoute: typeof SSlugRoute
   CityIndexRoute: typeof CityIndexRoute
+  CitySectionCategoryRoute: typeof CitySectionCategoryRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -332,6 +345,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/$city/$section_/$category': {
+      id: '/$city/$section_/$category'
+      path: '/$city/$section/$category'
+      fullPath: '/$city/$section/$category'
+      preLoaderRoute: typeof CitySectionCategoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -351,6 +371,7 @@ const rootRouteChildren: RootRouteChildren = {
   CCategorySlugRoute: CCategorySlugRoute,
   SSlugRoute: SSlugRoute,
   CityIndexRoute: CityIndexRoute,
+  CitySectionCategoryRoute: CitySectionCategoryRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
