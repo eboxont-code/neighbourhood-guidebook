@@ -9,10 +9,12 @@
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
 
-- All listing data lives in src/data/directory.ts as one Business shape used by every screen; swap this module for a real data source later.
+- Listings live in the database `listings` table (columns for slug/city/area/category/status/sort_order, the rest of the Business shape in `data` jsonb); the root beforeLoad loads published rows via src/lib/listings.ts (60s cache) into the live `businesses` array, and the router dehydrates them so server and browser render the same set.
+- If the listings query fails or the table is missing, the bundled snapshot in src/data/directory.ts stays in place and only a console error is logged; keep that snapshot as the fallback.
+- Areas, categories and code redirect maps stay in src/data/directory.ts; slug renames made in /admin are recorded by a database trigger in `slug_redirects` and redirect permanently.
+- The admin role is granted by hand in `user_roles`; public sign-up is off and no users or roles are seeded. /admin writes straight from the browser under RLS checked by has_role.
 - Interface strings go through src/lib/i18n.tsx; business data is never translated.
 - Form submissions insert straight from the browser into insert-only tables (anonymous INSERT allowed, no read access); zod limits mirror the table CHECK limits.
-- Renamed listing or category slugs stay reachable through the redirect maps in src/data/directory.ts, so old links keep working.
 - Open/closed status is computed only after mount in Asia/Kathmandu time, so the first HTML never mismatches.
 - Form spam is stopped by a hidden honeypot in the browser and a BEFORE INSERT database trigger that rate-limits by hashed IP and per-tab key; no captcha, so real people see no extra step.
 - Page head tags come from pageMeta in src/lib/seo.ts and listing JSON-LD from businessJsonLd, built only from recorded fields so nothing is invented.

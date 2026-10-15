@@ -224,6 +224,18 @@ export const businesses: Business[] = [
 // When each listing actually entered the data: the first twenty at launch, the rest a day later.
 for (const b of businesses) b.addedOn ??= Number(b.id.slice(1)) <= 20 ? "2026-10-11" : "2026-10-12";
 
+/** Bundled copy of the listings, used whenever the database can't be reached. */
+export const listingSnapshot: Business[] = businesses.map((b) => ({ ...b }));
+/** Old listing slugs recorded in the database when the admin renames a listing. */
+export const liveSlugRedirects: Record<string, string> = {};
+
+/** Swap the live listings in place, so every screen reading `businesses` sees the new set. */
+export function setListings(items: Business[], redirects: Record<string, string> = {}) {
+  businesses.splice(0, businesses.length, ...items);
+  for (const k of Object.keys(liveSlugRedirects)) delete liveSlugRedirects[k];
+  Object.assign(liveSlugRedirects, redirects);
+}
+
 export const getCategory = (slug: string) => categories.find((c) => c.slug === slug);
 export const getArea = (slug: string) => areas.find((a) => a.slug === slug);
 export const getBusiness = (slug: string) => businesses.find((b) => b.slug === slug);
