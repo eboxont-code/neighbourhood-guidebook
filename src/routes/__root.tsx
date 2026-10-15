@@ -14,6 +14,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { LangProvider } from "@/lib/i18n";
 import { BottomNav, Footer, Header, NotFoundView } from "@/components/site";
+import { ensureListings } from "@/lib/listings";
 
 function NotFoundComponent() {
   return (
@@ -76,6 +77,8 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
+  // Runs before every child route, so their loaders always see the current listings.
+  beforeLoad: () => ensureListings(),
   head: () => ({
     meta: [
       { charSet: "utf-8" },

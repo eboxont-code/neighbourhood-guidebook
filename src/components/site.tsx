@@ -66,7 +66,7 @@ export function Header() {
 export function BottomNav() {
   const { t } = useI18n();
   const path = useRouterState({ select: (s) => s.location.pathname });
-  if (path.startsWith("/s/")) return null;
+  if (path.startsWith("/s/") || path.startsWith("/admin")) return null;
   return (
     <nav aria-label={t("navMain")} className="bottom-nav lg:hidden">
       <div className="mx-auto grid h-[3.75rem] max-w-md grid-cols-5">

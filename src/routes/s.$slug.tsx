@@ -6,7 +6,7 @@ import { CatIcon } from "@/components/cover";
 import { SectionHead } from "@/components/blocks";
 import { HeartButton, VenueRow } from "@/components/venue";
 import { MapView } from "@/components/map-view";
-import { businesses, dayLabel, placeName, timeLabel, getCity, hasPin, whatsappLink, directionsLink, slugRedirects, showWebsite, socialLinks, websiteButton, getArea, getBusiness, getCategory, telLink, websiteStatusSentence, kathmanduNow, type Business } from "@/data/directory";
+import { businesses, dayLabel, placeName, timeLabel, getCity, hasPin, whatsappLink, directionsLink, slugRedirects, liveSlugRedirects, showWebsite, socialLinks, websiteButton, getArea, getBusiness, getCategory, telLink, websiteStatusSentence, kathmanduNow, type Business } from "@/data/directory";
 import { useI18n, type Key } from "@/lib/i18n";
 import { businessJsonLd, breadcrumbJsonLd } from "@/lib/seo";
 import { distanceTo, formatDistance, sortByDistance, useLocation } from "@/lib/geo";
@@ -14,7 +14,7 @@ import { statusDetail, weekTable } from "@/lib/venue";
 
 export const Route = createFileRoute("/s/$slug")({
   loader: ({ params }) => {
-    const moved = slugRedirects[params.slug];
+    const moved = getBusiness(params.slug) ? undefined : slugRedirects[params.slug] ?? liveSlugRedirects[params.slug];
     if (moved) throw redirect({ to: "/s/$slug", params: { slug: moved }, statusCode: 301 });
     const business = getBusiness(params.slug);
     if (!business) throw notFound();
