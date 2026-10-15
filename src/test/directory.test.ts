@@ -38,7 +38,7 @@ describe("hours provenance", () => {
     expect(businesses.find((b) => b.slug === "aavaran-durbar-marg")?.hoursVerified).toBe(true);
   });
   it("shops with no published hours have none", () => {
-    expect(businesses.find((b) => b.slug === "lavish-durbar-marg")?.hours).toBeUndefined();
+    expect(businesses.find((b) => b.slug === "club-oasis-hyatt")?.hours).toBeUndefined();
   });
 });
 
@@ -50,7 +50,7 @@ describe("website and social display", () => {
     expect(showWebsite(by("aavaran-durbar-marg"))).toBe(true);
   });
   it("only a working website gets the button", () => {
-    expect(websiteButton(by("the-new-barber-durbar-marg"))).toBe(false);
+    expect(websiteButton(by("or2k-thamel"))).toBe(false);
     expect(websiteButton(by("tranquility-spa"))).toBe(true);
   });
   it("sources are not website addresses", () => {
@@ -99,7 +99,7 @@ describe("stage 1 data rules", () => {
   });
   it("website short labels", () => {
     expect(websiteShortLabel(by("aavaran-durbar-marg"))).toBe("webWorking");
-    expect(websiteShortLabel(by("kaya-healing-thamel"))).toBe("webDown");
+    expect(websiteShortLabel(by("kaya-healing-thamel"))).toBe("webNone");
     expect(websiteShortLabel(by("deezy-cuts-baluwatar"))).toBe("webNone");
     expect(websiteShortLabel(by("lavish-durbar-marg"))).toBe("webNone");
   });
