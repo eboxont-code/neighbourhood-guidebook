@@ -8,7 +8,7 @@ import { HeartButton, VenueRow } from "@/components/venue";
 import { MapView } from "@/components/map-view";
 import { businesses, dayLabel, placeName, timeLabel, getCity, hasPin, whatsappLink, directionsLink, slugRedirects, liveSlugRedirects, showWebsite, socialLinks, websiteButton, getArea, getBusiness, getCategory, telLink, websiteStatusSentence, kathmanduNow, type Business } from "@/data/directory";
 import { useI18n, type Key } from "@/lib/i18n";
-import { businessJsonLd, breadcrumbJsonLd } from "@/lib/seo";
+import { businessJsonLd, breadcrumbJsonLd, listingTitle } from "@/lib/seo";
 import { distanceTo, formatDistance, sortByDistance, useLocation } from "@/lib/geo";
 import { statusDetail, weekTable } from "@/lib/venue";
 
@@ -26,7 +26,7 @@ export const Route = createFileRoute("/s/$slug")({
     const area = getArea(b.area)?.name ?? "";
     const cat = getCategory(b.category)?.name.replace(/s$/, "").toLowerCase() ?? "business";
     const bits = [b.phone ? `phone ${b.phone}` : "", b.hours?.length ? "opening hours" : "", "website check"].filter(Boolean).join(", ");
-    const head = pageMeta(`${b.name}, ${area}`, `${b.name} is a ${cat} in ${area}, ${getCity(getArea(b.area)?.city ?? "")?.name ?? ""}. See the ${bits}, and where each detail came from.`, `/s/${b.slug}`, { type: "business.business", ...(b.cover ? { image: b.cover.url } : {}) });
+    const head = pageMeta(listingTitle(b.name, area), `${b.name} is a ${cat} in ${area}, ${getCity(getArea(b.area)?.city ?? "")?.name ?? ""}. See the ${bits}, and where each detail came from.`, `/s/${b.slug}`, { type: "business.business", ...(b.cover ? { image: b.cover.url } : {}) });
     return { ...head, scripts: [{ type: "application/ld+json", children: JSON.stringify(businessJsonLd(b)) }, { type: "application/ld+json", children: JSON.stringify(breadcrumbJsonLd(b)) }] };
   },
   notFoundComponent: NotFoundView,

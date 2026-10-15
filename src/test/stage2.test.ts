@@ -24,7 +24,7 @@ describe("listing JSON-LD", () => {
 describe("page meta", () => {
   it("has a canonical and no em dash", () => {
     const m = pageMeta("For businesses", "Simple sites.", "/for-businesses");
-    expect(m.links[0]!.href).toBe("https://neighbourhood-guidebook.lovable.app/for-businesses");
+    expect(m.links[0]!.href).toBe("https://sewa.boxont.com/for-businesses");
     expect(JSON.stringify(m)).not.toContain("—");
   });
 });

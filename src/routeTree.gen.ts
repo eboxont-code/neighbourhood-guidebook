@@ -17,6 +17,7 @@ import { Route as ForBusinessesRouteImport } from './routes/for-businesses'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as SavedRouteImport } from './routes/saved'
 import { Route as SearchRouteImport } from './routes/search'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SuggestCorrectionRouteImport } from './routes/suggest-correction'
 import { Route as WebsiteHelpRouteImport } from './routes/website-help'
 import { Route as CityIndexRouteImport } from './routes/$city.index'
@@ -64,6 +65,11 @@ const SavedRoute = SavedRouteImport.update({
 const SearchRoute = SearchRouteImport.update({
   id: '/search',
   path: '/search',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SuggestCorrectionRoute = SuggestCorrectionRouteImport.update({
@@ -116,6 +122,7 @@ export interface FileRoutesByFullPath {
   '/privacy': typeof PrivacyRoute
   '/saved': typeof SavedRoute
   '/search': typeof SearchRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/suggest-correction': typeof SuggestCorrectionRoute
   '/website-help': typeof WebsiteHelpRoute
   '/$city/$section': typeof CitySectionRoute
@@ -134,6 +141,7 @@ export interface FileRoutesByTo {
   '/privacy': typeof PrivacyRoute
   '/saved': typeof SavedRoute
   '/search': typeof SearchRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/suggest-correction': typeof SuggestCorrectionRoute
   '/website-help': typeof WebsiteHelpRoute
   '/$city/$section': typeof CitySectionRoute
@@ -153,6 +161,7 @@ export interface FileRoutesById {
   '/privacy': typeof PrivacyRoute
   '/saved': typeof SavedRoute
   '/search': typeof SearchRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/suggest-correction': typeof SuggestCorrectionRoute
   '/website-help': typeof WebsiteHelpRoute
   '/$city/$section': typeof CitySectionRoute
@@ -173,6 +182,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/saved'
     | '/search'
+    | '/sitemap.xml'
     | '/suggest-correction'
     | '/website-help'
     | '/$city/$section'
@@ -191,6 +201,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/saved'
     | '/search'
+    | '/sitemap.xml'
     | '/suggest-correction'
     | '/website-help'
     | '/$city/$section'
@@ -209,6 +220,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/saved'
     | '/search'
+    | '/sitemap.xml'
     | '/suggest-correction'
     | '/website-help'
     | '/$city/$section'
@@ -228,6 +240,7 @@ export interface RootRouteChildren {
   PrivacyRoute: typeof PrivacyRoute
   SavedRoute: typeof SavedRoute
   SearchRoute: typeof SearchRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SuggestCorrectionRoute: typeof SuggestCorrectionRoute
   WebsiteHelpRoute: typeof WebsiteHelpRoute
   CitySectionRoute: typeof CitySectionRoute
@@ -294,6 +307,13 @@ declare module '@tanstack/react-router' {
       path: '/search'
       fullPath: '/search'
       preLoaderRoute: typeof SearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/suggest-correction': {
@@ -364,6 +384,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyRoute: PrivacyRoute,
   SavedRoute: SavedRoute,
   SearchRoute: SearchRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   SuggestCorrectionRoute: SuggestCorrectionRoute,
   WebsiteHelpRoute: WebsiteHelpRoute,
   CitySectionRoute: CitySectionRoute,

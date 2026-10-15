@@ -1,6 +1,13 @@
 import { SITE_NAME, SITE_URL } from "@/config";
 import { getArea, getCategory, getCity, intlDigits, parseDays, parseRange, websiteButton, type Business } from "@/data/directory";
 
+/** "Name, Area" for listing titles, without repeating the area when the name already contains it
+ * (e.g. "FiLLi Cafe, Lazimpat" stays as is instead of "FiLLi Cafe, Lazimpat, Lazimpat"). */
+export function listingTitle(name: string, area: string): string {
+  if (!area) return name;
+  return name.toLowerCase().includes(area.toLowerCase()) ? name : `${name}, ${area}`;
+}
+
 /** Per-page head tags: title, description, Open Graph, Twitter card and canonical. */
 export function pageMeta(title: string, description: string, path?: string, opts: { image?: string; type?: string } = {}) {
   const full = `${title} · ${SITE_NAME}`;
