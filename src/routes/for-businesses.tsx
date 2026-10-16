@@ -21,7 +21,7 @@ function toLead() {
 }
 
 function Kicker({ children }: { children: string }) {
-  return <p className="text-[13px] font-semibold tracking-wide text-muted-foreground uppercase"><span aria-hidden className="mr-2 inline-block h-1.5 w-1.5 -translate-y-0.5 rounded-full bg-[var(--marigold,theme(colors.amber.500))]" />{children}</p>;
+  return <p className="text-[13px] font-semibold tracking-wide text-muted-foreground uppercase"><span aria-hidden className="mr-2 inline-block h-1.5 w-1.5 -translate-y-0.5 rounded-full bg-brand-accent" />{children}</p>;
 }
 
 function ForBusinesses() {
@@ -54,7 +54,7 @@ function ForBusinesses() {
             <p className="mt-3 max-w-xl text-[16px] leading-relaxed text-muted-foreground">{t("fbIntro")}</p>
             <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
               <button type="button" onClick={toLead} className="action-btn action-primary inline-flex w-full px-7 sm:w-auto">{t("fbCta")}<ArrowDown aria-hidden className="h-5 w-5" /></button>
-              <Link to="/contact" className="inline-flex min-h-11 items-center justify-center px-2 text-[15px] font-semibold underline decoration-[var(--marigold,theme(colors.amber.500))] decoration-2 underline-offset-4">{t("fb2Claim")}</Link>
+              <Link to="/contact" className="inline-flex min-h-11 items-center justify-center px-2 text-[15px] font-semibold underline decoration-brand-accent decoration-2 underline-offset-4">{t("fb2Claim")}</Link>
             </div>
           </div>
           <div className="hidden lg:block"><PhoneFrame good /></div>
