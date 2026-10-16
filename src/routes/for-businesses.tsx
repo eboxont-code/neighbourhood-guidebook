@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Check, Clock, Globe, Plus, Search, Smartphone, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { ArrowDown, Check, Clock, Image, MapPin, Phone, Plus, RefreshCw, Scissors, Smartphone, Sparkles, MessageCircle, BadgeCheck, X } from "lucide-react";
 import { Page, pageMeta } from "@/components/site";
+import { ContactForm } from "@/components/forms";
 import { useI18n, type Key } from "@/lib/i18n";
 
 export const Route = createFileRoute("/for-businesses")({
@@ -8,120 +10,183 @@ export const Route = createFileRoute("/for-businesses")({
   component: ForBusinesses,
 });
 
-function H2({ children }: { children: string }) {
-  return <h2 className="text-2xl font-semibold sm:text-2xl">{children}</h2>;
+const LEAD_ID = "quote";
+
+function toLead() {
+  const el = document.getElementById(LEAD_ID);
+  if (!el) return;
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+  window.setTimeout(() => (document.getElementById("name") as HTMLInputElement | null)?.focus({ preventScroll: true }), reduce ? 0 : 600);
 }
 
-const WHY_ICONS = [Search, Smartphone, Clock, Globe];
+function Kicker({ children }: { children: string }) {
+  return <p className="text-[13px] font-semibold tracking-wide text-muted-foreground uppercase"><span aria-hidden className="mr-2 inline-block h-1.5 w-1.5 -translate-y-0.5 rounded-full bg-[var(--marigold,theme(colors.amber.500))]" />{children}</p>;
+}
 
 function ForBusinesses() {
   const { t } = useI18n();
-  const why: Key[] = ["fbWhy1", "fbWhy2", "fbWhy3", "fbWhy4"];
-  const how: Key[] = ["fbHow1", "fbHow2", "fbHow3", "fbHow4"];
+  const [msg, setMsg] = useState("");
+  const [leadVisible, setLeadVisible] = useState(false);
+  const leadRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const el = leadRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+    const io = new IntersectionObserver(([e]) => setLeadVisible(!!e?.isIntersecting), { rootMargin: "0px 0px -20% 0px" });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  const how: Key[] = ["fb2How1", "fbHow2", "fbHow3", "fbHow4"];
   const faq: [Key, Key][] = [["fbQ1", "fbA1"], ["fbQ2", "fbA2"], ["fbQ3", "fbA3"], ["fbQ4", "fbA4"], ["fbQ5", "fbA5"]];
-  const cta = (cls = "action-accent") => (
-    <Link to="/contact" className={`action-btn ${cls} inline-flex w-full px-7 sm:w-auto`}>{t("fbCta")}<ArrowRight aria-hidden className="h-5 w-5" /></Link>
-  );
+  const inc: [Key, typeof Phone][] = [["fb2Inc1", Scissors], ["fb2Inc2", Clock], ["fb2Inc3", Phone], ["fb2Inc4", MapPin], ["fb2Inc5", Image], ["fb2Inc6", RefreshCw]];
+  const proof: [Key, typeof Phone][] = [["fb2Proof1", BadgeCheck], ["fb2Proof2", Smartphone], ["fb2Proof3", MessageCircle]];
+
   return (
-    <>
-      <section className="app-hero">
-        <div className="page-enter mx-auto max-w-4xl px-4 pt-8 pb-16 lg:pt-14 lg:pb-24">
-          <p className="inline-flex rounded-full bg-card/15 px-3 py-1 text-sm font-semibold">{t("fbTitle")}</p>
-          <h1 className="mt-3 max-w-3xl text-[1.75rem] leading-tight font-semibold sm:text-4xl">{t("fbHeroTitle")}</h1>
-          <p className="mt-4 max-w-2xl text-lg leading-relaxed text-[var(--hero-muted)]">{t("fbIntro")}</p>
-          <div className="mt-6">{cta()}</div>
+    <div className="bg-background">
+      {/* Hero: owner-facing, light, not the directory's navy band */}
+      <section className="border-b border-border bg-card">
+        <div className="page-enter mx-auto max-w-5xl px-5 pt-8 pb-8 lg:grid lg:grid-cols-[1.2fr_1fr] lg:items-center lg:gap-12 lg:pt-16 lg:pb-14">
+          <div>
+            <Kicker>{t("fbKicker")}</Kicker>
+            <h1 className="mt-3 text-[1.75rem] leading-[1.15] font-bold tracking-tight sm:text-[2.5rem]">{t("fbHeroTitle")}</h1>
+            <p className="mt-3 max-w-xl text-[16px] leading-relaxed text-muted-foreground">{t("fbIntro")}</p>
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
+              <button type="button" onClick={toLead} className="action-btn action-primary inline-flex w-full px-7 sm:w-auto">{t("fbCta")}<ArrowDown aria-hidden className="h-5 w-5" /></button>
+              <Link to="/contact" className="inline-flex min-h-11 items-center justify-center px-2 text-[15px] font-semibold underline decoration-[var(--marigold,theme(colors.amber.500))] decoration-2 underline-offset-4">{t("fb2Claim")}</Link>
+            </div>
+          </div>
+          <div className="hidden lg:block"><PhoneFrame good /></div>
+        </div>
+        <ul className="mx-auto grid max-w-5xl grid-cols-3 gap-2 px-5 pb-6">
+          {proof.map(([k, Icon]) => (
+            <li key={k} className="flex flex-col items-center gap-1.5 rounded-xl bg-muted/60 px-2 py-3 text-center text-[13px] leading-snug font-semibold sm:flex-row sm:justify-center sm:text-sm">
+              <Icon aria-hidden className="h-[18px] w-[18px] shrink-0 text-primary" strokeWidth={1.75} />{t(k)}
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      {/* Demo */}
+      <section className="bg-muted/50 py-10 lg:py-14" aria-labelledby="demo">
+        <div className="mx-auto max-w-5xl px-5">
+          <h2 id="demo" className="text-xl font-bold tracking-tight sm:text-2xl">{t("fb2DemoTitle")}</h2>
+          <div className="mt-5 grid grid-cols-2 gap-3 sm:gap-8 md:mx-auto md:max-w-2xl">
+            <PhoneFrame good={false} />
+            <PhoneFrame good />
+          </div>
+          <p className="mt-3 text-center text-[13px] text-muted-foreground">{t("fbExampleNote")}</p>
         </div>
       </section>
 
       <Page wide>
-        <section className="-mt-8" aria-labelledby="compare">
-          <h2 id="compare" className="sr-only">{t("fbCompareTitle")}</h2>
-          <div className="grid gap-3 md:grid-cols-2">
-            <Mock good={false} />
-            <Mock good />
-          </div>
-          <p className="mt-2 text-center text-[13px] text-muted-foreground">{t("fbExampleNote")}</p>
-        </section>
-
-        <section className="mx-auto mt-12 max-w-3xl">
-          <H2>{t("fbWhyTitle")}</H2>
-          <ul className="mt-4 grid gap-2 sm:grid-cols-2">
-            {why.map((k, i) => {
-              const Icon = WHY_ICONS[i]!;
-              return (
-                <li key={k} className="flex gap-3 rounded-xl border border-border bg-card p-4">
-                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-accent text-accent-foreground"><Icon aria-hidden className="h-[18px] w-[18px]" strokeWidth={1.75} /></span>
-                  <span className="text-[15px] leading-relaxed">{t(k)}</span>
-                </li>
-              );
-            })}
-          </ul>
-        </section>
-
         <div className="mx-auto max-w-3xl">
-          <section className="mt-12">
-            <H2>{t("fbWhatTitle")}</H2>
-            <p className="mt-3 text-lg leading-relaxed text-muted-foreground">{t("fbWhatBody")}</p>
+          {/* Offer */}
+          <section>
+            <h2 className="text-xl font-bold tracking-tight sm:text-2xl">{t("fb2OfferTitle")}</h2>
+            <p className="mt-2 leading-relaxed text-muted-foreground">{t("fbWhatBody")}</p>
+            <ul className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3">
+              {inc.map(([k, Icon]) => (
+                <li key={k} className="flex min-h-12 items-center gap-2.5 rounded-xl border border-border bg-card px-3 text-[14px] font-semibold">
+                  <Icon aria-hidden className="h-4 w-4 shrink-0 text-primary" strokeWidth={1.75} />{t(k)}
+                </li>
+              ))}
+            </ul>
+            <p className="mt-3 text-[14px] text-muted-foreground">{t("fb2BookingLater")}</p>
           </section>
 
-          <section className="mt-12">
-            <H2>{t("fbHowTitle")}</H2>
-            <ol className="relative mt-6 space-y-4 before:absolute before:top-6 before:bottom-6 before:left-5 before:w-0.5 before:bg-border">
+          {/* Free trial */}
+          <section className="app-hero mt-10 rounded-2xl p-6 sm:p-8">
+            <p className="inline-flex items-center gap-1.5 rounded-full bg-card/15 px-3 py-1 text-[13px] font-semibold"><Sparkles aria-hidden className="h-3.5 w-3.5" />{t("fb2TrialKicker")}</p>
+            <h2 className="mt-3 text-xl font-bold tracking-tight sm:text-2xl">{t("fb2TrialTitle")}</h2>
+            <p className="mt-2 leading-relaxed text-[var(--hero-muted)]">{t("fb2TrialBody")}</p>
+            <button type="button" onClick={() => { setMsg(t("fb2TrialMsg")); toLead(); }} className="action-btn action-accent mt-5 inline-flex w-full px-7 sm:w-auto">{t("fb2TrialCta")}</button>
+          </section>
+
+          {/* How it works */}
+          <section className="mt-10">
+            <h2 className="text-xl font-bold tracking-tight sm:text-2xl">{t("fbHowTitle")}</h2>
+            <ol className="mt-5 grid gap-3 sm:grid-cols-4">
               {how.map((k, i) => (
-                <li key={k} className="relative flex gap-4">
-                  <span aria-hidden className="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary text-base font-semibold text-primary-foreground shadow-[var(--shadow-card)]">{i + 1}</span>
-                  <span className="flex-1 rounded-2xl bg-card p-4 leading-relaxed shadow-[var(--shadow-card)]">{t(k)}</span>
+                <li key={k} className="flex gap-3 sm:flex-col">
+                  <span aria-hidden className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground">{i + 1}</span>
+                  <span className="pt-1 text-[15px] leading-relaxed sm:pt-0">{t(k)}</span>
                 </li>
               ))}
             </ol>
           </section>
 
-          <section className="mt-12">
-            <H2>{t("fbFaqTitle")}</H2>
-            <div className="mt-5 space-y-3">
+          {/* FAQ */}
+          <section className="mt-10">
+            <h2 className="text-xl font-bold tracking-tight sm:text-2xl">{t("fbFaqTitle")}</h2>
+            <div className="mt-4 divide-y divide-border rounded-2xl border border-border bg-card">
               {faq.map(([q, a]) => (
-                <details key={q} className="group rounded-2xl bg-card shadow-[var(--shadow-card)] open:shadow-[var(--shadow-lift)]">
-                  <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-3 px-5 py-3 font-bold">
-                    {t(q)}<span aria-hidden className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent text-accent-foreground transition-transform duration-200 group-open:rotate-45"><Plus className="h-4 w-4" /></span>
+                <details key={q} className="group">
+                  <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 px-4 py-2.5 text-[15px] font-semibold">
+                    {t(q)}<Plus aria-hidden className="h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200 group-open:rotate-45" />
                   </summary>
-                  <p className="px-5 pb-4 leading-relaxed text-muted-foreground">{t(a)}</p>
+                  <p className="px-4 pb-4 text-[15px] leading-relaxed text-muted-foreground">{t(a)}</p>
                 </details>
               ))}
             </div>
           </section>
-        </div>
 
-        <section className="app-hero mt-14 rounded-2xl p-6 sm:p-10">
-          <h2 className="text-2xl font-semibold sm:text-2xl">{t("fbCtaTitle")}</h2>
-          <p className="mt-2 mb-5 max-w-2xl leading-relaxed text-[var(--hero-muted)]">{t("fbCtaBody")}</p>
-          {cta()}
-        </section>
+          {/* Lead */}
+          <section id={LEAD_ID} ref={leadRef} className="mt-10 scroll-mt-20" aria-labelledby="lead-title">
+            <Kicker>{t("fb2LeadKicker")}</Kicker>
+            <h2 id="lead-title" className="mt-2 text-xl font-bold tracking-tight sm:text-2xl">{t("fb2LeadTitle")}</h2>
+            <p className="mt-2 mb-5 leading-relaxed text-muted-foreground">{t("fb2LeadBody")}</p>
+            <div className="form-card">
+              <ContactForm key={msg} business="" listing="" page="for-businesses" message={msg} doneText={t("fb2Thanks")} />
+            </div>
+          </section>
+        </div>
       </Page>
-    </>
+
+      {/* Sticky quote bar, phones only, above the bottom nav and clear of the badge corner */}
+      <div aria-hidden={leadVisible} className={`fixed left-4 right-[84px] z-[970] transition-all duration-200 lg:hidden ${leadVisible ? "pointer-events-none translate-y-3 opacity-0" : "opacity-100"}`} style={{ bottom: "calc(var(--bottom-nav-h) + env(safe-area-inset-bottom) + 0.75rem)" }}>
+        <button type="button" tabIndex={leadVisible ? -1 : 0} onClick={toLead} className="flex min-h-12 w-full items-center justify-between gap-2 rounded-full bg-primary px-5 text-primary-foreground shadow-[var(--shadow-lift)]">
+          <span className="text-[15px] font-semibold">{t("fb2Sticky")}</span>
+          <span className="truncate text-[12px] opacity-80">{t("fb2StickyNote")}</span>
+        </button>
+      </div>
+      <div className="h-16 lg:hidden" aria-hidden />
+    </div>
   );
 }
 
-/** A generic example card, never a real business from the directory. */
-function Mock({ good }: { good: boolean }) {
+/** A made-up example in a phone frame, never a real business from the directory. */
+function PhoneFrame({ good }: { good: boolean }) {
   const { t } = useI18n();
   const rows: Key[] = good ? ["fbAfter1", "fbAfter2", "fbAfter3"] : ["fbBefore1", "fbBefore2", "fbBefore3"];
+  const name = t("fbExampleName");
   return (
-    <figure className={`rounded-2xl border bg-card p-5 shadow-[var(--shadow-lift)] ${good ? "border-success/30" : "border-border"}`}>
-      <figcaption className={`status-chip ${good ? "status-success" : "status-neutral"}`}>{t(good ? "fbAfterLabel" : "fbBeforeLabel")}</figcaption>
-      <div className={`mt-4 flex items-center gap-3 ${good ? "" : "opacity-70"}`}>
-        <span aria-hidden className="monogram cat-salons h-12 w-12 text-xl">{t("fbExampleName").charAt(0)}</span>
-        <p className="text-base font-semibold">{t("fbExampleName")}</p>
+    <figure className="mx-auto w-full max-w-[260px]">
+      <figcaption className={`mb-2 flex justify-center`}><span className={`status-chip ${good ? "status-success" : "status-neutral"}`}>{t(good ? "fbAfterLabel" : "fbBeforeLabel")}</span></figcaption>
+      <div className={`rounded-[1.75rem] border-[5px] p-1.5 shadow-[var(--shadow-lift)] ${good ? "border-primary bg-card" : "border-muted-foreground/30 bg-card"}`}>
+        <div aria-hidden className="mx-auto mb-1.5 h-1.5 w-10 rounded-full bg-muted" />
+        <div className="overflow-hidden rounded-[1.1rem] bg-background">
+          <div className={`flex h-16 items-end p-2.5 sm:h-24 ${good ? "cat-salons" : "bg-muted"}`}>
+            <span className={`monogram h-8 w-8 text-sm ${good ? "bg-card" : "cat-salons opacity-60"}`}>{name.charAt(0)}</span>
+          </div>
+          <div className="p-2.5">
+            <p className={`text-[13px] font-bold ${good ? "" : "text-muted-foreground"}`}>{name}</p>
+            <ul className="mt-2 space-y-1.5">
+              {rows.map((k) => (
+                <li key={k} className="flex items-start gap-1.5 text-[12px] leading-snug">
+                  <span className={`mt-px flex h-4 w-4 shrink-0 items-center justify-center rounded-full ${good ? "bg-success-soft text-success" : "bg-muted text-muted-foreground"}`}>
+                    {good ? <Check className="h-2.5 w-2.5" /> : <X className="h-2.5 w-2.5" />}
+                  </span>{t(k)}
+                </li>
+              ))}
+            </ul>
+            <div className={`mt-2.5 flex h-7 items-center justify-center gap-1 rounded-full text-[11px] font-semibold ${good ? "bg-primary text-primary-foreground" : "border border-dashed border-border text-muted-foreground"}`}>
+              <Phone aria-hidden className="h-3 w-3" />{good ? t("callShort") : "?"}
+            </div>
+          </div>
+        </div>
       </div>
-      <ul className="mt-4 space-y-2">
-        {rows.map((k) => (
-          <li key={k} className="flex items-start gap-2 text-[15px]">
-            <span className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full ${good ? "bg-success-soft text-success" : "bg-muted text-muted-foreground"}`}>
-              {good ? <Check aria-hidden className="h-3 w-3" /> : <X aria-hidden className="h-3 w-3" />}
-            </span>
-            {t(k)}
-          </li>
-        ))}
-      </ul>
     </figure>
   );
 }
