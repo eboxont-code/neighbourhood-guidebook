@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode, type FormEvent, type InputHTMLAttributes } from "react";
 import type { Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
@@ -70,7 +70,7 @@ function SignIn() {
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<Key | null>(null);
-  async function submit(e: React.FormEvent) {
+  async function submit(e: FormEvent) {
     e.preventDefault(); setBusy(true); setErr(null);
     const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
     setBusy(false);
@@ -200,7 +200,7 @@ function Editor({ row, all, onDone, onCancel }: { row: Row | null; all: Row[]; o
   const [confirmDel, setConfirmDel] = useState(false);
   const set = (k: keyof typeof v, x: string | boolean) => setV((p) => ({ ...p, [k]: x, ...(k === "name" && !slugTouched ? { slug: slugify(String(x)) } : {}) }));
 
-  async function save(e: React.FormEvent) {
+  async function save(e: FormEvent) {
     e.preventDefault(); setFail(null);
     const er: Record<string, Key> = {};
     if (!v.name.trim()) er["name"] = "erName";
@@ -252,7 +252,7 @@ function Editor({ row, all, onDone, onCancel }: { row: Row | null; all: Row[]; o
     onDone(t(hideInstead ? "adSavedHidden" : "adRemoved"));
   }
 
-  const inp = (k: keyof typeof v, extra: React.InputHTMLAttributes<HTMLInputElement> = {}) => <input className="field" value={String(v[k])} onChange={(e) => set(k, e.target.value)} {...extra} />;
+  const inp = (k: keyof typeof v, extra: InputHTMLAttributes<HTMLInputElement> = {}) => <input className="field" value={String(v[k])} onChange={(e) => set(k, e.target.value)} {...extra} />;
   const area = (k: keyof typeof v) => <textarea className="field min-h-24" value={String(v[k])} onChange={(e) => set(k, e.target.value)} />;
   const err = (k: string) => (errors[k] ? t(errors[k]!) : undefined);
   const latN = Number(v.lat), lngN = Number(v.lng);
@@ -412,7 +412,7 @@ function Account({ email }: { email: string }) {
   const [v, setV] = useState({ cur: "", next: "", again: "" });
   const [msg, setMsg] = useState<{ ok: boolean; k: Key } | null>(null);
   const [busy, setBusy] = useState(false);
-  async function submit(e: React.FormEvent) {
+  async function submit(e: FormEvent) {
     e.preventDefault();
     if (v.next.length < 8) return setMsg({ ok: false, k: "adPwShort" });
     if (v.next !== v.again) return setMsg({ ok: false, k: "adPwMismatch" });

@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { useState, type FormEvent, type ReactNode } from "react";
 import { z } from "zod";
 import { CheckCircle2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -89,22 +89,22 @@ function errorsFrom(issues: z.ZodIssue[], t: (k: Key) => string) {
   return out;
 }
 
-export function ContactForm({ business, listing }: { business: string; listing: string }) {
+export function ContactForm({ business, listing, page, message = "", doneText }: { business: string; listing: string; page?: string; message?: string; doneText?: string }) {
   const { t } = useI18n();
-  const [v, setV] = useState({ name: "", business_name: business, phone: "", message: "" });
+  const [v, setV] = useState({ name: "", business_name: business, phone: "", message });
   const [errors, setErrors] = useState<{ [k: string]: string | undefined }>({});
   const [status, setStatus] = useState<Status>("idle");
   const [hp, setHp] = useState("");
-  if (status === "done") return <Done text={t("thanksContact")} />;
+  if (status === "done") return <Done text={doneText ?? t("thanksContact")} />;
 
-  async function submit(e: React.FormEvent) {
+  async function submit(e: FormEvent) {
     e.preventDefault();
     const parsed = contactSchema.safeParse({ ...v, source_listing_slug: listing });
     if (!parsed.success) return setErrors(errorsFrom(parsed.error.issues, t));
     setErrors({});
     if (isBot(hp)) return setStatus("done");
     setStatus("sending");
-    const { error } = await supabase.from("contact_messages").insert({ ...parsed.data, page: listing ? "listing" : "contact", client_key: clientKey() });
+    const { error } = await supabase.from("contact_messages").insert({ ...parsed.data, page: page ?? (listing ? "listing" : "contact"), client_key: clientKey() });
     setStatus(statusFromError(error));
   }
 
@@ -139,7 +139,7 @@ export function CorrectionForm({ listing }: { listing: string }) {
   const [hp, setHp] = useState("");
   if (status === "done") return <Done text={t("thanksCorrection")} />;
 
-  async function submit(e: React.FormEvent) {
+  async function submit(e: FormEvent) {
     e.preventDefault();
     const parsed = correctionSchema.safeParse(v);
     if (!parsed.success) return setErrors(errorsFrom(parsed.error.issues, t));
