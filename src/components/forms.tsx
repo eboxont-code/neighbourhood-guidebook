@@ -89,13 +89,13 @@ function errorsFrom(issues: z.ZodIssue[], t: (k: Key) => string) {
   return out;
 }
 
-export function ContactForm({ business, listing }: { business: string; listing: string }) {
+export function ContactForm({ business, listing, page, message = "", doneText }: { business: string; listing: string; page?: string; message?: string; doneText?: string }) {
   const { t } = useI18n();
-  const [v, setV] = useState({ name: "", business_name: business, phone: "", message: "" });
+  const [v, setV] = useState({ name: "", business_name: business, phone: "", message });
   const [errors, setErrors] = useState<{ [k: string]: string | undefined }>({});
   const [status, setStatus] = useState<Status>("idle");
   const [hp, setHp] = useState("");
-  if (status === "done") return <Done text={t("thanksContact")} />;
+  if (status === "done") return <Done text={doneText ?? t("thanksContact")} />;
 
   async function submit(e: FormEvent) {
     e.preventDefault();
@@ -104,7 +104,7 @@ export function ContactForm({ business, listing }: { business: string; listing: 
     setErrors({});
     if (isBot(hp)) return setStatus("done");
     setStatus("sending");
-    const { error } = await supabase.from("contact_messages").insert({ ...parsed.data, page: listing ? "listing" : "contact", client_key: clientKey() });
+    const { error } = await supabase.from("contact_messages").insert({ ...parsed.data, page: page ?? (listing ? "listing" : "contact"), client_key: clientKey() });
     setStatus(statusFromError(error));
   }
 
