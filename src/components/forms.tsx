@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { useState, type FormEvent, type ReactNode } from "react";
 import { z } from "zod";
 import { CheckCircle2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -97,7 +97,7 @@ export function ContactForm({ business, listing }: { business: string; listing: 
   const [hp, setHp] = useState("");
   if (status === "done") return <Done text={t("thanksContact")} />;
 
-  async function submit(e: React.FormEvent) {
+  async function submit(e: FormEvent) {
     e.preventDefault();
     const parsed = contactSchema.safeParse({ ...v, source_listing_slug: listing });
     if (!parsed.success) return setErrors(errorsFrom(parsed.error.issues, t));
@@ -139,7 +139,7 @@ export function CorrectionForm({ listing }: { listing: string }) {
   const [hp, setHp] = useState("");
   if (status === "done") return <Done text={t("thanksCorrection")} />;
 
-  async function submit(e: React.FormEvent) {
+  async function submit(e: FormEvent) {
     e.preventDefault();
     const parsed = correctionSchema.safeParse(v);
     if (!parsed.success) return setErrors(errorsFrom(parsed.error.issues, t));
