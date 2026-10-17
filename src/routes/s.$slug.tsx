@@ -10,7 +10,7 @@ import { businesses, dayLabel, placeName, timeLabel, getCity, hasPin, whatsappLi
 import { useI18n, type Key } from "@/lib/i18n";
 import { businessJsonLd, breadcrumbJsonLd, listingTitle } from "@/lib/seo";
 import { distanceTo, formatDistance, sortByDistance, useLocation } from "@/lib/geo";
-import { statusDetail, weekTable } from "@/lib/venue";
+import { formatDate, statusDetail, weekTable } from "@/lib/venue";
 
 export const Route = createFileRoute("/s/$slug")({
   loader: ({ params }) => {
@@ -225,10 +225,19 @@ function ShopPage() {
                     {socialLinks(b).map((x) => <a key={x.url} href={x.url} target="_blank" rel="noopener noreferrer" className="block break-all text-primary underline">{x.platform} {x.handle}</a>)}
                   </Row>
                 )}
-                <Row label={t("source")}>
-                  {b.sourceNotes}
-                  {b.sourceUrl && <a href={b.sourceUrl} target="_blank" rel="noopener noreferrer" className="mt-1 block text-sm text-primary underline">{t("viewSource")}</a>}
-                </Row>
+                {(b.sourceNotes || b.addedOn || b.lastChecked) && (
+                  <div className="mt-4 rounded-2xl border border-border bg-muted/50 p-4">
+                    <h3 className="text-sm font-semibold">{t("howChecked")}</h3>
+                    {b.sourceNotes && (
+                      <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                        {t("source")}: {b.sourceNotes}
+                        {b.sourceUrl && <a href={b.sourceUrl} target="_blank" rel="noopener noreferrer" className="ml-1.5 text-primary underline">{t("viewSource")}</a>}
+                      </p>
+                    )}
+                    {b.addedOn && <p className="mt-1.5 text-sm text-muted-foreground">{t("addedToGuide")}: {formatDate(b.addedOn, lang)}</p>}
+                    {b.lastChecked && <p className="mt-1.5 text-sm text-muted-foreground">{t("lastChecked")}: {formatDate(b.lastChecked, lang)}</p>}
+                  </div>
+                )}
                 {b.description && <Row label={t("note")}>{b.description}</Row>}
               </dl>
             </section>
