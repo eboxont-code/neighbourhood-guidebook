@@ -6,6 +6,7 @@ import { SearchCard } from "@/components/search-card";
 import { areasInUse, businessesIn, categoriesIn, citiesInUse, hasPin, placeName } from "@/data/directory";
 import { isOpen } from "@/lib/filters";
 import { sortByDistance, useLocation } from "@/lib/geo";
+import { newListings } from "@/lib/venue";
 import { useI18n } from "@/lib/i18n";
 import { SITE_NAME } from "@/config";
 
@@ -33,6 +34,7 @@ function Home() {
   const useOpen = open.length >= 3;
   const row = spread(useOpen ? open : items.filter((b) => b.hoursVerified && b.hours?.length), 10);
   const near = here ? sortByDistance(items.filter(hasPin), here).slice(0, 10) : [];
+  const fresh = now ? newListings(items, now).slice(0, 10) : [];
   const cityName = placeName(city, lang);
   return (
     <main>
@@ -56,6 +58,13 @@ function Home() {
             </div>
           )}
           <CategoryTiles city={city.slug} cats={categoriesIn(items)} />
+          {fresh.length > 0 && (
+            <div>
+              <SectionHead title={t("justAdded")} sub={t("justAddedSub")}
+                action={<Link to="/new" className="-my-2 inline-flex min-h-11 shrink-0 items-center text-sm font-semibold text-foreground underline-offset-4 hover:underline">{t("seeAllNew")} ›</Link>} />
+              <VenueRow items={fresh} label={t("justAdded")} />
+            </div>
+          )}
         </div>
       </section>
 
