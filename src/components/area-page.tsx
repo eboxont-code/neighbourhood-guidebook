@@ -10,6 +10,7 @@ import { businessesIn, categoriesIn, getArea, placeName, type City } from "@/dat
 import { isOpen } from "@/lib/filters";
 import { sortByDistance, useLocation } from "@/lib/geo";
 import { areaFacts, otherAreas } from "@/lib/areas";
+import { newListings } from "@/lib/venue";
 import { useI18n, type Key } from "@/lib/i18n";
 
 /** Neighbourhood guide: facts, a jump bar, open-now first, groups sized to their real counts, a sticky map on desktop. */
@@ -27,6 +28,7 @@ export function AreaGuide({ city, slug }: { city: City; slug: string }) {
   const cats = categoriesIn(items);
   const facts = areaFacts(a.slug, now);
   const open = order(items.filter((b) => isOpen(b, now)));
+  const fresh = now ? newListings(items, now) : [];
   const pinned = facts.pinned > 0;
   const thin = items.length <= 2;
   const [full, setFull] = useState(false);
@@ -75,6 +77,12 @@ export function AreaGuide({ city, slug }: { city: City; slug: string }) {
       <Page wide>
         <div className={pinned ? "lg:grid lg:grid-cols-[minmax(0,1fr)_24rem] lg:gap-10 xl:grid-cols-[minmax(0,1fr)_28rem]" : ""}>
           <div id="g-all" data-group className="min-w-0 scroll-mt-32 space-y-9">
+            {fresh.length > 0 && (
+              <section>
+                <h2 className="mb-3 flex items-center gap-2 text-lg font-semibold"><span aria-hidden className="h-2 w-2 rounded-full bg-brand-accent" />{t("newInArea").replace("{area}", areaName)} <span className="text-sm font-medium text-muted-foreground tabular-nums">{fresh.length}</span></h2>
+                {fresh.length >= 3 ? <VenueRow items={fresh} label={t("newInArea").replace("{area}", areaName)} /> : <RowList items={fresh} />}
+              </section>
+            )}
             {open.length > 0 && (
               <section>
                 <h2 className="mb-3 flex items-center gap-2 text-lg font-semibold"><span aria-hidden className="h-2 w-2 rounded-full bg-success" />{t("openNowIn").replace("{area}", areaName)}</h2>
