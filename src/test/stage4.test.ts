@@ -79,6 +79,11 @@ describe("badge rules", () => {
     const all = businesses.map((b) => ({ ...b, addedOn: b.id === "b1" ? "2026-10-01" : "2026-10-12" }));
     expect(newSlugs(all, oct13).size).toBe(0);
   });
+  it("keeps the newest batch marked new when older batches would make a majority", () => {
+    const all = businesses.map((b, i) => ({ ...b, addedOn: i < 12 ? "2026-10-11" : i < 26 ? "2026-10-12" : "2026-10-17" }));
+    const n = newSlugs(all, new Date("2026-10-17T06:00:00Z"));
+    expect(n.size).toBe(all.filter((b) => b.addedOn === "2026-10-17").length);
+  });
   it("uses only recorded facts", () => {
     const b = getBusiness("aavaran-durbar-marg")!; // hours verified, website working
     expect(badgesFor(b, oct13, false)).toEqual(["hoursConfirmed", "webChecked"]);

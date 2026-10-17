@@ -5,13 +5,24 @@ export type Badge = "open" | "webChecked" | "hoursConfirmed" | "newOnSewa";
 export const NEW_DAYS = 30;
 const DAY = 86_400_000;
 
-/** Listings that count as new: added after the launch batch, within NEW_DAYS, and only while they are a minority. */
+/**
+ * Listings that count as new: added after the launch batch and within NEW_DAYS.
+ * Whole days of additions are taken newest first while they stay a minority, so a
+ * fresh batch still shows as new even when older post-launch batches are large.
+ */
 export function newSlugs(all: Business[], now: Date): Set<string> {
   const dated = all.filter((b) => b.addedOn);
   if (!dated.length) return new Set();
   const launch = dated.map((b) => b.addedOn!).sort()[0]!;
   const fresh = dated.filter((b) => b.addedOn! > launch && now.getTime() - Date.parse(b.addedOn! + "T00:00:00Z") < NEW_DAYS * DAY);
-  return fresh.length * 2 < all.length ? new Set(fresh.map((b) => b.slug)) : new Set();
+  const days = [...new Set(fresh.map((b) => b.addedOn!))].sort().reverse();
+  const out = new Set<string>();
+  for (const day of days) {
+    const batch = fresh.filter((b) => b.addedOn === day);
+    if ((out.size + batch.length) * 2 >= all.length) break;
+    for (const b of batch) out.add(b.slug);
+  }
+  return out;
 }
 
 /** Listings that count as new, newest first. Same rule as the New badge, so the two always agree. */
