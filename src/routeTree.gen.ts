@@ -14,6 +14,7 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as ForBusinessesRouteImport } from './routes/for-businesses'
+import { Route as NewRouteImport } from './routes/new'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as SavedRouteImport } from './routes/saved'
 import { Route as SearchRouteImport } from './routes/search'
@@ -50,6 +51,11 @@ const ContactRoute = ContactRouteImport.update({
 const ForBusinessesRoute = ForBusinessesRouteImport.update({
   id: '/for-businesses',
   path: '/for-businesses',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NewRoute = NewRouteImport.update({
+  id: '/new',
+  path: '/new',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrivacyRoute = PrivacyRouteImport.update({
@@ -119,6 +125,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRoute
   '/contact': typeof ContactRoute
   '/for-businesses': typeof ForBusinessesRoute
+  '/new': typeof NewRoute
   '/privacy': typeof PrivacyRoute
   '/saved': typeof SavedRoute
   '/search': typeof SearchRoute
@@ -138,6 +145,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminRoute
   '/contact': typeof ContactRoute
   '/for-businesses': typeof ForBusinessesRoute
+  '/new': typeof NewRoute
   '/privacy': typeof PrivacyRoute
   '/saved': typeof SavedRoute
   '/search': typeof SearchRoute
@@ -158,6 +166,7 @@ export interface FileRoutesById {
   '/admin': typeof AdminRoute
   '/contact': typeof ContactRoute
   '/for-businesses': typeof ForBusinessesRoute
+  '/new': typeof NewRoute
   '/privacy': typeof PrivacyRoute
   '/saved': typeof SavedRoute
   '/search': typeof SearchRoute
@@ -179,6 +188,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/contact'
     | '/for-businesses'
+    | '/new'
     | '/privacy'
     | '/saved'
     | '/search'
@@ -198,6 +208,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/contact'
     | '/for-businesses'
+    | '/new'
     | '/privacy'
     | '/saved'
     | '/search'
@@ -217,6 +228,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/contact'
     | '/for-businesses'
+    | '/new'
     | '/privacy'
     | '/saved'
     | '/search'
@@ -237,6 +249,7 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRoute
   ContactRoute: typeof ContactRoute
   ForBusinessesRoute: typeof ForBusinessesRoute
+  NewRoute: typeof NewRoute
   PrivacyRoute: typeof PrivacyRoute
   SavedRoute: typeof SavedRoute
   SearchRoute: typeof SearchRoute
@@ -286,6 +299,13 @@ declare module '@tanstack/react-router' {
       path: '/for-businesses'
       fullPath: '/for-businesses'
       preLoaderRoute: typeof ForBusinessesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/new': {
+      id: '/new'
+      path: '/new'
+      fullPath: '/new'
+      preLoaderRoute: typeof NewRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/privacy': {
@@ -381,6 +401,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRoute,
   ContactRoute: ContactRoute,
   ForBusinessesRoute: ForBusinessesRoute,
+  NewRoute: NewRoute,
   PrivacyRoute: PrivacyRoute,
   SavedRoute: SavedRoute,
   SearchRoute: SearchRoute,

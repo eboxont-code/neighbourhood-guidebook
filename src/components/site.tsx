@@ -84,7 +84,7 @@ export function BottomNav() {
 export function Footer() {
   const { t } = useI18n();
   const links = [
-    ["/about", t("footAbout")], ["/suggest-correction", t("footSuggest")], ["/for-businesses", t("footClaim")],
+    ["/about", t("footAbout")], ["/new", t("footNew")], ["/suggest-correction", t("footSuggest")], ["/for-businesses", t("footClaim")],
     ["/privacy", t("footPrivacy")], ["/contact", t("footContact")],
   ] as const;
   return (

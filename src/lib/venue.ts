@@ -14,6 +14,17 @@ export function newSlugs(all: Business[], now: Date): Set<string> {
   return fresh.length * 2 < all.length ? new Set(fresh.map((b) => b.slug)) : new Set();
 }
 
+/** Listings that count as new, newest first. Same rule as the New badge, so the two always agree. */
+export function newListings(all: Business[], now: Date): Business[] {
+  const slugs = newSlugs(all, now);
+  return all.filter((b) => slugs.has(b.slug)).sort((x, y) => (y.addedOn! < x.addedOn! ? -1 : 1));
+}
+
+/** "17 October 2026" or the Nepali equivalent, from an ISO date. UTC so the day never shifts. */
+export function formatDate(iso: string, lang: "en" | "ne"): string {
+  return new Intl.DateTimeFormat(lang === "ne" ? "ne-NP" : "en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }).format(new Date(`${iso}T00:00:00Z`));
+}
+
 /** At most two badges, all from recorded facts. Open now needs a clock, so it appears only after mount. */
 export function badgesFor(b: Business, now: Date | null, open: boolean, all: Business[] = businesses): Badge[] {
   const out: Badge[] = [];
