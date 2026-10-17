@@ -28,7 +28,7 @@ export function AreaGuide({ city, slug }: { city: City; slug: string }) {
   const cats = categoriesIn(items);
   const facts = areaFacts(a.slug, now);
   const open = order(items.filter((b) => isOpen(b, now)));
-  const fresh = now ? newListings(items, now) : [];
+  const fresh = now ? newListings(businessesIn(city.slug), now).filter((b) => b.area === a.slug) : [];
   const pinned = facts.pinned > 0;
   const thin = items.length <= 2;
   const [full, setFull] = useState(false);
