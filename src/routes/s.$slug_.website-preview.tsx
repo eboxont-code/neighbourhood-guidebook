@@ -71,7 +71,7 @@ function TodayHours({ b }: { b: Business }) {
 function Week({ b }: { b: Business }) {
   const { t, lang } = useI18n();
   const now = useNow();
-  if (!b.hours?.length) return <p className="text-[15px] text-muted-foreground">{t("noHours")}</p>;
+  if (!b.hours?.length) return <p className="py-3 text-[15px] text-muted-foreground">{t("noHours")}</p>;
   const week = weekTable(b.hours);
   const today = now ? kathmanduNow(now).day : -1;
   return (
@@ -219,8 +219,8 @@ function PreviewPage() {
       <Section id="hours" kicker={t("tabHours")} title={t("openingTimes")} tint>
         <div className="grid gap-6 lg:grid-cols-[1fr_1.2fr] lg:items-start">
           <div>
-            <p className="text-[17px] leading-relaxed text-foreground/85"><Status b={b} /></p>
-            {b.phone && <a href={telLink(b.phone)} className="action-btn pv-btn-deep mt-5 hidden min-h-12 px-6 lg:inline-flex"><Phone aria-hidden className="h-4 w-4" />{t("pvCallNow")}</a>}
+            {b.hours?.length ? <p className="text-[17px] leading-relaxed text-foreground/85"><Status b={b} /></p> : null}
+            {b.phone && <a href={telLink(b.phone)} className={`action-btn pv-btn-deep min-h-12 px-6 lg:inline-flex ${b.hours?.length ? "mt-5 hidden" : "inline-flex w-full sm:w-auto lg:mt-0"}`}><Phone aria-hidden className="h-4 w-4" />{t("pvCallNow")}</a>}
           </div>
           <div className="pv-card px-4 py-2 sm:px-6 sm:py-3"><Week b={b} /></div>
         </div>
