@@ -429,3 +429,51 @@
   display: inline-flex; align-items: center; min-height: 2rem; padding: 0 0.75rem; border-radius: 999px; font-size: 0.8125rem; font-weight: 600;
   color: var(--hero-foreground); background: color-mix(in oklab, var(--hero-foreground) 12%, transparent); border: 1px solid color-mix(in oklab, var(--hero-foreground) 18%, transparent);
 }
+
+/* Free website preview (/s/<slug>/website-preview): its own look, tinted per category through --pv-h. */
+@utility pv-site {
+  --pv-deep: oklch(0.25 0.045 var(--pv-h, 262));
+  --pv-deeper: oklch(0.19 0.035 var(--pv-h, 262));
+  --pv-tint: oklch(0.965 0.014 var(--pv-h, 262));
+  --pv-line: oklch(0.9 0.02 var(--pv-h, 262));
+  --pv-ink: oklch(0.42 0.08 var(--pv-h, 262));
+  --pv-glow: oklch(0.82 0.09 var(--pv-h, 262));
+  background: var(--card);
+}
+@utility pv-hero {
+  position: relative; isolation: isolate; overflow: hidden; color: oklch(0.985 0.004 255);
+  background:
+    radial-gradient(120% 80% at 100% 0%, color-mix(in oklab, var(--pv-glow) 38%, transparent) 0, transparent 60%),
+    radial-gradient(90% 70% at 0% 100%, color-mix(in oklab, var(--pv-glow) 18%, transparent) 0, transparent 65%),
+    linear-gradient(165deg, var(--pv-deep), var(--pv-deeper));
+}
+@utility pv-hero-shade {
+  position: absolute; inset: 0; z-index: -1;
+  background: linear-gradient(180deg, oklch(0.15 0.02 262 / 0.55) 0%, oklch(0.15 0.02 262 / 0.15) 35%, oklch(0.13 0.02 262 / 0.85) 100%);
+}
+@utility pv-kicker {
+  display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--pv-ink);
+  &::before { content: ""; width: 1.25rem; height: 2px; border-radius: 2px; background: currentColor; }
+}
+:lang(ne) .pv-kicker { letter-spacing: 0.02em; }
+@utility pv-btn-light {
+  background: oklch(0.99 0.003 255); color: var(--pv-deeper); box-shadow: 0 6px 20px -8px oklch(0.1 0.02 262 / 0.6);
+  &:hover { filter: brightness(0.96); }
+}
+@utility pv-btn-ghost {
+  color: oklch(0.985 0.004 255); border: 1px solid oklch(0.985 0.004 255 / 0.4); background: oklch(0.985 0.004 255 / 0.08); backdrop-filter: blur(6px);
+  &:hover { background: oklch(0.985 0.004 255 / 0.16); }
+}
+@utility pv-btn-deep {
+  background: var(--pv-deep); color: oklch(0.985 0.004 255);
+  &:hover { filter: brightness(1.15); }
+}
+@utility pv-card {
+  border-radius: 1.25rem; background: var(--card); border: 1px solid var(--pv-line); box-shadow: 0 1px 2px oklch(0.24 0.025 262 / 0.04), 0 18px 40px -24px oklch(0.24 0.025 262 / 0.25);
+}
+@utility pv-bar {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 980; padding-bottom: env(safe-area-inset-bottom);
+  background: color-mix(in oklab, var(--hero) 96%, transparent); color: var(--hero-foreground); backdrop-filter: blur(12px);
+  box-shadow: 0 -8px 24px -12px oklch(0.1 0.02 262 / 0.45);
+  @media (min-width: 1024px) { position: sticky; top: 0; bottom: auto; box-shadow: none; border-bottom: 1px solid oklch(1 0 0 / 0.08); }
+}

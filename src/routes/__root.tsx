@@ -4,6 +4,7 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
   HeadContent,
   Scripts,
   type ErrorComponentProps,
@@ -15,6 +16,8 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { LangProvider } from "@/lib/i18n";
 import { BottomNav, Footer, Header, NotFoundView } from "@/components/site";
 import { ensureListings } from "@/lib/listings";
+import { previewSlug } from "@/lib/preview";
+import { getBusiness } from "@/data/directory";
 
 function NotFoundComponent() {
   return (
@@ -116,14 +119,19 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  // The free website preview stands alone like a real business site, so the directory chrome is
+  // left out there. Unknown slugs keep it, so the normal not-found page looks as usual.
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const slug = previewSlug(pathname);
+  const standalone = slug !== null && Boolean(getBusiness(slug));
 
   return (
     <QueryClientProvider client={queryClient}>
       <LangProvider>
-        <Header />
+        {!standalone && <Header />}
         <Outlet />
-        <Footer />
-        <BottomNav />
+        {!standalone && <Footer />}
+        {!standalone && <BottomNav />}
       </LangProvider>
     </QueryClientProvider>
   );

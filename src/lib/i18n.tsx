@@ -3,7 +3,7 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from "
 export type Lang = "en" | "ne";
 const KEY = "dir-lang";
 
-const dict = {
+export const dict = {
   en: {
     tagline: "Local shops and services in Kathmandu, with phone numbers, opening hours and whether their website works.",
     searchPlaceholder: "Search name, area, or service", search: "Search",
@@ -224,6 +224,18 @@ const dict = {
     adPwDone: "Password changed.",
     adPwError: "Couldn't change the password. Check the current password and try again.",
     adLoading: "Loading…",
+    // Free website preview (/s/<slug>/website-preview)
+    pvBarText: "Free website preview by Sewa", pvBarNote: "Made from public details. Not the official site.", pvBarCta: "Make this my website", pvBarShort: "Free preview by Sewa", pvBarNoteShort: "Not the official site",
+    pvNavVisit: "Visit", pvNavContact: "Contact", pvHeroIn: "{cat} in {area}, {city}", pvCallNow: "Call now",
+    pvWelcome: "Welcome to {name}", pvAboutFallback: "{name} is in {area}, {city}. Opening hours, directions and ways to get in touch are all on this page.",
+    pvFactToday: "Today", pvFactWhere: "Where", pvFactPhone: "Phone", pvSeeWeek: "See the full week",
+    pvVisitTitle: "Come and visit", pvContactTitle: "Get in touch", pvContactBody: "Call, message or find your way here.", pvSocialTitle: "Online",
+    pvOwnerKicker: "For the owner", pvOwnerTitle: "Like how this looks? It can be your website.",
+    pvOwnerBody: "We made this preview from your listing on Sewa so you can see how a simple, phone-friendly website could look. Tell us what to change, add your own photos and services, and we will set it up for you. Your listing stays free either way.",
+    pvOwnerSecondary: "How it works", pvFooterNote: "Preview made by Sewa from public details.", pvViewListing: "See the Sewa listing",
+    pvLeadMsg: "Hello, I saw the free website preview for {name} and I would like to make it my website.", pvFromPreview: "About the website preview for {name}",
+    pvListingLink: "Own this business? See a free website preview", pvBackPreview: "Back to the preview",
+    pvCat_salons: "Salon", pvCat_barbers: "Barber", pvCat_spas: "Spa", pvCat_clinics: "Clinic", pvCat_cafes: "Café", pvCat_restaurants: "Restaurant", pvCat_gyms: "Gym", pvCat_hotels: "Hotel",
   },
   ne: {
     tagline: "काठमाडौंका स्थानीय पसल र सेवाहरू: फोन नम्बर, खुल्ने समय र वेबसाइट चल्छ कि चल्दैन।",
@@ -445,6 +457,18 @@ const dict = {
     adPwDone: "पासवर्ड बदलियो।",
     adPwError: "पासवर्ड बदल्न सकिएन। हालको पासवर्ड जाँचेर फेरि प्रयास गर्नुहोस्।",
     adLoading: "लोड हुँदै…",
+    // निःशुल्क वेबसाइट नमुना
+    pvBarText: "सेवाले बनाएको निःशुल्क वेबसाइट नमुना", pvBarNote: "सार्वजनिक विवरणबाट बनाइएको। आधिकारिक साइट होइन।", pvBarCta: "यसलाई मेरो वेबसाइट बनाउनुहोस्", pvBarShort: "सेवाको निःशुल्क नमुना", pvBarNoteShort: "आधिकारिक साइट होइन",
+    pvNavVisit: "ठेगाना", pvNavContact: "सम्पर्क", pvHeroIn: "{city}, {area}मा {cat}", pvCallNow: "अहिले फोन गर्नुहोस्",
+    pvWelcome: "{name}मा स्वागत छ", pvAboutFallback: "{name} {city}को {area}मा छ। खुल्ने समय, बाटो र सम्पर्क गर्ने तरिका सबै यही पेजमा छन्।",
+    pvFactToday: "आज", pvFactWhere: "कहाँ", pvFactPhone: "फोन", pvSeeWeek: "पूरा हप्ता हेर्नुहोस्",
+    pvVisitTitle: "भेट्न आउनुहोस्", pvContactTitle: "सम्पर्क गर्नुहोस्", pvContactBody: "फोन गर्नुहोस्, सन्देश पठाउनुहोस् वा यहाँ आउने बाटो हेर्नुहोस्।", pvSocialTitle: "अनलाइन",
+    pvOwnerKicker: "मालिकका लागि", pvOwnerTitle: "यो मन पर्यो? यो तपाईंको वेबसाइट बन्न सक्छ।",
+    pvOwnerBody: "सानो, फोनमा राम्रो देखिने वेबसाइट कस्तो हुन्छ भनेर तपाईंले हेर्न सक्नुहोस् भनेर हामीले सेवामा रहेको तपाईंको सूचीबाट यो नमुना बनाएका हौं। के बदल्ने भन्नुहोस्, आफ्नै फोटो र सेवा थप्नुहोस्, बाँकी हामी मिलाइदिन्छौं। तपाईंको सूची जे भए पनि निःशुल्क रहन्छ।",
+    pvOwnerSecondary: "कसरी काम गर्छ", pvFooterNote: "सेवाले सार्वजनिक विवरणबाट बनाएको नमुना।", pvViewListing: "सेवामा सूची हेर्नुहोस्",
+    pvLeadMsg: "नमस्ते, मैले {name}को निःशुल्क वेबसाइट नमुना हेरें र यसलाई मेरो वेबसाइट बनाउन चाहन्छु।", pvFromPreview: "{name}को वेबसाइट नमुनाबारे",
+    pvListingLink: "यो तपाईंको व्यवसाय हो? निःशुल्क वेबसाइट नमुना हेर्नुहोस्", pvBackPreview: "नमुनामा फर्कनुहोस्",
+    pvCat_salons: "सैलुन", pvCat_barbers: "हजाम पसल", pvCat_spas: "स्पा", pvCat_clinics: "क्लिनिक", pvCat_cafes: "क्याफे", pvCat_restaurants: "रेस्टुरेन्ट", pvCat_gyms: "जिम", pvCat_hotels: "होटल",
   },
 } as const;
 

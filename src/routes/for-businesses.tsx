@@ -1,11 +1,20 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { getBusiness } from "@/data/directory";
 import { useEffect, useRef, useState } from "react";
-import { ArrowDown, Check, Clock, Image, MapPin, Phone, Plus, RefreshCw, Scissors, Smartphone, Sparkles, MessageCircle, BadgeCheck, X } from "lucide-react";
+import { ArrowDown, ArrowLeft, Check, Clock, Image, MapPin, Phone, Plus, RefreshCw, Scissors, Smartphone, Sparkles, MessageCircle, BadgeCheck, X } from "lucide-react";
 import { Page, pageMeta } from "@/components/site";
 import { ContactForm } from "@/components/forms";
 import { useI18n, type Key } from "@/lib/i18n";
 
+type Search = { from?: "preview"; listing?: string; business?: string };
+
 export const Route = createFileRoute("/for-businesses")({
+  // ?from=preview&listing=<slug>&business=<name> comes from "Make this my website" on a free preview.
+  validateSearch: (s: Record<string, unknown>): Search => ({
+    ...(s["from"] === "preview" ? { from: "preview" as const } : {}),
+    ...(typeof s["listing"] === "string" ? { listing: s["listing"].slice(0, 100) } : {}),
+    ...(typeof s["business"] === "string" ? { business: s["business"].slice(0, 150) } : {}),
+  }),
   head: () => pageMeta("For businesses", "Simple, mobile-friendly websites for salons, barbers, spas and clinics in Kathmandu. Your directory listing stays free either way.", "/for-businesses"),
   component: ForBusinesses,
 });
@@ -26,7 +35,11 @@ function Kicker({ children }: { children: string }) {
 
 function ForBusinesses() {
   const { t } = useI18n();
-  const [msg, setMsg] = useState("");
+  const search = Route.useSearch();
+  // Only a real listing counts as a preview lead; anything else falls back to the plain form.
+  const pv = search.from === "preview" && search.listing ? getBusiness(search.listing) : undefined;
+  const pvName = pv ? pv.name : "";
+  const [msg, setMsg] = useState(pv ? t("pvLeadMsg").replace("{name}", pvName) : "");
   const [leadVisible, setLeadVisible] = useState(false);
   const leadRef = useRef<HTMLElement>(null);
 
@@ -37,6 +50,14 @@ function ForBusinesses() {
     io.observe(el);
     return () => io.disconnect();
   }, []);
+
+  // Arriving from a preview: go straight to the quote form, with the message in the current language.
+  useEffect(() => {
+    if (!pv) return;
+    setMsg(t("pvLeadMsg").replace("{name}", pvName));
+    const id = window.setTimeout(() => document.getElementById(LEAD_ID)?.scrollIntoView({ block: "start" }), 50);
+    return () => window.clearTimeout(id);
+  }, [pv?.slug, t("pvLeadMsg")]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const how: Key[] = ["fb2How1", "fbHow2", "fbHow3", "fbHow4"];
   const faq: [Key, Key][] = [["fbQ1", "fbA1"], ["fbQ2", "fbA2"], ["fbQ3", "fbA3"], ["fbQ4", "fbA4"], ["fbQ5", "fbA5"]];
@@ -137,8 +158,14 @@ function ForBusinesses() {
             <Kicker>{t("fb2LeadKicker")}</Kicker>
             <h2 id="lead-title" className="mt-2 text-xl font-bold tracking-tight sm:text-2xl">{t("fb2LeadTitle")}</h2>
             <p className="mt-2 mb-5 leading-relaxed text-muted-foreground">{t("fb2LeadBody")}</p>
+            {pv && (
+              <div className="mb-4 flex flex-wrap items-center justify-between gap-x-4 gap-y-1 rounded-2xl border border-border bg-accent px-4 py-3">
+                <p className="inline-flex items-center gap-2 text-[14px] font-semibold text-accent-foreground"><Sparkles aria-hidden className="h-4 w-4 shrink-0" />{t("pvFromPreview").replace("{name}", pvName)}</p>
+                <Link to="/s/$slug/website-preview" params={{ slug: pv.slug }} className="inline-flex min-h-11 items-center gap-1.5 text-[14px] font-semibold text-primary underline"><ArrowLeft aria-hidden className="h-4 w-4" />{t("pvBackPreview")}</Link>
+              </div>
+            )}
             <div className="form-card">
-              <ContactForm key={msg} business="" listing="" page="for-businesses" message={msg} doneText={t("fb2Thanks")} />
+              <ContactForm key={`${msg}|${pv?.slug ?? ""}`} business={pvName} listing={pv ? pv.slug : ""} page={pv ? "preview" : "for-businesses"} message={msg} doneText={t("fb2Thanks")} />
             </div>
           </section>
         </div>

@@ -1,5 +1,5 @@
 import { createFileRoute, Link, notFound, redirect, useRouter } from "@tanstack/react-router";
-import { ArrowLeft, ChevronRight, Globe, MapPin, Navigation, Phone, Share2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, ChevronRight, Globe, MapPin, Navigation, Phone, Share2, Sparkles } from "lucide-react";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { NotFoundView, HoursLine, pageMeta, useNow } from "@/components/site";
 import { CatIcon } from "@/components/cover";
@@ -11,6 +11,7 @@ import { useI18n, type Key } from "@/lib/i18n";
 import { businessJsonLd, breadcrumbJsonLd, listingTitle } from "@/lib/seo";
 import { distanceTo, formatDistance, sortByDistance, useLocation } from "@/lib/geo";
 import { formatDate, statusDetail, weekTable } from "@/lib/venue";
+import { offersPreview } from "@/lib/preview";
 
 export const Route = createFileRoute("/s/$slug")({
   loader: ({ params }) => {
@@ -211,6 +212,7 @@ function ShopPage() {
                     <a href={b.website} target="_blank" rel="noopener noreferrer" className="block break-all text-primary underline">{b.website!.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "")}</a>
                   )}
                   <span className={showWebsite(b) ? "text-sm text-muted-foreground" : ""}>{websiteStatusSentence(b, lang)}</span>
+                  {offersPreview(b) && <PreviewLink slug={b.slug} />}
                 </Row>
                 {b.otherPhones?.length ? (
                   <Row label={t("otherPhones")}>
@@ -307,9 +309,21 @@ function ShopPage() {
   );
 }
 
+/** Small owner-facing link to the free website preview, only for listings with no working site. */
+function PreviewLink({ slug }: { slug: string }) {
+  const { t } = useI18n();
+  return (
+    <Link to="/s/$slug/website-preview" params={{ slug }} className="group mt-1.5 inline-flex min-h-11 items-center gap-2 text-[14px] font-semibold text-primary">
+      <Sparkles aria-hidden className="h-4 w-4 shrink-0 text-brand-accent-foreground" />
+      <span className="underline decoration-brand-accent decoration-2 underline-offset-4">{t("pvListingLink")}</span>
+      <ArrowRight aria-hidden className="h-4 w-4 shrink-0 transition-transform group-hover:translate-x-0.5" />
+    </Link>
+  );
+}
+
 function OwnerPanel({ b }: { b: Business }) {
   const { t } = useI18n();
-  const noSite = b.websiteStatus === "none_found" || b.websiteStatus === "owner_no_site" || b.websiteStatus === "failed";
+  const noSite = offersPreview(b);
   return (
     <aside aria-labelledby="owner-note" className="owner-note">
       <p className="mb-1 inline-flex rounded-full bg-brand-accent px-2.5 py-0.5 text-xs font-bold text-brand-accent-foreground">{t("ownerKicker")}</p>
@@ -319,6 +333,7 @@ function OwnerPanel({ b }: { b: Business }) {
         <Link to="/contact" search={{ business: b.name, listing: b.slug }} className="action-btn action-dark min-h-11 text-sm">{noSite ? t("ownerClaimSite") : t("ownerContact")}</Link>
         <Link to="/for-businesses" className="inline-flex min-h-11 items-center text-primary underline">{t("ownerMore")}</Link>
       </div>
+      {offersPreview(b) && <PreviewLink slug={b.slug} />}
     </aside>
   );
 }
