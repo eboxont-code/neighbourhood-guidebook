@@ -330,7 +330,7 @@ function OwnerPanel({ b }: { b: Business }) {
       <h2 id="owner-note" className="text-lg font-semibold">{noSite ? t("ownerNoSiteTitle") : t("ownerTitle")}</h2>
       <p className="mt-1 text-sm leading-relaxed">{t(`owner_${b.websiteStatus}`)}</p>
       <div className="mt-3 flex flex-col gap-2 text-sm sm:flex-row sm:items-center sm:gap-5">
-        <Link to="/contact" search={{ business: b.name, listing: b.slug }} className="action-btn action-dark min-h-11 text-sm">{noSite ? t("ownerClaimSite") : t("ownerContact")}</Link>
+        <Link to="/contact" search={{ business: b.name, listing: b.slug, from: "claim" }} className="action-btn action-dark min-h-11 text-sm">{noSite ? t("ownerClaimSite") : t("ownerContact")}</Link>
         <Link to="/for-businesses" className="inline-flex min-h-11 items-center text-primary underline">{t("ownerMore")}</Link>
       </div>
       {offersPreview(b) && <PreviewLink slug={b.slug} />}

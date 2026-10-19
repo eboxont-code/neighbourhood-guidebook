@@ -3,11 +3,13 @@ import { useEffect, useMemo, useState, type ReactNode, type FormEvent, type Inpu
 import type { Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
-import { areas, categories, placeName, type Business, type WebsiteStatus, type Verification } from "@/data/directory";
+import { areas, businesses, categories, placeName, type Business, type WebsiteStatus, type Verification } from "@/data/directory";
 import { rowToBusiness } from "@/lib/listings.functions";
 import { expireListings } from "@/lib/listings";
 import { hoursToWeek, normalizePhone, osmLink, slugify, validSlug, validUrl, weekToHours, type DayValue } from "@/lib/admin-listing";
 import { useI18n, type Key } from "@/lib/i18n";
+import { countByStatus, isLeadStatus, leadSource, leadStatuses, leadTel, leadWhatsapp, type LeadStatus } from "@/lib/leads";
+import { offersPreview, previewPath } from "@/lib/preview";
 
 export const Route = createFileRoute("/admin")({
   ssr: false,
@@ -91,16 +93,20 @@ function Dashboard({ email }: { email: string }) {
   const { t } = useI18n();
   const [tab, setTab] = useState<"listings" | "messages" | "account">("listings");
   const tabs = [["listings", "adTabListings"], ["messages", "adTabMessages"], ["account", "adTabAccount"]] as const;
+  const [newLeads, setNewLeads] = useState(0);
+  useEffect(() => {
+    supabase.from("contact_messages").select("id", { count: "exact", head: true }).eq("status", "new").then(({ count }) => setNewLeads(count ?? 0));
+  }, []);
   return (
     <div>
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
         <div className="chip-row" role="tablist">
-          {tabs.map(([k, l]) => <button key={k} role="tab" type="button" aria-selected={tab === k} onClick={() => setTab(k)} className={`chip min-h-11 ${tab === k ? "chip-on" : ""}`}>{t(l)}</button>)}
+          {tabs.map(([k, l]) => <button key={k} role="tab" type="button" aria-selected={tab === k} onClick={() => setTab(k)} className={`chip min-h-11 ${tab === k ? "chip-on" : ""}`}>{t(l)}{k === "messages" && newLeads > 0 && <span className="ml-1.5 inline-flex min-w-5 justify-center rounded-full bg-brand-accent px-1.5 text-xs font-bold text-brand-accent-foreground" aria-label={t("adLeadsNewN").replace("{n}", String(newLeads))}>{newLeads}</span>}</button>)}
         </div>
         <button type="button" className="min-h-11 rounded-full px-3 text-sm font-semibold text-muted-foreground hover:bg-muted" onClick={() => supabase.auth.signOut()}>{t("adSignOut")}</button>
       </div>
       {tab === "listings" && <Listings />}
-      {tab === "messages" && <Messages />}
+      {tab === "messages" && <Messages onCount={setNewLeads} />}
       {tab === "account" && <Account email={email} />}
     </div>
   );
@@ -366,39 +372,115 @@ function Editor({ row, all, onDone, onCancel }: { row: Row | null; all: Row[]; o
   );
 }
 
-function Messages() {
+function LeadCard({ m, onSaved }: { m: Tables<"contact_messages">; onSaved: (row: Tables<"contact_messages">) => void }) {
+  const { t } = useI18n();
+  const [status, setStatus] = useState<LeadStatus>(isLeadStatus(m.status) ? m.status : "new");
+  const [note, setNote] = useState(m.admin_note ?? "");
+  const [state, setState] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const dirty = status !== m.status || note.trim() !== (m.admin_note ?? "");
+  const src = leadSource(m.page);
+  const slug = m.source_listing_slug;
+  const listing = slug ? businesses.find((b) => b.slug === slug) : undefined;
+  const who = m.business_name || listing?.name || m.name;
+  const tel = leadTel(m.phone);
+  const waText = (m.business_name ? t("adLeadWaText") : t("adLeadWaTextShort")).replace("{n}", m.name).replace("{b}", m.business_name ?? "");
+  const wa = leadWhatsapp(m.phone, waText);
+  async function save() {
+    setState("saving");
+    const admin_note = note.trim() ? note.trim().slice(0, 2000) : null;
+    const { data, error } = await supabase.from("contact_messages").update({ status, admin_note }).eq("id", m.id).select("*").single();
+    if (error || !data) return setState("error");
+    setState("saved");
+    onSaved(data);
+  }
+  return (
+    <li className={`${card} space-y-3`}>
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-bold ${src === "preview" || src === "claim" ? "bg-brand-accent text-brand-accent-foreground" : "bg-muted text-foreground"}`}>{t(`adSrc_${src}`)}</span>
+        <span className="text-sm text-muted-foreground">{leadWhen(m.created_at)}</span>
+      </div>
+      <div>
+        <p className="text-lg font-semibold leading-snug">{who}</p>
+        {who !== m.name && <p className="text-sm text-muted-foreground">{t("adLeadFrom").replace("{n}", m.name)}</p>}
+      </div>
+      {tel ? (
+        <div className="flex flex-wrap gap-2">
+          <a href={tel} className="action-btn action-primary min-h-11 text-sm">{t("call")} {m.phone}</a>
+          {wa && <a href={wa} target="_blank" rel="noreferrer" className="action-btn action-secondary min-h-11 text-sm">{t("whatsapp")}</a>}
+        </div>
+      ) : <p className="text-sm text-muted-foreground">{t("adLeadNoPhone")}</p>}
+      <p className="whitespace-pre-wrap break-words rounded-xl bg-muted/60 p-3 leading-relaxed">{m.message}</p>
+      {slug && (
+        <div className="flex flex-wrap gap-x-5 gap-y-1 text-sm">
+          {listing ? <Link to="/s/$slug" params={{ slug }} target="_blank" className="inline-flex min-h-11 items-center text-primary underline">{t("adLeadOpenListing")}</Link> : <span className="inline-flex min-h-11 items-center text-muted-foreground">{t("adMsgListing")}: {slug}</span>}
+          {listing && offersPreview(listing) && <a href={previewPath(slug)} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center text-primary underline">{t("adLeadOpenPreview")}</a>}
+        </div>
+      )}
+      <div className="grid gap-3 border-t border-border pt-3">
+        <div>
+          <p className="mb-1.5 text-sm font-bold" id={`st-${m.id}`}>{t("adLeadStatus")}</p>
+          <div className="chip-row" role="radiogroup" aria-labelledby={`st-${m.id}`}>
+            {leadStatuses.map((s) => <button key={s} type="button" role="radio" aria-checked={status === s} onClick={() => { setStatus(s); setState("idle"); }} className={`chip min-h-11 text-sm ${status === s ? "chip-on" : ""}`}>{t(`adSt_${s}`)}</button>)}
+          </div>
+        </div>
+        <Field label={t("adLeadNote")} hint={t("adLeadNoteHint")}>
+          <textarea className="field min-h-20" maxLength={2000} value={note} onChange={(e) => { setNote(e.target.value); setState("idle"); }} />
+        </Field>
+        <div className="flex flex-wrap items-center gap-3">
+          <button type="button" disabled={!dirty || state === "saving"} onClick={save} className="action-btn action-primary min-h-11 px-6 text-sm disabled:opacity-50">{state === "saving" ? t("adSaving") : t("adSave")}</button>
+          {state === "saved" && <span role="status" className="text-sm font-semibold text-success">{t("adLeadSaved")}</span>}
+          {state === "error" && <span role="alert" className="text-sm font-semibold text-error">{t("adLeadSaveError")}</span>}
+          {m.status_changed_at && state !== "saved" && <span className="text-sm text-muted-foreground">{t("adLeadChanged").replace("{d}", leadWhen(m.status_changed_at))}</span>}
+        </div>
+      </div>
+    </li>
+  );
+}
+
+const leadWhen = (s: string | null) => (s ? new Date(s).toLocaleString("en-GB", { timeZone: "Asia/Kathmandu", dateStyle: "medium", timeStyle: "short" }) : "");
+
+function Messages({ onCount }: { onCount?: (n: number) => void }) {
   const { t } = useI18n();
   const [data, setData] = useState<{ c: Tables<"contact_messages">[]; r: Tables<"correction_reports">[] } | null>(null);
   const [failed, setFailed] = useState(false);
+  const [filter, setFilter] = useState<LeadStatus | "all">("all");
   async function load() {
     setFailed(false);
     const [c, r] = await Promise.all([
-      supabase.from("contact_messages").select("*").order("created_at", { ascending: false }).limit(200),
+      supabase.from("contact_messages").select("*").order("created_at", { ascending: false }).limit(300),
       supabase.from("correction_reports").select("*").order("created_at", { ascending: false }).limit(200),
     ]);
     if (c.error || r.error) setFailed(true); else setData({ c: c.data, r: r.data });
   }
   useEffect(() => { load(); }, []);
+  const counts = useMemo(() => countByStatus(data?.c ?? []), [data]);
+  useEffect(() => { if (data) onCount?.(counts.new); }, [data, counts.new, onCount]);
   if (failed) return <div className={card}><p>{t("adLoadError")}</p><button type="button" className="action-btn action-secondary mt-3" onClick={load}>{t("adRetry")}</button></div>;
   if (!data) return <p className="text-muted-foreground">{t("adLoading")}</p>;
-  const when = (s: string | null) => (s ? new Date(s).toLocaleString("en-GB", { timeZone: "Asia/Kathmandu", dateStyle: "medium", timeStyle: "short" }) : "");
+  const shown = data.c.filter((m) => filter === "all" || m.status === filter);
+  const saved = (row: Tables<"contact_messages">) => setData((d) => (d ? { ...d, c: d.c.map((x) => (x.id === row.id ? row : x)) } : d));
   const meta = (label: string, val: string | null) => (val ? <p className="text-sm"><span className="text-muted-foreground">{label}: </span>{val}</p> : null);
   return (
     <div className="space-y-8">
-      <section>
-        <h2 className="mb-3 text-lg font-semibold">{t("adMsgContact")}</h2>
-        {data.c.length === 0 ? <p className={card}>{t("adMsgEmpty")}</p> : <ul className="space-y-3">{data.c.map((m) => (
-          <li key={m.id} className={card}>
-            <div className="flex flex-wrap justify-between gap-2"><p className="font-semibold">{m.name}</p><p className="text-sm text-muted-foreground">{when(m.created_at)}</p></div>
-            {meta(t("fBusiness"), m.business_name)}{meta(t("adPhone"), m.phone)}{meta(t("adMsgListing"), m.source_listing_slug)}{meta(t("adMsgPage"), m.page)}
-            <p className="mt-2 whitespace-pre-wrap break-words leading-relaxed">{m.message}</p>
-          </li>))}</ul>}
+      <section aria-labelledby="leads-title">
+        <h2 id="leads-title" className="text-lg font-semibold">{t("adLeadsTitle")}</h2>
+        <p className="mt-1 mb-3 text-sm leading-relaxed text-muted-foreground">{t("adLeadsIntro")}</p>
+        <div className="chip-row mb-4" role="tablist" aria-label={t("adLeadStatus")}>
+          {(["all", ...leadStatuses] as const).map((s) => (
+            <button key={s} type="button" role="tab" aria-selected={filter === s} onClick={() => setFilter(s)} className={`chip min-h-11 text-sm ${filter === s ? "chip-on" : ""}`}>
+              {s === "all" ? t("adLeadsAll") : t(`adSt_${s}`)} <span className="ml-1 tabular-nums opacity-75">{counts[s]}</span>
+            </button>
+          ))}
+        </div>
+        {data.c.length === 0 ? <p className={card}>{t("adLeadsEmpty")}</p>
+          : shown.length === 0 ? <p className={card}>{t("adLeadsNoneInFilter")}</p>
+          : <ul className="space-y-3">{shown.map((m) => <LeadCard key={`${m.id}|${m.status}|${m.admin_note ?? ""}`} m={m} onSaved={saved} />)}</ul>}
       </section>
       <section>
         <h2 className="mb-3 text-lg font-semibold">{t("adMsgCorrections")}</h2>
         {data.r.length === 0 ? <p className={card}>{t("adMsgEmpty")}</p> : <ul className="space-y-3">{data.r.map((m) => (
           <li key={m.id} className={card}>
-            <div className="flex flex-wrap justify-between gap-2"><p className="font-semibold">{m.listing_slug}</p><p className="text-sm text-muted-foreground">{when(m.created_at)}</p></div>
+            <div className="flex flex-wrap justify-between gap-2"><p className="font-semibold">{m.listing_slug}</p><p className="text-sm text-muted-foreground">{leadWhen(m.created_at)}</p></div>
             {meta(t("adMsgReply"), m.contact)}
             <p className="mt-2 whitespace-pre-wrap break-words leading-relaxed">{m.whats_wrong}</p>
           </li>))}</ul>}
