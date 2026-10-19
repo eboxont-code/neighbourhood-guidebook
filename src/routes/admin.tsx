@@ -394,7 +394,7 @@ function LeadCard({ m, onSaved }: { m: Tables<"contact_messages">; onSaved: (row
     onSaved(data);
   }
   return (
-    <li className={`${card} space-y-3`}>
+    <li className={`${card} min-w-0 space-y-3`}>
       <div className="flex flex-wrap items-center justify-between gap-2">
         <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-bold ${src === "preview" || src === "claim" ? "bg-brand-accent text-brand-accent-foreground" : "bg-muted text-foreground"}`}>{t(`adSrc_${src}`)}</span>
         <span className="text-sm text-muted-foreground">{leadWhen(m.created_at)}</span>
@@ -416,10 +416,10 @@ function LeadCard({ m, onSaved }: { m: Tables<"contact_messages">; onSaved: (row
           {listing && offersPreview(listing) && <a href={previewPath(slug)} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center text-primary underline">{t("adLeadOpenPreview")}</a>}
         </div>
       )}
-      <div className="grid gap-3 border-t border-border pt-3">
+      <div className="min-w-0 space-y-3 border-t border-border pt-3">
         <div>
           <p className="mb-1.5 text-sm font-bold" id={`st-${m.id}`}>{t("adLeadStatus")}</p>
-          <div className="chip-row" role="radiogroup" aria-labelledby={`st-${m.id}`}>
+          <div className="flex flex-wrap gap-2" role="radiogroup" aria-labelledby={`st-${m.id}`}>
             {leadStatuses.map((s) => <button key={s} type="button" role="radio" aria-checked={status === s} onClick={() => { setStatus(s); setState("idle"); }} className={`chip min-h-11 text-sm ${status === s ? "chip-on" : ""}`}>{t(`adSt_${s}`)}</button>)}
           </div>
         </div>
@@ -474,7 +474,7 @@ function Messages({ onCount }: { onCount?: (n: number) => void }) {
         </div>
         {data.c.length === 0 ? <p className={card}>{t("adLeadsEmpty")}</p>
           : shown.length === 0 ? <p className={card}>{t("adLeadsNoneInFilter")}</p>
-          : <ul className="space-y-3">{shown.map((m) => <LeadCard key={`${m.id}|${m.status}|${m.admin_note ?? ""}`} m={m} onSaved={saved} />)}</ul>}
+          : <ul className="space-y-3">{shown.map((m) => <LeadCard key={m.id} m={m} onSaved={saved} />)}</ul>}
       </section>
       <section>
         <h2 className="mb-3 text-lg font-semibold">{t("adMsgCorrections")}</h2>
