@@ -1,6 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { NotFoundView, Page, pageMeta, useNow } from "@/components/site";
-import { SectionHead } from "@/components/blocks";
 import { areasInUse, businesses, citiesInUse, getArea, getCategory, placeName } from "@/data/directory";
 import { formatDate, newListings } from "@/lib/venue";
 import { useI18n } from "@/lib/i18n";
