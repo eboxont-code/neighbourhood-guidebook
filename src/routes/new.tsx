@@ -21,7 +21,7 @@ function NewPage() {
   const city = citiesInUse()[0]!;
   return (
     <Page>
-      <div className="mb-3">
+      <div className="mb-6">
         <h1 className="text-lg font-semibold sm:text-xl">{t("newPageTitle")}</h1>
         <p className="mt-0.5 text-sm text-muted-foreground">{t("newPageSub")}</p>
       </div>

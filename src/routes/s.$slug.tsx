@@ -217,7 +217,10 @@ function ShopPage() {
                 {b.otherPhones?.length ? (
                   <Row label={t("otherPhones")}>
                     {b.otherPhones.map((p) => (
-                      <div key={p.number}><a href={telLink(p.number)} className="inline-flex min-h-11 items-center text-primary underline">{p.number}</a>{p.note && <span className="text-muted-foreground"> · {t(p.note)}</span>}</div>
+                      <div key={p.number} className="flex flex-wrap items-center gap-x-2">
+                        <a href={telLink(p.number)} className="inline-flex min-h-11 items-center font-medium tabular-nums text-primary underline underline-offset-4">{p.number}</a>
+                        {p.note && <span className="text-[13px] text-muted-foreground">{t(p.note)}</span>}
+                      </div>
                     ))}
                   </Row>
                 ) : null}
