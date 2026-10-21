@@ -22,7 +22,10 @@ function NewPage() {
   const city = citiesInUse()[0]!;
   return (
     <Page>
-      <SectionHead title={t("newPageTitle")} sub={t("newPageSub")} />
+      <div className="mb-3">
+        <h1 className="text-lg font-semibold sm:text-xl">{t("newPageTitle")}</h1>
+        <p className="mt-0.5 text-sm text-muted-foreground">{t("newPageSub")}</p>
+      </div>
       {dates.length === 0 ? (
         <div className="rounded-2xl border border-border bg-card p-6 text-center shadow-[var(--shadow-card)]">
           <h2 className="text-base font-semibold">{t("newEmptyTitle")}</h2>
