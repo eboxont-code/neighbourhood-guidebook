@@ -475,5 +475,15 @@
   position: fixed; left: 0; right: 0; bottom: 0; z-index: 980; padding-bottom: env(safe-area-inset-bottom);
   background: color-mix(in oklab, var(--hero) 96%, transparent); color: var(--hero-foreground); backdrop-filter: blur(12px);
   box-shadow: 0 -8px 24px -12px oklch(0.1 0.02 262 / 0.45);
-  @media (min-width: 1024px) { position: sticky; top: 0; bottom: auto; box-shadow: none; border-bottom: 1px solid oklch(1 0 0 / 0.08); }
+  transition: transform 0.25s ease, opacity 0.25s ease;
+  &[data-hidden="true"] { transform: translateY(110%); opacity: 0; pointer-events: none; }
+  @media (min-width: 1024px) {
+    position: sticky; top: 0; bottom: auto; box-shadow: none; border-bottom: 1px solid oklch(1 0 0 / 0.08);
+    &[data-hidden="true"] { transform: none; opacity: 1; pointer-events: auto; }
+  }
+}
+/* Room for the fixed phone bar so it never covers the last content. */
+@utility pv-site-pad {
+  padding-bottom: calc(4.5rem + env(safe-area-inset-bottom));
+  @media (min-width: 1024px) { padding-bottom: 0; }
 }
