@@ -101,7 +101,7 @@ describe("stage 1 data rules", () => {
     expect(websiteShortLabel(by("aavaran-durbar-marg"))).toBe("webWorking");
     expect(websiteShortLabel(by("kaya-healing-thamel"))).toBe("webNone");
     expect(websiteShortLabel(by("deezy-cuts-baluwatar"))).toBe("webNone");
-    expect(websiteShortLabel(by("lavish-durbar-marg"))).toBe("webNone");
+    expect(websiteShortLabel(by("lavish-durbar-marg"))).toBe("webWorking");
   });
 });
 

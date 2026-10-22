@@ -125,7 +125,7 @@ export const businesses: Business[] = [
     description: "Spa bookings go through the hotel. The phone is the hotel's number.",
     directions: "https://www.google.com/maps/search/?api=1&query=Hyatt+Regency+Kathmandu+Club+Oasis", sourceNotes: "The hotel's official contact page" },
   { ...base, id: "b11", slug: "lavish-durbar-marg", name: "Lavish Salon & Academy", category: "salons", area: "durbar-marg",
-    address: "Hitipokhari, Durbar Marg, Kathmandu", phone: "01-4542030", otherPhones: [{ number: "9808018075" }], websiteStatus: "none_found",
+    address: "Hitipokhari, Durbar Marg, Kathmandu", phone: "01-4542030", otherPhones: [{ number: "9808018075" }], website: "https://lavishsalon.com.np", websiteStatus: "working",
     hours: [{ days: "Every day", time: "09:30–19:00" }], hoursSource: "their own website (contact page)", hoursVerified: true,
     social: ["Instagram lavishsalon.np"], directions: "https://www.google.com/maps/search/?api=1&query=Lavish+Salon+Academy+Durbar+Marg", sourceNotes: "Their Instagram" },
   { ...base, id: "b12", slug: "nuad-thai-lazimpat", lat: 27.7284896, lng: 85.3250871, name: "Nuad Thai Spa, Panipokhari", category: "spas", area: "lazimpat",

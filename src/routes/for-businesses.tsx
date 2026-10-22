@@ -4,7 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { ArrowDown, ArrowLeft, Check, Clock, Image, MapPin, Phone, Plus, RefreshCw, Scissors, Smartphone, Sparkles, MessageCircle, BadgeCheck, X } from "lucide-react";
 import { Page, pageMeta } from "@/components/site";
 import { ContactForm } from "@/components/forms";
-import { useI18n, type Key } from "@/lib/i18n";
+import { dict, useI18n, type Key } from "@/lib/i18n";
+import { SITE_NAME, SITE_URL } from "@/config";
 
 type Search = { from?: "preview"; listing?: string; business?: string };
 
@@ -15,7 +16,27 @@ export const Route = createFileRoute("/for-businesses")({
     ...(typeof s["listing"] === "string" ? { listing: s["listing"].slice(0, 100) } : {}),
     ...(typeof s["business"] === "string" ? { business: s["business"].slice(0, 150) } : {}),
   }),
-  head: () => pageMeta("For businesses", "Simple, mobile-friendly websites for salons, barbers, spas and clinics in Kathmandu. Your directory listing stays free either way.", "/for-businesses"),
+  head: () => {
+    const head = pageMeta(
+      "Website design in Kathmandu for salons, spas and clinics",
+      "Website design in Kathmandu for small businesses: simple, mobile-friendly sites for salons, barbers, spas and clinics with services, hours, one-tap call and map. Your directory listing stays free.",
+      "/for-businesses",
+    );
+    const en = dict.en;
+    const faqKeys = [1, 2, 3, 4, 5] as const;
+    const service = {
+      "@context": "https://schema.org", "@type": "Service", name: "Website design in Kathmandu",
+      serviceType: "Website design", url: `${SITE_URL}/for-businesses`,
+      areaServed: { "@type": "City", name: "Kathmandu" },
+      provider: { "@type": "Organization", name: SITE_NAME, url: SITE_URL },
+      description: "Simple, mobile-friendly websites for salons, barbers, spas and clinics in Kathmandu.",
+    };
+    const faqLd = {
+      "@context": "https://schema.org", "@type": "FAQPage",
+      mainEntity: faqKeys.map((n) => ({ "@type": "Question", name: en[`fbQ${n}`], acceptedAnswer: { "@type": "Answer", text: en[`fbA${n}`] } })),
+    };
+    return { ...head, scripts: [{ type: "application/ld+json", children: JSON.stringify(service) }, { type: "application/ld+json", children: JSON.stringify(faqLd) }] };
+  },
   component: ForBusinesses,
 });
 
