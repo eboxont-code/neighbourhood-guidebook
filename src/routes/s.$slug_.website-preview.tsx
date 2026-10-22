@@ -133,11 +133,22 @@ function PreviewPage() {
   }, [b.slug]);
   const photo = b.cover && !failed ? b.cover : undefined;
   const ownerLink = { to: "/for-businesses" as const, search: { from: "preview" as const, listing: b.slug, business: b.name }, hash: "quote" };
+  // The phone bar steps aside while the owner section's own button is on screen.
+  const ownerRef = useRef<HTMLElement>(null);
+  const [ownerVisible, setOwnerVisible] = useState(false);
+  useEffect(() => {
+    const el = ownerRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+    const io = new IntersectionObserver(([e]) => setOwnerVisible(Boolean(e?.isIntersecting)), { threshold: 0.2 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+  const steps: [Key, Key][] = [["pvNext1Title", "pvNext1Body"], ["pvNext2Title", "pvNext2Body"], ["pvNext3Title", "pvNext3Body"]];
 
   return (
-    <div className="pv-site" style={style}>
+    <div className="pv-site pv-site-pad" style={style}>
       {/* Sewa bar: fixed at the bottom on phones, a slim strip on top on desktop. */}
-      <div className="pv-bar" role="region" aria-label={t("pvBarText")}>
+      <div className="pv-bar" role="region" aria-label={t("pvBarText")} data-hidden={ownerVisible ? "true" : "false"} aria-hidden={ownerVisible || undefined}>
         <div className="mx-auto flex max-w-5xl items-center gap-3 px-4 py-2.5 lg:px-6 lg:py-2">
           <span aria-hidden className="hidden h-8 w-8 shrink-0 sm:flex items-center justify-center rounded-lg bg-[var(--hero-foreground)] text-[15px] font-bold text-[var(--hero)]">
             {SITE_NAME.charAt(0)}<span className="mb-1.5 ml-px h-1.5 w-1.5 self-end rounded-full bg-brand-accent" />
@@ -272,7 +283,7 @@ function PreviewPage() {
       </section>
 
       {/* For the owner */}
-      <section id="owner" aria-labelledby="pv-owner" className="scroll-mt-4 bg-background py-14 lg:py-16">
+      <section id="owner" ref={ownerRef} aria-labelledby="pv-owner" className="scroll-mt-4 bg-background py-14 lg:py-16">
         <div className="mx-auto max-w-5xl px-4 sm:px-6">
           <div className="owner-note p-6 sm:p-10">
             <p className="inline-flex items-center gap-1.5 rounded-full bg-brand-accent px-3 py-1 text-xs font-bold text-brand-accent-foreground"><Sparkles aria-hidden className="h-3.5 w-3.5" />{t("pvOwnerKicker")}</p>
@@ -282,6 +293,21 @@ function PreviewPage() {
               <Link {...ownerLink} className="action-btn action-primary min-h-12 px-7 text-[15px]">{t("pvBarCta")}<ArrowRight aria-hidden className="h-[18px] w-[18px]" /></Link>
               <Link to="/for-businesses" className="inline-flex min-h-11 items-center justify-center px-2 text-[15px] font-semibold underline decoration-brand-accent decoration-2 underline-offset-4">{t("pvOwnerSecondary")}</Link>
             </div>
+          </div>
+
+          <div className="mt-8">
+            <h3 className="text-base font-semibold">{t("pvNextTitle")}</h3>
+            <ol className="mt-4 grid gap-3 sm:grid-cols-3">
+              {steps.map(([title, body], i) => (
+                <li key={title} className="flex gap-3.5 rounded-2xl border border-border bg-card p-4">
+                  <span aria-hidden className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground tabular-nums">{i + 1}</span>
+                  <div className="min-w-0">
+                    <p className="text-[15px] font-semibold">{t(title)}</p>
+                    <p className="mt-0.5 text-[14px] leading-relaxed text-muted-foreground">{t(body)}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
           </div>
         </div>
       </section>
