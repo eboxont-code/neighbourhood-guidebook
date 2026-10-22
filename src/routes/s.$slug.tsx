@@ -258,12 +258,10 @@ function ShopPage() {
                 {hasPin(b) ? (
                   <div className="relative">
                     <MapView items={[b]} className="h-56 lg:h-64" note={false} />
-                    {dir && <a href={dir} target="_blank" rel="noopener noreferrer" className="action-btn action-dark absolute right-3 bottom-3 z-[600] min-h-11 px-4 text-sm"><Navigation aria-hidden className="h-4 w-4" />{t("directions")}</a>}
                   </div>
                 ) : (
                   <div className="rounded-2xl bg-muted p-4">
                     {b.address && <p>{b.address}</p>}
-                    {dir && <a href={dir} target="_blank" rel="noopener noreferrer" className="mt-1 inline-flex min-h-11 items-center font-semibold text-primary underline">{t("openMaps")}</a>}
                   </div>
                 )}
               </section>

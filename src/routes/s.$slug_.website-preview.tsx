@@ -266,7 +266,6 @@ function PreviewPage() {
           <div className="mt-7 grid gap-3 sm:flex sm:flex-wrap">
             {b.phone && <a href={telLink(b.phone)} className="action-btn pv-btn-light min-h-12 px-6"><Phone aria-hidden className="h-[18px] w-[18px]" />{t("call")}</a>}
             {b.whatsapp && <a href={whatsappLink(b.whatsapp)} target="_blank" rel="noopener noreferrer" className="action-btn pv-btn-ghost min-h-12 px-6"><MessageCircle aria-hidden className="h-[18px] w-[18px]" />{t("whatsapp")}</a>}
-            {dir && <a href={dir} target="_blank" rel="noopener noreferrer" className="action-btn pv-btn-ghost min-h-12 px-6"><Navigation aria-hidden className="h-[18px] w-[18px]" />{t("directions")}</a>}
           </div>
           {socials.length > 0 && (
             <div className="mt-8">

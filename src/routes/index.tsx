@@ -86,9 +86,6 @@ function Home() {
       <section className="band band-alt">
         <div className="mx-auto max-w-6xl space-y-6 px-5">
           <BusinessBand />
-          <div className="text-center">
-            <Link to="/$city" params={{ city: city.slug }} className="action-btn action-secondary">{t("seeAllIn").replace("{city}", cityName)}</Link>
-          </div>
         </div>
       </section>
     </main>

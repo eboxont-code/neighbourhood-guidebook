@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { getBusiness } from "@/data/directory";
 import { useEffect, useRef, useState } from "react";
-import { ArrowDown, ArrowLeft, Check, Clock, Image, MapPin, Phone, Plus, RefreshCw, Scissors, Smartphone, Sparkles, MessageCircle, BadgeCheck, X } from "lucide-react";
+import { ArrowDown, ArrowLeft, Check, Clock, Image, MapPin, Phone, Plus, RefreshCw, Scissors, Smartphone, Sparkles, MessageCircle, X } from "lucide-react";
 import { Page, pageMeta } from "@/components/site";
 import { ContactForm } from "@/components/forms";
 import { dict, useI18n, type Key } from "@/lib/i18n";
@@ -62,12 +62,24 @@ function ForBusinesses() {
   const pvName = pv ? pv.name : "";
   const [msg, setMsg] = useState(pv ? t("pvLeadMsg").replace("{name}", pvName) : "");
   const [leadVisible, setLeadVisible] = useState(false);
+  const [heroCtaVisible, setHeroCtaVisible] = useState(true);
   const leadRef = useRef<HTMLElement>(null);
+  const heroCtaRef = useRef<HTMLButtonElement>(null);
+  // The pill only shows between the hero button and the quote form, so the same ask is never on screen twice.
+  const pillHidden = leadVisible || heroCtaVisible;
 
   useEffect(() => {
     const el = leadRef.current;
     if (!el || typeof IntersectionObserver === "undefined") return;
     const io = new IntersectionObserver(([e]) => setLeadVisible(!!e?.isIntersecting), { rootMargin: "0px 0px -120px 0px" });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const el = heroCtaRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") { setHeroCtaVisible(false); return; }
+    const io = new IntersectionObserver(([e]) => setHeroCtaVisible(!!e?.isIntersecting), { rootMargin: "-56px 0px -140px 0px" });
     io.observe(el);
     return () => io.disconnect();
   }, []);
@@ -83,7 +95,7 @@ function ForBusinesses() {
   const how: Key[] = ["fb2How1", "fbHow2", "fbHow3", "fbHow4"];
   const faq: [Key, Key][] = [["fbQ1", "fbA1"], ["fbQ2", "fbA2"], ["fbQ3", "fbA3"], ["fbQ4", "fbA4"], ["fbQ5", "fbA5"]];
   const inc: [Key, typeof Phone][] = [["fb2Inc1", Scissors], ["fb2Inc2", Clock], ["fb2Inc3", Phone], ["fb2Inc4", MapPin], ["fb2Inc5", Image], ["fb2Inc6", RefreshCw]];
-  const proof: [Key, typeof Phone][] = [["fb2Proof1", BadgeCheck], ["fb2Proof2", Smartphone], ["fb2Proof3", MessageCircle]];
+  const proof: [Key, typeof Phone][] = [["fb2Proof2", Smartphone], ["fb2Proof3", MessageCircle]];
 
   return (
     <div className="overflow-x-clip bg-background">
@@ -95,13 +107,13 @@ function ForBusinesses() {
             <h1 className="mt-3 text-[1.75rem] leading-[1.15] font-bold tracking-tight sm:text-[2.5rem]">{t("fbHeroTitle")}</h1>
             <p className="mt-3 max-w-xl text-[16px] leading-relaxed text-muted-foreground">{t("fbIntro")}</p>
             <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
-              <button type="button" onClick={toLead} className="action-btn action-primary inline-flex w-full px-7 sm:w-auto">{t("fbCta")}<ArrowDown aria-hidden className="h-5 w-5" /></button>
+              <button ref={heroCtaRef} type="button" onClick={toLead} className="action-btn action-primary inline-flex w-full px-7 sm:w-auto">{t("fbCta")}<ArrowDown aria-hidden className="h-5 w-5" /></button>
               <Link to="/contact" className="inline-flex min-h-11 items-center justify-center px-2 text-[15px] font-semibold underline decoration-brand-accent decoration-2 underline-offset-4">{t("fb2Claim")}</Link>
             </div>
           </div>
           <div className="hidden lg:block"><PhoneFrame good /></div>
         </div>
-        <ul className="mx-auto grid max-w-5xl grid-cols-3 gap-2 px-5 pb-6">
+        <ul className="mx-auto grid max-w-5xl grid-cols-2 gap-2 px-5 pb-6">
           {proof.map(([k, Icon]) => (
             <li key={k} className="flex flex-col items-center gap-1.5 rounded-xl bg-muted/60 px-2 py-3 text-center text-[13px] leading-snug font-semibold sm:flex-row sm:justify-center sm:text-sm">
               <Icon aria-hidden className="h-[18px] w-[18px] shrink-0 text-primary" strokeWidth={1.75} />{t(k)}
@@ -193,10 +205,9 @@ function ForBusinesses() {
       </Page>
 
       {/* Sticky quote bar, phones only, centred above the bottom nav with a clear gap */}
-      <div aria-hidden={leadVisible} className={`fixed inset-x-4 mx-auto max-w-md z-[970] transition-all duration-200 lg:hidden ${leadVisible ? "pointer-events-none translate-y-3 opacity-0" : "opacity-100"}`} style={{ bottom: "calc(var(--bottom-nav-h) + env(safe-area-inset-bottom) + var(--pill-gap))" }}>
-        <button type="button" tabIndex={leadVisible ? -1 : 0} onClick={toLead} className="flex min-h-[var(--pill-h)] w-full items-center justify-center gap-3 rounded-full bg-primary px-5 text-primary-foreground shadow-[var(--shadow-lift)]">
+      <div aria-hidden={pillHidden} className={`fixed inset-x-4 mx-auto max-w-md z-[970] transition-all duration-200 lg:hidden ${pillHidden ? "pointer-events-none translate-y-3 opacity-0" : "opacity-100"}`} style={{ bottom: "calc(var(--bottom-nav-h) + env(safe-area-inset-bottom) + var(--pill-gap))" }}>
+        <button type="button" tabIndex={pillHidden ? -1 : 0} onClick={toLead} className="flex min-h-[var(--pill-h)] w-full items-center justify-center gap-3 rounded-full bg-primary px-5 text-primary-foreground shadow-[var(--shadow-lift)]">
           <span className="shrink-0 text-[15px] font-semibold">{t("fb2Sticky")}</span>
-          <span className="truncate text-[12px] opacity-80">{t("fb2StickyNote")}</span>
         </button>
       </div>
       <div className="lg:hidden" style={{ height: "calc(var(--pill-h) + var(--pill-gap) + 1rem)" }} aria-hidden />
