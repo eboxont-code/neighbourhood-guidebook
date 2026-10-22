@@ -67,7 +67,7 @@ function ForBusinesses() {
   useEffect(() => {
     const el = leadRef.current;
     if (!el || typeof IntersectionObserver === "undefined") return;
-    const io = new IntersectionObserver(([e]) => setLeadVisible(!!e?.isIntersecting), { rootMargin: "0px 0px 96px 0px" });
+    const io = new IntersectionObserver(([e]) => setLeadVisible(!!e?.isIntersecting), { rootMargin: "0px 0px -120px 0px" });
     io.observe(el);
     return () => io.disconnect();
   }, []);
@@ -192,14 +192,14 @@ function ForBusinesses() {
         </div>
       </Page>
 
-      {/* Sticky quote bar, phones only, above the bottom nav and clear of the badge corner */}
-      <div aria-hidden={leadVisible} className={`fixed left-4 right-[84px] z-[970] transition-all duration-200 lg:hidden ${leadVisible ? "pointer-events-none translate-y-3 opacity-0" : "opacity-100"}`} style={{ bottom: "calc(var(--bottom-nav-h) + env(safe-area-inset-bottom) + 0.75rem)" }}>
-        <button type="button" tabIndex={leadVisible ? -1 : 0} onClick={toLead} className="flex min-h-12 w-full items-center justify-between gap-2 rounded-full bg-primary px-5 text-primary-foreground shadow-[var(--shadow-lift)]">
-          <span className="text-[15px] font-semibold">{t("fb2Sticky")}</span>
+      {/* Sticky quote bar, phones only, centred above the bottom nav with a clear gap */}
+      <div aria-hidden={leadVisible} className={`fixed inset-x-4 mx-auto max-w-md z-[970] transition-all duration-200 lg:hidden ${leadVisible ? "pointer-events-none translate-y-3 opacity-0" : "opacity-100"}`} style={{ bottom: "calc(var(--bottom-nav-h) + env(safe-area-inset-bottom) + var(--pill-gap))" }}>
+        <button type="button" tabIndex={leadVisible ? -1 : 0} onClick={toLead} className="flex min-h-[var(--pill-h)] w-full items-center justify-center gap-3 rounded-full bg-primary px-5 text-primary-foreground shadow-[var(--shadow-lift)]">
+          <span className="shrink-0 text-[15px] font-semibold">{t("fb2Sticky")}</span>
           <span className="truncate text-[12px] opacity-80">{t("fb2StickyNote")}</span>
         </button>
       </div>
-      <div className="lg:hidden" style={{ height: "calc(4.5rem + env(safe-area-inset-bottom))" }} aria-hidden />
+      <div className="lg:hidden" style={{ height: "calc(var(--pill-h) + var(--pill-gap) + 1rem)" }} aria-hidden />
     </div>
   );
 }
