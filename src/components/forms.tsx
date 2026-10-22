@@ -1,6 +1,6 @@
 import { useState, type FormEvent, type ReactNode } from "react";
 import { z } from "zod";
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { businesses } from "@/data/directory";
 import { useI18n, type Key } from "@/lib/i18n";
@@ -64,7 +64,7 @@ function Field({ id, label, required, hint, error, children }: { id: string; lab
       </label>
       {children}
       {hint && <p className="mt-1 text-sm text-muted-foreground">{hint}</p>}
-      {error && <p className="mt-1.5 text-sm font-semibold text-error" role="alert">{error}</p>}
+      {error && <p id={`${id}-error`} className="mt-1.5 text-sm font-semibold text-error" role="alert">{error}</p>}
     </div>
   );
 }
@@ -100,7 +100,14 @@ export function ContactForm({ business, listing, page, message = "", doneText }:
   async function submit(e: FormEvent) {
     e.preventDefault();
     const parsed = contactSchema.safeParse({ ...v, source_listing_slug: listing });
-    if (!parsed.success) return setErrors(errorsFrom(parsed.error.issues, t));
+    if (!parsed.success) {
+      const errs = errorsFrom(parsed.error.issues, t);
+      setErrors(errs);
+      const first = ["name", "business_name", "phone", "message"].find((k) => errs[k]);
+      const ids: Record<string, string> = { name: "name", business_name: "business", phone: "phone", message: "message" };
+      if (first) document.getElementById(ids[first]!)?.focus();
+      return;
+    }
     setErrors({});
     if (isBot(hp)) return setStatus("done");
     setStatus("sending");
@@ -111,20 +118,21 @@ export function ContactForm({ business, listing, page, message = "", doneText }:
   return (
     <form onSubmit={submit} noValidate className="relative space-y-5">
       <Field id="name" label={t("fName")} required error={errors["name"]}>
-        <input id="name" className="field" autoComplete="name" maxLength={100} value={v.name} onChange={(e) => setV({ ...v, name: e.target.value })} />
+        <input id="name" aria-invalid={!!errors["name"]} aria-describedby={errors["name"] ? "name-error" : undefined} className="field" type="text" autoComplete="name" autoCapitalize="words" enterKeyHint="next" required maxLength={100} value={v.name} onChange={(e) => setV({ ...v, name: e.target.value })} />
       </Field>
       <Field id="business" label={t("fBusiness")} hint={t("fBusinessHint")} error={errors["business_name"]}>
-        <input id="business" className="field" maxLength={150} value={v.business_name} onChange={(e) => setV({ ...v, business_name: e.target.value })} />
+        <input id="business" aria-invalid={!!errors["business_name"]} aria-describedby={errors["business_name"] ? "business-error" : undefined} className="field" type="text" autoComplete="organization" autoCapitalize="words" enterKeyHint="next" maxLength={150} value={v.business_name} onChange={(e) => setV({ ...v, business_name: e.target.value })} />
       </Field>
       <Field id="phone" label={t("fPhone")} hint={t("fPhoneHint")} error={errors["phone"]}>
-        <input id="phone" className="field" type="tel" inputMode="tel" autoComplete="tel" maxLength={30} value={v.phone} onChange={(e) => setV({ ...v, phone: e.target.value })} />
+        <input id="phone" aria-invalid={!!errors["phone"]} aria-describedby={errors["phone"] ? "phone-error" : undefined} className="field" type="tel" enterKeyHint="next" inputMode="tel" autoComplete="tel" maxLength={30} value={v.phone} onChange={(e) => setV({ ...v, phone: e.target.value })} />
       </Field>
       <Field id="message" label={t("fMessage")} required error={errors["message"]}>
-        <textarea id="message" className="field min-h-36" maxLength={2000} value={v.message} onChange={(e) => setV({ ...v, message: e.target.value })} />
+        <textarea id="message" aria-invalid={!!errors["message"]} aria-describedby={errors["message"] ? "message-error" : undefined} className="field min-h-36" enterKeyHint="send" required maxLength={2000} value={v.message} onChange={(e) => setV({ ...v, message: e.target.value })} />
       </Field>
       <Honeypot value={hp} onChange={setHp} />
       <SendStatus status={status} />
-      <button type="submit" disabled={status === "sending"} className="action-btn action-primary w-full px-6 disabled:opacity-60 sm:w-auto">
+      <button type="submit" disabled={status === "sending"} aria-busy={status === "sending"} className="action-btn action-primary min-h-12 w-full gap-2 px-6 disabled:opacity-70 sm:w-auto">
+        {status === "sending" && <Loader2 aria-hidden className="h-4 w-4 animate-spin" />}
         {t(status === "sending" ? "sending" : "send")}
       </button>
     </form>
