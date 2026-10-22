@@ -67,7 +67,7 @@ function ForBusinesses() {
   useEffect(() => {
     const el = leadRef.current;
     if (!el || typeof IntersectionObserver === "undefined") return;
-    const io = new IntersectionObserver(([e]) => setLeadVisible(!!e?.isIntersecting), { rootMargin: "0px 0px -20% 0px" });
+    const io = new IntersectionObserver(([e]) => setLeadVisible(!!e?.isIntersecting), { rootMargin: "0px 0px 96px 0px" });
     io.observe(el);
     return () => io.disconnect();
   }, []);
@@ -86,7 +86,7 @@ function ForBusinesses() {
   const proof: [Key, typeof Phone][] = [["fb2Proof1", BadgeCheck], ["fb2Proof2", Smartphone], ["fb2Proof3", MessageCircle]];
 
   return (
-    <div className="bg-background">
+    <div className="overflow-x-clip bg-background">
       {/* Hero: owner-facing, light, not the directory's navy band */}
       <section className="border-b border-border bg-card">
         <div className="page-enter mx-auto max-w-5xl px-5 pt-8 pb-8 lg:grid lg:grid-cols-[1.2fr_1fr] lg:items-center lg:gap-12 lg:pt-16 lg:pb-14">
@@ -165,7 +165,7 @@ function ForBusinesses() {
             <div className="mt-4 divide-y divide-border rounded-2xl border border-border bg-card">
               {faq.map(([q, a]) => (
                 <details key={q} className="group">
-                  <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 px-4 py-2.5 text-[15px] font-semibold">
+                  <summary className="flex min-h-12 cursor-pointer list-none rounded-2xl focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-ring [&::-webkit-details-marker]:hidden items-center justify-between gap-3 px-4 py-2.5 text-[15px] font-semibold">
                     {t(q)}<Plus aria-hidden className="h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200 group-open:rotate-45" />
                   </summary>
                   <p className="px-4 pb-4 text-[15px] leading-relaxed text-muted-foreground">{t(a)}</p>
@@ -199,7 +199,7 @@ function ForBusinesses() {
           <span className="truncate text-[12px] opacity-80">{t("fb2StickyNote")}</span>
         </button>
       </div>
-      <div className="h-16 lg:hidden" aria-hidden />
+      <div className="lg:hidden" style={{ height: "calc(4.5rem + env(safe-area-inset-bottom))" }} aria-hidden />
     </div>
   );
 }
