@@ -39,3 +39,27 @@ describe("free website preview", () => {
     }
   });
 });
+
+describe("preview examples on /for-businesses", () => {
+  it("only shows real listings that get a preview, one per category", async () => {
+    const { previewExamples } = await import("@/lib/preview");
+    const { businesses } = await import("@/data/directory");
+    const list = previewExamples(businesses);
+    expect(list.length).toBe(3);
+    expect(new Set(list.map((b) => b.category)).size).toBe(3);
+    for (const b of list) { expect(b.demo).toBe(false); expect(offersPreview(b)).toBe(true); }
+  });
+  it("skips a picked slug that no longer qualifies", async () => {
+    const { previewExamples } = await import("@/lib/preview");
+    const items = [
+      { slug: "serene-durbar-marg", category: "salons", websiteStatus: "working" as const, demo: false },
+      { slug: "a", category: "cafes", websiteStatus: "none_found" as const, demo: false },
+      { slug: "b", category: "cafes", websiteStatus: "none_found" as const, demo: false },
+      { slug: "c", category: "gyms", websiteStatus: "failed" as const, demo: true },
+    ];
+    expect(previewExamples(items).map((b) => b.slug)).toEqual(["a"]);
+  });
+  it("has every string in English and Nepali", () => {
+    for (const k of ["fbExTitle", "fbExBody", "fbExOpen", "fbExLabel"] as const) { expect(dict.en[k]).toBeTruthy(); expect(dict.ne[k]).toBeTruthy(); expect(dict.en[k]).not.toMatch(/\u2014/); }
+  });
+});

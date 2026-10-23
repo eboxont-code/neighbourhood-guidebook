@@ -1,11 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { getBusiness } from "@/data/directory";
+import { businesses, getArea, getBusiness, getCategory, placeName } from "@/data/directory";
 import { useEffect, useRef, useState } from "react";
-import { ArrowDown, ArrowLeft, Check, Clock, Image, MapPin, Phone, Plus, RefreshCw, Scissors, Smartphone, Sparkles, MessageCircle, X } from "lucide-react";
+import { ArrowDown, ArrowLeft, ArrowRight, Check, Clock, Image, MapPin, Phone, Plus, RefreshCw, Scissors, Smartphone, Sparkles, MessageCircle, X } from "lucide-react";
 import { Page, pageMeta } from "@/components/site";
 import { ContactForm } from "@/components/forms";
 import { dict, useI18n, type Key } from "@/lib/i18n";
 import { SITE_NAME, SITE_URL } from "@/config";
+import { Thumb } from "@/components/venue";
+import { previewExamples } from "@/lib/preview";
 
 type Search = { from?: "preview"; listing?: string; business?: string };
 
@@ -158,6 +160,8 @@ function ForBusinesses() {
             <button type="button" onClick={() => { setMsg(t("fb2TrialMsg")); toLead(); }} className="action-btn action-accent mt-5 inline-flex w-full px-7 sm:w-auto">{t("fb2TrialCta")}</button>
           </section>
 
+          <PreviewExamples />
+
           {/* How it works */}
           <section className="mt-10">
             <h2 className="text-xl font-bold tracking-tight sm:text-2xl">{t("fbHowTitle")}</h2>
@@ -212,6 +216,34 @@ function ForBusinesses() {
       </div>
       <div className="lg:hidden" style={{ height: "calc(var(--pill-h) + var(--pill-gap) + 1rem)" }} aria-hidden />
     </div>
+  );
+}
+
+/** Real listings with no website, each linking to its own free preview. The cards are the only links here. */
+function PreviewExamples() {
+  const { t, lang } = useI18n();
+  const items = previewExamples(businesses);
+  if (!items.length) return null;
+  return (
+    <section className="mt-10" aria-labelledby="examples-title">
+      <h2 id="examples-title" className="text-xl font-bold tracking-tight sm:text-2xl">{t("fbExTitle")}</h2>
+      <p className="mt-2 leading-relaxed text-muted-foreground">{t("fbExBody")}</p>
+      <ul aria-label={t("fbExLabel")} className="mt-4 grid gap-2.5 sm:grid-cols-3 sm:gap-3">
+        {items.map((b) => {
+          const cat = getCategory(b.category);
+          return (
+            <li key={b.slug} className="relative flex items-center gap-3 rounded-2xl border border-border bg-card p-2.5 shadow-[var(--shadow-card)] transition-colors hover:border-primary/40 sm:flex-col sm:items-stretch sm:gap-0 sm:p-2">
+              <Thumb b={b} className="h-[4.5rem] w-[4.5rem] shrink-0 sm:aspect-[16/10] sm:h-auto sm:w-full" />
+              <div className="min-w-0 flex-1 sm:px-1 sm:pt-2.5 sm:pb-1">
+                <Link to="/s/$slug/website-preview" params={{ slug: b.slug }} className="stretched line-clamp-2 text-[15px] leading-snug font-semibold">{b.name}</Link>
+                <p className="mt-0.5 truncate text-[13px] text-muted-foreground">{lang === "ne" ? cat?.nameNe : cat?.name} · {placeName(getArea(b.area), lang)}</p>
+                <p className="mt-1.5 inline-flex items-center gap-1 text-[13px] font-semibold text-primary">{t("fbExOpen")}<ArrowRight aria-hidden className="h-3.5 w-3.5" /></p>
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
   );
 }
 
