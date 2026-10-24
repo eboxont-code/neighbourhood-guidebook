@@ -10,7 +10,7 @@ import { dismissLocation, distanceTo, formatDistance, requestLocation, useLocati
 import { useFavourites } from "@/lib/favourites";
 import { useI18n, type Key } from "@/lib/i18n";
 
-const BADGE_KEY: Record<Badge, Key> = { open: "openNow", webChecked: "badgeWeb", hoursConfirmed: "badgeHours", newOnSewa: "badgeNew" };
+const BADGE_KEY: Record<Badge, Key> = { open: "openNow", trustWeb: "badgeTrustWeb", trustSocial: "badgeTrustSocial", newOnSewa: "badgeNew" };
 
 export function Badges({ list }: { list: Badge[] }) {
   const { t } = useI18n();

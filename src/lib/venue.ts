@@ -1,6 +1,19 @@
 import { businesses, kathmanduNow, parseDays, parseRange, type Business } from "@/data/directory";
 
-export type Badge = "open" | "webChecked" | "hoursConfirmed" | "newOnSewa";
+export type Badge = "open" | "trustWeb" | "trustSocial" | "newOnSewa";
+export type Trust = "website" | "social" | "none";
+
+/**
+ * One trust level per listing, from recorded facts only. A listing counts as checked only when it
+ * has a last-checked date and its source notes name the business's own website or its own social page.
+ */
+export function trustLevel(b: Business): Trust {
+  if (!b.lastChecked || b.verification === "not_verified") return "none";
+  const src = b.sourceNotes.trim();
+  if (b.website && b.websiteStatus !== "failed" && /^(their own (website|brand page)|the hotel's official|the radisson hotels website)/i.test(src)) return "website";
+  if (/^(their (instagram|facebook|tiktok)|[\w' ]*facebook page)/i.test(src)) return "social";
+  return "none";
+}
 
 export const NEW_DAYS = 30;
 const DAY = 86_400_000;
@@ -41,8 +54,8 @@ export function badgesFor(b: Business, now: Date | null, open: boolean, all: Bus
   const out: Badge[] = [];
   if (open) out.push("open");
   if (now && newSlugs(all, now).has(b.slug)) out.push("newOnSewa");
-  if (b.hoursVerified) out.push("hoursConfirmed");
-  if (b.websiteStatus === "working") out.push("webChecked");
+  const tr = trustLevel(b);
+  if (tr !== "none") out.push(tr === "website" ? "trustWeb" : "trustSocial");
   return out.slice(0, 2);
 }
 

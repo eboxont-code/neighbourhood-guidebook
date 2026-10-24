@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { distanceKm, formatDistance, inNepal, sortByDistance } from "@/lib/geo";
 import { FAV_KEY, readFavs, toggleFav } from "@/lib/favourites";
-import { badgesFor, newSlugs, statusDetail, weekTable } from "@/lib/venue";
+import { badgesFor, trustLevel, newSlugs, statusDetail, weekTable } from "@/lib/venue";
 import { businesses, getBusiness, hasPin } from "@/data/directory";
 import { parseCatSearch, parseSearchParams } from "@/lib/filters";
 
@@ -84,10 +84,20 @@ describe("badge rules", () => {
     const n = newSlugs(all, new Date("2026-10-17T06:00:00Z"));
     expect(n.size).toBe(all.filter((b) => b.addedOn === "2026-10-17").length);
   });
+  it("gives one trust level that matches the source on record", () => {
+    expect(trustLevel(getBusiness("aavaran-durbar-marg")!)).toBe("website");
+    expect(trustLevel(getBusiness("femina-flaunt-naxal")!)).not.toBe("website");
+    expect(trustLevel({ ...getBusiness("aavaran-durbar-marg")!, lastChecked: undefined })).toBe("none");
+    for (const b of businesses) if (trustLevel(b) === "website") expect(b.website && !/facebook|instagram|tiktok/i.test(b.website)).toBeTruthy();
+  });
+  it("never says hours came from a website the listing does not have", () => {
+    for (const b of businesses) if (/own website/i.test(b.hoursSource ?? "")) expect(b.website, b.slug).toBeTruthy();
+    for (const b of businesses) if (b.website) expect(/facebook\.com|instagram\.com|tiktok\.com/.test(b.website), b.slug).toBe(false);
+  });
   it("uses only recorded facts", () => {
     const b = getBusiness("aavaran-durbar-marg")!; // hours verified, website working
-    expect(badgesFor(b, oct13, false)).toEqual(["hoursConfirmed", "webChecked"]);
-    expect(badgesFor(b, oct13, true)).toEqual(["open", "hoursConfirmed"]);
+    expect(badgesFor(b, oct13, false)).toEqual(["trustWeb"]);
+    expect(badgesFor(b, oct13, true)).toEqual(["open", "trustWeb"]);
     expect(badgesFor({ ...b, hoursVerified: false, websiteStatus: "failed" }, oct13, false)).toEqual([]);
   });
 });

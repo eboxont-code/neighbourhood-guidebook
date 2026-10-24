@@ -1,5 +1,5 @@
 import { createFileRoute, Link, notFound, redirect, useRouter } from "@tanstack/react-router";
-import { ArrowLeft, ArrowRight, ChevronRight, Globe, MapPin, Navigation, Phone, Share2, Sparkles } from "lucide-react";
+import { ArrowLeft, ArrowRight, ChevronRight, Globe, MapPin, Navigation, Phone, Share2, ShieldCheck, ShieldQuestion, Sparkles } from "lucide-react";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { NotFoundView, HoursLine, pageMeta, useNow } from "@/components/site";
 import { CatIcon } from "@/components/cover";
@@ -10,7 +10,7 @@ import { businesses, dayLabel, placeName, timeLabel, getCity, hasPin, whatsappLi
 import { useI18n, type Key } from "@/lib/i18n";
 import { businessJsonLd, breadcrumbJsonLd, listingTitle } from "@/lib/seo";
 import { distanceTo, formatDistance, sortByDistance, useLocation } from "@/lib/geo";
-import { formatDate, statusDetail, weekTable } from "@/lib/venue";
+import { formatDate, statusDetail, trustLevel, weekTable } from "@/lib/venue";
 import { offersPreview } from "@/lib/preview";
 
 export const Route = createFileRoute("/s/$slug")({
@@ -195,6 +195,7 @@ function ShopPage() {
             <h1 className="mt-1 text-[1.625rem] leading-tight font-semibold tracking-tight break-words sm:text-3xl">{b.name}</h1>
             <p className="mt-1 text-sm text-muted-foreground">{lang === "ne" ? cat.nameNe : cat.name} · {placeName(area, lang)}{dist !== null && <> · <span className="whitespace-nowrap">{formatDistance(dist, lang)}</span></>}</p>
             <p className="mt-2 text-[15px]" aria-label={t("keyFacts")}><StatusLine b={b} /></p>
+            <TrustLine b={b} />
             {b.phone && <p className="mt-1 text-base font-semibold tabular-nums">{b.phone}</p>}
             {(b.address || dir) && (
               <div className="mt-4 flex items-center gap-3 rounded-full bg-muted py-1 pr-1 pl-4">
@@ -230,7 +231,7 @@ function ShopPage() {
                     {socialLinks(b).map((x) => <a key={x.url} href={x.url} target="_blank" rel="noopener noreferrer" className="block break-all text-primary underline">{x.platform} {x.handle}</a>)}
                   </Row>
                 )}
-                {(b.sourceNotes || b.addedOn || b.lastChecked) && (
+                {(b.sourceNotes || b.addedOn) && (
                   <div className="mt-4 rounded-2xl border border-border bg-muted/50 p-4">
                     <h3 className="text-sm font-semibold">{t("howChecked")}</h3>
                     {b.sourceNotes && (
@@ -240,7 +241,6 @@ function ShopPage() {
                       </p>
                     )}
                     {b.addedOn && <p className="mt-1.5 text-sm text-muted-foreground">{t("addedToGuide")}: {formatDate(b.addedOn, lang)}</p>}
-                    {b.lastChecked && <p className="mt-1.5 text-sm text-muted-foreground">{t("lastChecked")}: {formatDate(b.lastChecked, lang)}</p>}
                   </div>
                 )}
                 {b.description && <Row label={t("note")}>{b.description}</Row>}
@@ -336,5 +336,18 @@ function OwnerPanel({ b }: { b: Business }) {
       </div>
       {offersPreview(b) && <PreviewLink slug={b.slug} />}
     </aside>
+  );
+}
+
+/** The one trust line: where the details were checked, and when. */
+function TrustLine({ b }: { b: Business }) {
+  const { t, lang } = useI18n();
+  const tr = trustLevel(b);
+  const line = tr === "website" ? t("trustWeb") : tr === "social" ? t("trustSocial") : t("trustNone");
+  return (
+    <p className={`mt-2 flex items-start gap-1.5 text-sm ${tr === "none" ? "text-muted-foreground" : "font-medium"}`}>
+      {tr === "none" ? <ShieldQuestion aria-hidden className="mt-0.5 h-4 w-4 shrink-0" /> : <ShieldCheck aria-hidden className="mt-0.5 h-4 w-4 shrink-0 text-success" />}
+      <span>{line}{tr !== "none" && b.lastChecked ? <> · <span className="whitespace-nowrap">{t("lastChecked")} {formatDate(b.lastChecked, lang)}</span></> : null}</span>
+    </p>
   );
 }

@@ -42,7 +42,7 @@ function Home() {
         <div className="mx-auto max-w-6xl px-5 pt-5 pb-6 lg:grid lg:grid-cols-[minmax(0,1fr)_26rem] lg:items-center lg:gap-10 lg:pt-12 lg:pb-14">
           <div className="mb-4 lg:mb-0">
             <h1 className="text-[1.5rem] leading-[1.15] font-semibold tracking-tight sm:text-[1.875rem] lg:text-[2.375rem]">{t("heroTitle")}</h1>
-            <p className="mt-1.5 text-sm leading-snug text-[var(--hero-muted)] sm:text-base">{t("coverageNote")}</p>
+            <p className="mt-1.5 text-sm leading-snug text-[var(--hero-muted)] sm:text-base">{t("heroSub")}</p>
           </div>
           <SearchCard />
         </div>
