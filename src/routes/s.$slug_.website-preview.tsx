@@ -59,11 +59,11 @@ function Status({ b, light = false }: { b: Business; light?: boolean }) {
 function TodayHours({ b }: { b: Business }) {
   const { t, lang } = useI18n();
   const now = useNow();
-  if (!b.hours?.length) return <span className="text-muted-foreground">{t("hoursNotListed")}</span>;
+  if (!b.hours?.length) return <span className="text-muted-foreground">{t("pvAddThis")}</span>;
   const week = weekTable(b.hours);
   if (now && week) {
     const w = week[kathmanduNow(now).day];
-    return <span className="tabular-nums">{w ? timeLabel(w.time, lang) : t("hoursNotListed")}</span>;
+    return <span className="tabular-nums">{w ? timeLabel(w.time, lang) : t("pvAddThis")}</span>;
   }
   return <span className="tabular-nums">{b.hours.map((h) => `${dayLabel(h.days, lang)} ${timeLabel(h.time, lang)}`.trim()).join(", ")}</span>;
 }
@@ -71,7 +71,7 @@ function TodayHours({ b }: { b: Business }) {
 function Week({ b }: { b: Business }) {
   const { t, lang } = useI18n();
   const now = useNow();
-  if (!b.hours?.length) return <p className="py-3 text-[15px] text-muted-foreground">{t("noHours")}</p>;
+  if (!b.hours?.length) return <p className="py-3 text-[15px] text-muted-foreground">{t("pvAddThis")}</p>;
   const week = weekTable(b.hours);
   const today = now ? kathmanduNow(now).day : -1;
   return (
@@ -84,7 +84,7 @@ function Week({ b }: { b: Business }) {
             return (
               <li key={d} className={`flex min-h-12 items-center gap-3 px-1 text-[15px] ${isToday ? "font-semibold" : ""}`}>
                 <span className="flex-1">{t(`day${d}` as Key)}{isToday && <span className="ml-2 rounded-full bg-[var(--pv-tint)] px-2 py-0.5 text-[11px] font-bold text-[var(--pv-ink)]">{t("pvFactToday")}</span>}</span>
-                <span className={`text-right tabular-nums ${w?.open === false ? "text-muted-foreground" : ""}`}>{w ? timeLabel(w.time, lang) : <span className="text-muted-foreground">{t("hoursNotListed")}</span>}</span>
+                <span className={`text-right tabular-nums ${w?.open === false ? "text-muted-foreground" : ""}`}>{w ? timeLabel(w.time, lang) : <span className="text-muted-foreground">{t("pvAddThis")}</span>}</span>
               </li>
             );
           })}
@@ -132,32 +132,22 @@ function PreviewPage() {
     if (el && el.complete && el.naturalWidth === 0) setFailed(true);
   }, [b.slug]);
   const photo = b.cover && !failed ? b.cover : undefined;
-  const ownerLink = { to: "/for-businesses" as const, search: { from: "preview" as const, listing: b.slug, business: b.name }, hash: "quote" };
-  // The phone bar steps aside while the owner section's own button is on screen.
-  const ownerRef = useRef<HTMLElement>(null);
-  const [ownerVisible, setOwnerVisible] = useState(false);
-  useEffect(() => {
-    const el = ownerRef.current;
-    if (!el || typeof IntersectionObserver === "undefined") return;
-    const io = new IntersectionObserver(([e]) => setOwnerVisible(Boolean(e?.isIntersecting)), { threshold: 0.2 });
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
+  const ownerLink = { to: "/contact" as const, search: { from: "preview" as const, listing: b.slug, business: b.name } };
   const steps: [Key, Key][] = [["pvNext1Title", "pvNext1Body"], ["pvNext2Title", "pvNext2Body"], ["pvNext3Title", "pvNext3Body"]];
 
   return (
-    <div className="pv-site pv-site-pad" style={style}>
+    <div className="pv-site overflow-x-clip pb-[calc(9rem+env(safe-area-inset-bottom))] lg:pb-0" style={style}>
       {/* Sewa bar: fixed at the bottom on phones, a slim strip on top on desktop. */}
-      <div className="pv-bar" role="region" aria-label={t("pvBarText")} data-hidden={ownerVisible ? "true" : "false"} aria-hidden={ownerVisible || undefined}>
-        <div className="mx-auto flex max-w-5xl items-center gap-3 px-4 py-2.5 lg:px-6 lg:py-2">
+      <div className="pv-bar" role="region" aria-label={t("pvBarText")}>
+        <div className="mx-auto flex max-w-5xl flex-col items-stretch gap-2 px-4 py-2.5 lg:flex-row lg:items-center lg:px-6 lg:py-2">
           <span aria-hidden className="hidden h-8 w-8 shrink-0 sm:flex items-center justify-center rounded-lg bg-[var(--hero-foreground)] text-[15px] font-bold text-[var(--hero)]">
             {SITE_NAME.charAt(0)}<span className="mb-1.5 ml-px h-1.5 w-1.5 self-end rounded-full bg-brand-accent" />
           </span>
           <p className="min-w-0 flex-1 leading-tight">
-            <span className="block truncate text-[13px] font-semibold sm:text-sm"><span className="sm:hidden">{t("pvBarShort")}</span><span className="hidden sm:inline">{t("pvBarText")}</span></span>
-            <span className="block truncate text-[11.5px] text-[var(--hero-muted)] sm:text-[12.5px]"><span className="sm:hidden">{t("pvBarNoteShort")}</span><span className="hidden sm:inline">{t("pvBarNote")}</span></span>
+            <span className="block text-[13px] font-semibold sm:text-sm">{t("pvBarText")}</span>
+            <span className="block text-[12px] text-[var(--hero-muted)]">{t("pvBarNote")}</span>
           </p>
-          <Link {...ownerLink} className="action-btn shrink-0 !min-h-11 bg-brand-accent !px-3.5 text-[13.5px] font-bold sm:!px-5 sm:text-[14px] text-brand-accent-foreground hover:brightness-105">{t("pvBarCta")}</Link>
+          <Link {...ownerLink} className="action-btn min-h-11 bg-brand-accent px-4 py-2 text-sm font-bold text-brand-accent-foreground hover:brightness-105">{t("pvBarCta")}</Link>
         </div>
       </div>
 
@@ -183,7 +173,6 @@ function PreviewPage() {
             <span className="hidden items-center gap-1 lg:flex">
               {nav.map(([id, k]) => <a key={id} href={`#${id}`} className="inline-flex min-h-11 items-center rounded-full px-3.5 text-sm font-medium text-white/80 hover:bg-white/10 hover:text-white">{t(k)}</a>)}
             </span>
-            {b.phone && <a href={telLink(b.phone)} aria-label={`${t("call")} ${b.phone}`} className="action-btn pv-btn-ghost !min-h-11 shrink-0 !px-3.5 text-sm"><Phone aria-hidden className="h-4 w-4" /><span className="hidden sm:inline">{b.phone}</span></a>}
           </nav>
 
           <div className="flex min-h-[23rem] flex-col justify-end pt-8 pb-16 sm:min-h-[28rem] lg:min-h-[30rem] lg:pb-24">
@@ -191,12 +180,7 @@ function PreviewPage() {
               <CatIcon category={b.category} className="h-3.5 w-3.5" />{fill(t("pvHeroIn"), vars)}
             </p>
             <h1 className="mt-4 max-w-3xl text-[2.375rem] leading-[1.05] font-extrabold tracking-tight break-words sm:text-[3.25rem] lg:text-[4rem]">{b.name}</h1>
-            {b.description && <p className="mt-4 max-w-xl text-[16px] leading-relaxed text-white/80 sm:text-[17px]">{b.description}</p>}
             <p className="mt-4 text-white/90"><Status b={b} light /></p>
-            <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-              {b.phone && <a href={telLink(b.phone)} className="action-btn pv-btn-light min-h-12 px-7 text-[15px]"><Phone aria-hidden className="h-[18px] w-[18px]" />{t("pvCallNow")}</a>}
-              {dir && <a href={dir} target="_blank" rel="noopener noreferrer" className="action-btn pv-btn-ghost min-h-12 px-7 text-[15px]"><Navigation aria-hidden className="h-[18px] w-[18px]" />{t("directions")}</a>}
-            </div>
           </div>
         </div>
         {photo && <p className="absolute right-3 bottom-3 rounded-full bg-black/45 px-2.5 py-0.5 text-[11px] text-white/85 backdrop-blur">{t("photo")}: {photo.credit}</p>}
@@ -206,24 +190,26 @@ function PreviewPage() {
       <div className="relative z-10 mx-auto -mt-8 max-w-5xl px-4 sm:px-6">
         <dl className="pv-card grid divide-y divide-[var(--pv-line)] sm:grid-cols-3 sm:divide-x sm:divide-y-0">
           <Fact icon={Clock} label={t("pvFactToday")}><TodayHours b={b} /></Fact>
-          <Fact icon={MapPin} label={t("pvFactWhere")}>{b.address ?? fill("{area}, {city}", vars)}</Fact>
-          <Fact icon={Phone} label={t("pvFactPhone")}>{b.phone ? <a href={telLink(b.phone)} className="tabular-nums underline decoration-[var(--pv-line)] decoration-2 underline-offset-4">{b.phone}</a> : <span className="text-muted-foreground">{t("noneListed")}</span>}</Fact>
+          <Fact icon={MapPin} label={t("pvFactWhere")}>{b.address ?? <span className="text-muted-foreground">{t("pvAddThis")}</span>}</Fact>
+          <Fact icon={Phone} label={t("pvFactPhone")}>{b.phone ? <span className="tabular-nums">{b.phone}</span> : <span className="text-muted-foreground">{t("pvAddThis")}</span>}</Fact>
         </dl>
       </div>
 
       <Section id="about" kicker={t("tabAbout")} title={fill(t("pvWelcome"), vars)}>
         <div className="grid gap-8 lg:grid-cols-[1.3fr_1fr] lg:items-start">
           <div className="space-y-4 text-[17px] leading-relaxed text-foreground/85">
-            <p>{fill(t("pvAboutFallback"), vars)}</p>
+            <p>{b.description ?? <span className="text-muted-foreground">{t("pvAddThis")}</span>}</p>
+            {!photo && <div className="flex min-h-32 items-center justify-center rounded-xl border border-dashed border-border bg-muted p-5 text-center text-sm text-muted-foreground">{t("photo")}: {t("pvAddThis")}</div>}
           </div>
-          {b.services.length > 0 && (
+          <div>
             <div className="pv-card p-5">
               <h3 className="text-base font-semibold">{t("services")}</h3>
               <ul className="mt-3 divide-y divide-[var(--pv-line)]">
-                {b.services.map((s) => <li key={s.name} className="flex min-h-11 items-center justify-between gap-3 text-[15px]"><span>{s.name}</span>{s.price && <span className="tabular-nums text-muted-foreground">{s.price}</span>}</li>)}
+                {b.services.map((s) => <li key={s.name} className="min-h-11 py-2 text-[15px] break-words">{s.name}</li>)}
+                {!b.services.length && <li className="py-3 text-sm text-muted-foreground">{t("pvAddThis")}</li>}
               </ul>
             </div>
-          )}
+          </div>
         </div>
       </Section>
 
@@ -231,17 +217,16 @@ function PreviewPage() {
         <div className="grid gap-6 lg:grid-cols-[1fr_1.2fr] lg:items-start">
           <div>
             {b.hours?.length ? <p className="text-[17px] leading-relaxed text-foreground/85"><Status b={b} /></p> : null}
-            {b.phone && <a href={telLink(b.phone)} className={`action-btn pv-btn-deep min-h-12 px-6 lg:inline-flex ${b.hours?.length ? "mt-5 hidden" : "inline-flex w-full sm:w-auto lg:mt-0"}`}><Phone aria-hidden className="h-4 w-4" />{t("pvCallNow")}</a>}
           </div>
           <div className="pv-card px-4 py-2 sm:px-6 sm:py-3"><Week b={b} /></div>
         </div>
       </Section>
 
-      {(hasPin(b) || b.address || dir) && (
+      <div>
         <Section id="visit" kicker={t("pvNavVisit")} title={t("pvVisitTitle")}>
           <div className="grid gap-6 lg:grid-cols-[1fr_1.4fr] lg:items-start">
             <div>
-              <p className="flex gap-3 text-[17px] leading-relaxed"><MapPin aria-hidden className="mt-1 h-5 w-5 shrink-0 text-[var(--pv-ink)]" /><span>{b.address ?? fill("{area}, {city}", vars)}</span></p>
+              <p className="flex gap-3 text-[17px] leading-relaxed"><MapPin aria-hidden className="mt-1 h-5 w-5 shrink-0 text-[var(--pv-ink)]" /><span>{b.address ?? t("pvAddThis")}</span></p>
               {dir && <a href={dir} target="_blank" rel="noopener noreferrer" className="action-btn pv-btn-deep mt-5 min-h-12 w-full px-6 sm:w-auto"><Navigation aria-hidden className="h-4 w-4" />{t("directions")}</a>}
             </div>
             {hasPin(b) ? (
@@ -254,17 +239,15 @@ function PreviewPage() {
             )}
           </div>
         </Section>
-      )}
+      </div>
 
       {/* Contact */}
       <section id="contact" className="pv-hero scroll-mt-4 py-14 lg:scroll-mt-16 lg:py-20">
         <div className="mx-auto max-w-5xl px-6">
           <p className="pv-kicker !text-[var(--pv-glow)]">{t("pvNavContact")}</p>
           <h2 className="mt-3 text-[1.75rem] leading-[1.15] font-bold tracking-tight sm:text-[2.25rem]">{t("pvContactTitle")}</h2>
-          <p className="mt-2 text-[16px] text-white/75">{t("pvContactBody")}</p>
-          {b.phone && <a href={telLink(b.phone)} className="mt-6 block w-fit text-[2rem] leading-none font-bold tracking-tight tabular-nums sm:text-[2.5rem]">{b.phone}</a>}
           <div className="mt-7 grid gap-3 sm:flex sm:flex-wrap">
-            {b.phone && <a href={telLink(b.phone)} className="action-btn pv-btn-light min-h-12 px-6"><Phone aria-hidden className="h-[18px] w-[18px]" />{t("call")}</a>}
+            {b.phone ? <a href={telLink(b.phone)} className="action-btn pv-btn-ghost min-h-12 px-6"><Phone aria-hidden className="h-[18px] w-[18px]" />{t("call")} {b.phone}</a> : <p>{t("pvFactPhone")}: {t("pvAddThis")}</p>}
             {b.whatsapp && <a href={whatsappLink(b.whatsapp)} target="_blank" rel="noopener noreferrer" className="action-btn pv-btn-ghost min-h-12 px-6"><MessageCircle aria-hidden className="h-[18px] w-[18px]" />{t("whatsapp")}</a>}
           </div>
           {socials.length > 0 && (
@@ -282,16 +265,11 @@ function PreviewPage() {
       </section>
 
       {/* For the owner */}
-      <section id="owner" ref={ownerRef} aria-labelledby="pv-owner" className="scroll-mt-4 bg-background py-14 lg:py-16">
+      <section id="owner" aria-labelledby="pv-owner" className="scroll-mt-4 bg-background py-14 lg:py-16">
         <div className="mx-auto max-w-5xl px-4 sm:px-6">
           <div className="owner-note p-6 sm:p-10">
-            <p className="inline-flex items-center gap-1.5 rounded-full bg-brand-accent px-3 py-1 text-xs font-bold text-brand-accent-foreground"><Sparkles aria-hidden className="h-3.5 w-3.5" />{t("pvOwnerKicker")}</p>
             <h2 id="pv-owner" className="mt-3 max-w-2xl text-[1.5rem] leading-tight font-bold tracking-tight sm:text-[2rem]">{t("pvOwnerTitle")}</h2>
-            <p className="mt-3 max-w-2xl text-[16px] leading-relaxed text-foreground/80">{t("pvOwnerBody")}</p>
-            <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
-              <Link {...ownerLink} className="action-btn action-primary min-h-12 px-7 text-[15px]">{t("pvBarCta")}<ArrowRight aria-hidden className="h-[18px] w-[18px]" /></Link>
-              <Link to="/for-businesses" className="inline-flex min-h-11 items-center justify-center px-2 text-[15px] font-semibold underline decoration-brand-accent decoration-2 underline-offset-4">{t("pvOwnerSecondary")}</Link>
-            </div>
+            <p className="mt-3 max-w-2xl text-[16px] leading-relaxed text-foreground/80">{t("pvOwnerSimpleBody")}</p>
           </div>
 
           <div className="mt-8">
@@ -318,10 +296,8 @@ function PreviewPage() {
             <p className="text-muted-foreground">{fill("{area}, {city}", vars)}</p>
           </div>
           <div className="text-muted-foreground sm:text-right">
-            <p>{t("pvFooterNote")}</p>
             <p className="mt-1 flex flex-wrap gap-x-4 sm:justify-end">
-              <Link to="/s/$slug" params={{ slug: b.slug }} className="inline-flex min-h-11 items-center text-primary underline">{t("pvViewListing")}</Link>
-              <Link to="/suggest-correction" search={{ listing: b.slug }} className="inline-flex min-h-11 items-center text-primary underline">{t("suggestThis")}</Link>
+              <Link to="/s/$slug" params={{ slug: b.slug }} className="inline-flex min-h-11 items-center text-primary underline">{t("pvBackListing")}</Link>
             </p>
           </div>
         </div>

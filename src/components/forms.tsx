@@ -89,7 +89,7 @@ function errorsFrom(issues: z.ZodIssue[], t: (k: Key) => string) {
   return out;
 }
 
-export function ContactForm({ business, listing, page, message = "", doneText }: { business: string; listing: string; page?: string; message?: string; doneText?: string }) {
+export function ContactForm({ business, listing, page, message = "", doneText, submitLabel }: { business: string; listing: string; page?: string; message?: string; doneText?: string; submitLabel?: string }) {
   const { t } = useI18n();
   const [v, setV] = useState({ name: "", business_name: business, phone: "", message });
   const [errors, setErrors] = useState<{ [k: string]: string | undefined }>({});
@@ -133,7 +133,7 @@ export function ContactForm({ business, listing, page, message = "", doneText }:
       <SendStatus status={status} />
       <button type="submit" disabled={status === "sending"} aria-busy={status === "sending"} className="action-btn action-primary min-h-12 w-full gap-2 px-6 disabled:opacity-70 sm:w-auto">
         {status === "sending" && <Loader2 aria-hidden className="h-4 w-4 animate-spin" />}
-        {t(status === "sending" ? "sending" : "send")}
+        {status === "sending" ? t("sending") : submitLabel ?? t("send")}
       </button>
     </form>
   );
