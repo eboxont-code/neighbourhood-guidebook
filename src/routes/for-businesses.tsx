@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { businesses, getArea, getBusiness, getCategory, placeName } from "@/data/directory";
 import { useEffect, useRef, useState } from "react";
-import { ArrowDown, ArrowLeft, ArrowRight, Check, Clock, Image, MapPin, Phone, Plus, RefreshCw, Scissors, Smartphone, Sparkles, MessageCircle, X } from "lucide-react";
+import { ArrowLeft, Check, Clock, Image, MapPin, Phone, Plus, RefreshCw, Scissors, Sparkles, X } from "lucide-react";
 import { Page, pageMeta } from "@/components/site";
 import { ContactForm } from "@/components/forms";
 import { dict, useI18n, type Key } from "@/lib/i18n";
@@ -64,24 +64,13 @@ function ForBusinesses() {
   const pvName = pv ? pv.name : "";
   const [msg, setMsg] = useState(pv ? t("pvLeadMsg").replace("{name}", pvName) : "");
   const [leadVisible, setLeadVisible] = useState(false);
-  const [heroCtaVisible, setHeroCtaVisible] = useState(true);
   const leadRef = useRef<HTMLElement>(null);
-  const heroCtaRef = useRef<HTMLButtonElement>(null);
-  // The pill only shows between the hero button and the quote form, so the same ask is never on screen twice.
-  const pillHidden = leadVisible || heroCtaVisible;
+  const pillHidden = leadVisible;
 
   useEffect(() => {
     const el = leadRef.current;
     if (!el || typeof IntersectionObserver === "undefined") return;
-    const io = new IntersectionObserver(([e]) => setLeadVisible(!!e?.isIntersecting), { rootMargin: "0px 0px -120px 0px" });
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
-
-  useEffect(() => {
-    const el = heroCtaRef.current;
-    if (!el || typeof IntersectionObserver === "undefined") { setHeroCtaVisible(false); return; }
-    const io = new IntersectionObserver(([e]) => setHeroCtaVisible(!!e?.isIntersecting), { rootMargin: "-56px 0px -140px 0px" });
+    const io = new IntersectionObserver(([e]) => setLeadVisible(!!e?.isIntersecting), { rootMargin: "0px 0px 140px 0px" });
     io.observe(el);
     return () => io.disconnect();
   }, []);
@@ -94,34 +83,21 @@ function ForBusinesses() {
     return () => window.clearTimeout(id);
   }, [pv?.slug, t("pvLeadMsg")]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const how: Key[] = ["fb2How1", "fbHow2", "fbHow3", "fbHow4"];
-  const faq: [Key, Key][] = [["fbQ1", "fbA1"], ["fbQ2", "fbA2"], ["fbQ3", "fbA3"], ["fbQ4", "fbA4"], ["fbQ5", "fbA5"]];
+  const how: Key[] = ["fbOwnerStep1", "fbOwnerStep2", "fbOwnerStep3"];
+  const faq: [Key, Key][] = [["fbQ1", "fbA1"], ["fbQ2", "fbA2"], ["fbQ5", "fbA5"]];
   const inc: [Key, typeof Phone][] = [["fb2Inc1", Scissors], ["fb2Inc2", Clock], ["fb2Inc3", Phone], ["fb2Inc4", MapPin], ["fb2Inc5", Image], ["fb2Inc6", RefreshCw]];
-  const proof: [Key, typeof Phone][] = [["fb2Proof2", Smartphone], ["fb2Proof3", MessageCircle]];
 
   return (
     <div className="overflow-x-clip bg-background">
       {/* Hero: owner-facing, light, not the directory's navy band */}
       <section className="border-b border-border bg-card">
-        <div className="page-enter mx-auto max-w-5xl px-5 pt-8 pb-8 lg:grid lg:grid-cols-[1.2fr_1fr] lg:items-center lg:gap-12 lg:pt-16 lg:pb-14">
+        <div className="page-enter mx-auto max-w-5xl px-5 pt-8 pb-8 lg:pt-16 lg:pb-14">
           <div>
             <Kicker>{t("fbKicker")}</Kicker>
             <h1 className="mt-3 text-[1.75rem] leading-[1.15] font-bold tracking-tight sm:text-[2.5rem]">{t("fbHeroTitle")}</h1>
-            <p className="mt-3 max-w-xl text-[16px] leading-relaxed text-muted-foreground">{t("fbIntro")}</p>
-            <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
-              <button ref={heroCtaRef} type="button" onClick={toLead} className="action-btn action-primary inline-flex w-full px-7 sm:w-auto">{t("fbCta")}<ArrowDown aria-hidden className="h-5 w-5" /></button>
-              <Link to="/contact" className="inline-flex min-h-11 items-center justify-center px-2 text-[15px] font-semibold underline decoration-brand-accent decoration-2 underline-offset-4">{t("fb2Claim")}</Link>
-            </div>
+            <p className="mt-3 max-w-xl text-[16px] leading-relaxed text-muted-foreground">{t("fbOwnerIntro")}</p>
           </div>
-          <div className="hidden lg:block"><PhoneFrame good /></div>
         </div>
-        <ul className="mx-auto grid max-w-5xl grid-cols-2 gap-2 px-5 pb-6">
-          {proof.map(([k, Icon]) => (
-            <li key={k} className="flex flex-col items-center gap-1.5 rounded-xl bg-muted/60 px-2 py-3 text-center text-[13px] leading-snug font-semibold sm:flex-row sm:justify-center sm:text-sm">
-              <Icon aria-hidden className="h-[18px] w-[18px] shrink-0 text-primary" strokeWidth={1.75} />{t(k)}
-            </li>
-          ))}
-        </ul>
       </section>
 
       {/* Demo */}
@@ -141,7 +117,6 @@ function ForBusinesses() {
           {/* Offer */}
           <section>
             <h2 className="text-xl font-bold tracking-tight sm:text-2xl">{t("fb2OfferTitle")}</h2>
-            <p className="mt-2 leading-relaxed text-muted-foreground">{t("fbWhatBody")}</p>
             <ul className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3">
               {inc.map(([k, Icon]) => (
                 <li key={k} className="flex min-h-12 items-center gap-2.5 rounded-xl border border-border bg-card px-3 text-[14px] font-semibold">
@@ -149,15 +124,6 @@ function ForBusinesses() {
                 </li>
               ))}
             </ul>
-            <p className="mt-3 text-[14px] text-muted-foreground">{t("fb2BookingLater")}</p>
-          </section>
-
-          {/* Free trial */}
-          <section className="app-hero mt-10 rounded-2xl p-6 sm:p-8">
-            <p className="inline-flex items-center gap-1.5 rounded-full bg-card/15 px-3 py-1 text-[13px] font-semibold"><Sparkles aria-hidden className="h-3.5 w-3.5" />{t("fb2TrialKicker")}</p>
-            <h2 className="mt-3 text-xl font-bold tracking-tight sm:text-2xl">{t("fb2TrialTitle")}</h2>
-            <p className="mt-2 leading-relaxed text-[var(--hero-muted)]">{t("fb2TrialBody")}</p>
-            <button type="button" onClick={() => { setMsg(t("fb2TrialMsg")); toLead(); }} className="action-btn action-accent mt-5 inline-flex w-full px-7 sm:w-auto">{t("fb2TrialCta")}</button>
           </section>
 
           <PreviewExamples />
@@ -165,7 +131,7 @@ function ForBusinesses() {
           {/* How it works */}
           <section className="mt-10">
             <h2 className="text-xl font-bold tracking-tight sm:text-2xl">{t("fbHowTitle")}</h2>
-            <ol className="mt-5 grid gap-3 sm:grid-cols-4">
+            <ol className="mt-5 grid gap-3 sm:grid-cols-3">
               {how.map((k, i) => (
                 <li key={k} className="flex gap-3 sm:flex-col">
                   <span aria-hidden className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground">{i + 1}</span>
@@ -192,17 +158,17 @@ function ForBusinesses() {
 
           {/* Lead */}
           <section id={LEAD_ID} ref={leadRef} className="mt-10 scroll-mt-20" aria-labelledby="lead-title">
-            <Kicker>{t("fb2LeadKicker")}</Kicker>
             <h2 id="lead-title" className="mt-2 text-xl font-bold tracking-tight sm:text-2xl">{t("fb2LeadTitle")}</h2>
-            <p className="mt-2 mb-5 leading-relaxed text-muted-foreground">{t("fb2LeadBody")}</p>
+            <p className="mt-2 mb-5 leading-relaxed text-muted-foreground">{t("fbOwnerFormBody")}</p>
             {pv && (
               <div className="mb-4 flex flex-wrap items-center justify-between gap-x-4 gap-y-1 rounded-2xl border border-border bg-accent px-4 py-3">
                 <p className="inline-flex items-center gap-2 text-[14px] font-semibold text-accent-foreground"><Sparkles aria-hidden className="h-4 w-4 shrink-0" />{t("pvFromPreview").replace("{name}", pvName)}</p>
                 <Link to="/s/$slug/website-preview" params={{ slug: pv.slug }} className="inline-flex min-h-11 items-center gap-1.5 text-[14px] font-semibold text-primary underline"><ArrowLeft aria-hidden className="h-4 w-4" />{t("pvBackPreview")}</Link>
               </div>
             )}
+            <p className="mb-4 text-sm leading-relaxed text-muted-foreground">{t("fbOwnerFindIntro")} <Link to="/search" className="inline-flex min-h-11 items-center text-primary underline underline-offset-4">{t("fbOwnerFindLink")}</Link></p>
             <div className="form-card">
-              <ContactForm key={`${msg}|${pv?.slug ?? ""}`} business={pvName} listing={pv ? pv.slug : ""} page={pv ? "preview" : "for-businesses"} message={msg} doneText={t("fb2Thanks")} />
+              <ContactForm key={`${msg}|${pv?.slug ?? ""}`} business={pvName} listing={pv ? pv.slug : ""} page={pv ? "preview" : "for-businesses"} message={msg} doneText={t("fb2Thanks")} submitLabel={t("fbOwnerSend")} />
             </div>
           </section>
         </div>
@@ -211,7 +177,7 @@ function ForBusinesses() {
       {/* Sticky quote bar, phones only, centred above the bottom nav with a clear gap */}
       <div aria-hidden={pillHidden} className={`fixed inset-x-4 mx-auto max-w-md z-[970] transition-all duration-200 lg:hidden ${pillHidden ? "pointer-events-none translate-y-3 opacity-0" : "opacity-100"}`} style={{ bottom: "calc(var(--bottom-nav-h) + env(safe-area-inset-bottom) + var(--pill-gap))" }}>
         <button type="button" tabIndex={pillHidden ? -1 : 0} onClick={toLead} className="flex min-h-[var(--pill-h)] w-full items-center justify-center gap-3 rounded-full bg-primary px-5 text-primary-foreground shadow-[var(--shadow-lift)]">
-          <span className="shrink-0 text-[15px] font-semibold">{t("fb2Sticky")}</span>
+          <span className="text-[15px] font-semibold">{t("fb2Sticky")}</span>
         </button>
       </div>
       <div className="lg:hidden" style={{ height: "calc(var(--pill-h) + var(--pill-gap) + 1rem)" }} aria-hidden />
@@ -237,7 +203,6 @@ function PreviewExamples() {
               <div className="min-w-0 flex-1 sm:px-1 sm:pt-2.5 sm:pb-1">
                 <Link to="/s/$slug/website-preview" params={{ slug: b.slug }} className="stretched line-clamp-2 text-[15px] leading-snug font-semibold">{b.name}</Link>
                 <p className="mt-0.5 truncate text-[13px] text-muted-foreground">{lang === "ne" ? cat?.nameNe : cat?.name} · {placeName(getArea(b.area), lang)}</p>
-                <p className="mt-1.5 inline-flex items-center gap-1 text-[13px] font-semibold text-primary">{t("fbExOpen")}<ArrowRight aria-hidden className="h-3.5 w-3.5" /></p>
               </div>
             </li>
           );
