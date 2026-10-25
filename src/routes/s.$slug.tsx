@@ -7,7 +7,7 @@ import { SectionHead } from "@/components/blocks";
 import { HeartButton, VenueRow } from "@/components/venue";
 import { MapView } from "@/components/map-view";
 import { businesses, dayLabel, placeName, timeLabel, getCity, hasPin, whatsappLink, directionsLink, slugRedirects, liveSlugRedirects, showWebsite, socialLinks, websiteButton, getArea, getBusiness, getCategory, telLink, websiteStatusSentence, kathmanduNow, type Business } from "@/data/directory";
-import { useI18n, type Key } from "@/lib/i18n";
+import { useI18n, hoursSourceLabel, type Key } from "@/lib/i18n";
 import { businessJsonLd, breadcrumbJsonLd, listingTitle } from "@/lib/seo";
 import { distanceTo, formatDistance, sortByDistance, useLocation } from "@/lib/geo";
 import { formatDate, statusDetail, trustLevel, weekTable } from "@/lib/venue";
@@ -96,7 +96,7 @@ function OpeningTimes({ b }: { b: Business }) {
         </ul>
       ) : b.hours.map((h, i) => <p key={i}><span className="mr-2">{dayLabel(h.days, lang)}</span>{timeLabel(h.time, lang)}</p>)}
       {b.hoursSource && (
-        <p className={`mt-2 text-sm ${b.hoursVerified ? "text-muted-foreground" : "text-unverified"}`}>{b.hoursVerified ? t("hoursFrom") : t("hoursUnverified")} {b.hoursSource}</p>
+        <p className={`mt-2 text-sm ${b.hoursVerified ? "text-muted-foreground" : "text-unverified"}`}>{b.hoursVerified ? t("hoursFrom") : t("hoursUnverified")} {hoursSourceLabel(b.hoursSource, lang)}</p>
       )}
     </div>
   );

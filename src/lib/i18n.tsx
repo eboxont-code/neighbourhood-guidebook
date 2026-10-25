@@ -512,3 +512,25 @@ export function LangProvider({ children }: { children: ReactNode }) {
 }
 
 export const useI18n = () => useContext(Ctx);
+
+/** Nepali wording for the hours source notes stored in English in the directory data. Unknown notes fall back to English. */
+export const hoursSourceNe: Record<string, string> = {
+  "a directory listing": "एउटा डाइरेक्टरी सूची",
+  "an earlier TikTok post": "उहाँहरूको पहिलेको TikTok पोस्ट",
+  "booking listing (24-hour front desk)": "बुकिङ सूची (२४ घण्टा रिसेप्सन)",
+  "his page": "उहाँको पेज",
+  "one directory listing": "एउटा डाइरेक्टरी सूची",
+  "the global TONI&GUY brand site, not a page run by the Kathmandu salon": "TONI&GUY को विश्वव्यापी ब्रान्ड साइट, काठमाडौंको सैलुनले चलाएको पेज होइन",
+  "their Instagram": "उहाँहरूको Instagram",
+  "their own about page": "उहाँहरूकै बारेमा पेज",
+  "their own contact page": "उहाँहरूकै सम्पर्क पेज",
+  "their own store page": "उहाँहरूकै स्टोर पेज",
+  "their own website (24-hour reception)": "उहाँहरूकै वेबसाइट (२४ घण्टा रिसेप्सन)",
+  "their own website (contact page)": "उहाँहरूकै वेबसाइट (सम्पर्क पेज)",
+  "their own website": "उहाँहरूकै वेबसाइट",
+  "their post": "उहाँहरूको पोस्ट",
+  "two listings (Google Maps data, Corner)": "दुईवटा सूची (Google Maps डाटा, Corner)",
+  "two listings (Google Maps data, Nosh Nepal)": "दुईवटा सूची (Google Maps डाटा, Nosh Nepal)",
+  "two listings (Mero Rating, Menuweb)": "दुईवटा सूची (Mero Rating, Menuweb)",
+};
+export const hoursSourceLabel = (s: string, lang: Lang) => (lang === "ne" ? hoursSourceNe[s] ?? s : s);
