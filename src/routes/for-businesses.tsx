@@ -166,7 +166,7 @@ function ForBusinesses() {
                 <Link to="/s/$slug/website-preview" params={{ slug: pv.slug }} className="inline-flex min-h-11 items-center gap-1.5 text-[14px] font-semibold text-primary underline"><ArrowLeft aria-hidden className="h-4 w-4" />{t("pvBackPreview")}</Link>
               </div>
             )}
-            <p className="mb-4 text-sm leading-relaxed text-muted-foreground">{t("fbOwnerFindIntro")} <Link to="/search" className="inline-flex min-h-11 items-center text-primary underline underline-offset-4">{t("fbOwnerFindLink")}</Link></p>
+            <p className="mb-4 text-sm leading-relaxed text-muted-foreground">{t("fbOwnerFindIntro")} <Link to="/search" search={{ q: "" }} className="inline-flex min-h-11 items-center text-primary underline underline-offset-4">{t("fbOwnerFindLink")}</Link></p>
             <div className="form-card">
               <ContactForm key={`${msg}|${pv?.slug ?? ""}`} business={pvName} listing={pv ? pv.slug : ""} page={pv ? "preview" : "for-businesses"} message={msg} doneText={t("fb2Thanks")} submitLabel={t("fbOwnerSend")} />
             </div>
