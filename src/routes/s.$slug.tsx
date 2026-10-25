@@ -34,9 +34,9 @@ export const Route = createFileRoute("/s/$slug")({
   component: ShopPage,
 });
 
-function Row({ label, children }: { label: string; children: ReactNode }) {
+function Row({ label, children, fullOnPhone = false }: { label: string; children: ReactNode; fullOnPhone?: boolean }) {
   return (
-    <div className="fact-row">
+    <div className={`fact-row ${fullOnPhone ? "grid-cols-1 sm:grid-cols-[6.5rem_1fr]" : ""}`}>
       <dt className="text-sm text-muted-foreground">{label}</dt>
       <dd className="min-w-0 break-words">{children}</dd>
     </div>
@@ -208,7 +208,7 @@ function ShopPage() {
             <section id="about" className="scroll-mt-28 pt-8">
               <h2 className="section-title">{t("tabAbout")}</h2>
               <dl className="divide-y divide-border">
-                <Row label={t("websiteStatus")}>
+                <Row label={t("websiteStatus")} fullOnPhone={offersPreview(b)}>
                   {showWebsite(b) && (
                     <a href={b.website} target="_blank" rel="noopener noreferrer" className="block break-all text-primary underline">{b.website!.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "")}</a>
                   )}
@@ -310,15 +310,21 @@ function ShopPage() {
   );
 }
 
-/** Small owner-facing link to the free website preview, only for listings with no working site. */
+/** The single early owner invitation, only for listings with no working site. */
 function PreviewLink({ slug }: { slug: string }) {
   const { t } = useI18n();
   return (
-    <Link to="/s/$slug/website-preview" params={{ slug }} className="group mt-1.5 inline-flex min-h-11 items-center gap-2 text-[14px] font-semibold text-primary">
-      <Sparkles aria-hidden className="h-4 w-4 shrink-0 text-brand-accent-foreground" />
-      <span className="underline decoration-brand-accent decoration-2 underline-offset-4">{t("pvListingLink")}</span>
-      <ArrowRight aria-hidden className="h-4 w-4 shrink-0 transition-transform group-hover:translate-x-0.5" />
-    </Link>
+    <aside aria-labelledby="preview-owner-title" className="owner-note mt-3 !p-4">
+      <h3 id="preview-owner-title" className="flex items-center gap-2 text-base font-semibold">
+        <Sparkles aria-hidden className="h-4 w-4 shrink-0 text-brand-accent-foreground" />
+        {t("pvListingTitle")}
+      </h3>
+      <p className="mt-1 text-sm leading-relaxed">{t("pvListingBody")}</p>
+      <Link to="/s/$slug/website-preview" params={{ slug }} className="action-btn action-dark mt-3 min-h-11 w-full py-2 text-sm sm:w-auto">
+        <span>{t("pvListingCta")}</span>
+        <ArrowRight aria-hidden className="h-4 w-4 shrink-0" />
+      </Link>
+    </aside>
   );
 }
 
@@ -327,14 +333,13 @@ function OwnerPanel({ b }: { b: Business }) {
   const noSite = offersPreview(b);
   return (
     <aside aria-labelledby="owner-note" className="owner-note">
-      <p className="mb-1 inline-flex rounded-full bg-brand-accent px-2.5 py-0.5 text-xs font-bold text-brand-accent-foreground">{t("ownerKicker")}</p>
+      {!noSite && <p className="mb-1 inline-flex rounded-full bg-brand-accent px-2.5 py-0.5 text-xs font-bold text-brand-accent-foreground">{t("ownerKicker")}</p>}
       <h2 id="owner-note" className="text-lg font-semibold">{noSite ? t("ownerNoSiteTitle") : t("ownerTitle")}</h2>
       <p className="mt-1 text-sm leading-relaxed">{t(`owner_${b.websiteStatus}`)}</p>
       <div className="mt-3 flex flex-col gap-2 text-sm sm:flex-row sm:items-center sm:gap-5">
         <Link to="/contact" search={{ business: b.name, listing: b.slug, from: "claim" }} className="action-btn action-dark min-h-11 text-sm">{noSite ? t("ownerClaimSite") : t("ownerContact")}</Link>
         <Link to="/for-businesses" className="inline-flex min-h-11 items-center text-primary underline">{t("ownerMore")}</Link>
       </div>
-      {offersPreview(b) && <PreviewLink slug={b.slug} />}
     </aside>
   );
 }

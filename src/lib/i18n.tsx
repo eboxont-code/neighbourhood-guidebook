@@ -245,7 +245,7 @@ export const dict = {
     pvNext2Title: "We reply ourselves", pvNext2Body: "A real person reads it and gets back to you with what a site could include.",
     pvNext3Title: "You decide", pvNext3Body: "Go ahead only if it suits you. Your listing stays free either way.",
     pvLeadMsg: "Hello, I saw the free website preview for {name} and I would like to make it my website.", pvFromPreview: "About the website preview for {name}",
-    pvListingLink: "Own this business? See a free website preview", pvBackPreview: "Back to the preview",
+    pvListingTitle: "Is this your business?", pvListingBody: "We made a free website preview from this listing. No cost to look.", pvListingCta: "See your free website", pvBackPreview: "Back to the preview",
     pvCat_salons: "Salon", pvCat_barbers: "Barber", pvCat_spas: "Spa", pvCat_clinics: "Clinic", pvCat_cafes: "Café", pvCat_restaurants: "Restaurant", pvCat_gyms: "Gym", pvCat_hotels: "Hotel",
   },
   ne: {
@@ -489,7 +489,7 @@ export const dict = {
     pvNext2Title: "हामी आफैं जवाफ दिन्छौं", pvNext2Body: "एक जना मानिसले पढेर साइटमा के के राख्न सकिन्छ भनेर जवाफ दिन्छ।",
     pvNext3Title: "तपाईं निर्णय गर्नुहोस्", pvNext3Body: "उपयुक्त लागे मात्र अगाडि बढ्नुहोस्। तपाईंको सूची जे भए पनि निःशुल्क रहन्छ।",
     pvLeadMsg: "नमस्ते, मैले {name}को निःशुल्क वेबसाइट नमुना हेरें र यसलाई मेरो वेबसाइट बनाउन चाहन्छु।", pvFromPreview: "{name}को वेबसाइट नमुनाबारे",
-    pvListingLink: "यो तपाईंको व्यवसाय हो? निःशुल्क वेबसाइट नमुना हेर्नुहोस्", pvBackPreview: "नमुनामा फर्कनुहोस्",
+    pvListingTitle: "यो तपाईंको व्यवसाय हो?", pvListingBody: "हामीले यही सूचीबाट निःशुल्क वेबसाइट नमुना बनाएका छौं। हेर्न कुनै शुल्क लाग्दैन।", pvListingCta: "आफ्नो निःशुल्क वेबसाइट हेर्नुहोस्", pvBackPreview: "नमुनामा फर्कनुहोस्",
     pvCat_salons: "सैलुन", pvCat_barbers: "हजाम पसल", pvCat_spas: "स्पा", pvCat_clinics: "क्लिनिक", pvCat_cafes: "क्याफे", pvCat_restaurants: "रेस्टुरेन्ट", pvCat_gyms: "जिम", pvCat_hotels: "होटल",
   },
 } as const;

@@ -1,0 +1,50 @@
+import { createElement, type ReactNode } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
+import { describe, expect, it, vi } from "vitest";
+import { getBusiness, type WebsiteStatus } from "@/data/directory";
+import { Route } from "@/routes/s.$slug";
+
+vi.mock("@tanstack/react-router", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@tanstack/react-router")>();
+  return {
+    ...actual,
+    useRouter: () => ({ history: { back: vi.fn() }, navigate: vi.fn() }),
+    Link: ({ to, params, search, children, ...props }: { to: string; params?: Record<string, string>; search?: Record<string, string>; children?: ReactNode }) => {
+      let href = to;
+      for (const [key, value] of Object.entries(params ?? {})) href = href.replace(`$${key}`, value);
+      if (search) href += `?${new URLSearchParams(search)}`;
+      return <a href={href} {...props}>{children}</a>;
+    },
+  };
+});
+vi.mock("@/lib/geo", async (importOriginal) => ({
+  ...await importOriginal<typeof import("@/lib/geo")>(),
+  useLocation: () => ({ here: null }),
+}));
+vi.mock("@/components/map-view", () => ({ MapView: () => null }));
+vi.mock("@/components/venue", () => ({ HeartButton: () => null, VenueRow: () => null }));
+
+function listingLinks(status: WebsiteStatus) {
+  const original = getBusiness("nuad-thai-lazimpat");
+  if (!original) throw new Error("Missing test listing");
+  const component = Route.options.component;
+  if (!component) throw new Error("Missing listing page");
+  const loader = vi.spyOn(Route, "useLoaderData").mockReturnValue({ business: { ...original, websiteStatus: status } });
+  try {
+    const document = new DOMParser().parseFromString(renderToStaticMarkup(createElement(component)), "text/html");
+    return Array.from(document.querySelectorAll("a"), (a) => a.getAttribute("href") ?? "");
+  } finally {
+    loader.mockRestore();
+  }
+}
+
+describe("listing owner destinations", () => {
+  it.each(["none_found", "owner_no_site", "failed"] as const)("offers exactly one preview and one claim action for %s", (status) => {
+    const links = listingLinks(status);
+    expect(links.filter((href) => href === "/s/nuad-thai-lazimpat/website-preview")).toHaveLength(1);
+    expect(links.filter((href) => href.startsWith("/contact?") && new URL(href, "https://example.test").searchParams.get("from") === "claim")).toHaveLength(1);
+  });
+  it("does not offer a preview for a working website", () => {
+    expect(listingLinks("working").filter((href) => href.includes("website-preview"))).toHaveLength(0);
+  });
+});
