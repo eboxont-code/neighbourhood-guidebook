@@ -87,7 +87,10 @@ describe("badge rules", () => {
   it("gives one trust level that matches the source on record", () => {
     expect(trustLevel(getBusiness("aavaran-durbar-marg")!)).toBe("website");
     expect(trustLevel(getBusiness("femina-flaunt-naxal")!)).not.toBe("website");
-    expect(trustLevel({ ...getBusiness("aavaran-durbar-marg")!, lastChecked: undefined })).toBe("none");
+    const checkedBusiness = getBusiness("aavaran-durbar-marg");
+    if (!checkedBusiness) throw new Error("Missing test listing");
+    const { lastChecked, ...withoutCheckDate } = checkedBusiness;
+    expect(trustLevel(withoutCheckDate)).toBe("none");
     for (const b of businesses) if (trustLevel(b) === "website") expect(b.website && !/facebook|instagram|tiktok/i.test(b.website)).toBeTruthy();
   });
   it("never says hours came from a website the listing does not have", () => {
