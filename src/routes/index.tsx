@@ -3,7 +3,7 @@ import { CategoryTiles, pageMeta, useNow } from "@/components/site";
 import { AreaTiles, BusinessBand, SectionHead } from "@/components/blocks";
 import { LocationCard, VenueRow } from "@/components/venue";
 import { SearchCard } from "@/components/search-card";
-import { areasInUse, businessesIn, categoriesIn, citiesInUse, hasPin, placeName } from "@/data/directory";
+import { areasInUse, businesses, businessesIn, categoriesIn, citiesInUse, hasPin, placeName } from "@/data/directory";
 import { isOpen } from "@/lib/filters";
 import { sortByDistance, useLocation } from "@/lib/geo";
 import { newListings } from "@/lib/venue";
@@ -28,7 +28,8 @@ function Home() {
   const { t, lang } = useI18n();
   const now = useNow();
   const { here } = useLocation();
-  const city = citiesInUse()[0]!;
+  const city = citiesInUse()[0];
+  if (!city) return null;
   const items = businessesIn(city.slug);
   const open = now ? items.filter((b) => isOpen(b, now)) : [];
   const useOpen = open.length >= 3;
@@ -43,6 +44,7 @@ function Home() {
           <div className="mb-4 lg:mb-0">
             <h1 className="text-[1.5rem] leading-[1.15] font-semibold tracking-tight sm:text-[1.875rem] lg:text-[2.375rem]">{t("heroTitle")}</h1>
             <p className="mt-1.5 text-sm leading-snug text-[var(--hero-muted)] sm:text-base">{t("heroSub")}</p>
+            <p className="mt-2 text-sm leading-relaxed text-[var(--hero-muted)]">{t("homeProof").replace("{businesses}", new Intl.NumberFormat(lang === "ne" ? "ne-NP" : "en").format(businesses.length)).replace("{areas}", new Intl.NumberFormat(lang === "ne" ? "ne-NP" : "en").format(new Set(businesses.map((b) => b.area)).size)).replace("{pins}", new Intl.NumberFormat(lang === "ne" ? "ne-NP" : "en").format(businesses.filter(hasPin).length))}</p>
           </div>
           <SearchCard />
         </div>

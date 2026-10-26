@@ -20,12 +20,12 @@ function LangToggle() {
 export function Brand() {
   const { t } = useI18n();
   return (
-    <Link to="/" className="flex min-h-11 min-w-0 items-center gap-2.5">
+    <Link to="/" aria-label={t("brandHome").replace("{name}", SITE_NAME)} className="flex min-h-11 min-w-0 items-center gap-2.5">
       <span aria-hidden className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary text-base font-semibold text-primary-foreground">
         {SITE_NAME.charAt(0)}<span className="mb-1.5 ml-px h-1.5 w-1.5 self-end rounded-full bg-brand-accent" />
       </span>
-      <span className="truncate text-[1.0625rem] font-semibold tracking-tight">{SITE_NAME}</span>
-      <span className="shrink-0 rounded-full border border-brand-accent px-1.5 text-[11px] leading-[18px] font-semibold text-brand-accent-foreground">{t("brandTag")}</span>
+      <span aria-hidden className="truncate text-[1.0625rem] font-semibold tracking-tight">{SITE_NAME}</span>
+      <span aria-hidden className="shrink-0 rounded-full border border-brand-accent px-1.5 text-[11px] leading-[18px] font-semibold text-brand-accent-foreground">{t("brandTag")}</span>
     </Link>
   );
 }
@@ -84,7 +84,7 @@ export function BottomNav() {
 export function Footer() {
   const { t } = useI18n();
   const links = [
-    ["/about", t("footAbout")], ["/new", t("footNew")], ["/suggest-correction", t("footSuggest")], ["/for-businesses", t("footClaim")],
+    ["/about", t("footAbout")], ["/how-we-verify", t("footVerify")], ["/new", t("footNew")], ["/add-a-business", t("footAdd")], ["/contact", t("footClaimBusiness")], ["/for-businesses", t("footClaim")], ["/suggest-correction", t("footSuggest")],
     ["/privacy", t("footPrivacy")], ["/contact", t("footContact")],
   ] as const;
   return (
@@ -93,7 +93,7 @@ export function Footer() {
         <Brand />
         <nav className="mt-4 grid grid-cols-2 gap-x-4 gap-y-1 sm:flex sm:flex-wrap sm:gap-x-2">
           {links.map(([to, label]) => (
-            <Link key={to} to={to} className="-mx-2 inline-flex min-h-11 items-center rounded-full px-3 font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground sm:mx-0">{label}</Link>
+            <Link key={label} to={to} {...(label === t("footClaimBusiness") ? { search: { from: "claim" as const } } : {})} className="-mx-2 inline-flex min-h-11 items-center rounded-full px-3 font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground sm:mx-0">{label}</Link>
           ))}
         </nav>
         <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{SITE_NAME} · {t("noindex")}</p>

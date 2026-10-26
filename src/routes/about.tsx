@@ -1,5 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { TextPage, pageMeta } from "@/components/site";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { Page, pageMeta } from "@/components/site";
 import { SITE_NAME } from "@/config";
 import { useI18n } from "@/lib/i18n";
 
@@ -10,5 +10,5 @@ export const Route = createFileRoute("/about")({
 
 function About() {
   const { t } = useI18n();
-  return <TextPage title={t("footAbout")} body={t("aboutBody").replace("{site}", SITE_NAME)} />;
+  return <Page><h1 className="text-2xl font-semibold sm:text-3xl">{t("footAbout")}</h1><p className="mt-5 leading-relaxed">{t("aboutBody").replace("{site}", SITE_NAME)}</p><Link to="/how-we-verify" className="mt-4 inline-flex min-h-11 items-center text-primary underline">{t("footVerify")}</Link></Page>;
 }
