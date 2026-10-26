@@ -2,8 +2,11 @@ import { useState, type FormEvent, type ReactNode } from "react";
 import { z } from "zod";
 import { CheckCircle2, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { businesses } from "@/data/directory";
+import { businesses, categories, areas, placeName } from "@/data/directory";
 import { useI18n, type Key } from "@/lib/i18n";
+import { Link } from "@tanstack/react-router";
+import { Button } from "@/components/ui/button";
+import { contactTopics, correctionTypes, type ContactTopic } from "@/lib/form-options";
 
 const opt = (max: number) => z.string().trim().max(max, "errTooLong").optional().transform((v) => (v ? v : null));
 
@@ -13,18 +16,20 @@ export const contactSchema = z.object({
   phone: opt(30),
   message: z.string().trim().min(1, "errMessage").max(2000, "errTooLong"),
   source_listing_slug: opt(100),
+  topic: z.enum(contactTopics).nullable().optional(),
 });
 
 export const correctionSchema = z.object({
   listing_slug: z.string().trim().min(1, "errListing").max(100).refine((s) => businesses.some((b) => b.slug === s), "errListing"),
   whats_wrong: z.string().trim().min(1, "errWrong").max(2000, "errTooLong"),
   contact: opt(150),
+  correction_type: z.enum(correctionTypes, { message: "errChoice" }),
 });
 
 type Status = "idle" | "sending" | "done" | "error" | "limited";
 
 /** A per-tab key the database uses, with the IP, to limit repeat sends. Never stored with the message. */
-function clientKey() {
+export function clientKey() {
   try {
     let k = sessionStorage.getItem("form-key");
     if (!k) { k = crypto.randomUUID(); sessionStorage.setItem("form-key", k); }
@@ -38,7 +43,7 @@ export const isBot = (honeypot: string) => honeypot.trim().length > 0;
 export const statusFromError = (error: { message?: string } | null): Status =>
   !error ? "done" : /rate_limited/.test(error.message ?? "") ? "limited" : "error";
 
-function Honeypot({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+export function Honeypot({ value, onChange }: { value: string; onChange: (v: string) => void }) {
   const { t } = useI18n();
   return (
     <div aria-hidden="true" style={{ position: "absolute", left: "-10000px", width: 1, height: 1, overflow: "hidden" }}>
@@ -48,14 +53,14 @@ function Honeypot({ value, onChange }: { value: string; onChange: (v: string) =>
   );
 }
 
-function SendStatus({ status }: { status: Status }) {
+export function SendStatus({ status }: { status: Status }) {
   const { t } = useI18n();
   if (status === "error") return <p className="rounded-2xl bg-error-soft p-3 font-semibold text-error" role="alert">{t("sendError")}</p>;
   if (status === "limited") return <p className="rounded-2xl bg-warning-soft p-3 font-semibold text-warning" role="alert">{t("rateLimited")}</p>;
   return null;
 }
 
-function Field({ id, label, required, hint, error, children }: { id: string; label: string; required?: boolean; hint?: string | undefined; error?: string | undefined; children: ReactNode }) {
+export function Field({ id, label, required, hint, error, children }: { id: string; label: string; required?: boolean; hint?: string | undefined; error?: string | undefined; children: ReactNode }) {
   const { t } = useI18n();
   return (
     <div>
@@ -69,7 +74,7 @@ function Field({ id, label, required, hint, error, children }: { id: string; lab
   );
 }
 
-function Done({ text }: { text: string }) {
+export function Done({ text }: { text: string }) {
   const { t } = useI18n();
   return (
     <div className="page-enter text-center" role="status">
@@ -80,7 +85,7 @@ function Done({ text }: { text: string }) {
   );
 }
 
-function errorsFrom(issues: z.ZodIssue[], t: (k: Key) => string) {
+export function errorsFrom(issues: z.ZodIssue[], t: (k: Key) => string) {
   const out: Record<string, string> = {};
   for (const i of issues) {
     const k = String(i.path[0]);
@@ -89,8 +94,9 @@ function errorsFrom(issues: z.ZodIssue[], t: (k: Key) => string) {
   return out;
 }
 
-export function ContactForm({ business, listing, page, message = "", doneText, submitLabel }: { business: string; listing: string; page?: string; message?: string; doneText?: string; submitLabel?: string }) {
+export function ContactForm({ business, listing, page, message = "", doneText, submitLabel, topicPicker = false, initialTopic = "" }: { business: string; listing: string; page?: string; message?: string; doneText?: string; submitLabel?: string; topicPicker?: boolean; initialTopic?: ContactTopic | "" }) {
   const { t } = useI18n();
+  const [topic, setTopic] = useState<ContactTopic | "">(initialTopic);
   const [v, setV] = useState({ name: "", business_name: business, phone: "", message });
   const [errors, setErrors] = useState<{ [k: string]: string | undefined }>({});
   const [status, setStatus] = useState<Status>("idle");
@@ -99,13 +105,16 @@ export function ContactForm({ business, listing, page, message = "", doneText, s
 
   async function submit(e: FormEvent) {
     e.preventDefault();
-    const parsed = contactSchema.safeParse({ ...v, source_listing_slug: listing });
+    if (topicPicker && !topic) { setErrors({ topic: t("errChoice") }); document.getElementById("topic")?.focus(); return; }
+    if (topic === "add") return;
+    const parsed = contactSchema.safeParse({ ...v, source_listing_slug: listing, topic: topic || null });
     if (!parsed.success) {
       const errs = errorsFrom(parsed.error.issues, t);
       setErrors(errs);
       const first = ["name", "business_name", "phone", "message"].find((k) => errs[k]);
       const ids: Record<string, string> = { name: "name", business_name: "business", phone: "phone", message: "message" };
-      if (first) document.getElementById(ids[first]!)?.focus();
+      const firstId = first ? ids[first] : undefined;
+      if (firstId) document.getElementById(firstId)?.focus();
       return;
     }
     setErrors({});
@@ -117,6 +126,8 @@ export function ContactForm({ business, listing, page, message = "", doneText, s
 
   return (
     <form onSubmit={submit} noValidate className="relative space-y-5">
+      {topicPicker && <Field id="topic" label={t("contactTopic")} required error={errors["topic"]}><select id="topic" className="field min-h-11 text-base" required aria-invalid={!!errors["topic"]} aria-describedby={errors["topic"] ? "topic-error" : undefined} value={topic} onChange={(e) => { setTopic(e.target.value as ContactTopic | ""); setErrors({}); }}><option value="">{t("chooseOption")}</option>{contactTopics.map((x) => <option key={x} value={x}>{t(`topic_${x}`)}</option>)}</select></Field>}
+      {topic === "add" ? <div><p className="text-muted-foreground">{t("contactAddHint")}</p><Link to="/add-a-business" className="inline-flex min-h-11 items-center text-primary underline">{t("footAdd")}</Link></div> : <>
       <Field id="name" label={t("fName")} required error={errors["name"]}>
         <input id="name" aria-invalid={!!errors["name"]} aria-describedby={errors["name"] ? "name-error" : undefined} className="field" type="text" autoComplete="name" autoCapitalize="words" enterKeyHint="next" required maxLength={100} value={v.name} onChange={(e) => setV({ ...v, name: e.target.value })} />
       </Field>
@@ -135,13 +146,14 @@ export function ContactForm({ business, listing, page, message = "", doneText, s
         {status === "sending" && <Loader2 aria-hidden className="h-4 w-4 animate-spin" />}
         {status === "sending" ? t("sending") : submitLabel ?? t("send")}
       </button>
+      </>}
     </form>
   );
 }
 
 export function CorrectionForm({ listing }: { listing: string }) {
   const { t } = useI18n();
-  const [v, setV] = useState({ listing_slug: businesses.some((b) => b.slug === listing) ? listing : "", whats_wrong: "", contact: "" });
+  const [v, setV] = useState({ listing_slug: businesses.some((b) => b.slug === listing) ? listing : "", whats_wrong: "", contact: "", correction_type: "" });
   const [errors, setErrors] = useState<{ [k: string]: string | undefined }>({});
   const [status, setStatus] = useState<Status>("idle");
   const [hp, setHp] = useState("");
@@ -167,8 +179,9 @@ export function CorrectionForm({ listing }: { listing: string }) {
           {sorted.map((b) => <option key={b.slug} value={b.slug}>{b.name}</option>)}
         </select>
       </Field>
-      <Field id="wrong" label={t("fWrong")} required hint={t("fWrongHint")} error={errors["whats_wrong"]}>
-        <textarea id="wrong" className="field min-h-36" maxLength={2000} value={v.whats_wrong} onChange={(e) => setV({ ...v, whats_wrong: e.target.value })} />
+      <Field id="correction-type" label={t("correctionType")} required error={errors["correction_type"]}><select id="correction-type" className="field min-h-11 text-base" aria-invalid={!!errors["correction_type"]} aria-describedby={errors["correction_type"] ? "correction-type-error" : undefined} value={v.correction_type} onChange={(e) => setV({ ...v, correction_type: e.target.value })}><option value="">{t("chooseOption")}</option>{correctionTypes.map((x) => <option key={x} value={x}>{t(`correction_${x}`)}</option>)}</select></Field>
+      <Field id="wrong" label={t("correctionDetails")} required hint={t("fWrongHint")} error={errors["whats_wrong"]}>
+        <textarea id="wrong" aria-invalid={!!errors["whats_wrong"]} aria-describedby={errors["whats_wrong"] ? "wrong-error" : undefined} className="field min-h-36" maxLength={2000} value={v.whats_wrong} onChange={(e) => setV({ ...v, whats_wrong: e.target.value })} />
       </Field>
       <Field id="contact" label={t("fContact")} hint={t("fContactHint")} error={errors["contact"]}>
         <input id="contact" className="field" maxLength={150} value={v.contact} onChange={(e) => setV({ ...v, contact: e.target.value })} />
@@ -180,4 +193,44 @@ export function CorrectionForm({ listing }: { listing: string }) {
       </button>
     </form>
   );
+}
+
+const reach = z.string().trim().max(150, 'errTooLong').refine((s) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s) || (/^\+?[\d ()-]+$/.test(s) && s.replace(/\D/g, '').length >= 7 && s.replace(/\D/g, '').length <= 15), 'errReach');
+export const submissionSchema = z.object({
+ business_name: z.string().trim().min(1,'errBusiness').max(150,'errTooLong'),
+ category: z.string().refine((s) => categories.some((c) => c.slug === s),'errChoice'),
+ area: z.string().refine((s) => s === 'other' || areas.some((a) => a.slug === s),'errChoice'),
+ address: opt(500), phone: opt(30),
+ website: opt(500).refine((s) => !s || /^https?:\/\/[^\s]+$/i.test(s), 'erUrl'),
+ opening_hours: opt(1000), is_owner: z.enum(['yes','no'],{message:'errChoice'}).transform((s) => s === 'yes'),
+ name: opt(100), contact: reach, note: opt(2000),
+});
+export function BusinessSubmissionForm() {
+ const {t,lang} = useI18n();
+ const [v,setV] = useState({business_name:'',category:'',area:'',address:'',phone:'',website:'',opening_hours:'',is_owner:'',name:'',contact:'',note:''});
+ const [errors,setErrors] = useState<Record<string,string>>({});
+ const [status,setStatus] = useState<Status>('idle'); const [hp,setHp] = useState('');
+ if (status === 'done') return <Done text={t('addThanks')} />;
+ const change = (key: keyof typeof v, value: string) => setV((old) => ({...old,[key]:value}));
+ async function submit(e: FormEvent) {
+  e.preventDefault(); if (status === 'sending') return;
+  const parsed = submissionSchema.safeParse(v);
+  if (!parsed.success) { const errs = errorsFrom(parsed.error.issues,t); setErrors(errs); const first = Object.keys(errs)[0]; if (first) document.getElementById(`sub-${first}`)?.focus(); return; }
+  setErrors({}); if (isBot(hp)) { setStatus('done'); return; } setStatus('sending');
+  try { const {error} = await supabase.from('business_submissions').insert({...parsed.data,client_key:clientKey()}); setStatus(statusFromError(error)); } catch { setStatus('error'); }
+ }
+ const input = (key: keyof typeof v, label: Key, max: number, required=false, type='text', autocomplete?: string) => <Field id={`sub-${key}`} label={t(label)} required={required} error={errors[key]}><input id={`sub-${key}`} className="field min-h-11 text-base" type={type} autoComplete={autocomplete} inputMode={type === 'tel' ? 'tel' : undefined} enterKeyHint="next" maxLength={max} required={required} aria-invalid={!!errors[key]} aria-describedby={errors[key] ? `sub-${key}-error` : undefined} value={v[key]} onChange={(e) => change(key,e.target.value)} /></Field>;
+ const select = (key: 'category'|'area'|'is_owner', label: Key, options: {value:string;label:string}[]) => <Field id={`sub-${key}`} label={t(label)} required error={errors[key]}><select id={`sub-${key}`} className="field min-h-11 text-base" required aria-invalid={!!errors[key]} aria-describedby={errors[key] ? `sub-${key}-error` : undefined} value={v[key]} onChange={(e) => change(key,e.target.value)}><option value="">{t('chooseOption')}</option>{options.map((x) => <option key={x.value} value={x.value}>{x.label}</option>)}</select></Field>;
+ return <form onSubmit={submit} noValidate className="relative space-y-5">
+ {input('business_name','fBusiness',150,true,'text','organization')}
+ {select('category','adCategory',categories.map((c) => ({value:c.slug,label:placeName(c,lang)})))}
+ {select('area','adArea',[...areas.map((a) => ({value:a.slug,label:placeName(a,lang)})),{value:'other',label:t('otherArea')}])}
+ {input('address','subAddress',500,false,'text','street-address')}{input('phone','adPhone',30,false,'tel','tel')}{input('website','subWebsite',500,false,'url','url')}
+ <Field id="sub-opening_hours" label={t('subHours')} error={errors['opening_hours']}><textarea id="sub-opening_hours" className="field text-base" maxLength={1000} value={v.opening_hours} onChange={(e) => change('opening_hours',e.target.value)} /></Field>
+ {select('is_owner','subOwner',[{value:'yes',label:t('choiceYes')},{value:'no',label:t('choiceNo')}])}
+ {input('name','fName',100,false,'text','name')}{input('contact','subContact',150,true)}
+ <Field id="sub-note" label={t('subNote')} error={errors['note']}><textarea id="sub-note" className="field min-h-24 text-base" maxLength={2000} value={v.note} onChange={(e) => change('note',e.target.value)} /></Field>
+ <Honeypot value={hp} onChange={setHp} /><SendStatus status={status} />
+ <Button type="submit" disabled={status === 'sending'} aria-busy={status === 'sending'} className="action-btn action-primary min-h-12 h-auto w-full whitespace-normal px-6 sm:w-auto">{status === 'sending' && <Loader2 aria-hidden className="h-4 w-4 animate-spin" />}{t(status === 'sending' ? 'sending' : 'send')}</Button>
+ </form>;
 }
