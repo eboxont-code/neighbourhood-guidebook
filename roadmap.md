@@ -1,5 +1,13 @@
 # Roadmap
 
+- [ ] Daily pack: brand favicon and accessible header
+- [ ] Daily pack: public business submissions with private admin review
+- [ ] Daily pack: footer and verification methodology page
+- [ ] Daily pack: real-data homepage proof
+- [ ] Daily pack: contact topics and structured correction reports
+- [ ] Daily pack: synonyms, typo tolerance and area-aware search
+- [ ] Daily pack: bilingual mobile/desktop checks, tests and migration validation
+
 - [x] Polish pass across main pages
 - [x] Website preview page: sticky phone CTA that hides when the in-page CTA shows, bottom padding, safe area
 - [x] Website preview page: three-step "What happens next" strip (EN + NE)

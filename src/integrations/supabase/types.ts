@@ -14,6 +14,63 @@ export type Database = {
   }
   public: {
     Tables: {
+      business_submissions: {
+        Row: {
+          address: string | null
+          admin_note: string | null
+          area: string
+          business_name: string
+          category: string
+          client_key: string | null
+          contact: string
+          created_at: string
+          id: string
+          is_owner: boolean
+          name: string | null
+          note: string | null
+          opening_hours: string | null
+          phone: string | null
+          status: string
+          website: string | null
+        }
+        Insert: {
+          address?: string | null
+          admin_note?: string | null
+          area: string
+          business_name: string
+          category: string
+          client_key?: string | null
+          contact: string
+          created_at?: string
+          id?: string
+          is_owner?: boolean
+          name?: string | null
+          note?: string | null
+          opening_hours?: string | null
+          phone?: string | null
+          status?: string
+          website?: string | null
+        }
+        Update: {
+          address?: string | null
+          admin_note?: string | null
+          area?: string
+          business_name?: string
+          category?: string
+          client_key?: string | null
+          contact?: string
+          created_at?: string
+          id?: string
+          is_owner?: boolean
+          name?: string | null
+          note?: string | null
+          opening_hours?: string | null
+          phone?: string | null
+          status?: string
+          website?: string | null
+        }
+        Relationships: []
+      }
       contact_messages: {
         Row: {
           admin_note: string | null
@@ -28,6 +85,7 @@ export type Database = {
           source_listing_slug: string | null
           status: string
           status_changed_at: string | null
+          topic: string | null
         }
         Insert: {
           admin_note?: string | null
@@ -42,6 +100,7 @@ export type Database = {
           source_listing_slug?: string | null
           status?: string
           status_changed_at?: string | null
+          topic?: string | null
         }
         Update: {
           admin_note?: string | null
@@ -56,6 +115,7 @@ export type Database = {
           source_listing_slug?: string | null
           status?: string
           status_changed_at?: string | null
+          topic?: string | null
         }
         Relationships: []
       }
@@ -63,6 +123,7 @@ export type Database = {
         Row: {
           client_key: string | null
           contact: string | null
+          correction_type: string | null
           created_at: string
           id: string
           listing_slug: string
@@ -71,6 +132,7 @@ export type Database = {
         Insert: {
           client_key?: string | null
           contact?: string | null
+          correction_type?: string | null
           created_at?: string
           id?: string
           listing_slug: string
@@ -79,6 +141,7 @@ export type Database = {
         Update: {
           client_key?: string | null
           contact?: string | null
+          correction_type?: string | null
           created_at?: string
           id?: string
           listing_slug?: string

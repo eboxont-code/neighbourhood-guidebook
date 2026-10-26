@@ -243,6 +243,7 @@ function ShopPage() {
                     {b.addedOn && <p className="mt-1.5 text-sm text-muted-foreground">{t("addedToGuide")}: {formatDate(b.addedOn, lang)}</p>}
                   </div>
                 )}
+                <Link to="/suggest-correction" search={{ listing: b.slug }} className="mt-2 inline-flex min-h-11 items-center text-sm text-primary underline">{t("reportOutdated")}</Link>
                 {b.description && <Row label={t("note")}>{b.description}</Row>}
               </dl>
             </section>
@@ -269,10 +270,7 @@ function ShopPage() {
 
             <section id="owner" className="scroll-mt-28 pt-8">
               <OwnerPanel b={b} />
-              <p className="mt-4 text-sm">
-                <span className="text-muted-foreground">{t("spotMistake")} </span>
-                <Link to="/suggest-correction" search={{ listing: b.slug }} className="text-primary underline">{t("suggestThis")}</Link>
-              </p>
+
             </section>
           </div>
 

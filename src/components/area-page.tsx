@@ -122,8 +122,7 @@ export function AreaGuide({ city, slug }: { city: City; slug: string }) {
                 <h2 className="text-lg font-semibold">{t("thinTitle").replace("{area}", areaName)}</h2>
                 <p className="mt-1 text-[15px] leading-snug text-muted-foreground">{t("thinBody")}</p>
                 <div className="mt-4 flex flex-col gap-2 sm:flex-row">
-                  <Link to="/suggest-correction" className="action-btn action-dark text-sm"><MessageSquarePlus aria-hidden className="h-4 w-4" />{t("suggestPlace")}</Link>
-                  <Link to="/for-businesses" className="action-btn action-secondary text-sm"><Store aria-hidden className="h-4 w-4" />{t("addBusiness")}</Link>
+                  <Link to="/add-a-business" className="action-btn action-secondary text-sm"><Store aria-hidden className="h-4 w-4" />{t("addBusiness")}</Link>
                 </div>
               </section>
             )}

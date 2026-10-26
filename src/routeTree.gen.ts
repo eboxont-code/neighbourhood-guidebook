@@ -11,9 +11,11 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as AddABusinessRouteImport } from './routes/add-a-business'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as ForBusinessesRouteImport } from './routes/for-businesses'
+import { Route as HowWeVerifyRouteImport } from './routes/how-we-verify'
 import { Route as NewRouteImport } from './routes/new'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as SavedRouteImport } from './routes/saved'
@@ -39,6 +41,11 @@ const AboutRoute = AboutRouteImport.update({
   path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AddABusinessRoute = AddABusinessRouteImport.update({
+  id: '/add-a-business',
+  path: '/add-a-business',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -52,6 +59,11 @@ const ContactRoute = ContactRouteImport.update({
 const ForBusinessesRoute = ForBusinessesRouteImport.update({
   id: '/for-businesses',
   path: '/for-businesses',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HowWeVerifyRoute = HowWeVerifyRouteImport.update({
+  id: '/how-we-verify',
+  path: '/how-we-verify',
   getParentRoute: () => rootRouteImport,
 } as any)
 const NewRoute = NewRouteImport.update({
@@ -128,9 +140,11 @@ const SSlugWebsitePreviewRoute = SSlugWebsitePreviewRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/add-a-business': typeof AddABusinessRoute
   '/admin': typeof AdminRoute
   '/contact': typeof ContactRoute
   '/for-businesses': typeof ForBusinessesRoute
+  '/how-we-verify': typeof HowWeVerifyRoute
   '/new': typeof NewRoute
   '/privacy': typeof PrivacyRoute
   '/saved': typeof SavedRoute
@@ -149,9 +163,11 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/add-a-business': typeof AddABusinessRoute
   '/admin': typeof AdminRoute
   '/contact': typeof ContactRoute
   '/for-businesses': typeof ForBusinessesRoute
+  '/how-we-verify': typeof HowWeVerifyRoute
   '/new': typeof NewRoute
   '/privacy': typeof PrivacyRoute
   '/saved': typeof SavedRoute
@@ -171,9 +187,11 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/add-a-business': typeof AddABusinessRoute
   '/admin': typeof AdminRoute
   '/contact': typeof ContactRoute
   '/for-businesses': typeof ForBusinessesRoute
+  '/how-we-verify': typeof HowWeVerifyRoute
   '/new': typeof NewRoute
   '/privacy': typeof PrivacyRoute
   '/saved': typeof SavedRoute
@@ -194,9 +212,11 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/add-a-business'
     | '/admin'
     | '/contact'
     | '/for-businesses'
+    | '/how-we-verify'
     | '/new'
     | '/privacy'
     | '/saved'
@@ -215,9 +235,11 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
+    | '/add-a-business'
     | '/admin'
     | '/contact'
     | '/for-businesses'
+    | '/how-we-verify'
     | '/new'
     | '/privacy'
     | '/saved'
@@ -236,9 +258,11 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/about'
+    | '/add-a-business'
     | '/admin'
     | '/contact'
     | '/for-businesses'
+    | '/how-we-verify'
     | '/new'
     | '/privacy'
     | '/saved'
@@ -258,9 +282,11 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  AddABusinessRoute: typeof AddABusinessRoute
   AdminRoute: typeof AdminRoute
   ContactRoute: typeof ContactRoute
   ForBusinessesRoute: typeof ForBusinessesRoute
+  HowWeVerifyRoute: typeof HowWeVerifyRoute
   NewRoute: typeof NewRoute
   PrivacyRoute: typeof PrivacyRoute
   SavedRoute: typeof SavedRoute
@@ -293,6 +319,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/add-a-business': {
+      id: '/add-a-business'
+      path: '/add-a-business'
+      fullPath: '/add-a-business'
+      preLoaderRoute: typeof AddABusinessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin': {
       id: '/admin'
       path: '/admin'
@@ -312,6 +345,13 @@ declare module '@tanstack/react-router' {
       path: '/for-businesses'
       fullPath: '/for-businesses'
       preLoaderRoute: typeof ForBusinessesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/how-we-verify': {
+      id: '/how-we-verify'
+      path: '/how-we-verify'
+      fullPath: '/how-we-verify'
+      preLoaderRoute: typeof HowWeVerifyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/new': {
@@ -418,9 +458,11 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  AddABusinessRoute: AddABusinessRoute,
   AdminRoute: AdminRoute,
   ContactRoute: ContactRoute,
   ForBusinessesRoute: ForBusinessesRoute,
+  HowWeVerifyRoute: HowWeVerifyRoute,
   NewRoute: NewRoute,
   PrivacyRoute: PrivacyRoute,
   SavedRoute: SavedRoute,

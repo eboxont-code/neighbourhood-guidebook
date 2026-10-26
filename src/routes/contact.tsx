@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Page, pageMeta } from "@/components/site";
 import { ContactForm } from "@/components/forms";
+import { topicFromSource } from "@/lib/form-options";
 import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/contact")({
@@ -21,7 +22,7 @@ function ContactPage() {
     <Page>
       <h1 className="text-2xl font-semibold sm:text-3xl">{t("contactTitle")}</h1>
       <p className="mt-3 mb-6 leading-relaxed text-muted-foreground">{t("contactIntro")}</p>
-      <div className="form-card"><ContactForm key={`${business}|${listing}|${from ?? ""}`} business={business} listing={listing} {...(from && listing ? { page: from } : {})} {...(from === "preview" ? { message: t("pvLeadMsg").replace("{name}", business) } : {})} /></div>
+      <div className="form-card"><ContactForm key={`${business}|${listing}|${from ?? ""}`} business={business} listing={listing} topicPicker initialTopic={topicFromSource(from)} {...(from ? { page: from } : {})} {...(from === "preview" ? { message: t("pvLeadMsg").replace("{name}", business) } : {})} /></div>
     </Page>
   );
 }
