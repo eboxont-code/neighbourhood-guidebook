@@ -14,6 +14,54 @@ export type Database = {
   }
   public: {
     Tables: {
+      business_claims: {
+        Row: {
+          admin_note: string | null
+          client_key: string | null
+          contact: string
+          created_at: string
+          id: string
+          listing_id: string | null
+          listing_slug: string
+          name: string
+          note: string | null
+          proof_url: string
+          role: string
+          status: string
+          wants: string[]
+        }
+        Insert: {
+          admin_note?: string | null
+          client_key?: string | null
+          contact: string
+          created_at?: string
+          id?: string
+          listing_id?: string | null
+          listing_slug: string
+          name: string
+          note?: string | null
+          proof_url: string
+          role: string
+          status?: string
+          wants?: string[]
+        }
+        Update: {
+          admin_note?: string | null
+          client_key?: string | null
+          contact?: string
+          created_at?: string
+          id?: string
+          listing_id?: string | null
+          listing_slug?: string
+          name?: string
+          note?: string | null
+          proof_url?: string
+          role?: string
+          status?: string
+          wants?: string[]
+        }
+        Relationships: []
+      }
       business_submissions: {
         Row: {
           address: string | null
