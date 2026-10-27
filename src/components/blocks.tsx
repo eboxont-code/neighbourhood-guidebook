@@ -1,3 +1,4 @@
+import { VerificationBadge } from "@/components/verification-badge";
 import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { ArrowRight, Phone } from "lucide-react";
@@ -60,7 +61,7 @@ export function PlaceCard({ b }: { b: Business }) {
           <p className="truncate text-[13px] text-muted-foreground">{lang === "ne" ? cat?.nameNe : cat?.name} · {placeName(area, lang)}</p>
         </div>
       </div>
-      <p className="mt-3 truncate text-[13px]"><HoursLine b={b} /></p>
+      <p className="mt-3 truncate text-[13px]"><HoursLine b={b} /></p><VerificationBadge b={b} />
     </li>
   );
 }
@@ -82,7 +83,7 @@ export function CompactRow({ b }: { b: Business }) {
       <div className="min-w-0 flex-1">
         <Link to="/s/$slug" params={{ slug: b.slug }} className="stretched-row block truncate text-[15px] font-semibold">{b.name}</Link>
         <p className="text-[13px] text-muted-foreground">{lang === "ne" ? cat?.nameNe : cat?.name} · {placeName(area, lang)}{d !== null && <> · <span className="whitespace-nowrap">{formatDistance(d, lang)}</span></>}</p>
-        <p className="mt-0.5 text-[13px] leading-relaxed"><HoursLine b={b} /></p>
+        <p className="mt-0.5 text-[13px] leading-relaxed"><HoursLine b={b} /></p><VerificationBadge b={b} />
       </div>
       {b.phone && (
         <a href={telLink(b.phone)} aria-label={`${t("call")} ${b.name} ${b.phone}`} className="press relative z-10 flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-foreground text-panel">

@@ -3,7 +3,7 @@ import { areasIn, businesses, businessesIn, categoriesIn, citiesInUse } from "@/
 
 /** Every indexable path: home, city pages, area and category pages per city, listings, for-businesses and static info pages. */
 export function sitemapPaths(): string[] {
-  const paths = ["/", "/for-businesses", "/about", "/contact", "/privacy", "/new", "/add-a-business", "/how-we-verify"];
+  const paths = ["/", "/for-businesses", "/about", "/contact", "/privacy", "/new", "/add-a-business", "/how-we-verify", "/claim"];
   for (const city of citiesInUse()) {
     const items = businessesIn(city.slug);
     paths.push(`/${city.slug}`);

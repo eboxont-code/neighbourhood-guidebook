@@ -1,3 +1,4 @@
+import { VerificationBadge } from "@/components/verification-badge";
 import { Link } from "@tanstack/react-router";
 import { useState, type ReactNode } from "react";
 import { Heart, LocateFixed, MapPinOff } from "lucide-react";
@@ -59,13 +60,14 @@ export function VenueCard({ b, wide = false }: { b: Business; wide?: boolean }) 
     <li className={`venue-card ${wide ? "" : "w-[16.5rem] shrink-0 snap-start"}`}>
       <div className="relative">
         <Thumb b={b} className="aspect-[16/10]" />
-        <Badges list={badgesFor(b, now, isOpen(b, now))} />
+        <Badges list={badgesFor(b, now, isOpen(b, now)).filter((x) => x !== "trustWeb" && x !== "trustSocial")} />
         <span className="absolute top-1.5 right-1.5 z-10"><HeartButton slug={b.slug} name={b.name} /></span>
       </div>
       <div className="px-1 pt-2.5 pb-1">
         <Link to="/s/$slug" params={{ slug: b.slug }} className="stretched line-clamp-2 text-[15px] leading-snug font-semibold">{b.name}</Link>
         <p className="mt-0.5 text-[13px] text-muted-foreground">{placeName(getArea(b.area), lang)}{d !== null && <> · <span className="whitespace-nowrap">{formatDistance(d, lang)}</span></>}</p>
         <p className="text-[13px] text-muted-foreground">{lang === "ne" ? cat?.nameNe : cat?.name}</p>
+        <VerificationBadge b={b} />
       </div>
     </li>
   );

@@ -26,7 +26,7 @@ export const Route = createFileRoute("/search")({
   validateSearch: (s: Record<string, unknown>): SearchState => parseSearchParams(s),
   head: ({ match }) => {
     const q = (match.search as { q?: string }).q?.trim();
-    return q
+    const head = q
       ? pageMeta(
           `Search: ${q.slice(0, 60)}`,
           `Kathmandu businesses matching "${q.slice(0, 60)}".`,
@@ -37,6 +37,7 @@ export const Route = createFileRoute("/search")({
           "Search Kathmandu salons, barbers, spas and clinics by name, category, area or service.",
           "/search",
         );
+    return { ...head, meta: [...head.meta, { name: "robots", content: "noindex, follow" }] };
   },
   component: SearchPage,
 });
