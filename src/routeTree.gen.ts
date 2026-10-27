@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AddABusinessRouteImport } from './routes/add-a-business'
 import { Route as AdminRouteImport } from './routes/admin'
+import { Route as ClaimRouteImport } from './routes/claim'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as ForBusinessesRouteImport } from './routes/for-businesses'
 import { Route as HowWeVerifyRouteImport } from './routes/how-we-verify'
@@ -49,6 +50,11 @@ const AddABusinessRoute = AddABusinessRouteImport.update({
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ClaimRoute = ClaimRouteImport.update({
+  id: '/claim',
+  path: '/claim',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -142,6 +148,7 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/add-a-business': typeof AddABusinessRoute
   '/admin': typeof AdminRoute
+  '/claim': typeof ClaimRoute
   '/contact': typeof ContactRoute
   '/for-businesses': typeof ForBusinessesRoute
   '/how-we-verify': typeof HowWeVerifyRoute
@@ -165,6 +172,7 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/add-a-business': typeof AddABusinessRoute
   '/admin': typeof AdminRoute
+  '/claim': typeof ClaimRoute
   '/contact': typeof ContactRoute
   '/for-businesses': typeof ForBusinessesRoute
   '/how-we-verify': typeof HowWeVerifyRoute
@@ -189,6 +197,7 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/add-a-business': typeof AddABusinessRoute
   '/admin': typeof AdminRoute
+  '/claim': typeof ClaimRoute
   '/contact': typeof ContactRoute
   '/for-businesses': typeof ForBusinessesRoute
   '/how-we-verify': typeof HowWeVerifyRoute
@@ -214,6 +223,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/add-a-business'
     | '/admin'
+    | '/claim'
     | '/contact'
     | '/for-businesses'
     | '/how-we-verify'
@@ -237,6 +247,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/add-a-business'
     | '/admin'
+    | '/claim'
     | '/contact'
     | '/for-businesses'
     | '/how-we-verify'
@@ -260,6 +271,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/add-a-business'
     | '/admin'
+    | '/claim'
     | '/contact'
     | '/for-businesses'
     | '/how-we-verify'
@@ -284,6 +296,7 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   AddABusinessRoute: typeof AddABusinessRoute
   AdminRoute: typeof AdminRoute
+  ClaimRoute: typeof ClaimRoute
   ContactRoute: typeof ContactRoute
   ForBusinessesRoute: typeof ForBusinessesRoute
   HowWeVerifyRoute: typeof HowWeVerifyRoute
@@ -331,6 +344,13 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/claim': {
+      id: '/claim'
+      path: '/claim'
+      fullPath: '/claim'
+      preLoaderRoute: typeof ClaimRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -460,6 +480,7 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   AddABusinessRoute: AddABusinessRoute,
   AdminRoute: AdminRoute,
+  ClaimRoute: ClaimRoute,
   ContactRoute: ContactRoute,
   ForBusinessesRoute: ForBusinessesRoute,
   HowWeVerifyRoute: HowWeVerifyRoute,
