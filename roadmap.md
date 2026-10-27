@@ -1,5 +1,11 @@
 # Roadmap
 
+- [ ] Today: free claim form and private admin Claims review
+- [ ] Today: unified four-level verification and checked dates
+- [ ] Today: one-tap listing actions without duplicates
+- [ ] Today: listing structured data and search noindex
+- [ ] Today: admin topic/correction tags and bilingual end-to-end checks
+
 - [ ] Daily pack: brand favicon and accessible header
 - [ ] Daily pack: public business submissions with private admin review
 - [ ] Daily pack: footer and verification methodology page
