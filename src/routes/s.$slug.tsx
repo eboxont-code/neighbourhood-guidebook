@@ -11,6 +11,8 @@ import { useI18n, hoursSourceLabel, type Key } from "@/lib/i18n";
 import { businessJsonLd, breadcrumbJsonLd, listingTitle } from "@/lib/seo";
 import { distanceTo, formatDistance, sortByDistance, useLocation } from "@/lib/geo";
 import { formatDate, statusDetail, trustLevel, weekTable } from "@/lib/venue";
+import { VerificationBadge } from "@/components/verification-badge";
+import { Button } from "@/components/ui/button";
 import { offersPreview } from "@/lib/preview";
 
 export const Route = createFileRoute("/s/$slug")({
@@ -120,12 +122,12 @@ function ShopPage() {
   const headRef = useRef<HTMLDivElement>(null);
   const [stuck, setStuck] = useState(false);
   const [spy, setSpy] = useState("about");
-  const dir = directionsLink(b);
+  const dir = typeof b.lat === "number" && typeof b.lng === "number" ? `https://www.google.com/maps/search/?api=1&query=${b.lat},${b.lng}` : b.address ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(b.address)}` : undefined;
   const tabs = [
     { id: "about", label: t("tabAbout") },
     { id: "hours", label: t("tabHours") },
     { id: "location", label: t("tabLocation") },
-    { id: "owner", label: t("tabOwner") },
+    
   ].filter((x) => x.id !== "location" || hasPin(b) || b.address || dir);
 
   useEffect(() => {
@@ -183,7 +185,7 @@ function ShopPage() {
           <button type="button" onClick={back} aria-label={t("back")} className="round-btn"><ArrowLeft aria-hidden className="h-[18px] w-[18px]" /></button>
           <div className="flex gap-2">
             <button type="button" onClick={share} aria-label={t("share")} className="round-btn"><Share2 aria-hidden className="h-[18px] w-[18px]" /></button>
-            <HeartButton slug={b.slug} name={b.name} />
+            
           </div>
         </div>
       </div>
@@ -195,13 +197,15 @@ function ShopPage() {
             <h1 className="mt-1 text-[1.625rem] leading-tight font-semibold tracking-tight break-words sm:text-3xl">{b.name}</h1>
             <p className="mt-1 text-sm text-muted-foreground">{lang === "ne" ? cat.nameNe : cat.name} · {placeName(area, lang)}{dist !== null && <> · <span className="whitespace-nowrap">{formatDistance(dist, lang)}</span></>}</p>
             <p className="mt-2 text-[15px]" aria-label={t("keyFacts")}><StatusLine b={b} /></p>
-            <TrustLine b={b} />
+            <VerificationBadge b={b} />
+            <div className="mt-4 lg:hidden"><ListingActions b={b} dir={dir} /></div>
+            <div className="mt-5"><OwnerPanel b={b} /></div>
             {b.phone && <p className="mt-1 text-base font-semibold tabular-nums">{b.phone}</p>}
             {(b.address || dir) && (
               <div className="mt-4 flex items-center gap-3 rounded-full bg-muted py-1 pr-1 pl-4">
                 <MapPin aria-hidden className="h-4 w-4 shrink-0 text-muted-foreground" />
                 <span className="min-w-0 flex-1 truncate text-sm">{b.address ?? placeName(area, lang)}</span>
-                {dir && <a href={dir} target="_blank" rel="noopener noreferrer" className="action-btn action-secondary min-h-11 shrink-0 !border-0 px-3.5 text-[13px]"><Navigation aria-hidden className="h-3.5 w-3.5" />{t("directions")}</a>}
+                
               </div>
             )}
 
@@ -210,10 +214,10 @@ function ShopPage() {
               <dl className="divide-y divide-border">
                 <Row label={t("websiteStatus")} fullOnPhone={offersPreview(b)}>
                   {showWebsite(b) && (
-                    <a href={b.website} target="_blank" rel="noopener noreferrer" className="block break-all text-primary underline">{b.website!.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "")}</a>
+                    <span className="block break-all">{b.website?.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "")}</span>
                   )}
                   <span className={showWebsite(b) ? "text-sm text-muted-foreground" : ""}>{websiteStatusSentence(b, lang)}</span>
-                  {offersPreview(b) && <PreviewLink slug={b.slug} />}
+                  
                 </Row>
                 {b.otherPhones?.length ? (
                   <Row label={t("otherPhones")}>
@@ -225,10 +229,10 @@ function ShopPage() {
                     ))}
                   </Row>
                 ) : null}
-                {b.whatsapp && <Row label={t("whatsapp")}><a href={whatsappLink(b.whatsapp)} target="_blank" rel="noopener noreferrer" className="text-primary underline">{b.whatsapp}</a></Row>}
+                {b.whatsapp && <Row label={t("whatsapp")}><span>{b.whatsapp}</span></Row>}
                 {socialLinks(b).length > 0 && (
                   <Row label={t("social")}>
-                    {socialLinks(b).map((x) => <a key={x.url} href={x.url} target="_blank" rel="noopener noreferrer" className="block break-all text-primary underline">{x.platform} {x.handle}</a>)}
+                    {socialLinks(b).filter((x) => x.platform !== "Instagram").map((x) => <a key={x.url} href={x.url} target="_blank" rel="noopener noreferrer" className="block break-all text-primary underline">{x.platform} {x.handle}</a>)}
                   </Row>
                 )}
                 {(b.sourceNotes || b.addedOn) && (
@@ -268,20 +272,8 @@ function ShopPage() {
               </section>
             )}
 
-            <section id="owner" className="scroll-mt-28 pt-8">
-              <OwnerPanel b={b} />
-
-            </section>
           </div>
-
-          <aside className="hidden lg:block">
-            {(b.phone || websiteButton(b)) && (
-              <div className="sticky top-24 flex flex-col gap-2 rounded-2xl bg-card p-4 shadow-[var(--shadow-card)]">
-                {b.phone && <a href={telLink(b.phone)} className="action-btn action-dark min-h-12"><Phone aria-hidden className="h-5 w-5" />{t("call")} {b.phone}</a>}
-                {websiteButton(b) && <a href={b.website} target="_blank" rel="noopener noreferrer" className="action-btn action-secondary min-h-12"><Globe aria-hidden className="h-5 w-5" />{t("website")}</a>}
-              </div>
-            )}
-          </aside>
+          <aside className="hidden lg:block"><div className="sticky top-24"><ListingActions b={b} dir={dir} /></div></aside>
         </main>
 
         {near.length > 0 && (
@@ -296,61 +288,32 @@ function ShopPage() {
 
       {toast.msg && <div role="status" className="toast">{toast.msg}</div>}
 
-      {(b.phone || websiteButton(b)) && (
-        <div className="bottom-nav lg:hidden" role="group" aria-label={t("quickActions")}>
-          <div className="mx-auto flex max-w-2xl gap-2 px-4 py-2.5">
-            {b.phone && <a href={telLink(b.phone)} className="action-btn action-dark flex-1 px-3"><Phone aria-hidden className="h-5 w-5" />{t("call")}</a>}
-            {websiteButton(b) && <a href={b.website} target="_blank" rel="noopener noreferrer" className="action-btn action-secondary flex-1 px-3 text-sm whitespace-nowrap"><Globe aria-hidden className="h-5 w-5" />{t("website")}</a>}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
 
-/** The single early owner invitation, only for listings with no working site. */
-function PreviewLink({ slug }: { slug: string }) {
-  const { t } = useI18n();
-  return (
-    <aside aria-labelledby="preview-owner-title" className="owner-note mt-3 !p-4">
-      <h3 id="preview-owner-title" className="flex items-center gap-2 text-base font-semibold">
-        <Sparkles aria-hidden className="h-4 w-4 shrink-0 text-brand-accent-foreground" />
-        {t("pvListingTitle")}
-      </h3>
-      <p className="mt-1 text-sm leading-relaxed">{t("pvListingBody")}</p>
-      <Link to="/s/$slug/website-preview" params={{ slug }} className="action-btn action-dark mt-3 min-h-11 w-full py-2 text-sm sm:w-auto">
-        <span>{t("pvListingCta")}</span>
-        <ArrowRight aria-hidden className="h-4 w-4 shrink-0" />
-      </Link>
-    </aside>
+    </div>
   );
 }
 
 function OwnerPanel({ b }: { b: Business }) {
   const { t } = useI18n();
-  const noSite = offersPreview(b);
-  return (
-    <aside aria-labelledby="owner-note" className="owner-note">
-      {!noSite && <p className="mb-1 inline-flex rounded-full bg-brand-accent px-2.5 py-0.5 text-xs font-bold text-brand-accent-foreground">{t("ownerKicker")}</p>}
-      <h2 id="owner-note" className="text-lg font-semibold">{noSite ? t("ownerNoSiteTitle") : t("ownerTitle")}</h2>
-      <p className="mt-1 text-sm leading-relaxed">{t(`owner_${b.websiteStatus}`)}</p>
-      <div className="mt-3 flex flex-col gap-2 text-sm sm:flex-row sm:items-center sm:gap-5">
-        <Link to="/contact" search={{ business: b.name, listing: b.slug, from: "claim" }} className="action-btn action-dark min-h-11 text-sm">{noSite ? t("ownerClaimSite") : t("ownerContact")}</Link>
-        <Link to="/for-businesses" className="inline-flex min-h-11 items-center text-primary underline">{t("ownerMore")}</Link>
-      </div>
-    </aside>
-  );
+  return <aside id="owner" aria-labelledby="owner-note" className="owner-note scroll-mt-28 !p-4">
+    <h2 id="owner-note" className="text-base font-semibold">{t("pvListingTitle")}</h2>
+    <p className="mt-1 text-sm leading-relaxed">{t("claimOwnerBody")}</p>
+    <Button asChild className="action-btn action-dark mt-3 h-auto min-h-11 w-full whitespace-normal py-2"><Link to="/claim" search={{ listing: b.slug }}>{t("claimCta")}</Link></Button>
+    {offersPreview(b) && <Link to="/s/$slug/website-preview" params={{ slug: b.slug }} className="mt-2 inline-flex min-h-11 items-center text-sm text-primary underline">{t("pvListingCta")}</Link>}
+  </aside>;
 }
-
-/** The one trust line: where the details were checked, and when. */
-function TrustLine({ b }: { b: Business }) {
-  const { t, lang } = useI18n();
-  const tr = trustLevel(b);
-  const line = tr === "website" ? t("trustWeb") : tr === "social" ? t("trustSocial") : t("trustNone");
-  return (
-    <p className={`mt-2 flex items-start gap-1.5 text-sm ${tr === "none" ? "text-muted-foreground" : "font-medium"}`}>
-      {tr === "none" ? <ShieldQuestion aria-hidden className="mt-0.5 h-4 w-4 shrink-0" /> : <ShieldCheck aria-hidden className="mt-0.5 h-4 w-4 shrink-0 text-success" />}
-      <span>{line}{tr !== "none" && b.lastChecked ? <> · <span className="whitespace-nowrap">{t("lastChecked")} {formatDate(b.lastChecked, lang)}</span></> : null}</span>
-    </p>
-  );
+function ListingActions({ b, dir }: { b: Business; dir?: string }) {
+  const { t } = useI18n();
+  const instagram = socialLinks(b).find((s) => s.platform === "Instagram");
+  const actions = [
+    ...(b.phone ? [{ href: telLink(b.phone), label: t("callShort"), Icon: Phone }] : []),
+    ...(b.whatsapp ? [{ href: whatsappLink(b.whatsapp), label: t("whatsapp"), Icon: Phone }] : []),
+    ...(dir ? [{ href: dir, label: t("actionDirections"), Icon: Navigation }] : []),
+    ...(showWebsite(b) && b.website ? [{ href: b.website, label: t("actionWebsite"), Icon: Globe }] : []),
+    ...(instagram ? [{ href: instagram.url, label: t("actionInstagram"), Icon: Globe }] : []),
+  ];
+  return <div role="group" aria-label={t("quickActions")} className="flex min-w-0 flex-wrap gap-2 lg:flex-col">
+    {actions.map(({ href, label, Icon }) => <Button asChild key={label} variant="outline" className="h-auto min-h-11 min-w-11 flex-1 px-2 py-2 lg:flex-none"><a href={href} target={href.startsWith("tel:") ? undefined : "_blank"} rel="noopener noreferrer" title={label} className="flex-col gap-1 lg:flex-row"><Icon aria-hidden className="h-4 w-4 shrink-0" /><span className="text-center text-[11px] leading-snug break-words">{label}</span></a></Button>)}
+    <HeartButton slug={b.slug} name={b.name} className="relative shrink-0" />
+  </div>;
 }

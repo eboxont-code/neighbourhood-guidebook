@@ -41,6 +41,7 @@ import {
   leadWhatsapp,
   type LeadStatus,
 } from "@/lib/leads";
+import { AdminClaims } from "@/components/admin-claims";
 import { offersPreview, previewPath } from "@/lib/preview";
 import { optionLabel, submissionStatuses } from "@/lib/form-options";
 
@@ -52,6 +53,8 @@ export const Route = createFileRoute("/admin")({
       { name: "robots", content: "noindex, nofollow" },
       { name: "description", content: "Private admin area." },
       { property: "og:title", content: "Admin" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
       { property: "og:description", content: "Private admin area." },
     ],
   }),
@@ -201,15 +204,17 @@ function SignIn() {
 
 function Dashboard({ email }: { email: string }) {
   const { t } = useI18n();
-  const [tab, setTab] = useState<"listings" | "messages" | "submissions" | "account">("listings");
+  const [tab, setTab] = useState<"listings" | "messages" | "submissions" | "claims" | "account">("listings");
   const tabs = [
     ["listings", "adTabListings"],
     ["messages", "adTabMessages"],
     ["submissions", "adTabSubmissions"],
+    ["claims", "adClaims"],
     ["account", "adTabAccount"],
   ] as const;
   const [newLeads, setNewLeads] = useState(0);
   const [newSubs, setNewSubs] = useState(0);
+  const [newClaims, setNewClaims] = useState(0);
   useEffect(() => {
     supabase
       .from("contact_messages")
@@ -222,7 +227,8 @@ function Dashboard({ email }: { email: string }) {
       .eq("status", "new")
       .then(({ count }) => setNewSubs(count ?? 0));
   }, []);
-  const badge = (k: string) => (k === "messages" ? newLeads : k === "submissions" ? newSubs : 0);
+  useEffect(() => { supabase.from("business_claims").select("id", { count: "exact", head: true }).eq("status", "new").then(({ count }) => setNewClaims(count ?? 0)); }, []);
+  const badge = (k: string) => (k === "messages" ? newLeads : k === "submissions" ? newSubs : k === "claims" ? newClaims : 0);
   return (
     <div>
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
@@ -240,7 +246,7 @@ function Dashboard({ email }: { email: string }) {
               {badge(k) > 0 && (
                 <span
                   className="ml-1.5 inline-flex min-w-5 justify-center rounded-full bg-brand-accent px-1.5 text-xs font-bold text-brand-accent-foreground"
-                  aria-label={t("adLeadsNewN").replace("{n}", String(badge(k)))}
+                  aria-label={t("adNewCount").replace("{n}", String(badge(k)))}
                 >
                   {badge(k)}
                 </span>
@@ -259,6 +265,7 @@ function Dashboard({ email }: { email: string }) {
       {tab === "listings" && <Listings />}
       {tab === "messages" && <Messages onCount={setNewLeads} />}
       {tab === "submissions" && <Submissions onCount={setNewSubs} />}
+      {tab === "claims" && <AdminClaims onCount={setNewClaims} />}
       {tab === "account" && <Account email={email} />}
     </div>
   );
@@ -1251,7 +1258,7 @@ function Messages({ onCount }: { onCount?: (n: number) => void }) {
               <li key={m.id} className={card}>
                 <div className="flex flex-wrap justify-between gap-2">
                   <p className="font-semibold">
-                    {m.listing_slug}
+                    <Link to="/s/$slug" params={{ slug: m.listing_slug }} className="inline-flex min-h-11 items-center text-primary underline">{m.listing_slug}</Link>
                     {(() => {
                       const k = m.correction_type
                         ? optionLabel("correction", m.correction_type)

@@ -1,5 +1,5 @@
 import { SITE_NAME, SITE_URL } from "@/config";
-import { getArea, getCategory, getCity, intlDigits, parseDays, parseRange, websiteButton, type Business } from "@/data/directory";
+import { getArea, getCategory, getCity, intlDigits, parseDays, parseRange, socialLinks, websiteButton, type Business } from "@/data/directory";
 
 /** "Name, Area" for listing titles, without repeating the area when the name already contains it
  * (e.g. "FiLLi Cafe, Lazimpat" stays as is instead of "FiLLi Cafe, Lazimpat, Lazimpat"). */
@@ -37,6 +37,7 @@ const SCHEMA_TYPE: Record<string, string> = {
   restaurants: "Restaurant",
   gyms: "ExerciseGym",
   hotels: "Hotel",
+  dentists: "Dentist",
 };
 const DAY_CODES = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
 
@@ -76,6 +77,8 @@ export function businessJsonLd(b: Business): Record<string, unknown> {
   if (websiteButton(b)) ld["url"] = b.website;
   const oh = openingHoursSpec(b);
   if (oh) ld["openingHours"] = oh;
+  const social = socialLinks(b).map((s) => s.url);
+  if (social.length) ld["sameAs"] = social;
   if (b.cover) ld["image"] = b.cover.url;
   if (typeof b.lat === "number" && typeof b.lng === "number") ld["geo"] = { "@type": "GeoCoordinates", latitude: b.lat, longitude: b.lng };
   return ld;

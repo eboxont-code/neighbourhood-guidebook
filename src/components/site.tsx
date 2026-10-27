@@ -2,6 +2,7 @@ import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { Briefcase, Compass, Globe, Heart, Home, MapPin, Phone, Search, SearchX, type LucideIcon } from "lucide-react";
 import { CatIcon } from "@/components/cover";
 import { useEffect, useRef, useState, type ReactNode } from "react";
+import { VerificationBadge } from "@/components/verification-badge";
 import { SITE_NAME } from "@/config";
 import { useI18n, type Key } from "@/lib/i18n";
 import { citiesInUse, telLink, dayLabel, getArea, getCategory, hoursStatus, placeName, timeLabel, websiteShortLabel, type Business } from "@/data/directory";
@@ -84,7 +85,7 @@ export function BottomNav() {
 export function Footer() {
   const { t } = useI18n();
   const links = [
-    ["/about", t("footAbout")], ["/how-we-verify", t("footVerify")], ["/new", t("footNew")], ["/add-a-business", t("footAdd")], ["/contact", t("footClaimBusiness")], ["/for-businesses", t("footClaim")], ["/suggest-correction", t("footSuggest")],
+    ["/about", t("footAbout")], ["/how-we-verify", t("footVerify")], ["/new", t("footNew")], ["/add-a-business", t("footAdd")], ["/claim", t("footClaimBusiness")], ["/for-businesses", t("footClaim")], ["/suggest-correction", t("footSuggest")],
     ["/privacy", t("footPrivacy")], ["/contact", t("footContact")],
   ] as const;
   return (
@@ -93,7 +94,7 @@ export function Footer() {
         <Brand />
         <nav className="mt-4 grid grid-cols-2 gap-x-4 gap-y-1 sm:flex sm:flex-wrap sm:gap-x-2">
           {links.map(([to, label]) => (
-            <Link key={label} to={to} {...(label === t("footClaimBusiness") ? { search: { from: "claim" as const } } : {})} className="-mx-2 inline-flex min-h-11 items-center rounded-full px-3 font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground sm:mx-0">{label}</Link>
+            <Link key={label} to={to} className="-mx-2 inline-flex min-h-11 items-center rounded-full px-3 font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground sm:mx-0">{label}</Link>
           ))}
         </nav>
         <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{SITE_NAME} · {t("noindex")}</p>
@@ -186,7 +187,7 @@ export function BusinessCard({ b }: { b: Business }) {
         <div className="min-w-0 flex-1">
           <Link to="/s/$slug" params={{ slug: b.slug }} className="stretched block text-base leading-snug font-semibold break-words">{b.name}</Link>
           <p className="mt-0.5 text-[13px] text-muted-foreground">{lang === "ne" ? cat?.nameNe : cat?.name} · {placeName(area, lang)}</p>
-          <p className="mt-2 text-sm"><HoursLine b={b} /></p>
+          <p className="mt-2 text-sm"><HoursLine b={b} /></p><VerificationBadge b={b} />
         </div>
       </div>
       <div className="mt-3.5 flex flex-nowrap items-center justify-between gap-2 border-t border-border pt-3">
