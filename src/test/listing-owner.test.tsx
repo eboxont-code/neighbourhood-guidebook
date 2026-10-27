@@ -42,7 +42,7 @@ describe("listing owner destinations", () => {
   it.each(["none_found", "owner_no_site", "failed"] as const)("offers exactly one preview and one claim action for %s", (status) => {
     const links = listingLinks(status);
     expect(links.filter((href) => href === "/s/nuad-thai-lazimpat/website-preview")).toHaveLength(1);
-    expect(links.filter((href) => href.startsWith("/contact?") && new URL(href, "https://example.test").searchParams.get("from") === "claim")).toHaveLength(1);
+    expect(links.filter((href) => href === "/claim?listing=nuad-thai-lazimpat")).toHaveLength(1);
   });
   it("does not offer a preview for a working website", () => {
     expect(listingLinks("working").filter((href) => href.includes("website-preview"))).toHaveLength(0);

@@ -302,7 +302,7 @@ function OwnerPanel({ b }: { b: Business }) {
     {offersPreview(b) && <Link to="/s/$slug/website-preview" params={{ slug: b.slug }} className="mt-2 inline-flex min-h-11 items-center text-sm text-primary underline">{t("pvListingCta")}</Link>}
   </aside>;
 }
-function ListingActions({ b, dir }: { b: Business; dir?: string }) {
+function ListingActions({ b, dir }: { b: Business; dir?: string | undefined }) {
   const { t } = useI18n();
   const instagram = socialLinks(b).find((s) => s.platform === "Instagram");
   const actions = [

@@ -4,7 +4,7 @@ import { ClaimForm } from '@/components/claim-form';
 import { useI18n } from '@/lib/i18n';
 
 export const Route = createFileRoute('/claim')({
-  validateSearch: (s: Record<string, unknown>) => ({ listing: typeof s.listing === 'string' ? s.listing : '' }),
+  validateSearch: (s: Record<string, unknown>) => ({ listing: typeof s['listing'] === 'string' ? s['listing'] : '' }),
   head: ({ match }) => {
     const head = pageMeta('Claim a business for free', 'Claim your Kathmandu business listing for free. Send proof and request checked updates to your details.', '/claim');
     return { ...head, meta: [...head.meta, ...(match.search.listing ? [{ name: 'robots', content: 'noindex, follow' }] : [])] };
