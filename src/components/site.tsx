@@ -4,6 +4,7 @@ import { CatIcon } from "@/components/cover";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { VerificationBadge } from "@/components/verification-badge";
 import { SITE_NAME } from "@/config";
+import { openState, weeklySchedule } from "@/lib/hours";
 import { useI18n, type Key } from "@/lib/i18n";
 import { citiesInUse, telLink, dayLabel, getArea, getCategory, hoursStatus, placeName, timeLabel, websiteShortLabel, type Business } from "@/data/directory";
 
@@ -119,18 +120,22 @@ export function HoursLine({ b }: { b: Business }) {
   const now = useNow();
   if (!b.hours?.length) return <span className="text-muted-foreground">{t("hoursNotListed")}</span>;
   const unverified = b.hoursSource && !b.hoursVerified ? <span className="text-unverified"> · {t("unverifiedShort")}</span> : null;
-  const st = now ? hoursStatus(b.hours, now) : null;
-  if (!st || st.kind === "text" || st.kind === "none") {
-    const text = st && st.kind === "text" ? st.today : b.hours.map((h) => `${dayLabel(h.days, lang)} ${timeLabel(h.time, lang)}`.trim()).join(", ");
-    return <span>{text}{unverified}</span>;
+  const os = now ? openState(b.hours, now) : null;
+  if (os) {
+    const today = weeklySchedule(b.hours)?.[kathmanduNow(now!).day];
+    const cls = os.kind === "closed" ? "status-neutral" : os.kind === "closesSoon" ? "status-warning" : "status-success";
+    const key = os.kind === "closed" ? "closedNow" : os.kind === "closesSoon" ? "closesSoon" : os.kind === "open24" ? "open24" : "openNow";
+    return (
+      <span>
+        <span className={`status-chip ${cls}`}>{os.kind !== "closed" && <span aria-hidden className={`h-1.5 w-1.5 rounded-full ${os.kind === "closesSoon" ? "bg-warning" : "bg-success"}`} />}{t(key)}</span>
+        {today && os.kind !== "open24" && <span> · {timeLabel(today.source, lang)}</span>}
+        {unverified}
+      </span>
+    );
   }
-  return (
-    <span>
-      <span className={`status-chip ${st.kind === "open" ? "status-success" : "status-neutral"}`}>{st.kind === "open" && <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-success" />}{t(st.kind === "open" ? "openNow" : "closedNow")}</span>
-      {st.today && <span> · {timeLabel(st.today, lang)}</span>}
-      {unverified}
-    </span>
-  );
+  const st = now ? hoursStatus(b.hours, now) : null;
+  const text = st && st.kind === "text" ? st.today : b.hours.map((h) => `${dayLabel(h.days, lang)} ${timeLabel(h.time, lang)}`.trim()).join(", ");
+  return <span>{text}{unverified}</span>;
 }
 
 export function Page({ children, wide = false }: { children: ReactNode; wide?: boolean }) {
