@@ -15,6 +15,7 @@ function Privacy() {
       <div className="form-card mt-5 space-y-3 leading-relaxed">
         <p>{t("privacyBody")}</p>
         <p>{t("privacyLocation")}</p>
+        <p>{t("privacyCounts")}</p>
       </div>
     </Page>
   );

@@ -42,6 +42,7 @@ import {
   type LeadStatus,
 } from "@/lib/leads";
 import { AdminClaims } from "@/components/admin-claims";
+import { AdminInsights } from "@/components/admin-insights";
 import { offersPreview, previewPath } from "@/lib/preview";
 import { optionLabel, submissionStatuses } from "@/lib/form-options";
 
@@ -204,12 +205,13 @@ function SignIn() {
 
 function Dashboard({ email }: { email: string }) {
   const { t } = useI18n();
-  const [tab, setTab] = useState<"listings" | "messages" | "submissions" | "claims" | "account">("listings");
+  const [tab, setTab] = useState<"listings" | "messages" | "submissions" | "claims" | "insights" | "account">("listings");
   const tabs = [
     ["listings", "adTabListings"],
     ["messages", "adTabMessages"],
     ["submissions", "adTabSubmissions"],
     ["claims", "adClaims"],
+    ["insights", "adInsights"],
     ["account", "adTabAccount"],
   ] as const;
   const [newLeads, setNewLeads] = useState(0);
@@ -266,6 +268,7 @@ function Dashboard({ email }: { email: string }) {
       {tab === "messages" && <Messages onCount={setNewLeads} />}
       {tab === "submissions" && <Submissions onCount={setNewSubs} />}
       {tab === "claims" && <AdminClaims onCount={setNewClaims} />}
+      {tab === "insights" && <AdminInsights />}
       {tab === "account" && <Account email={email} />}
     </div>
   );

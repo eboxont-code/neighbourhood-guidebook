@@ -205,9 +205,9 @@ export const submissionSchema = z.object({
  opening_hours: opt(1000), is_owner: z.enum(['yes','no'],{message:'errChoice'}).transform((s) => s === 'yes'),
  name: opt(100), contact: reach, note: opt(2000),
 });
-export function BusinessSubmissionForm() {
+export function BusinessSubmissionForm({ initialName = '' }: { initialName?: string }) {
  const {t,lang} = useI18n();
- const [v,setV] = useState({business_name:'',category:'',area:'',address:'',phone:'',website:'',opening_hours:'',is_owner:'',name:'',contact:'',note:''});
+ const [v,setV] = useState({business_name:initialName,category:'',area:'',address:'',phone:'',website:'',opening_hours:'',is_owner:'',name:'',contact:'',note:''});
  const [errors,setErrors] = useState<Record<string,string>>({});
  const [status,setStatus] = useState<Status>('idle'); const [hp,setHp] = useState('');
  if (status === 'done') return <Done text={t('addThanks')} />;

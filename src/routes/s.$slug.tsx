@@ -1,3 +1,4 @@
+import { track } from "@/lib/track";
 import { createFileRoute, Link, notFound, redirect, useRouter } from "@tanstack/react-router";
 import { ArrowLeft, ArrowRight, ChevronRight, Globe, MapPin, Navigation, Phone, Share2, ShieldCheck, ShieldQuestion, Sparkles } from "lucide-react";
 import { useEffect, useRef, useState, type ReactNode } from "react";
@@ -299,22 +300,22 @@ function OwnerPanel({ b }: { b: Business }) {
   return <aside id="owner" aria-labelledby="owner-note" className="owner-note scroll-mt-28 !p-4">
     <h2 id="owner-note" className="text-base font-semibold">{t("pvListingTitle")}</h2>
     <p className="mt-1 text-sm leading-relaxed">{t("claimOwnerBody")}</p>
-    <Button asChild className="action-btn action-dark mt-3 h-auto min-h-11 w-full whitespace-normal py-2"><Link to="/claim" search={{ listing: b.slug }}>{t("claimCta")}</Link></Button>
-    {offersPreview(b) && <Link to="/s/$slug/website-preview" params={{ slug: b.slug }} className="mt-2 inline-flex min-h-11 items-center text-sm text-primary underline">{t("pvListingCta")}</Link>}
+    <Button asChild className="action-btn action-dark mt-3 h-auto min-h-11 w-full whitespace-normal py-2"><Link to="/claim" search={{ listing: b.slug }} onClick={() => track("claim_click", { slug: b.slug })}>{t("claimCta")}</Link></Button>
+    {offersPreview(b) && <Link to="/s/$slug/website-preview" params={{ slug: b.slug }} onClick={() => track("preview_click", { slug: b.slug })} className="mt-2 inline-flex min-h-11 items-center text-sm text-primary underline">{t("pvListingCta")}</Link>}
   </aside>;
 }
 function ListingActions({ b, dir }: { b: Business; dir?: string | undefined }) {
   const { t } = useI18n();
   const instagram = socialLinks(b).find((s) => s.platform === "Instagram");
   const actions = [
-    ...(b.phone ? [{ href: telLink(b.phone), label: t("callShort"), Icon: Phone }] : []),
-    ...(b.whatsapp ? [{ href: whatsappLink(b.whatsapp), label: t("whatsapp"), Icon: Phone }] : []),
-    ...(dir ? [{ href: dir, label: t("actionDirections"), Icon: Navigation }] : []),
-    ...(showWebsite(b) && b.website ? [{ href: b.website, label: t("actionWebsite"), Icon: Globe }] : []),
-    ...(instagram ? [{ href: instagram.url, label: t("actionInstagram"), Icon: Globe }] : []),
+    ...(b.phone ? [{ href: telLink(b.phone), label: t("callShort"), Icon: Phone, ev: "click_call" as const }] : []),
+    ...(b.whatsapp ? [{ href: whatsappLink(b.whatsapp), label: t("whatsapp"), Icon: Phone, ev: "click_whatsapp" as const }] : []),
+    ...(dir ? [{ href: dir, label: t("actionDirections"), Icon: Navigation, ev: "click_directions" as const }] : []),
+    ...(showWebsite(b) && b.website ? [{ href: b.website, label: t("actionWebsite"), Icon: Globe, ev: "click_website" as const }] : []),
+    ...(instagram ? [{ href: instagram.url, label: t("actionInstagram"), Icon: Globe, ev: "click_instagram" as const }] : []),
   ];
   return <div role="group" aria-label={t("quickActions")} className="flex min-w-0 flex-wrap gap-2 lg:flex-col">
-    {actions.map(({ href, label, Icon }) => <Button asChild key={label} variant="outline" className="h-auto min-h-11 min-w-11 flex-1 px-2 py-2 lg:flex-none"><a href={href} target={href.startsWith("tel:") ? undefined : "_blank"} rel="noopener noreferrer" title={label} className="flex-col gap-1 lg:flex-row"><Icon aria-hidden className="h-4 w-4 shrink-0" /><span className="text-center text-[11px] leading-snug break-words">{label}</span></a></Button>)}
+    {actions.map(({ href, label, Icon, ev }) => <Button asChild key={label} variant="outline" className="h-auto min-h-11 min-w-11 flex-1 px-2 py-2 lg:flex-none"><a href={href} onClick={() => track(ev, { slug: b.slug })} target={href.startsWith("tel:") ? undefined : "_blank"} rel="noopener noreferrer" title={label} className="flex-col gap-1 lg:flex-row"><Icon aria-hidden className="h-4 w-4 shrink-0" /><span className="text-center text-[11px] leading-snug break-words">{label}</span></a></Button>)}
     <HeartButton slug={b.slug} name={b.name} className="relative shrink-0" />
   </div>;
 }

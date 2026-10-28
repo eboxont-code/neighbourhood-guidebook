@@ -1,3 +1,4 @@
+import { track } from "@/lib/track";
 import { VerificationBadge } from "@/components/verification-badge";
 import { Link } from "@tanstack/react-router";
 import { useState, type ReactNode } from "react";
@@ -35,7 +36,7 @@ export function HeartButton({ slug, name, className = "" }: { slug: string; name
   const fav = useFavourites();
   const on = fav.has(slug);
   return (
-    <button type="button" aria-pressed={on} aria-label={`${on ? t("unsave") : t("save")}: ${name}`} onClick={(e) => { e.preventDefault(); fav.toggle(slug); }}
+    <button type="button" aria-pressed={on} aria-label={`${on ? t("unsave") : t("save")}: ${name}`} onClick={(e) => { e.preventDefault(); if (!on) track("save", { slug }); fav.toggle(slug); }}
       className={`round-btn z-10 ${className || "relative"}`}>
       <Heart aria-hidden className={`h-[18px] w-[18px] transition-transform ${on ? "scale-110 fill-current text-primary" : ""}`} strokeWidth={1.9} />
     </button>

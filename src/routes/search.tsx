@@ -1,3 +1,4 @@
+import { track } from "@/lib/track";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import { Clock, Map as MapIcon, Search as SearchIcon, SlidersHorizontal } from "lucide-react";
@@ -80,6 +81,13 @@ function SearchPage() {
   useEffect(() => {
     if (s.near && loc.state.status === "idle") requestLocation();
   }, [s.near]); // eslint-disable-line react-hooks/exhaustive-deps
+  // Anonymous demand count once the person pauses on a query: which searches find nothing tells us what to add.
+  useEffect(() => {
+    const v = q.trim();
+    if (v.length < 2) return;
+    const id = setTimeout(() => track(results.length ? "search" : "search_zero", { query: v }), 1500);
+    return () => clearTimeout(id);
+  }, [q, results.length]);
   // Remember a query on this device once the person has paused on it and it found something.
   useEffect(() => {
     const v = q.trim();
@@ -271,8 +279,8 @@ function SearchPage() {
                   {t("clearFilters")}
                 </button>
               ) : (
-                <Link to="/add-a-business" className="action-btn action-dark">
-                  {t("footAdd")}
+                <Link to="/add-a-business" search={q.trim() ? { name: q.trim().slice(0, 150) } : {}} className="action-btn action-dark">
+                  {q.trim() ? t("suggestBizQuery").replace("{q}", q.trim().slice(0, 40)) : t("footAdd")}
                 </Link>
               )
             }
