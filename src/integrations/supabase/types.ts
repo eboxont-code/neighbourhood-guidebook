@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      analytics_events: {
+        Row: {
+          created_at: string
+          event: string
+          id: string
+          lang: string | null
+          listing_slug: string | null
+          path: string | null
+          query: string | null
+        }
+        Insert: {
+          created_at?: string
+          event: string
+          id?: string
+          lang?: string | null
+          listing_slug?: string | null
+          path?: string | null
+          query?: string | null
+        }
+        Update: {
+          created_at?: string
+          event?: string
+          id?: string
+          lang?: string | null
+          listing_slug?: string | null
+          path?: string | null
+          query?: string | null
+        }
+        Relationships: []
+      }
       business_claims: {
         Row: {
           admin_note: string | null
