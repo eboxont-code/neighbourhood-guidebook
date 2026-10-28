@@ -11,7 +11,7 @@ import { weeklySchedule } from "@/lib/hours";
 import { useI18n, hoursSourceLabel, type Key } from "@/lib/i18n";
 import { businessJsonLd, breadcrumbJsonLd, listingTitle } from "@/lib/seo";
 import { distanceTo, formatDistance, sortByDistance, useLocation } from "@/lib/geo";
-import { formatDate, statusDetail, trustLevel, weekTable } from "@/lib/venue";
+import { formatDate, statusDetail, trustLevel } from "@/lib/venue";
 import { VerificationBadge } from "@/components/verification-badge";
 import { Button } from "@/components/ui/button";
 import { offersPreview } from "@/lib/preview";
