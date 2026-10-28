@@ -76,7 +76,7 @@ function CategoryPage() {
   const setView = (v: "list" | "map") => set({ view: v === "map" ? "map" : undefined });
   const closeMap = useCallback(() => setView("list"), []); // eslint-disable-line react-hooks/exhaustive-deps
   const cityName = lang === "ne" ? city.nameNe : city.name;
-  const set = (patch: { area?: string | undefined; open?: boolean | undefined; sort?: CatFilters["sort"] | undefined; view?: "map" | undefined }) => navigate({ search: (prev: CatFilters) => { const n: Record<string, unknown> = { ...prev, ...patch }; Object.keys(n).forEach((k) => { if (!n[k]) delete n[k]; }); return n as CatFilters; }, replace: true });
+  const set = (patch: { area?: string | undefined; open?: boolean | undefined; sun?: boolean | undefined; sat?: boolean | undefined; sort?: CatFilters["sort"] | undefined; view?: "map" | undefined }) => navigate({ search: (prev: CatFilters) => { const n: Record<string, unknown> = { ...prev, ...patch }; Object.keys(n).forEach((k) => { if (!n[k]) delete n[k]; }); return n as CatFilters; }, replace: true });
   const areaOpts = areasIn(all);
   const pill = (on: boolean) => `chip !min-h-11 !text-[13px] ${on ? "chip-on" : ""}`;
   return (
