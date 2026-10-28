@@ -7,6 +7,7 @@ import { SectionHead } from "@/components/blocks";
 import { HeartButton, VenueRow } from "@/components/venue";
 import { MapView } from "@/components/map-view";
 import { businesses, dayLabel, placeName, timeLabel, getCity, hasPin, whatsappLink, directionsLink, slugRedirects, liveSlugRedirects, showWebsite, socialLinks, websiteButton, getArea, getBusiness, getCategory, telLink, websiteStatusSentence, kathmanduNow, type Business } from "@/data/directory";
+import { weeklySchedule } from "@/lib/hours";
 import { useI18n, hoursSourceLabel, type Key } from "@/lib/i18n";
 import { businessJsonLd, breadcrumbJsonLd, listingTitle } from "@/lib/seo";
 import { distanceTo, formatDistance, sortByDistance, useLocation } from "@/lib/geo";
@@ -78,7 +79,7 @@ function OpeningTimes({ b }: { b: Business }) {
   const { t, lang } = useI18n();
   const now = useNow();
   if (!b.hours?.length) return <p className="text-muted-foreground">{t("noHours")}</p>;
-  const week = weekTable(b.hours);
+  const week = weeklySchedule(b.hours);
   const today = now ? kathmanduNow(now).day : -1;
   const order = [1, 2, 3, 4, 5, 6, 0];
   return (
@@ -88,10 +89,10 @@ function OpeningTimes({ b }: { b: Business }) {
           {order.map((d) => {
             const w = week[d];
             return (
-              <li key={d} className={`day-row ${d === today ? "font-semibold" : ""}`}>
-                <span aria-hidden className={`h-2 w-2 shrink-0 rounded-full ${w?.open ? "bg-success" : "bg-muted-foreground/40"}`} />
-                <span className="flex-1">{t(`day${d}` as Key)}</span>
-                <span className="text-right tabular-nums">{w ? timeLabel(w.time, lang) : <span className="text-muted-foreground">{t("hoursNotListed")}</span>}</span>
+              <li key={d} aria-current={d === today ? "date" : undefined} className={`day-row ${d === today ? "-mx-2 rounded-lg bg-muted px-2 font-semibold" : ""}`}>
+                <span aria-hidden className={`h-2 w-2 shrink-0 rounded-full ${w && !w.closed ? "bg-success" : "bg-muted-foreground/40"}`} />
+                <span className="flex-1">{t(`day${d}` as Key)}{d === today && <span className="ml-2 text-xs font-semibold text-muted-foreground">{t("today")}</span>}</span>
+                <span className="text-right tabular-nums">{w ? (!w.closed && w.allDay ? t("open24") : timeLabel(w.source, lang)) : <span className="text-muted-foreground">{t("hoursNotListed")}</span>}</span>
               </li>
             );
           })}

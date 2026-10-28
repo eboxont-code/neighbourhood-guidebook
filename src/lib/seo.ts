@@ -1,3 +1,4 @@
+import { openingHoursSpecification } from "@/lib/hours";
 import { SITE_NAME, SITE_URL } from "@/config";
 import { getArea, getCategory, getCity, intlDigits, parseDays, parseRange, socialLinks, websiteButton, type Business } from "@/data/directory";
 
@@ -77,6 +78,9 @@ export function businessJsonLd(b: Business): Record<string, unknown> {
   if (websiteButton(b)) ld["url"] = b.website;
   const oh = openingHoursSpec(b);
   if (oh) ld["openingHours"] = oh;
+  // Hours are always shown on the listing page when recorded, so the structured version mirrors what people see.
+  const ohs = openingHoursSpecification(b.hours);
+  if (ohs) ld["openingHoursSpecification"] = ohs;
   const social = socialLinks(b).map((s) => s.url);
   if (social.length) ld["sameAs"] = social;
   if (b.cover) ld["image"] = b.cover.url;

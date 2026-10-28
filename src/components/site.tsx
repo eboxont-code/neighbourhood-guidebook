@@ -6,7 +6,7 @@ import { VerificationBadge } from "@/components/verification-badge";
 import { SITE_NAME } from "@/config";
 import { openState, weeklySchedule } from "@/lib/hours";
 import { useI18n, type Key } from "@/lib/i18n";
-import { citiesInUse, telLink, dayLabel, getArea, getCategory, hoursStatus, placeName, timeLabel, websiteShortLabel, type Business } from "@/data/directory";
+import { citiesInUse, telLink, dayLabel, getArea, getCategory, hoursStatus, kathmanduNow, placeName, timeLabel, websiteShortLabel, type Business } from "@/data/directory";
 
 function LangToggle() {
   const { lang, setLang } = useI18n();
