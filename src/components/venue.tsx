@@ -5,13 +5,18 @@ import { Heart, LocateFixed, MapPinOff } from "lucide-react";
 import { CatIcon } from "@/components/cover";
 import { EmptyState, useNow } from "@/components/site";
 import { getArea, getCategory, placeName, citiesInUse, type Business } from "@/data/directory";
-import { isOpen } from "@/lib/filters";
-import { badgesFor, type Badge } from "@/lib/venue";
+import { badgesFor, statusBadge, type Badge } from "@/lib/venue";
+
+/** At most one status chip, then the New badge if there is room. */
+function cardBadges(b: Business, now: Date | null): Badge[] {
+  const st = statusBadge(b, now);
+  return [...(st ? [st] : []), ...badgesFor(b, now, false).filter((x) => x === "newOnSewa")].slice(0, 2);
+}
 import { dismissLocation, distanceTo, formatDistance, requestLocation, useLocation } from "@/lib/geo";
 import { useFavourites } from "@/lib/favourites";
 import { useI18n, type Key } from "@/lib/i18n";
 
-const BADGE_KEY: Record<Badge, Key> = { open: "openNow", trustWeb: "badgeTrustWeb", trustSocial: "badgeTrustSocial", newOnSewa: "badgeNew" };
+const BADGE_KEY: Record<Badge, Key> = { open: "openNow", closesSoon: "closesSoon", open24: "open24", openSunday: "openSunday", trustWeb: "badgeTrustWeb", trustSocial: "badgeTrustSocial", newOnSewa: "badgeNew" };
 
 export function Badges({ list }: { list: Badge[] }) {
   const { t } = useI18n();
@@ -19,7 +24,7 @@ export function Badges({ list }: { list: Badge[] }) {
   return (
     <div className="pointer-events-none absolute top-2.5 left-2.5 flex max-w-[calc(100%-4rem)] flex-wrap gap-1.5">
       {list.map((b) => (
-        <span key={b} className="venue-badge">{b === "open" && <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-success" />}{t(BADGE_KEY[b])}</span>
+        <span key={b} className="venue-badge">{(b === "open" || b === "open24") && <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-success" />}{b === "closesSoon" && <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-warning" />}{t(BADGE_KEY[b])}</span>
       ))}
     </div>
   );
@@ -60,7 +65,7 @@ export function VenueCard({ b, wide = false }: { b: Business; wide?: boolean }) 
     <li className={`venue-card ${wide ? "" : "w-[16.5rem] shrink-0 snap-start"}`}>
       <div className="relative">
         <Thumb b={b} className="aspect-[16/10]" />
-        <Badges list={badgesFor(b, now, isOpen(b, now)).filter((x) => x !== "trustWeb" && x !== "trustSocial")} />
+        <Badges list={cardBadges(b, now)} />
         <span className="absolute top-1.5 right-1.5 z-10"><HeartButton slug={b.slug} name={b.name} /></span>
       </div>
       <div className="px-1 pt-2.5 pb-1">

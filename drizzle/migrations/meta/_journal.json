@@ -57,6 +57,13 @@
       "when": 1793061528957,
       "tag": "0007_business_claims",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1793147791431,
+      "tag": "0008_analytics_events",
+      "breakpoints": true
     }
   ]
 }

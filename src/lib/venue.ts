@@ -1,6 +1,8 @@
+import { openState, opensOn } from "@/lib/hours";
 import { businesses, kathmanduNow, parseDays, parseRange, type Business } from "@/data/directory";
 
-export type Badge = "open" | "trustWeb" | "trustSocial" | "newOnSewa";
+export type Badge = "open" | "closesSoon" | "open24" | "openSunday" | "trustWeb" | "trustSocial" | "newOnSewa";
+export type StatusBadge = "open" | "closesSoon" | "open24" | "openSunday";
 export type Trust = "website" | "social" | "none";
 
 /**
@@ -96,4 +98,18 @@ export function statusDetail(hours: Business["hours"], now: Date): Detail {
     if (Array.isArray(r)) return i === 1 ? { kind: "closed", opens: hhmm(r[0]), tomorrow: true } : { kind: "closed" };
   }
   return { kind: "closed" };
+}
+
+/**
+ * The one status chip a card may show, after mount only. Closes soon replaces Open now. On Saturday, the usual
+ * day off, a closed place that opens on Sunday shows "Open Sunday" so people can plan the next working day.
+ */
+export function statusBadge(b: Business, now: Date | null): StatusBadge | null {
+  if (!now) return null;
+  const s = openState(b.hours, now);
+  if (!s) return null;
+  if (s.kind === "open24") return "open24";
+  if (s.kind === "closesSoon") return "closesSoon";
+  if (s.kind === "open") return "open";
+  return kathmanduNow(now).day === 6 && opensOn(b.hours, 0) ? "openSunday" : null;
 }
