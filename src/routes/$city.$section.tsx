@@ -103,6 +103,8 @@ function CategoryPage() {
               </>
             )}
             <button type="button" aria-pressed={!!f.open} onClick={() => set({ open: f.open ? undefined : true })} className={pill(!!f.open)}><span aria-hidden className="h-1.5 w-1.5 rounded-full bg-success" />{t("openNow")}</button>
+            <button type="button" aria-pressed={!!f.sun} onClick={() => set({ sun: f.sun ? undefined : true })} className={pill(!!f.sun)}>{t("openSunday")}</button>
+            <button type="button" aria-pressed={!!f.sat} onClick={() => set({ sat: f.sat ? undefined : true })} className={pill(!!f.sat)}>{t("openSaturday")}</button>
           </div>
         </div>
       </div>

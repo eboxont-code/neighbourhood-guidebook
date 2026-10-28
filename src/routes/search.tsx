@@ -60,13 +60,15 @@ function SearchPage() {
   const now = useNow();
   const loc = useLocation();
   const [panel, setPanel] = useState(false);
-  const filtered = !!(s.area || s.open || s.near);
+  const filtered = !!(s.area || s.open || s.sun || s.sat || s.near);
   const base = q.trim() ? searchBusinesses(q) : filtered ? businesses : [];
   const results = applyCatFilters(
     base,
     {
       ...(s.area ? { area: s.area } : {}),
       ...(s.open ? { open: true } : {}),
+      ...(s.sun ? { sun: true } : {}),
+      ...(s.sat ? { sat: true } : {}),
       ...(s.near ? { sort: "near" as const } : {}),
     },
     now,
@@ -122,6 +124,8 @@ function SearchPage() {
     s.area ? placeName(getArea(s.area), lang) : "",
     s.near ? t("sortNear") : "",
     s.open ? t("openNow") : "",
+    s.sun ? t("openSunday") : "",
+    s.sat ? t("openSaturday") : "",
   ]
     .filter(Boolean)
     .join(" · ");
@@ -173,6 +177,12 @@ function SearchPage() {
               >
                 <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-success" />
                 {t("openNow")}
+              </button>
+              <button type="button" aria-pressed={!!s.sun} onClick={() => set({ sun: !s.sun || undefined })} className={pill(!!s.sun)}>
+                {t("openSunday")}
+              </button>
+              <button type="button" aria-pressed={!!s.sat} onClick={() => set({ sat: !s.sat || undefined })} className={pill(!!s.sat)}>
+                {t("openSaturday")}
               </button>
               <button
                 type="button"
@@ -255,7 +265,7 @@ function SearchPage() {
               filtered ? (
                 <button
                   type="button"
-                  onClick={() => set({ area: undefined, open: undefined, near: undefined })}
+                  onClick={() => set({ area: undefined, open: undefined, sun: undefined, sat: undefined, near: undefined })}
                   className="action-btn action-dark"
                 >
                   {t("clearFilters")}
