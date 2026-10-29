@@ -8,7 +8,7 @@ import { checkedDaysAgo } from '@/lib/verification';
 export function ProvenanceDisclosure({ b }: { b: Business }) {
   const { t, lang } = useI18n();
   const now = useNow();
-  const labels: Record<SourceField, Key> = { phone: 'phone', hours: 'tabHours', address: 'subAddress', website: 'actionWebsite', location: 'tabLocation' };
+  const labels: Record<SourceField, Key> = { phone: 'provPhone', hours: 'tabHours', address: 'subAddress', website: 'actionWebsite', location: 'tabLocation' };
   const fields: SourceField[] = [];
   if (b.phone) fields.push('phone');
   if (b.hours?.length) fields.push('hours');

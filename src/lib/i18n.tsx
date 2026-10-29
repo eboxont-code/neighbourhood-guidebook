@@ -5,7 +5,7 @@ const KEY = "dir-lang";
 
 export const dict = {
   en: {
-    provenanceTitle: "Where this comes from",
+    provPhone: "Phone", provenanceTitle: "Where this comes from",
     sourceTier_website: "Business website",
     sourceTier_official_social: "Official social page",
     sourceTier_maps: "Map listing",
@@ -406,7 +406,7 @@ export const dict = {
     pvCat_salons: "Salon", pvCat_barbers: "Barber", pvCat_spas: "Spa", pvCat_clinics: "Clinic", pvCat_cafes: "Café", pvCat_restaurants: "Restaurant", pvCat_gyms: "Gym", pvCat_hotels: "Hotel",
   },
   ne: {
-    provenanceTitle: "यी विवरणको स्रोत",
+    provPhone: "फोन", provenanceTitle: "यी विवरणको स्रोत",
     sourceTier_website: "व्यवसायको वेबसाइट",
     sourceTier_official_social: "आधिकारिक सामाजिक पेज",
     sourceTier_maps: "नक्साको सूची",

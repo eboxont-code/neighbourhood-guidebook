@@ -27,7 +27,7 @@ export interface Business {
   address?: string;
   phone?: string;
   whatsapp?: string;
-  website?: string;
+  website?: string | undefined;
   websiteStatus: WebsiteStatus;
   description?: string;
   services: { name: string; price?: string }[];
@@ -39,14 +39,14 @@ export interface Business {
   directions?: string; // Google Maps link; falls back to the address
   sourceNotes: string;
   verification: Verification;
-  lastChecked?: string; // ISO date, only when a check happened
+  lastChecked?: string | undefined; // ISO date, only when a check happened
   demo: boolean;
   cover?: { url: string; credit: string }; // only photos the business published
-  sourceUrl?: string;
-  lat?: number; // only from a reliable source; never guessed
-  lng?: number;
+  sourceUrl?: string | undefined;
+  lat?: number | undefined; // only from a reliable source; never guessed
+  lng?: number | undefined;
   addedOn?: string; // ISO date the listing entered the directory
-  fieldSources?: Partial<Record<"phone" | "hours" | "address" | "website" | "location", { tier: "website" | "official_social" | "maps" | "third_party" | "user_submission"; url?: string; checked?: string }>>;
+  fieldSources?: Partial<Record<"phone" | "hours" | "address" | "website" | "location", { tier: "website" | "official_social" | "maps" | "third_party" | "user_submission"; url?: string | undefined; checked?: string | undefined }>>;
 }
 
 /** Adding a city is a data-only change: add it here, then its areas and listings. */
