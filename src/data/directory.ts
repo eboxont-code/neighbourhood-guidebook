@@ -46,6 +46,7 @@ export interface Business {
   lat?: number; // only from a reliable source; never guessed
   lng?: number;
   addedOn?: string; // ISO date the listing entered the directory
+  fieldSources?: Partial<Record<"phone" | "hours" | "address" | "website" | "location", { tier: "website" | "official_social" | "maps" | "third_party" | "user_submission"; url?: string; checked?: string }>>;
 }
 
 /** Adding a city is a data-only change: add it here, then its areas and listings. */

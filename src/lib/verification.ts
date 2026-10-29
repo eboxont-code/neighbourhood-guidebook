@@ -2,7 +2,8 @@ import { socialLinks, type Business } from '@/data/directory';
 
 export type VerificationLevel = 'website' | 'social' | 'partial' | 'needed';
 export function checkedDate(b: Business): string | undefined {
-  return b.lastChecked && /^\d{4}-\d{2}-\d{2}$/.test(b.lastChecked) && Number.isFinite(Date.parse(b.lastChecked)) ? b.lastChecked : undefined;
+  const date = b.lastChecked;
+  return date && /^\d{4}-\d{2}-\d{2}$/.test(date) && Number.isFinite(Date.parse(date)) && new Date(date).toISOString().slice(0, 10) === date ? date : undefined;
 }
 export function officialWebsite(b: Business): boolean {
   if (!b.website) return false;
@@ -24,4 +25,23 @@ export function checkedDaysAgo(b: Business, now: Date): number | null {
   const today = new Date(now.getTime() + 20_700_000).toISOString().slice(0, 10);
   const days = Math.round((Date.parse(today) - Date.parse(date)) / 86_400_000);
   return days >= 0 ? days : null;
+}
+
+export const freshnessBuckets = ['green', 'yellow', 'orange', 'red', 'grey'] as const;
+export type FreshnessBucket = typeof freshnessBuckets[number];
+export function freshnessBucket(b: Business, now: Date): FreshnessBucket {
+  const days = checkedDaysAgo(b, now);
+  if (days === null) return 'grey';
+  if (days < 30) return 'green';
+  if (days <= 90) return 'yellow';
+  if (days <= 180) return 'orange';
+  return 'red';
+}
+export function stalestFirst(a: Business, b: Business, now: Date): number {
+  const age = (item: Business) => checkedDaysAgo(item, now) ?? Infinity;
+  const x = age(a), y = age(b);
+  return x === y ? a.name.localeCompare(b.name) : x > y ? -1 : 1;
+}
+export function recentlyVerified(all: Business[]): Business[] {
+  return [...all].sort((a, b) => (checkedDate(b) ?? '').localeCompare(checkedDate(a) ?? '') || a.name.localeCompare(b.name));
 }

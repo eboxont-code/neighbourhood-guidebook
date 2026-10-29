@@ -45,6 +45,9 @@ import { AdminClaims } from "@/components/admin-claims";
 import { AdminInsights } from "@/components/admin-insights";
 import { offersPreview, previewPath } from "@/lib/preview";
 import { optionLabel, submissionStatuses } from "@/lib/form-options";
+import { freshnessBucket, freshnessBuckets, stalestFirst } from "@/lib/verification";
+
+const freshnessClasses = { green: 'bg-success-soft text-success', yellow: 'bg-fresh-yellow-soft text-fresh-yellow', orange: 'bg-warning-soft text-warning', red: 'bg-error-soft text-error', grey: 'bg-muted text-muted-foreground' };
 
 export const Route = createFileRoute("/admin")({
   ssr: false,
@@ -281,6 +284,7 @@ function Listings() {
   const [editing, setEditing] = useState<Row | "new" | null>(null);
   const [f, setF] = useState({ q: "", area: "", cat: "", status: "" });
   const [note, setNote] = useState<string | null>(null);
+  const [now] = useState(() => new Date());
   async function load() {
     setFailed(false);
     const { data, error } = await supabase
@@ -307,8 +311,8 @@ function Listings() {
           (!f.cat || r.category === f.cat) &&
           (!f.status || r.status === f.status)
         );
-      }),
-    [rows, f],
+      }).sort((a, b) => stalestFirst(rowToBusiness(a), rowToBusiness(b), now)),
+    [rows, f, now],
   );
 
   async function toggle(r: Row) {
@@ -347,8 +351,10 @@ function Listings() {
     );
 
   const sel = "field min-h-11";
+  const counts = Object.fromEntries(freshnessBuckets.map((bucket) => [bucket, rows.filter((r) => freshnessBucket(rowToBusiness(r), now) === bucket).length]));
   return (
     <div className="space-y-4">
+      <div><h2 className="mb-2 text-sm font-semibold">{t('freshnessTitle')}</h2><ul className="flex flex-wrap gap-2">{freshnessBuckets.map((bucket) => <li key={bucket} className={`rounded-lg px-2 py-1 text-xs ${freshnessClasses[bucket]}`}>{t(`freshness_${bucket}`)}: {new Intl.NumberFormat(lang === 'ne' ? 'ne-NP' : 'en').format(counts[bucket] ?? 0)}</li>)}</ul></div>
       {note && (
         <p
           role="status"
@@ -441,6 +447,7 @@ function Listings() {
               >
                 {t(r.status === "published" ? "adPublished" : "adHidden")}
               </span>
+              <span className={`rounded-lg px-2 py-1 text-xs ${freshnessClasses[freshnessBucket(rowToBusiness(r), now)]}`}>{t(`freshness_${freshnessBucket(rowToBusiness(r), now)}`)}</span>
               <div className="flex gap-2">
                 <button
                   type="button"
