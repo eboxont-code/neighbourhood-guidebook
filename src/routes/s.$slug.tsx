@@ -16,6 +16,8 @@ import { formatDate, statusDetail, trustLevel } from "@/lib/venue";
 import { VerificationBadge } from "@/components/verification-badge";
 import { Button } from "@/components/ui/button";
 import { offersPreview } from "@/lib/preview";
+import { ProvenanceDisclosure } from "@/components/provenance-disclosure";
+import { nearbyPlaces } from "@/lib/nearby";
 
 export const Route = createFileRoute("/s/$slug")({
   loader: ({ params }) => {
@@ -152,9 +154,7 @@ function ShopPage() {
   };
   const back = () => { if (window.history.length > 1) router.history.back(); else router.navigate({ to: "/$city/$section", params: { city: area.city, section: area.slug } }); };
   // By distance from this place where it has coordinates, otherwise other places in the same area.
-  const near = hasPin(b)
-    ? sortByDistance(businesses.filter((x) => x.id !== b.id && hasPin(x)), { lat: b.lat!, lng: b.lng! }).slice(0, 10)
-    : businesses.filter((x) => x.area === b.area && x.id !== b.id);
+  const near = nearbyPlaces(b, businesses);
   const goTab = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
 
   return (
@@ -200,6 +200,7 @@ function ShopPage() {
             <p className="mt-1 text-sm text-muted-foreground">{lang === "ne" ? cat.nameNe : cat.name} · {placeName(area, lang)}{dist !== null && <> · <span className="whitespace-nowrap">{formatDistance(dist, lang)}</span></>}</p>
             <p className="mt-2 text-[15px]" aria-label={t("keyFacts")}><StatusLine b={b} /></p>
             <VerificationBadge b={b} />
+            <ProvenanceDisclosure b={b} />
             <div className="mt-4 lg:hidden"><ListingActions b={b} dir={dir} /></div>
             <div className="mt-5"><OwnerPanel b={b} /></div>
             {b.phone && <p className="mt-1 text-base font-semibold tabular-nums">{b.phone}</p>}
@@ -281,8 +282,13 @@ function ShopPage() {
         {near.length > 0 && (
           <section className="band band-alt">
             <div className="mx-auto max-w-6xl px-5">
-              <SectionHead title={t("placesNearby")} />
-              <VenueRow items={near} label={t("placesNearby")} />
+              <SectionHead title={t("nearbyTitle")} />
+              <ul className="grid gap-3 sm:grid-cols-2">
+                {near.map(({ business, metres }) => <li key={business.id} className="min-w-0 border-b border-border py-2">
+                  <Link to="/s/$slug" params={{ slug: business.slug }} className="flex min-h-11 items-center font-semibold break-words text-primary underline">{business.name}</Link>
+                  <p className="text-sm text-muted-foreground">{t("nearbyMetres").replace("{n}", new Intl.NumberFormat(lang === "ne" ? "ne-NP" : "en").format(Math.round(metres)))}</p>
+                </li>)}
+              </ul>
             </div>
           </section>
         )}
