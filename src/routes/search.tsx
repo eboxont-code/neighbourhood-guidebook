@@ -178,8 +178,8 @@ function SearchPage() {
           )}
           {qArea && (
             <div className="mt-3">
-              <button type="button" onClick={() => set({ q: split.rest })} className="chip chip-on !min-h-11 !text-[13px]">
-                {t("searchAreaChip").replace("{area}", placeName(getArea(qArea), lang))} <span aria-hidden>×</span>
+              <button type="button" onClick={() => set({ q: split.rest })} aria-label={t("searchAreaChip").replace("{area}", placeName(getArea(qArea), lang))} className="chip chip-on !min-h-11 !text-[13px]">
+                {placeName(getArea(qArea), lang)} <span aria-hidden>×</span>
               </button>
             </div>
           )}
