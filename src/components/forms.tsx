@@ -1,3 +1,4 @@
+import { track } from "@/lib/track";
 import { useState, type FormEvent, type ReactNode } from "react";
 import { z } from "zod";
 import { CheckCircle2, Loader2 } from "lucide-react";
@@ -121,7 +122,9 @@ export function ContactForm({ business, listing, page, message = "", doneText, s
     if (isBot(hp)) return setStatus("done");
     setStatus("sending");
     const { error } = await supabase.from("contact_messages").insert({ ...parsed.data, topic: parsed.data.topic ?? null, page: page ?? (listing ? "listing" : "contact"), client_key: clientKey() });
-    setStatus(statusFromError(error));
+    const st = statusFromError(error);
+    if (st === "done" && (topic === "website" || page === "for-businesses" || page === "preview")) track("enquiry_submit", listing ? { slug: listing } : {});
+    setStatus(st);
   }
 
   return (

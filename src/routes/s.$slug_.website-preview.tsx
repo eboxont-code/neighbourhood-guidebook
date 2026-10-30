@@ -1,3 +1,4 @@
+import { track } from "@/lib/track";
 import { createFileRoute, Link, notFound, redirect } from "@tanstack/react-router";
 import { ArrowRight, Clock, Facebook, Instagram, MapPin, MessageCircle, Music2, Navigation, Phone, Sparkles, Youtube } from "lucide-react";
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
@@ -131,6 +132,7 @@ function PreviewPage() {
     const el = img.current;
     if (el && el.complete && el.naturalWidth === 0) setFailed(true);
   }, [b.slug]);
+  useEffect(() => { track("preview_view", { slug: b.slug }); }, [b.slug]);
   const photo = b.cover && !failed ? b.cover : undefined;
   const ownerLink = { to: "/contact" as const, search: { from: "preview" as const, listing: b.slug, business: b.name } };
   const steps: [Key, Key][] = [["pvNext1Title", "pvNext1Body"], ["pvNext2Title", "pvNext2Body"], ["pvNext3Title", "pvNext3Body"]];
@@ -147,7 +149,8 @@ function PreviewPage() {
             <span className="block text-[13px] font-semibold sm:text-sm">{t("pvBarText")}</span>
             <span className="block text-[12px] text-[var(--hero-muted)]">{t("pvBarNote")}</span>
           </p>
-          <Link {...ownerLink} className="action-btn min-h-11 bg-brand-accent px-4 py-2 text-sm font-bold text-brand-accent-foreground hover:brightness-105">{t("pvBarCta")}</Link>
+          <Link {...ownerLink} onClick={() => track("preview_enquiry_click", { slug: b.slug })} className="action-btn min-h-11 bg-brand-accent px-4 py-2 text-sm font-bold text-brand-accent-foreground hover:brightness-105">{t("pvBarCta")}</Link>
+          <p className="text-center text-[12px] text-[var(--hero-muted)] lg:hidden">{t("pvFreeNote")}</p>
         </div>
       </div>
 

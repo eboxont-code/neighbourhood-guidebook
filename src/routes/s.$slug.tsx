@@ -285,7 +285,7 @@ function ShopPage() {
               <SectionHead title={t("nearbyTitle")} />
               <ul className="grid gap-3 sm:grid-cols-2">
                 {near.map(({ business, metres }) => <li key={business.id} className="min-w-0 border-b border-border py-2">
-                  <Link to="/s/$slug" params={{ slug: business.slug }} className="flex min-h-11 items-center font-semibold break-words text-primary underline">{business.name}</Link>
+                  <Link to="/s/$slug" params={{ slug: business.slug }} onClick={() => track("nearby_click", { slug: business.slug })} className="flex min-h-11 items-center font-semibold break-words text-primary underline">{business.name}</Link>
                   <p className="text-sm text-muted-foreground">{t("nearbyMetres").replace("{n}", new Intl.NumberFormat(lang === "ne" ? "ne-NP" : "en").format(Math.round(metres)))}</p>
                 </li>)}
               </ul>
@@ -307,6 +307,7 @@ function OwnerPanel({ b }: { b: Business }) {
     <h2 id="owner-note" className="text-base font-semibold">{t("pvListingTitle")}</h2>
     <p className="mt-1 text-sm leading-relaxed">{t("claimOwnerBody")}</p>
     <Button asChild className="action-btn action-dark mt-3 h-auto min-h-11 w-full whitespace-normal py-2"><Link to="/claim" search={{ listing: b.slug }} onClick={() => track("claim_click", { slug: b.slug })}>{t("claimCta")}</Link></Button>
+    {offersPreview(b) && <p className="mt-3 text-sm leading-relaxed">{t("ownerPreviewLine")}</p>}
     {offersPreview(b) && <Link to="/s/$slug/website-preview" params={{ slug: b.slug }} onClick={() => track("preview_click", { slug: b.slug })} className="mt-2 inline-flex min-h-11 items-center text-sm text-primary underline">{t("pvListingCta")}</Link>}
   </aside>;
 }

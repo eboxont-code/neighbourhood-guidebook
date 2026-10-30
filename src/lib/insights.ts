@@ -19,3 +19,23 @@ export function summarise(rows: EventRow[], days: number, now = new Date()) {
   }
   return { searches: top(searches, 20), zero: top(zero, 20), clicks: top(clicks, 20), listings: top(listings, 10) };
 }
+
+export const FUNNEL_STEPS = ["preview_click", "preview_view", "preview_enquiry_click", "claim_click", "claim_submit", "enquiry_submit"] as const;
+export type FunnelStep = { event: (typeof FUNNEL_STEPS)[number]; count: number; rate: number | null };
+
+/** Funnel counts inside the window; rate is the percentage of the previous step (null for the first step or when the previous count is 0). */
+export function funnel(rows: EventRow[], days: number, now = new Date()) {
+  const since = now.getTime() - days * 86400000;
+  const counts = new Map<string, number>(), views = new Map<string, number>();
+  for (const r of rows) {
+    if (new Date(r.created_at).getTime() < since) continue;
+    bump(counts, r.event);
+    if (r.event === "preview_view" && r.listing_slug) bump(views, r.listing_slug);
+  }
+  const steps: FunnelStep[] = FUNNEL_STEPS.map((event, i) => {
+    const count = counts.get(event) ?? 0;
+    const prev = i ? counts.get(FUNNEL_STEPS[i - 1]!) ?? 0 : 0;
+    return { event, count, rate: i && prev ? Math.round((count / prev) * 100) : null };
+  });
+  return { steps, topPreviews: top(views, 10) };
+}
