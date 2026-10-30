@@ -178,9 +178,9 @@ function SearchPage() {
           )}
           {qArea && (
             <div className="mt-3">
-              <Link to="/search" search={(prev: SearchState) => ({ ...prev, q: split.rest })} replace className="chip chip-on !min-h-11 !text-[13px]">
+              <button type="button" onClick={() => set({ q: split.rest })} className="chip chip-on !min-h-11 !text-[13px]">
                 {t("searchAreaChip").replace("{area}", placeName(getArea(qArea), lang))} <span aria-hidden>×</span>
-              </Link>
+              </button>
             </div>
           )}
           {active && panel && (
