@@ -17,6 +17,7 @@ import {
 import {
   applyCatFilters,
   parseSearchParams,
+  splitAreaQuery,
   suggestedSearches,
   type SearchState,
 } from "@/lib/filters";
@@ -61,12 +62,16 @@ function SearchPage() {
   const now = useNow();
   const loc = useLocation();
   const [panel, setPanel] = useState(false);
-  const filtered = !!(s.area || s.open || s.sun || s.sat || s.near);
-  const base = q.trim() ? searchBusinesses(q) : filtered ? businesses : [];
+  // "spa near lazimpat": the area name becomes a removable area filter, the rest is searched as usual.
+  const split = s.area ? { rest: q.trim() } : splitAreaQuery(q);
+  const qArea = split.area;
+  const area = s.area ?? qArea;
+  const filtered = !!(area || s.open || s.sun || s.sat || s.near);
+  const base = split.rest ? searchBusinesses(split.rest) : filtered ? businesses : [];
   const results = applyCatFilters(
     base,
     {
-      ...(s.area ? { area: s.area } : {}),
+      ...(area ? { area } : {}),
       ...(s.open ? { open: true } : {}),
       ...(s.sun ? { sun: true } : {}),
       ...(s.sat ? { sat: true } : {}),
@@ -169,6 +174,13 @@ function SearchPage() {
               >
                 <MapIcon aria-hidden className="h-[18px] w-[18px]" />
               </button>
+            </div>
+          )}
+          {qArea && (
+            <div className="mt-3">
+              <Link to="/search" search={(prev: SearchState) => ({ ...prev, q: split.rest })} replace className="chip chip-on !min-h-11 !text-[13px]">
+                {t("searchAreaChip").replace("{area}", placeName(getArea(qArea), lang))} <span aria-hidden>×</span>
+              </Link>
             </div>
           )}
           {active && panel && (
