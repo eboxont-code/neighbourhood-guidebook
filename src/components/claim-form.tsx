@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react';
 import { Loader2 } from 'lucide-react';
 import { businesses, getBusiness, searchBusinesses } from '@/data/directory';
 import { supabase } from '@/integrations/supabase/client';
+import { track } from '@/lib/track';
 import { useI18n } from '@/lib/i18n';
 import { claimRoles, claimSchema, claimWants } from '@/lib/claims';
 import { clientKey, Done, errorsFrom, Field, Honeypot, isBot, SendStatus, statusFromError } from '@/components/forms';
@@ -28,7 +29,7 @@ export function ClaimForm({ listing }: { listing: string }) {
     }
     setErrors({}); if (isBot(hp)) return setStatus('done');
     setStatus('sending');
-    try { const { error } = await supabase.from('business_claims').insert({ ...parsed.data, client_key: clientKey() }); setStatus(statusFromError(error)); }
+    try { const { error } = await supabase.from('business_claims').insert({ ...parsed.data, client_key: clientKey() }); const st = statusFromError(error); if (st === 'done') track('claim_submit', { slug: parsed.data.listing_slug }); setStatus(st); }
     catch { setStatus('error'); }
   }
   if (status === 'done') return <Done text={t('claimThanks')} />;

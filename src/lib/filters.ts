@@ -57,3 +57,21 @@ export function parseSearchParams(s: Record<string, unknown>): SearchState {
   if (s["view"] === "map") out.view = "map";
   return out;
 }
+
+const norm = (x: string) => x.toLowerCase().replace(/\s+/g, " ").trim();
+/** Finds an area name (English or Nepali) inside a search like "spa near lazimpat" and returns the rest of the query. */
+export function splitAreaQuery(q: string): { area?: string; rest: string } {
+  const text = ` ${norm(q)} `;
+  const hit = [...areas].sort((a, b) => b.name.length - a.name.length).map((a) => {
+    for (const n of [norm(a.name), norm(a.name).replace(/\s/g, ""), a.nameNe]) {
+      const m = text.match(new RegExp(`(^|\\s)${n.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(मा)?(?=\\s)`));
+      if (m) return { a, m };
+    }
+    return null;
+  }).find(Boolean);
+  if (!hit) return { rest: q.trim() };
+  const rest = (text.slice(0, hit.m.index) + " " + text.slice(hit.m.index! + hit.m[0].length))
+    .split(" ").filter(Boolean);
+  while (rest.length && ["near", "in", "at", "नजिक", "मा"].includes(rest[rest.length - 1]!)) rest.pop();
+  return { area: hit.a.slug, rest: rest.join(" ") };
+}
