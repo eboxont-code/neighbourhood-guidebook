@@ -1,4 +1,4 @@
-import { areas, businesses, categories, cityOf, hasPin, type Business } from "@/data/directory";
+import { areas, businesses, categories, hasPin, type Business } from "@/data/directory";
 import { opensOn } from "@/lib/hours";
 import { verificationLevel } from "@/lib/verification";
 
