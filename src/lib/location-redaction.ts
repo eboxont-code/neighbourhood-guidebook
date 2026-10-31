@@ -11,7 +11,8 @@ export function redactLocation(value: unknown, depth = 0): unknown {
   if (value instanceof Error) {
     const error = new Error(redactLocationText(value.message));
     error.name = value.name;
-    error.stack = value.stack ? redactLocationText(value.stack) : undefined;
+    if (value.stack) error.stack = redactLocationText(value.stack);
+    else delete error.stack;
     return error;
   }
   if (Array.isArray(value)) return value.map((item) => redactLocation(item, depth + 1));

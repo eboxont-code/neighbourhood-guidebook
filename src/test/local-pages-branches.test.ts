@@ -29,7 +29,7 @@ describe("local page qualification", () => {
     expect(sitemapXml()).not.toContain("<lastmod>");
   });
   it("counts mapped, Saturday and official-source verified facts only", () => {
-    const records = [sample("one", { lat: 27.7, lng: 85.3, hours: [{ days: "Sat", time: "10:00–18:00" }], website: "https://example.com", lastChecked: "2026-10-11" }), sample("two", { lat: undefined, lng: undefined, hours: undefined, website: undefined, social: [], lastChecked: undefined })];
+    const records = [sample("one", { lat: 27.7, lng: 85.3, hours: [{ days: "Sat", time: "10:00–18:00" }], website: "https://example.com", lastChecked: "2026-10-11" }), sample("two", { lat: undefined, lng: undefined, hours: undefined, website: undefined, social: [], lastChecked: undefined } as never)];
     expect(localFacts(records)).toEqual({ listings: 2, mapped: 1, saturday: 1, verified: 1 });
   });
 });
@@ -39,7 +39,7 @@ describe("explicit sibling branches", () => {
     const branch = listingSnapshot.find((b) => b.slug === "the-new-barber-thamel");
     if (!branch) throw new Error("Missing recorded branch");
     expect(otherBranches(branch, listingSnapshot).map((b) => b.slug)).toEqual(["the-new-barber-durbar-marg", "the-new-barber-boudha"]);
-    expect(otherBranches({ ...branch, brand: undefined }, listingSnapshot)).toHaveLength(2);
+    expect(otherBranches({ ...branch, brand: undefined } as never, listingSnapshot)).toHaveLength(2);
   });
   it("never infers a brand from a similar name or includes demo branches", () => {
     const branch = sample("one", { name: "Same name" });

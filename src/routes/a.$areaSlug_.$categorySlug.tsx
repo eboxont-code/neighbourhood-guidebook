@@ -22,7 +22,7 @@ export const Route = createFileRoute("/a/$areaSlug_/$categorySlug")({
     const description = `${items.length} recorded ${category.name.toLowerCase()} listings in ${area.name}, ${city.name}. ${facts.mapped} mapped, ${facts.saturday} with Saturday hours and ${facts.verified} verified against official sources.`;
     const head = pageMeta(name, description, `/a/${area.slug}/${category.slug}`);
     const title = `${name} | Sewa`;
-    return { ...head, meta: head.meta.map((meta) => "title" in meta ? { title } : meta.property === "og:title" || meta.name === "twitter:title" ? { ...meta, content: title } : meta), scripts: [{ type: "application/ld+json", children: JSON.stringify(itemListJsonLd(name, items)) }] };
+    return { ...head, meta: head.meta.map((meta) => "title" in meta ? { title } : meta["property"] === "og:title" || meta["name"] === "twitter:title" ? { ...meta, content: title } : meta), scripts: [{ type: "application/ld+json", children: JSON.stringify(itemListJsonLd(name, items)) }] };
   },
   notFoundComponent: NotFoundView,
   component: LocalPage,
