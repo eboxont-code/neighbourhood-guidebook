@@ -1,5 +1,12 @@
 # Roadmap
 
+## October 31 pack
+- [ ] Qualifying area/category pages, parent links and sitemap (at least three real listings)
+- [ ] Recorded brands and sibling branch links
+- [ ] Device-only location audit, sanitized error reports and privacy line
+- [ ] Header accessible name and single early preview invitation for unknown websites
+- [ ] Rule tests, full suite and 390px EN/NE checks
+
 ## Current pack
 - [ ] Field provenance disclosure and methodology tiers
 - [ ] Recently verified page and navigation labels
