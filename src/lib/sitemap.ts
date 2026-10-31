@@ -1,5 +1,6 @@
 import { SITE_URL } from "@/config";
 import { areasIn, businesses, businessesIn, categoriesIn, citiesInUse } from "@/data/directory";
+import { localCombinations } from "@/lib/local-pages";
 
 /** Every indexable path: home, city pages, area and category pages per city, listings, for-businesses and static info pages. */
 export function sitemapPaths(): string[] {
@@ -13,6 +14,7 @@ export function sitemapPaths(): string[] {
     for (const a of areasIn(items)) for (const c of categoriesIn(items.filter((b) => b.area === a.slug))) paths.push(`/${city.slug}/${a.slug}/${c.slug}`);
   }
   for (const b of businesses) paths.push(`/s/${b.slug}`);
+  for (const { area, category } of localCombinations()) paths.push(`/a/${area.slug}/${category.slug}`);
   return [...new Set(paths)];
 }
 

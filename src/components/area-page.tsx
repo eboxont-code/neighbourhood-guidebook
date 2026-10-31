@@ -12,13 +12,15 @@ import { sortByDistance, useLocation } from "@/lib/geo";
 import { areaFacts, otherAreas } from "@/lib/areas";
 import { newListings } from "@/lib/venue";
 import { useI18n, type Key } from "@/lib/i18n";
+import { areaLocalCategories } from "@/lib/local-pages";
 
 /** Neighbourhood guide: facts, a jump bar, open-now first, groups sized to their real counts, a sticky map on desktop. */
 export function AreaGuide({ city, slug }: { city: City; slug: string }) {
   const { t, lang } = useI18n();
   const now = useNow();
   const { here } = useLocation();
-  const a = getArea(slug)!;
+  const a = getArea(slug);
+  if (!a) return null;
   const items = businessesIn(city.slug).filter((b) => b.area === a.slug);
   const order = <T extends typeof items>(list: T) => (here ? sortByDistance(list, here) : list);
   const areaName = placeName(a, lang);
@@ -26,6 +28,7 @@ export function AreaGuide({ city, slug }: { city: City; slug: string }) {
   const cityName = placeName(city, lang);
   const catName = (c: { name: string; nameNe: string }) => (lang === "ne" ? c.nameNe : c.name);
   const cats = categoriesIn(items);
+  const localCategories = areaLocalCategories(a.slug);
   const facts = areaFacts(a.slug, now);
   const open = order(items.filter((b) => isOpen(b, now)));
   const fresh = now ? newListings(businessesIn(city.slug), now).filter((b) => b.area === a.slug) : [];
@@ -77,6 +80,9 @@ export function AreaGuide({ city, slug }: { city: City; slug: string }) {
       <Page wide>
         <div className={pinned ? "lg:grid lg:grid-cols-[minmax(0,1fr)_24rem] lg:gap-10 xl:grid-cols-[minmax(0,1fr)_28rem]" : ""}>
           <div id="g-all" data-group className="min-w-0 scroll-mt-32 space-y-9">
+            {localCategories.length > 0 && <nav aria-label={t("localCategoryLinks").replace("{area}", areaName)} className="flex flex-wrap gap-x-4 gap-y-1">
+              {localCategories.map(({ category }) => <Link key={category.slug} to="/a/$areaSlug/$categorySlug" params={{ areaSlug: a.slug, categorySlug: category.slug }} className="inline-flex min-h-11 items-center text-sm font-semibold text-primary underline underline-offset-4">{catName(category)}</Link>)}
+            </nav>}
             {fresh.length > 0 && (
               <section>
                 <h2 className="mb-3 flex items-center gap-2 text-lg font-semibold"><span aria-hidden className="h-2 w-2 rounded-full bg-brand-accent" />{t("newInArea").replace("{area}", areaName)} <span className="text-sm font-medium text-muted-foreground tabular-nums">{fresh.length}</span></h2>

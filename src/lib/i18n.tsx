@@ -506,7 +506,7 @@ export const dict = {
     actionWebsite: "वेबसाइट",
     actionDirections: "बाटो",
 
-    brandHome: "{name}को सेवा, गृहपृष्ठ",
+    brandHome: "बक्सन्टको सेवा, गृहपृष्ठ",
     footVerify: "हामी कसरी जाँच्छौं",
     footAdd: "व्यवसाय थप्नुहोस्",
     footClaimBusiness: "व्यवसाय आफ्नो भनी दाबी गर्नुहोस्",
