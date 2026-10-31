@@ -1,3 +1,5 @@
+import { redactLocation, redactLocationText } from "@/lib/location-redaction";
+
 type LovableErrorOptions = {
   mechanism?: "manual" | "onerror" | "unhandledrejection" | "react_error_boundary";
   handled?: boolean;
@@ -26,12 +28,13 @@ declare global {
 
 export function reportLovableError(error: unknown, context: Record<string, unknown> = {}) {
   if (typeof window === "undefined") return;
+  const safeError = redactLocation(error);
   window.__lovableEvents?.captureException?.(
-    error,
+    safeError,
     {
       source: "react_error_boundary",
       route: window.location.pathname,
-      ...context,
+      ...(redactLocation(context) as Record<string, unknown>),
     },
     {
       mechanism: "react_error_boundary",
@@ -42,9 +45,9 @@ export function reportLovableError(error: unknown, context: Record<string, unkno
   // Prod React does not rethrow boundary-caught errors to window.onerror, so the
   // editor's telemetry never sees them. Forward to lovable.js's reporting hook,
   // which is present only inside the editor preview.
-  const stack = error instanceof Error ? error.stack : undefined;
+  const stack = safeError instanceof Error ? safeError.stack : undefined;
   window.__lovableReportRuntimeError?.({
-    message: describeThrown(error),
+    message: redactLocationText(describeThrown(safeError)),
     ...(stack !== undefined && { stack }),
     filename: window.location.pathname,
   });

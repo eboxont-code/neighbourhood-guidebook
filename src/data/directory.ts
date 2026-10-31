@@ -23,6 +23,7 @@ export interface Business {
   slug: string;
   name: string;
   category: string; // category slug
+  brand?: string; // explicit shared brand, only when recorded sources establish sibling branches
   area: string; // area slug
   address?: string;
   phone?: string;
@@ -112,6 +113,7 @@ export const businesses: Business[] = [
     ...base,
     id: "b2",
     slug: "the-new-barber-durbar-marg",
+    brand: "The New Barber",
     name: "The New Barber, Durbar Marg branch",
     category: "barbers",
     area: "durbar-marg",
@@ -379,6 +381,7 @@ export const businesses: Business[] = [
     ...base,
     id: "b16",
     slug: "the-new-barber-thamel",
+    brand: "The New Barber",
     name: "The New Barber, Thamel branch",
     category: "barbers",
     area: "thamel",
@@ -397,6 +400,7 @@ export const businesses: Business[] = [
     ...base,
     id: "b17",
     slug: "the-new-barber-boudha",
+    brand: "The New Barber",
     name: "The New Barber, Boudha branch",
     category: "barbers",
     area: "boudha",
@@ -462,6 +466,7 @@ export const businesses: Business[] = [
     ...base,
     id: "b21",
     slug: "himalayan-java-mandala-street",
+    brand: "Himalayan Java Coffee",
     name: "Himalayan Java Coffee, Mandala Street",
     category: "cafes",
     area: "thamel",
@@ -482,6 +487,7 @@ export const businesses: Business[] = [
     ...base,
     id: "b22",
     slug: "himalayan-java-lazimpat",
+    brand: "Himalayan Java Coffee",
     name: "Himalayan Java Coffee, Lazimpat",
     category: "cafes",
     area: "lazimpat",
@@ -558,6 +564,7 @@ export const businesses: Business[] = [
     ...base,
     id: "b26",
     slug: "roadhouse-cafe-thamel",
+    brand: "Roadhouse Cafe",
     lat: 27.7144428,
     lng: 85.3103073,
     name: "Roadhouse Cafe, Thamel",
@@ -579,6 +586,7 @@ export const businesses: Business[] = [
     ...base,
     id: "b27",
     slug: "roadhouse-cafe-boudha",
+    brand: "Roadhouse Cafe",
     name: "Roadhouse Cafe, Boudha",
     category: "restaurants",
     area: "boudha",

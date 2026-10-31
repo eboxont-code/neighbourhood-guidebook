@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { offersPreview } from "@/lib/preview";
 import { ProvenanceDisclosure } from "@/components/provenance-disclosure";
 import { nearbyPlaces } from "@/lib/nearby";
+import { otherBranches } from "@/lib/branches";
 
 export const Route = createFileRoute("/s/$slug")({
   loader: ({ params }) => {
@@ -137,7 +138,7 @@ function ShopPage() {
   useEffect(() => {
     const el = headRef.current;
     if (!el) return;
-    const io = new IntersectionObserver(([e]) => setStuck(!e!.isIntersecting), { rootMargin: "-56px 0px 0px 0px" });
+    const io = new IntersectionObserver(([e]) => { if (e) setStuck(!e.isIntersecting); }, { rootMargin: "-56px 0px 0px 0px" });
     io.observe(el);
     const spyIo = new IntersectionObserver((es) => { for (const e of es) if (e.isIntersecting) setSpy(e.target.id); }, { rootMargin: "-120px 0px -60% 0px" });
     tabs.forEach((x) => { const s = document.getElementById(x.id); if (s) spyIo.observe(s); });
@@ -155,6 +156,7 @@ function ShopPage() {
   const back = () => { if (window.history.length > 1) router.history.back(); else router.navigate({ to: "/$city/$section", params: { city: area.city, section: area.slug } }); };
   // By distance from this place where it has coordinates, otherwise other places in the same area.
   const near = nearbyPlaces(b, businesses);
+  const branches = otherBranches(b, businesses);
   const goTab = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
 
   return (
@@ -260,6 +262,18 @@ function ShopPage() {
               <OpeningTimes b={b} />
             </section>
 
+            {branches.length > 0 && <section className="pt-8">
+              <h2 className="section-title">{t("otherBranches")}</h2>
+              <ul className="divide-y divide-border">
+                {branches.map((branch) => <li key={branch.slug}>
+                  <Link to="/s/$slug" params={{ slug: branch.slug }} className="flex min-h-11 min-w-0 flex-col justify-center py-2 text-sm text-primary underline underline-offset-4">
+                    <span className="break-words font-semibold">{branch.name}</span>
+                    <span className="text-muted-foreground">{placeName(getArea(branch.area) ?? { name: branch.area, nameNe: branch.area }, lang)}</span>
+                  </Link>
+                </li>)}
+              </ul>
+            </section>}
+
             {tabs.some((x) => x.id === "location") && (
               <section id="location" className="scroll-mt-28 pt-8">
                 <h2 className="section-title">{t("tabLocation")}</h2>
@@ -304,11 +318,10 @@ function ShopPage() {
 function OwnerPanel({ b }: { b: Business }) {
   const { t } = useI18n();
   return <aside id="owner" aria-labelledby="owner-note" className="owner-note scroll-mt-28 !p-4">
-    <h2 id="owner-note" className="text-base font-semibold">{t("pvListingTitle")}</h2>
+    <h2 id="owner-note" className="text-base font-semibold">{t("ownerListedTitle")}</h2>
     <p className="mt-1 text-sm leading-relaxed">{t("claimOwnerBody")}</p>
     <Button asChild className="action-btn action-dark mt-3 h-auto min-h-11 w-full whitespace-normal py-2"><Link to="/claim" search={{ listing: b.slug }} onClick={() => track("claim_click", { slug: b.slug })}>{t("claimCta")}</Link></Button>
-    {offersPreview(b) && <p className="mt-3 text-sm leading-relaxed">{t("ownerPreviewLine")}</p>}
-    {offersPreview(b) && <Link to="/s/$slug/website-preview" params={{ slug: b.slug }} onClick={() => track("preview_click", { slug: b.slug })} className="mt-2 inline-flex min-h-11 items-center text-sm text-primary underline">{t("pvListingCta")}</Link>}
+    {offersPreview(b) && <Link to="/s/$slug/website-preview" params={{ slug: b.slug }} onClick={() => track("preview_click", { slug: b.slug })} className="mt-2 inline-flex min-h-11 items-center text-sm text-primary underline">{t("ownerPreviewCta")}</Link>}
   </aside>;
 }
 function ListingActions({ b, dir }: { b: Business; dir?: string | undefined }) {

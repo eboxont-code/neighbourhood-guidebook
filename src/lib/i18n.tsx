@@ -5,6 +5,13 @@ const KEY = "dir-lang";
 
 export const dict = {
   en: {
+    localCategoryLinks: "Explore by type in {area}",
+    localAreaLinks: "Explore {cat} by area",
+    localSummary: "{listings} listings · {mapped} mapped · {saturday} with Saturday hours · {verified} verified against official sources",
+    localHoursNote: "Counts use recorded details. Saturday hours may change; check before you travel.",
+    otherBranches: "Other branches",
+    ownerListedTitle: "Your business is listed",
+    ownerPreviewCta: "See your free website preview",
     provPhone: "Phone", provenanceTitle: "Where this comes from",
     sourceTier_website: "Business website",
     sourceTier_official_social: "Official social page",
@@ -90,7 +97,7 @@ export const dict = {
     actionWebsite: "Website",
     actionDirections: "Directions",
 
-    brandHome: "Sewa by {name}, home",
+    brandHome: "Sewa by Boxont, home",
     footVerify: "How we verify",
     footAdd: "Add a business",
     footClaimBusiness: "Claim a business",
@@ -407,6 +414,13 @@ export const dict = {
     pvCat_salons: "Salon", pvCat_barbers: "Barber", pvCat_spas: "Spa", pvCat_clinics: "Clinic", pvCat_cafes: "Café", pvCat_restaurants: "Restaurant", pvCat_gyms: "Gym", pvCat_hotels: "Hotel",
   },
   ne: {
+    localCategoryLinks: "{area}मा प्रकारअनुसार हेर्नुहोस्",
+    localAreaLinks: "क्षेत्रअनुसार {cat} हेर्नुहोस्",
+    localSummary: "{listings} सूची · {mapped} नक्सामा · {saturday} को शनिबारको समय उपलब्ध · {verified} आधिकारिक स्रोतबाट जाँचिएका",
+    localHoursNote: "गणना अभिलेखमा भएका विवरणबाट गरिएको हो। शनिबारको समय बदलिन सक्छ; जानुअघि पुष्टि गर्नुहोस्।",
+    otherBranches: "अन्य शाखा",
+    ownerListedTitle: "तपाईंको व्यवसाय सूचीमा छ",
+    ownerPreviewCta: "आफ्नो निःशुल्क वेबसाइट नमुना हेर्नुहोस्",
     provPhone: "फोन", provenanceTitle: "यी विवरणको स्रोत",
     sourceTier_website: "व्यवसायको वेबसाइट",
     sourceTier_official_social: "आधिकारिक सामाजिक पेज",
