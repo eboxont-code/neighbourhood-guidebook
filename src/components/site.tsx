@@ -22,7 +22,7 @@ function LangToggle() {
 export function Brand() {
   const { t } = useI18n();
   return (
-    <Link to="/" aria-label={t("brandHome").replace("{name}", SITE_NAME)} className="flex min-h-11 min-w-0 items-center gap-2.5">
+    <Link to="/" aria-label={t("brandHome")} className="flex min-h-11 min-w-0 items-center gap-2.5">
       <span aria-hidden className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary text-base font-semibold text-primary-foreground">
         {SITE_NAME.charAt(0)}<span className="mb-1.5 ml-px h-1.5 w-1.5 self-end rounded-full bg-brand-accent" />
       </span>

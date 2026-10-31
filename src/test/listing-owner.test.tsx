@@ -39,7 +39,7 @@ function listingLinks(status: WebsiteStatus) {
 }
 
 describe("listing owner destinations", () => {
-  it.each(["none_found", "owner_no_site", "failed"] as const)("offers exactly one preview and one claim action for %s", (status) => {
+  it.each(["none_found", "owner_no_site", "failed", "not_checked"] as const)("offers exactly one preview and one claim action for %s", (status) => {
     const links = listingLinks(status);
     expect(links.filter((href) => href === "/s/nuad-thai-lazimpat/website-preview")).toHaveLength(1);
     expect(links.filter((href) => href === "/claim?listing=nuad-thai-lazimpat")).toHaveLength(1);

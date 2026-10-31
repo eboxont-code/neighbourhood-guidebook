@@ -30,6 +30,7 @@ import { Route as AAreaSlugRouteImport } from './routes/a.$areaSlug'
 import { Route as CCategorySlugRouteImport } from './routes/c.$categorySlug'
 import { Route as SSlugRouteImport } from './routes/s.$slug'
 import { Route as CitySectionCategoryRouteImport } from './routes/$city.$section_.$category'
+import { Route as AAreaSlugCategorySlugRouteImport } from './routes/a.$areaSlug_.$categorySlug'
 import { Route as SSlugWebsitePreviewRouteImport } from './routes/s.$slug_.website-preview'
 
 const IndexRoute = IndexRouteImport.update({
@@ -137,6 +138,11 @@ const CitySectionCategoryRoute = CitySectionCategoryRouteImport.update({
   path: '/$city/$section/$category',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AAreaSlugCategorySlugRoute = AAreaSlugCategorySlugRouteImport.update({
+  id: '/a/$areaSlug_/$categorySlug',
+  path: '/a/$areaSlug/$categorySlug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SSlugWebsitePreviewRoute = SSlugWebsitePreviewRouteImport.update({
   id: '/s/$slug_/website-preview',
   path: '/s/$slug/website-preview',
@@ -165,6 +171,7 @@ export interface FileRoutesByFullPath {
   '/s/$slug': typeof SSlugRoute
   '/$city/': typeof CityIndexRoute
   '/$city/$section/$category': typeof CitySectionCategoryRoute
+  '/a/$areaSlug/$categorySlug': typeof AAreaSlugCategorySlugRoute
   '/s/$slug/website-preview': typeof SSlugWebsitePreviewRoute
 }
 export interface FileRoutesByTo {
@@ -189,6 +196,7 @@ export interface FileRoutesByTo {
   '/s/$slug': typeof SSlugRoute
   '/$city': typeof CityIndexRoute
   '/$city/$section/$category': typeof CitySectionCategoryRoute
+  '/a/$areaSlug/$categorySlug': typeof AAreaSlugCategorySlugRoute
   '/s/$slug/website-preview': typeof SSlugWebsitePreviewRoute
 }
 export interface FileRoutesById {
@@ -214,6 +222,7 @@ export interface FileRoutesById {
   '/s/$slug': typeof SSlugRoute
   '/$city/': typeof CityIndexRoute
   '/$city/$section_/$category': typeof CitySectionCategoryRoute
+  '/a/$areaSlug_/$categorySlug': typeof AAreaSlugCategorySlugRoute
   '/s/$slug_/website-preview': typeof SSlugWebsitePreviewRoute
 }
 export interface FileRouteTypes {
@@ -240,6 +249,7 @@ export interface FileRouteTypes {
     | '/s/$slug'
     | '/$city/'
     | '/$city/$section/$category'
+    | '/a/$areaSlug/$categorySlug'
     | '/s/$slug/website-preview'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -264,6 +274,7 @@ export interface FileRouteTypes {
     | '/s/$slug'
     | '/$city'
     | '/$city/$section/$category'
+    | '/a/$areaSlug/$categorySlug'
     | '/s/$slug/website-preview'
   id:
     | '__root__'
@@ -288,6 +299,7 @@ export interface FileRouteTypes {
     | '/s/$slug'
     | '/$city/'
     | '/$city/$section_/$category'
+    | '/a/$areaSlug_/$categorySlug'
     | '/s/$slug_/website-preview'
   fileRoutesById: FileRoutesById
 }
@@ -313,6 +325,7 @@ export interface RootRouteChildren {
   SSlugRoute: typeof SSlugRoute
   CityIndexRoute: typeof CityIndexRoute
   CitySectionCategoryRoute: typeof CitySectionCategoryRoute
+  AAreaSlugCategorySlugRoute: typeof AAreaSlugCategorySlugRoute
   SSlugWebsitePreviewRoute: typeof SSlugWebsitePreviewRoute
 }
 
@@ -465,6 +478,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CitySectionCategoryRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/a/$areaSlug_/$categorySlug': {
+      id: '/a/$areaSlug_/$categorySlug'
+      path: '/a/$areaSlug/$categorySlug'
+      fullPath: '/a/$areaSlug/$categorySlug'
+      preLoaderRoute: typeof AAreaSlugCategorySlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/s/$slug_/website-preview': {
       id: '/s/$slug_/website-preview'
       path: '/s/$slug/website-preview'
@@ -497,6 +517,7 @@ const rootRouteChildren: RootRouteChildren = {
   SSlugRoute: SSlugRoute,
   CityIndexRoute: CityIndexRoute,
   CitySectionCategoryRoute: CitySectionCategoryRoute,
+  AAreaSlugCategorySlugRoute: AAreaSlugCategorySlugRoute,
   SSlugWebsitePreviewRoute: SSlugWebsitePreviewRoute,
 }
 export const routeTree = rootRouteImport

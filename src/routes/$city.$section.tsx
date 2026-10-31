@@ -13,6 +13,7 @@ import { Carousel, RowList, SectionHead } from "@/components/blocks";
 import { placeName, areasIn, businessesIn, categoryRedirects, categoriesIn, getArea, getCategory, getCity, resolveSection } from "@/data/directory";
 import { applyCatFilters, parseCatSearch, type CatFilters } from "@/lib/filters";
 import { useI18n, type Key } from "@/lib/i18n";
+import { categoryLocalAreas } from "@/lib/local-pages";
 
 export const Route = createFileRoute("/$city/$section")({
   validateSearch: (s: Record<string, unknown>): CatFilters => parseCatSearch(s),
@@ -78,6 +79,7 @@ function CategoryPage() {
   const cityName = lang === "ne" ? city.nameNe : city.name;
   const set = (patch: { area?: string | undefined; open?: boolean | undefined; sun?: boolean | undefined; sat?: boolean | undefined; sort?: CatFilters["sort"] | undefined; view?: "map" | undefined }) => navigate({ search: (prev: CatFilters) => { const n: Record<string, unknown> = { ...prev, ...patch }; Object.keys(n).forEach((k) => { if (!n[k]) delete n[k]; }); return n as CatFilters; }, replace: true });
   const areaOpts = areasIn(all);
+  const localAreas = categoryLocalAreas(city.slug, c.slug);
   const pill = (on: boolean) => `chip !min-h-11 !text-[13px] ${on ? "chip-on" : ""}`;
   return (
     <>
@@ -110,6 +112,9 @@ function CategoryPage() {
       </div>
       <Page wide>
         <div className="mx-auto max-w-3xl">
+          {localAreas.length > 0 && <nav aria-label={t("localAreaLinks").replace("{cat}", lang === "ne" ? c.nameNe : c.name)} className="mb-4 flex flex-wrap gap-x-4 gap-y-1">
+            {localAreas.map(({ area }) => <Link key={area.slug} to="/a/$areaSlug/$categorySlug" params={{ areaSlug: area.slug, categorySlug: c.slug }} className="inline-flex min-h-11 items-center text-sm font-semibold text-primary underline underline-offset-4">{placeName(area, lang)}</Link>)}
+          </nav>}
           <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
             <label className="flex items-center gap-2 text-sm text-muted-foreground">
               {t("sortLabel")}

@@ -23,7 +23,8 @@ describe("free website preview", () => {
     expect(offersPreview({ websiteStatus: "failed" })).toBe(true);
     expect(offersPreview({ websiteStatus: "owner_no_site" })).toBe(true);
     expect(offersPreview(getBusiness("aavaran-durbar-marg")!)).toBe(false);
-    expect(offersPreview({ websiteStatus: "not_checked" })).toBe(false);
+    expect(offersPreview({ websiteStatus: "not_checked" })).toBe(true);
+    expect(offersPreview({ websiteStatus: "not_checked", website: "https://example.com" })).toBe(false);
   });
   it("never appears in the sitemap", () => {
     expect(sitemapPaths().some((p) => p.includes("website-preview"))).toBe(false);
