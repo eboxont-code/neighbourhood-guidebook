@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import { TRACK_EVENTS } from "@/lib/track";
+import { redactLocation, redactLocationText } from "@/lib/location-redaction";
 
 function readProjectFile(path: string): string {
   return readFileSync(resolve(process.cwd(), path), "utf8");
@@ -35,6 +36,12 @@ describe("SEWA database contracts", () => {
     expect(extractAllowedEvents(parallel).sort()).toEqual(
       extractAllowedEvents(deployed).sort(),
     );
+  });
+
+  it("removes precise coordinates from client and server error context", () => {
+    const safe = redactLocation({ lat: 27.7149, lng: 85.3109, message: "near 27.7149, 85.3109" });
+    expect(safe).toEqual({ message: "near [location redacted]" });
+    expect(redactLocationText("/near/27.7149,85.3109")).toBe("/near/[location redacted]");
   });
 
   it("keeps public listing reads and administrator writes protected by row-level policies", () => {
