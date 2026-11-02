@@ -73,6 +73,16 @@ describe("SEWA database contracts", () => {
     expect(firstCount).toBeGreaterThan(lock);
     expect(deployed).toMatch(/NEW\.client_key\s*:=\s*NULL/i);
     expect(deployed).toMatch(/REVOKE ALL ON FUNCTION public\.enforce_form_rate_limit\(\) FROM PUBLIC, anon, authenticated/i);
+
+    const rateTriggers = [
+      "drizzle/migrations/0001_form_rate_limit.sql",
+      "drizzle/migrations/0005_business_submissions_and_form_topics.sql",
+      "drizzle/migrations/0007_business_claims.sql",
+    ].map(readProjectFile).join("\n");
+    expect(rateTriggers).toMatch(/CREATE TRIGGER contact_messages_rate_limit[\s\S]*?ON public\.contact_messages[\s\S]*?EXECUTE FUNCTION public\.enforce_form_rate_limit\(\)/i);
+    expect(rateTriggers).toMatch(/CREATE TRIGGER correction_reports_rate_limit[\s\S]*?ON public\.correction_reports[\s\S]*?EXECUTE FUNCTION public\.enforce_form_rate_limit\(\)/i);
+    expect(rateTriggers).toMatch(/CREATE TRIGGER business_submissions_rate_limit[\s\S]*?ON public\.business_submissions[\s\S]*?EXECUTE FUNCTION public\.enforce_form_rate_limit\(\)/i);
+    expect(rateTriggers).toMatch(/CREATE TRIGGER business_claims_rate_limit[\s\S]*?ON public\.business_claims[\s\S]*?EXECUTE FUNCTION public\.enforce_form_rate_limit\(\)/i);
   });
 
   it("keeps admin authorization helpers unavailable to anonymous callers", () => {
@@ -108,6 +118,6 @@ describe("SEWA database contracts", () => {
     expect(migrations).toMatch(/CREATE POLICY "Admins read claims"[\s\S]*?has_role\(auth\.uid\(\),\s*'admin'/i);
     expect(migrations).toMatch(/CREATE POLICY "Admins read business submissions"[\s\S]*?has_role\(auth\.uid\(\),\s*'admin'/i);
     expect(migrations).toMatch(/CREATE POLICY "Admins can read events"[\s\S]*?has_role\(auth\.uid\(\),\s*'admin'/i);
-  });;
+  });
 
 });
