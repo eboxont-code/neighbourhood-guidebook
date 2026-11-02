@@ -1,3 +1,5 @@
+import { redactLocation, redactLocationText } from "@/lib/location-redaction";
+
 // Captures the original Error out-of-band so server.ts can recover the stack
 // when h3 has already swallowed the throw into a generic 500 Response.
 
@@ -55,9 +57,9 @@ function isErrorLike(value: unknown): value is Error {
 const originalConsoleError = console.error.bind(console);
 console.error = (...args: unknown[]) => {
   const expanded = args.map((arg) => {
-    if (!isErrorLike(arg)) return arg;
+    if (!isErrorLike(arg)) return redactLocation(arg);
     record(arg);
-    return describeError(arg);
+    return redactLocationText(describeError(arg));
   });
   originalConsoleError(...expanded);
 };

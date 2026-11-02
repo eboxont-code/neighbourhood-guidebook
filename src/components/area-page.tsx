@@ -20,6 +20,21 @@ export function AreaGuide({ city, slug }: { city: City; slug: string }) {
   const now = useNow();
   const { here } = useLocation();
   const a = getArea(slug);
+  const [full, setFull] = useState(false);
+  const close = useCallback(() => setFull(false), []);
+  const [active, setActive] = useState("all");
+
+  useEffect(() => {
+    if (!a) return;
+    const io = new IntersectionObserver((es) => {
+      for (const e of es) {
+        if (e.isIntersecting) setActive(e.target.id.replace(/^g-/, ""));
+      }
+    }, { rootMargin: "-130px 0px -55% 0px" });
+    document.querySelectorAll("[data-group]").forEach((el) => io.observe(el));
+    return () => io.disconnect();
+  }, [a?.slug]);
+
   if (!a) return null;
   const items = businessesIn(city.slug).filter((b) => b.area === a.slug);
   const order = <T extends typeof items>(list: T) => (here ? sortByDistance(list, here) : list);
@@ -34,15 +49,7 @@ export function AreaGuide({ city, slug }: { city: City; slug: string }) {
   const fresh = now ? newListings(businessesIn(city.slug), now).filter((b) => b.area === a.slug) : [];
   const pinned = facts.pinned > 0;
   const thin = items.length <= 2;
-  const [full, setFull] = useState(false);
-  const close = useCallback(() => setFull(false), []);
-  const [active, setActive] = useState("all");
 
-  useEffect(() => {
-    const io = new IntersectionObserver((es) => { for (const e of es) if (e.isIntersecting) setActive(e.target.id.replace(/^g-/, "")); }, { rootMargin: "-130px 0px -55% 0px" });
-    document.querySelectorAll("[data-group]").forEach((el) => io.observe(el));
-    return () => io.disconnect();
-  }, [a.slug, open.length]);
   const jump = (id: string) => document.getElementById(id === "all" ? "g-all" : `g-${id}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
 
   const fact = (n: number, one: Key, many: Key) => (n > 0 ? <li className="hero-fact">{(n === 1 ? t(one) : t(many)).replace("{n}", String(n))}</li> : null);
