@@ -100,13 +100,23 @@ const businessDataSchema = z.object({
 
 const EMPTY_BUSINESS_DATA = businessDataSchema.parse({});
 
-/** Remove absent optional values so exact optional property types remain truthful. */
+/** Remove absent optional values recursively so exact optional property types remain truthful. */
+function stripUndefined(value: unknown): unknown {
+  if (Array.isArray(value)) return value.map(stripUndefined);
+  if (value && typeof value === "object") {
+    const entries = Object.entries(value)
+      .filter(([, fieldValue]) => fieldValue !== undefined)
+      .map(([key, fieldValue]) => [key, stripUndefined(fieldValue)] as const)
+      .filter(([, fieldValue]) => fieldValue !== undefined);
+    return entries.length > 0 ? Object.fromEntries(entries) : undefined;
+  }
+  return value;
+}
+
 function normalizedBusinessData(value: unknown): Partial<Business> {
   const parsed = businessDataSchema.safeParse(value);
   const candidate = parsed.success ? parsed.data : EMPTY_BUSINESS_DATA;
-  return Object.fromEntries(
-    Object.entries(candidate).filter(([, fieldValue]) => fieldValue !== undefined),
-  ) as Partial<Business>;
+  return stripUndefined(candidate) as Partial<Business>;
 }
 
 /** Turns a database row back into the Business shape every screen uses, without trusting its JSON blob. */
