@@ -91,7 +91,7 @@ describe("SEWA database contracts", () => {
       "drizzle/migrations/0005_business_submissions_and_form_topics.sql",
       "drizzle/migrations/0007_business_claims.sql",
       "drizzle/migrations/0008_analytics_events.sql",
-    ].map(readProjectFile).join("\\n");
+    ].map(readProjectFile).join("\n");
 
     for (const table of [
       "contact_messages",
@@ -104,10 +104,10 @@ describe("SEWA database contracts", () => {
       expect(migrations).not.toMatch(new RegExp(`GRANT\\s+(?:SELECT|UPDATE|DELETE|ALL)\\s+ON\\s+public\\.${table}\\s+TO\\s+anon`, "i"));
     }
 
-    expect(migrations).toMatch(/Admins can read contact messages[\\s\\S]*?has_role\\(auth\.uid\(\), 'admin'\\)/i);
-    expect(migrations).toMatch(/Admins can read claims[\\s\\S]*?has_role\\(auth\.uid\(\), 'admin'\\)/i);
-    expect(migrations).toMatch(/Admins read business submissions[\\s\\S]*?has_role\\(auth\.uid\(\), 'admin'\\)/i);
-    expect(migrations).toMatch(/Admins can read events[\\s\\S]*?has_role\\(auth\.uid\(\), 'admin'\\)/i);
-  });
+    expect(migrations).toMatch(/CREATE POLICY "Admins can read contact messages"[\s\S]*?has_role\(auth\.uid\(\),\s*'admin'/i);
+    expect(migrations).toMatch(/CREATE POLICY "Admins read claims"[\s\S]*?has_role\(auth\.uid\(\),\s*'admin'/i);
+    expect(migrations).toMatch(/CREATE POLICY "Admins read business submissions"[\s\S]*?has_role\(auth\.uid\(\),\s*'admin'/i);
+    expect(migrations).toMatch(/CREATE POLICY "Admins can read events"[\s\S]*?has_role\(auth\.uid\(\),\s*'admin'/i);
+  });;
 
 });
