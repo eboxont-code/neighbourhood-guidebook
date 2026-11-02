@@ -78,6 +78,13 @@
       "when": 1793624400000,
       "tag": "0010_atomic_form_rate_limits",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1793628000000,
+      "tag": "0011_admin_audit_log",
+      "breakpoints": true
     }
   ]
 }
