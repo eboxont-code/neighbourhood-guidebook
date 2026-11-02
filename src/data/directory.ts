@@ -1107,7 +1107,23 @@ export function parseRange(time: string): [number, number] | "closed" | null {
   if (/^closed$/i.test(time.trim())) return "closed";
   const m = time.trim().match(/^(\d{1,2}):(\d{2})\s*[–-]\s*(\d{1,2}):(\d{2})$/);
   if (!m) return null;
-  return [Number(m[1]) * 60 + Number(m[2]), Number(m[3]) * 60 + Number(m[4])];
+
+  const startHour = Number(m[1]);
+  const startMinute = Number(m[2]);
+  const endHour = Number(m[3]);
+  const endMinute = Number(m[4]);
+  if (
+    startHour > 23 ||
+    startMinute > 59 ||
+    endHour > 24 ||
+    endMinute > 59 ||
+    (endHour === 24 && endMinute !== 0)
+  ) return null;
+
+  const start = startHour * 60 + startMinute;
+  const end = endHour * 60 + endMinute;
+  if (start === end) return null;
+  return [start, end];
 }
 
 export function kathmanduNow(now: Date): { day: number; minutes: number } {
