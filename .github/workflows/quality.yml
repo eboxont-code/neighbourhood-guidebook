@@ -1,0 +1,49 @@
+name: SEWA Quality Gate
+
+on:
+  push:
+    branches:
+      - main
+      - "sewa/**"
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    name: Typecheck, lint, tests and production build
+    runs-on: ubuntu-latest
+    env:
+      SUPABASE_PROJECT_ID: sewa-ci
+      SUPABASE_URL: https://sewa-ci.supabase.co
+      SUPABASE_PUBLISHABLE_KEY: sb_publishable_sewa_ci_placeholder
+      VITE_SUPABASE_PROJECT_ID: sewa-ci
+      VITE_SUPABASE_URL: https://sewa-ci.supabase.co
+      VITE_SUPABASE_PUBLISHABLE_KEY: sb_publishable_sewa_ci_placeholder
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: TypeScript validation
+        run: npm run typecheck
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Unit and component tests
+        run: npm run test
+
+      - name: Production build
+        run: npm run build
