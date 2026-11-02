@@ -1,5 +1,5 @@
 import { formatMinutes, openState, opensOn, weeklySchedule } from "@/lib/hours";
-import { businesses, kathmanduNow, type Business } from "@/data/directory";
+import { businesses, kathmanduNow, parseRange, type Business } from "@/data/directory";
 
 export type Badge = "open" | "closesSoon" | "open24" | "openSunday" | "trustWeb" | "trustSocial" | "newOnSewa";
 export type StatusBadge = "open" | "closesSoon" | "open24" | "openSunday";
@@ -76,6 +76,8 @@ export type Detail =
 
 /** "Open now, closes at 19:00" or "Closed, opens at 10:00", using the shared overnight-aware schedule. */
 export function statusDetail(hours: Business["hours"], now: Date): Detail {
+  // A "last booking" time is not proof of the business closing time.
+  if (!hours?.length || hours.some((entry) => parseRange(entry.time) === null)) return null;
   const state = openState(hours, now);
   const week = weeklySchedule(hours);
   if (!state || !week) return null;
