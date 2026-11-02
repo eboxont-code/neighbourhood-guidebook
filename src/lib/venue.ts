@@ -1,5 +1,5 @@
-import { openState, opensOn } from "@/lib/hours";
-import { businesses, kathmanduNow, parseDays, parseRange, type Business } from "@/data/directory";
+import { formatMinutes, openState, opensOn, weeklySchedule } from "@/lib/hours";
+import { businesses, kathmanduNow, type Business } from "@/data/directory";
 
 export type Badge = "open" | "closesSoon" | "open24" | "openSunday" | "trustWeb" | "trustSocial" | "newOnSewa";
 export type StatusBadge = "open" | "closesSoon" | "open24" | "openSunday";
@@ -61,19 +61,11 @@ export function badgesFor(b: Business, now: Date | null, open: boolean, all: Bus
   return out.slice(0, 2);
 }
 
-const hhmm = (m: number) => `${String(Math.floor(m / 60) % 24).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`;
-
-/** One entry per weekday (0 = Sunday), only when every recorded line reads cleanly; otherwise null. */
+/** One entry per weekday (0 = Sunday), using the shared validated schedule parser. */
 export function weekTable(hours: Business["hours"]): ({ time: string; open: boolean } | null)[] | null {
-  if (!hours?.length) return null;
-  const week: ({ time: string; open: boolean } | null)[] = Array(7).fill(null);
-  for (const h of hours) {
-    const days = parseDays(h.days);
-    if (!days) return null;
-    const r = parseRange(h.time);
-    for (const d of days) week[d] = { time: h.time, open: r !== "closed" };
-  }
-  return week;
+  const week = weeklySchedule(hours);
+  if (!week) return null;
+  return week.map((day) => day ? { time: day.source, open: !day.closed } : null);
 }
 
 export type Detail =
@@ -81,21 +73,33 @@ export type Detail =
   | { kind: "closed"; opens?: string; tomorrow?: boolean }
   | null;
 
-/** "Open now, closes at 19:00" or "Closed, opens at 10:00", only from parsable ranges; null otherwise. */
+/** "Open now, closes at 19:00" or "Closed, opens at 10:00", using the shared overnight-aware schedule. */
 export function statusDetail(hours: Business["hours"], now: Date): Detail {
-  const week = weekTable(hours);
-  if (!week) return null;
-  const ranges = hours!.map((h) => ({ days: parseDays(h.days)!, r: parseRange(h.time) }));
-  const rangeOn = (d: number) => { for (const x of ranges) if (x.days.includes(d)) return x.r; return undefined; };
+  const state = openState(hours, now);
+  const week = weeklySchedule(hours);
+  if (!state || !week) return null;
+  if (state.kind !== "closed") {
+    return {
+      kind: "open",
+      closes: state.kind === "open24" ? "00:00" : formatMinutes(state.closes),
+    };
+  }
+
   const { day, minutes } = kathmanduNow(now);
-  const today = rangeOn(day);
-  if (today === null) return null;
-  if (Array.isArray(today) && minutes >= today[0] && minutes < today[1]) return { kind: "open", closes: hhmm(today[1]) };
-  if (Array.isArray(today) && minutes < today[0]) return { kind: "closed", opens: hhmm(today[0]) };
-  for (let i = 1; i <= 7; i++) {
-    const r = rangeOn((day + i) % 7);
-    if (r === null) return { kind: "closed" };
-    if (Array.isArray(r)) return i === 1 ? { kind: "closed", opens: hhmm(r[0]), tomorrow: true } : { kind: "closed" };
+  for (let distance = 0; distance <= 1; distance++) {
+    const schedule = week[(day + distance) % 7];
+    if (!schedule || schedule.closed) continue;
+    if (schedule.allDay) {
+      return { kind: "closed", opens: "00:00", ...(distance === 1 ? { tomorrow: true } : {}) };
+    }
+    for (const [opens] of schedule.ranges) {
+      if (distance === 0 && opens <= minutes) continue;
+      return {
+        kind: "closed",
+        opens: formatMinutes(opens),
+        ...(distance === 1 ? { tomorrow: true } : {}),
+      };
+    }
   }
   return { kind: "closed" };
 }
