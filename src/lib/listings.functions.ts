@@ -100,17 +100,30 @@ const businessDataSchema = z.object({
 
 const EMPTY_BUSINESS_DATA = businessDataSchema.parse({});
 
+/** Remove absent optional values so exact optional property types remain truthful. */
+function normalizedBusinessData(value: unknown): Partial<Business> {
+  const parsed = businessDataSchema.safeParse(value);
+  const candidate = parsed.success ? parsed.data : EMPTY_BUSINESS_DATA;
+  return Object.fromEntries(
+    Object.entries(candidate).filter(([, fieldValue]) => fieldValue !== undefined),
+  ) as Partial<Business>;
+}
+
 /** Turns a database row back into the Business shape every screen uses, without trusting its JSON blob. */
 export function rowToBusiness(r: Row): Business {
-  const parsed = businessDataSchema.safeParse(r.data);
-  const d = parsed.success ? parsed.data : EMPTY_BUSINESS_DATA;
+  const d = normalizedBusinessData(r.data);
+  const storedWebsiteStatus = d.websiteStatus ?? "not_checked";
   const websiteStatus =
-    !d.website && (d.websiteStatus === "working" || d.websiteStatus === "failed")
+    !d.website && (storedWebsiteStatus === "working" || storedWebsiteStatus === "failed")
       ? "not_checked"
-      : d.websiteStatus;
+      : storedWebsiteStatus;
 
   return {
-    ...EMPTY_BUSINESS_DATA,
+    services: d.services ?? [],
+    verification: d.verification ?? "not_verified",
+    demo: d.demo ?? false,
+    websiteStatus,
+    sourceNotes: d.sourceNotes ?? "",
     ...d,
     websiteStatus,
     id: r.id,
