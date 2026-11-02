@@ -56,4 +56,58 @@ describe("SEWA database contracts", () => {
     expect(sql).toMatch(/CREATE POLICY "Admins can change listings"/i);
     expect(sql).toMatch(/CREATE POLICY "Admins can remove listings"/i);
   });
+  it("keeps all public form rate checks atomic across concurrent submissions", () => {
+    const deployed = readProjectFile(
+      "supabase/migrations/20261102130000_atomic_form_rate_limits.sql",
+    );
+    const parallel = readProjectFile(
+      "drizzle/migrations/0010_atomic_form_rate_limits.sql",
+    );
+
+    expect(parallel).toBe(deployed);
+    expect(deployed).toMatch(/SECURITY DEFINER/i);
+    expect(deployed).toMatch(/SET search_path\s*=\s*pg_catalog,\s*public/i);
+    const lock = deployed.indexOf("pg_advisory_xact_lock");
+    const firstCount = deployed.indexOf("SELECT count(*)");
+    expect(lock).toBeGreaterThanOrEqual(0);
+    expect(firstCount).toBeGreaterThan(lock);
+    expect(deployed).toMatch(/NEW\.client_key\s*:=\s*NULL/i);
+    expect(deployed).toMatch(/REVOKE ALL ON FUNCTION public\.enforce_form_rate_limit\(\) FROM PUBLIC, anon, authenticated/i);
+  });
+
+  it("keeps admin authorization helpers unavailable to anonymous callers", () => {
+    const sql = readProjectFile(
+      "supabase/migrations/20261102130000_atomic_form_rate_limits.sql",
+    );
+    expect(sql).toMatch(/REVOKE ALL ON FUNCTION public\.has_role\(uuid, public\.app_role\) FROM PUBLIC, anon/i);
+    expect(sql).toMatch(/GRANT EXECUTE ON FUNCTION public\.has_role\(uuid, public\.app_role\) TO authenticated, service_role/i);
+    expect(sql).toMatch(/SET search_path\s*=\s*pg_catalog,\s*public/i);
+  });
+
+  it("keeps public form submission tables row-level protected and admin-only for private reads", () => {
+    const migrations = [
+      "drizzle/migrations/0000_create_contact_and_correction_forms.sql",
+      "drizzle/migrations/0002_listings_admin_and_roles.sql",
+      "drizzle/migrations/0005_business_submissions_and_form_topics.sql",
+      "drizzle/migrations/0007_business_claims.sql",
+      "drizzle/migrations/0008_analytics_events.sql",
+    ].map(readProjectFile).join("\\n");
+
+    for (const table of [
+      "contact_messages",
+      "correction_reports",
+      "business_submissions",
+      "business_claims",
+      "analytics_events",
+    ]) {
+      expect(migrations).toMatch(new RegExp(`ALTER TABLE public\\.${table} ENABLE ROW LEVEL SECURITY`, "i"));
+      expect(migrations).not.toMatch(new RegExp(`GRANT\\s+(?:SELECT|UPDATE|DELETE|ALL)\\s+ON\\s+public\\.${table}\\s+TO\\s+anon`, "i"));
+    }
+
+    expect(migrations).toMatch(/Admins can read contact messages[\\s\\S]*?has_role\\(auth\.uid\(\), 'admin'\\)/i);
+    expect(migrations).toMatch(/Admins can read claims[\\s\\S]*?has_role\\(auth\.uid\(\), 'admin'\\)/i);
+    expect(migrations).toMatch(/Admins read business submissions[\\s\\S]*?has_role\\(auth\.uid\(\), 'admin'\\)/i);
+    expect(migrations).toMatch(/Admins can read events[\\s\\S]*?has_role\\(auth\.uid\(\), 'admin'\\)/i);
+  });
+
 });
