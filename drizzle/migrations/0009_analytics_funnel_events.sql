@@ -1,0 +1,21 @@
+-- Keep the migration history aligned with the active SEWA database migrations.
+ALTER TABLE public.analytics_events DROP CONSTRAINT IF EXISTS analytics_events_event_check;
+ALTER TABLE public.analytics_events
+  ADD CONSTRAINT analytics_events_event_check
+  CHECK (event IN (
+    'search',
+    'search_zero',
+    'click_call',
+    'click_whatsapp',
+    'click_directions',
+    'click_website',
+    'click_instagram',
+    'save',
+    'claim_click',
+    'preview_click',
+    'preview_view',
+    'preview_enquiry_click',
+    'claim_submit',
+    'enquiry_submit',
+    'nearby_click'
+  ));
