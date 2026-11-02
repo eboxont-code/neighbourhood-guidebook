@@ -25,7 +25,9 @@ describe("structured hours from recorded data", () => {
     expect(parseTime("From 10:00, last booking 18:00")).toEqual([600, 1080]);
   });
   it("treats 00:00–24:00 as open 24 hours", () => {
-    expect(openState([{ days: "Every day", time: "00:00–24:00" }], ktm("2026-10-28T03:00:00"))).toEqual({ kind: "open24" });
+    const allDay = [{ days: "Every day", time: "00:00–24:00" }];
+    expect(openState(allDay, ktm("2026-10-28T03:00:00"))).toEqual({ kind: "open24" });
+    expect(statusDetail(allDay, ktm("2026-10-28T03:00:00"))).toEqual({ kind: "open24" });
   });
   it("returns null and invents nothing for missing or unreadable hours", () => {
     expect(weeklySchedule(undefined)).toBeNull();
