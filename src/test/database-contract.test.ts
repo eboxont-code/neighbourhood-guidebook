@@ -115,6 +115,7 @@ describe("SEWA database contracts", () => {
     }
 
     expect(migrations).toMatch(/CREATE POLICY "Admins can read contact messages"[\s\S]*?has_role\(auth\.uid\(\),\s*'admin'/i);
+    expect(migrations).toMatch(/CREATE POLICY "Admins can read correction reports"[\s\S]*?has_role\(auth\.uid\(\),\s*'admin'/i);
     expect(migrations).toMatch(/CREATE POLICY "Admins read claims"[\s\S]*?has_role\(auth\.uid\(\),\s*'admin'/i);
     expect(migrations).toMatch(/CREATE POLICY "Admins read business submissions"[\s\S]*?has_role\(auth\.uid\(\),\s*'admin'/i);
     expect(migrations).toMatch(/CREATE POLICY "Admins can read events"[\s\S]*?has_role\(auth\.uid\(\),\s*'admin'/i);
