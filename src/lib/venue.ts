@@ -70,6 +70,7 @@ export function weekTable(hours: Business["hours"]): ({ time: string; open: bool
 
 export type Detail =
   | { kind: "open"; closes: string }
+  | { kind: "open24" }
   | { kind: "closed"; opens?: string; tomorrow?: boolean }
   | null;
 
@@ -78,11 +79,9 @@ export function statusDetail(hours: Business["hours"], now: Date): Detail {
   const state = openState(hours, now);
   const week = weeklySchedule(hours);
   if (!state || !week) return null;
+  if (state.kind === "open24") return { kind: "open24" };
   if (state.kind !== "closed") {
-    return {
-      kind: "open",
-      closes: state.kind === "open24" ? "00:00" : formatMinutes(state.closes),
-    };
+    return { kind: "open", closes: formatMinutes(state.closes) };
   }
 
   const { day, minutes } = kathmanduNow(now);
