@@ -75,6 +75,7 @@ function StatusLine({ b }: { b: Business }) {
   const now = useNow();
   const d = now ? statusDetail(b.hours, now) : null;
   if (!d) return <HoursLine b={b} />;
+  if (d.kind === "open24") return <span className="font-semibold text-success">{t("open24")}</span>;
   if (d.kind === "open") return <span className="font-semibold text-success">{t("openCloses").replace("{t}", d.closes)}</span>;
   return <span className="font-semibold text-error">{d.opens ? t(d.tomorrow ? "closedOpensTomorrow" : "closedOpens").replace("{t}", d.opens) : t("closedNow")}</span>;
 }

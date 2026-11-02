@@ -11,7 +11,10 @@ export function hoursToWeek(hours: Business["hours"]): DayValue[] | null {
     const days = parseDays(h.days);
     const r = parseRange(h.time);
     if (!days || !r) return null;
-    for (const d of days) week[d] = r === "closed" ? { kind: "closed" } : { kind: "open", from: hhmm(r[0]), to: hhmm(r[1]) };
+    for (const d of days) {
+      if (week[d]?.kind !== "unknown") return null;
+      week[d] = r === "closed" ? { kind: "closed" } : { kind: "open", from: hhmm(r[0]), to: hhmm(r[1]) };
+    }
   }
   return week;
 }

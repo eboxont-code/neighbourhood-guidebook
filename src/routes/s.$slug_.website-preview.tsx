@@ -48,8 +48,15 @@ function Status({ b, light = false }: { b: Business; light?: boolean }) {
   const now = useNow();
   const d = now ? statusDetail(b.hours, now) : null;
   if (!d) return null;
-  const open = d.kind === "open";
-  const text = open ? t("openCloses").replace("{t}", d.closes) : d.opens ? t(d.tomorrow ? "closedOpensTomorrow" : "closedOpens").replace("{t}", d.opens) : t("closedNow");
+  const open = d.kind === "open" || d.kind === "open24";
+  const text =
+    d.kind === "open24"
+      ? t("open24")
+      : d.kind === "open"
+        ? t("openCloses").replace("{t}", d.closes)
+        : d.opens
+          ? t(d.tomorrow ? "closedOpensTomorrow" : "closedOpens").replace("{t}", d.opens)
+          : t("closedNow");
   return (
     <span className={`inline-flex items-center gap-2 text-[14px] font-semibold ${light ? "" : open ? "text-success" : "text-muted-foreground"}`}>
       <span aria-hidden className={`h-2 w-2 rounded-full ${open ? "bg-[oklch(0.78_0.15_150)]" : "bg-current opacity-60"}`} />{text}

@@ -12,7 +12,23 @@ export function parseTime(time: string): [number, number] | "closed" | null {
   const base = parseRange(time);
   if (base) return base;
   const m = time.trim().match(/^from\s+(\d{1,2}):(\d{2}),?\s*last booking\s+(\d{1,2}):(\d{2})$/i);
-  return m ? [Number(m[1]) * 60 + Number(m[2]), Number(m[3]) * 60 + Number(m[4])] : null;
+  if (!m) return null;
+
+  const startHour = Number(m[1]);
+  const startMinute = Number(m[2]);
+  const endHour = Number(m[3]);
+  const endMinute = Number(m[4]);
+  if (
+    startHour > 23 ||
+    startMinute > 59 ||
+    endHour > 24 ||
+    endMinute > 59 ||
+    (endHour === 24 && endMinute !== 0)
+  ) return null;
+
+  const start = startHour * 60 + startMinute;
+  const end = endHour * 60 + endMinute;
+  return start === end ? null : [start, end];
 }
 
 /** Turns recorded {days, time} lines into a 7-day schedule. Any line that can't be read makes the whole result null. */
@@ -23,8 +39,10 @@ export function weeklySchedule(hours: Business["hours"]): Week | null {
     const days = parseDays(h.days);
     const r = parseTime(h.time);
     if (!days || !r) return null;
-    for (const d of days)
+    for (const d of days) {
+      if (week[d] !== null) return null;
       week[d] = r === "closed" ? { closed: true, source: h.time } : { closed: false, allDay: r[0] === 0 && r[1] >= 1440, ranges: [r], source: h.time };
+    }
   }
   return week;
 }
