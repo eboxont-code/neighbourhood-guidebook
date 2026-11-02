@@ -30,7 +30,7 @@ export function reportSewaError(
   console.error("[SEWA] Application error", {
     message: safeMessage,
     ...(stack ? { stack } : {}),
-    route: window.location.pathname,
+    route: redactLocationText(window.location.pathname),
     context: safeContext,
   });
 }
