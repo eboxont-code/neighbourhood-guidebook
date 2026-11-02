@@ -1,29 +1,73 @@
-<!-- LOVABLE:BEGIN -->
-> [!IMPORTANT]
-> This project is connected to [Lovable](https://lovable.dev). Avoid rewriting
-> published git history — force pushing, or rebasing/amending/squashing commits
-> that are already pushed — as it rewrites history on Lovable's side and the
-> user will likely lose their project history.
->
-> Commits you push to the connected branch sync back to Lovable and show up in
-> the editor, so keep the branch in a working state.
-<!-- LOVABLE:END -->
+# SEWA / Boxont project instructions
 
-- Listings live in the database `listings` table (columns for slug/city/area/category/status/sort_order, the rest of the Business shape in `data` jsonb); the root beforeLoad loads published rows via src/lib/listings.ts (60s cache) into the live `businesses` array, and the router dehydrates them so server and browser render the same set.
-- If the listings query fails or the table is missing, the bundled snapshot in src/data/directory.ts stays in place and only a console error is logged; keep that snapshot as the fallback.
-- Areas, categories and code redirect maps stay in src/data/directory.ts; slug renames made in /admin are recorded by a database trigger in `slug_redirects` and redirect permanently.
-- The admin role is granted by hand in `user_roles`; public sign-up is off and no users or roles are seeded. /admin writes straight from the browser under RLS checked by has_role.
-- Interface strings go through src/lib/i18n.tsx; business data is never translated.
-- Form submissions insert straight from the browser into insert-only tables (anonymous INSERT allowed, no read access); zod limits mirror the table CHECK limits.
-- Open/closed status is computed only after mount in Asia/Kathmandu time, so the first HTML never mismatches.
-- Form spam is stopped by a hidden honeypot in the browser and a BEFORE INSERT database trigger that rate-limits by hashed IP and per-tab key; no captcha, so real people see no extra step.
-- Page head tags come from pageMeta in src/lib/seo.ts and listing JSON-LD from businessJsonLd, built only from recorded fields so nothing is invented.
-- URLs are /{city}, /{city}/{area-or-category}, /a/{area}/{category} and /s/{listing}; area and category slugs must never collide. Legacy single-segment /a/* and /c/* redirect permanently into the city scheme. local-pages.ts owns the real-listing threshold shared by local pages, their parent links and sitemap.
-- Leaflet is imported only by src/components/listing-map.tsx, loaded lazily after mount through MapView, so server rendering never touches it.
-- The /new page uses recentlyVerified to order all listings by recorded check date, undated last; home and area additions keep newListings and the New badge rule. Relative ages render only after mount.
-- Field provenance is derived centrally by provenance.ts from explicit fieldSources or conservative recorded evidence; nearby.ts applies coordinate-only distance limits, and verification.ts owns freshness ordering and buckets so views share the same rules.
-- /s/{listing}/website-preview (src/routes/s.$slug_.website-preview.tsx) is one shared free website preview template built only from the listing fields; it hides the directory header, footer and bottom nav, is noindex and must stay out of the sitemap. Its "Make this my website" button opens /for-businesses?from=preview&listing=…, which prefills the quote form and saves the message with page "preview". The listing page links to it only when offersPreview (src/lib/preview.ts) is true.
-- contact_messages doubles as the sales lead list: each row has a status (new, contacted, quoted, won, lost), a private admin_note and status_changed_at, changed only by admins in the /admin Leads tab (src/lib/leads.ts holds the status and source helpers). Visitors can insert only the form columns. The page column tags the source: preview, claim (owner buttons on a listing, via /contact?from=claim), for-businesses, listing or contact.
-- One listing owner panel follows the mobile action row and contains the single claim and eligible preview destinations; offersPreview also includes unchecked listings with no recorded website so unknown websites are not excluded.
-- branches.ts groups explicit recorded brands only, using the snapshot as fallback for older live records without brand metadata; this preserves established branch evidence without guessing from names.
-- Location stays in browser session storage for local distance calculations; location-redaction.ts sanitizes error contexts and breadcrumbs before application telemetry so coordinate objects are never serialized.
+## Brand and authored content
+
+- The consumer-facing product name is **SEWA**. The owning and commercial brand is **Boxont**.
+- Use SEWA for consumer discovery surfaces and SEWA / Boxont together where ownership or commercial services need to be clear.
+- Project-authored interface copy, documentation, metadata, commit messages and generated project content must use SEWA or Boxont identity only.
+- Do not introduce unrelated company, product, person or competitor names into authored content.
+- Do not alter real business names, addresses, social handles, source URLs, technical identifiers, package names, protocols, dependency identifiers or legally required notices.
+- Do not add sample businesses or invented verification evidence to public listings.
+
+## Repository safety
+
+- Never force-push, rebase, amend or squash commits that have already been published.
+- Make changes on a dedicated branch and keep each bundle independently reviewable.
+- Do not change production data or apply database migrations without explicitly reviewing the migration and target environment.
+- Never commit `.env`, secrets, service-role credentials, private customer data or location coordinates from a real visitor.
+- The bundled listing snapshot is a resilience fallback. Do not remove it or silently replace it with invented records.
+
+## Data architecture
+
+- Live business records are stored in the database `listings` table. The indexed columns include `slug`, `city`, `area`, `category`, `status` and `sort_order`; the remaining business fields are in `data` JSON.
+- The root route calls `ensureListings()` before child routes. Published rows are fetched by `src/lib/listings.functions.ts` and applied through `src/lib/listings.ts`.
+- If the live query fails, the bundled snapshot in `src/data/directory.ts` remains available. Keep the failure visible to operations and do not represent fallback data as freshly verified.
+- Area, category and city definitions remain in `src/data/directory.ts`. Database slug redirects preserve old listing URLs.
+- The admin role is held in `user_roles`. Public sign-up is disabled. Every database write must be protected by row-level policies and database constraints; a hidden interface control is not security.
+- Public form submissions use insert-only access. Private reads and administrative changes require the admin role.
+- Form validation in the interface must agree with database constraints. Rate limits must be enforced server-side or in the database, not only in browser code.
+
+## Migration discipline
+
+- `supabase/migrations` is the deployment migration history. Apply new changes as forward-only migrations.
+- Keep the parallel `drizzle/migrations` history and `drizzle/migrations/meta/_journal.json` aligned with deployed database changes.
+- Never edit an already-applied migration to change production behaviour. Add a new corrective migration instead.
+- For every table, function, trigger or RPC, check grants, row-level security, policy predicates and allowed input columns.
+- Add automated contract tests for important frontend/database agreements. Clearly distinguish static migration checks from live database security tests.
+
+## Application rules
+
+- Interface strings go through `src/lib/i18n.tsx`. Business names and business-supplied data are not translated.
+- Kathmandu opening status uses `Asia/Kathmandu` time. Do not guess opening status when the recorded schedule is missing or cannot be parsed.
+- Field provenance is derived by `src/lib/provenance.ts`. Verification and freshness rules belong in `src/lib/verification.ts`.
+- Location data is stored only for the local discovery feature and must not be sent to analytics. Sanitise errors and breadcrumbs before logging.
+- Analytics must remain anonymous and must not collect names, account identifiers, exact device coordinates or other personal data.
+- Keep `TRACK_EVENTS`, deployed SQL constraints and parallel migration constraints in sync. Add a test whenever an event is added or removed.
+- Listing metadata and JSON-LD must only use recorded facts. Never invent addresses, hours, ratings, coordinates or official websites.
+- Search pages and private administration pages must not be indexed. Website previews remain noindex and must stay out of the sitemap.
+- Local landing pages must meet the real-listing threshold owned by `src/lib/local-pages.ts`. Keep page links and sitemap eligibility consistent.
+- Lazy-load map code on the client. Do not let browser-only mapping code execute during server rendering.
+- Owner claims and website previews must continue to use the shared listing record and existing eligibility rules.
+
+## Quality gate
+
+Before a bundle is considered complete, run:
+
+```sh
+npm ci
+npm run typecheck
+npm run lint
+npm run test
+npm run build
+```
+
+Also review:
+
+- Mobile layouts at narrow widths, including 390px.
+- English and Nepali interface journeys.
+- Anonymous versus administrator database permissions.
+- Migration ordering and rollback/recovery implications.
+- Canonical URLs, robots rules, sitemap output and structured data.
+- Error logs for secrets, personal information and precise location data.
+
+Do not claim that a check passed unless it was actually executed. Record any unverified production behaviour as outstanding.
