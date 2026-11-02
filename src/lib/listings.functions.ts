@@ -132,7 +132,6 @@ export function rowToBusiness(r: Row): Business {
     services: d.services ?? [],
     verification: d.verification ?? "not_verified",
     demo: d.demo ?? false,
-    websiteStatus,
     sourceNotes: d.sourceNotes ?? "",
     ...d,
     websiteStatus,
