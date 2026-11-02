@@ -64,6 +64,13 @@
       "when": 1793147791431,
       "tag": "0008_analytics_events",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1793235600000,
+      "tag": "0009_analytics_funnel_events",
+      "breakpoints": true
     }
   ]
 }
