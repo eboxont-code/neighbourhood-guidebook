@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { weeklySchedule, openState, opensOn, parseTime, openingHoursSpecification } from "@/lib/hours";
+import { parseRange } from "@/data/directory";
+import { statusDetail } from "@/lib/venue";
 
 // Kathmandu is UTC+5:45. 2026-10-28 is a Wednesday.
 const ktm = (iso: string) => new Date(iso + "+05:45");
@@ -43,6 +45,34 @@ describe("structured hours from recorded data", () => {
     expect(openState(h, ktm("2026-10-28T22:00:00"))?.kind).toBe("closesSoon");
     // 00:10 UTC is 05:55 in Kathmandu, so still closed.
     expect(openState(h, new Date("2026-10-28T00:10:00Z"))?.kind).toBe("closed");
+  });
+  it("rejects impossible or ambiguous clock ranges", () => {
+    expect(parseRange("25:00–26:00")).toBeNull();
+    expect(parseRange("09:75–10:00")).toBeNull();
+    expect(parseRange("24:00–01:00")).toBeNull();
+    expect(parseRange("10:00–10:00")).toBeNull();
+    expect(parseRange("09:00–24:00")).toEqual([540, 1440]);
+    expect(parseTime("From 25:00, last booking 26:00")).toBeNull();
+    expect(parseTime("From 10:90, last booking 18:00")).toBeNull();
+  });
+  it("does not guess when different rows define the same day twice", () => {
+    expect(
+      weeklySchedule([
+        { days: "Sun–Fri", time: "09:00–17:00" },
+        { days: "Wed", time: "10:00–18:00" },
+      ]),
+    ).toBeNull();
+  });
+  it("reports overnight opening hours consistently on listing details", () => {
+    const h = [{ days: "Every day", time: "22:00–02:00" }];
+    expect(statusDetail(h, ktm("2026-10-28T23:00:00"))).toEqual({
+      kind: "open",
+      closes: "02:00",
+    });
+    expect(statusDetail(h, ktm("2026-10-28T03:00:00"))).toEqual({
+      kind: "closed",
+      opens: "22:00",
+    });
   });
   it("builds openingHoursSpecification only for open days", () => {
     const spec = openingHoursSpecification([{ days: "Sun–Fri", time: "11:00–19:00" }, { days: "Sat", time: "Closed" }])!;
