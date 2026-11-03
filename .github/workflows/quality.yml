@@ -76,5 +76,5 @@ jobs:
 
       - name: Apply every migration and verify database security
         env:
-          POSTGRES_CONTAINER_ID: \${{ job.services.postgres.id }}
+          POSTGRES_CONTAINER_ID: ${{ job.services.postgres.id }}
         run: bash scripts/ci/test-sewa-database.sh
