@@ -198,8 +198,14 @@ BEGIN
   IF (SELECT count(*) FROM public.contact_messages WHERE name = 'SEWA CI Rate Test') <> 0 THEN
     RAISE EXCEPTION 'a non-admin caller read private contact messages';
   END IF;
+  UPDATE public.contact_messages
+    SET quote_amount_npr = 999, payment_status = 'quoted'
+    WHERE id = (SELECT min(id) FROM public.contact_messages WHERE name = 'SEWA CI Rate Test');
+  IF (SELECT count(*) FROM public.contact_messages WHERE name = 'SEWA CI Rate Test' AND quote_amount_npr IS NOT NULL) <> 0 THEN
+    RAISE EXCEPTION 'a non-admin caller updated commercial quote fields';
+  END IF;
 END
-$$;
+$;
 
 -- The administrator can check their own role and read the private submissions.
 SELECT set_config('request.jwt.claim.sub', '22222222-2222-4222-8222-222222222222', false);
@@ -214,8 +220,30 @@ BEGIN
   IF (SELECT count(*) FROM public.contact_messages WHERE name = 'SEWA CI Rate Test') <> 3 THEN
     RAISE EXCEPTION 'the administrator could not read private contact messages';
   END IF;
+  UPDATE public.contact_messages
+    SET quote_amount_npr = 15000, payment_status = 'quoted'
+    WHERE id = (SELECT min(id) FROM public.contact_messages WHERE name = 'SEWA CI Rate Test');
+  IF NOT FOUND THEN
+    RAISE EXCEPTION 'the administrator could not record a quote';
+  END IF;
+  UPDATE public.contact_messages
+    SET paid_amount_npr = 15000, payment_status = 'paid', status = 'won'
+    WHERE id = (SELECT min(id) FROM public.contact_messages WHERE name = 'SEWA CI Rate Test');
+  IF NOT FOUND THEN
+    RAISE EXCEPTION 'the administrator could not record payment received';
+  END IF;
+  IF NOT EXISTS (
+    SELECT 1 FROM public.contact_messages
+    WHERE name = 'SEWA CI Rate Test'
+      AND quote_amount_npr = 15000
+      AND paid_amount_npr = 15000
+      AND payment_status = 'paid'
+      AND status = 'won'
+  ) THEN
+    RAISE EXCEPTION 'admin quote/payment values were not persisted';
+  END IF;
 END
-$$;
+$;
 RESET ROLE;
 
 SELECT 'SEWA disposable database migration and security checks passed' AS result;
