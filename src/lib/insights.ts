@@ -41,21 +41,24 @@ export function funnel(rows: EventRow[], days: number, now = new Date()) {
 }
 
 
-export type LeadRow = { source_listing_slug: string | null; created_at: string };
-
-/** Counts saved listing enquiries without exposing or retaining any contact details. */
-export function summariseLeads(rows: LeadRow[], days: number, now = new Date()) {
+/** Counts explicit call/WhatsApp button taps. These are intent signals, not confirmed conversations. */
+export function summariseContactActions(rows: EventRow[], days: number, now = new Date()) {
   const since = now.getTime() - days * 86400000;
   const listings = new Map<string, number>();
   let total = 0;
+  let calls = 0;
+  let whatsapps = 0;
 
   for (const row of rows) {
+    if (row.event !== "click_call" && row.event !== "click_whatsapp") continue;
     const createdAt = new Date(row.created_at).getTime();
-    const slug = row.source_listing_slug?.trim();
+    const slug = row.listing_slug?.trim();
     if (!slug || !Number.isFinite(createdAt) || createdAt < since || createdAt > now.getTime()) continue;
     total += 1;
+    if (row.event === "click_call") calls += 1;
+    else whatsapps += 1;
     bump(listings, slug);
   }
 
-  return { total, listings: top(listings, 10) };
+  return { total, calls, whatsapps, listings: top(listings, 10) };
 }
