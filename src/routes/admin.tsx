@@ -1259,6 +1259,14 @@ function Messages({ onCount }: { onCount?: (n: number) => void }) {
     );
   if (!data) return <p className="text-muted-foreground">{t("adLoading")}</p>;
   const shown = data.c.filter((m) => filter === "all" || m.status === filter);
+  const serviceLeads = data.c.filter((m) => !!m.service_package || m.page === "for-businesses" || m.page === "preview");
+  const activeServiceLeads = serviceLeads.filter((m) => m.payment_status !== "cancelled" && m.payment_status !== "refunded");
+  const quotedNpr = activeServiceLeads.reduce((sum, m) => sum + (m.quote_amount_npr ?? 0), 0);
+  const paidNpr = activeServiceLeads.reduce((sum, m) => sum + m.paid_amount_npr, 0);
+  const outstandingNpr = activeServiceLeads.reduce((sum, m) => sum + Math.max(0, (m.quote_amount_npr ?? 0) - m.paid_amount_npr), 0);
+  const packageCounts = new Map<string, number>();
+  for (const lead of serviceLeads) if (lead.service_package) packageCounts.set(lead.service_package, (packageCounts.get(lead.service_package) ?? 0) + 1);
+  const money = (amount: number) => `NPR ${new Intl.NumberFormat("en-NP", { maximumFractionDigits: 0 }).format(amount)}`;
   const saved = (row: Tables<"contact_messages">) =>
     setData((d) => (d ? { ...d, c: d.c.map((x) => (x.id === row.id ? row : x)) } : d));
   const meta = (label: string, val: string | null) =>
