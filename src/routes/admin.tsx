@@ -44,6 +44,7 @@ import {
 import { AdminClaims } from "@/components/admin-claims";
 import { AdminInsights } from "@/components/admin-insights";
 import { offersPreview, previewPath } from "@/lib/preview";
+import { PAYMENT_STATUSES, isPaymentStatus, type PaymentStatus } from "@/lib/commerce";
 import { optionLabel, submissionStatuses } from "@/lib/form-options";
 import { freshnessBucket, freshnessBuckets, stalestFirst } from "@/lib/verification";
 
@@ -999,8 +1000,12 @@ function LeadCard({
   const { t } = useI18n();
   const [status, setStatus] = useState<LeadStatus>(isLeadStatus(m.status) ? m.status : "new");
   const [note, setNote] = useState(m.admin_note ?? "");
+  const [quoteAmount, setQuoteAmount] = useState(m.quote_amount_npr?.toString() ?? "");
+  const [paidAmount, setPaidAmount] = useState(String(m.paid_amount_npr ?? 0));
+  const [paymentStatus, setPaymentStatus] = useState<PaymentStatus>(isPaymentStatus(m.payment_status) ? m.payment_status : "not_quoted");
   const [state, setState] = useState<"idle" | "saving" | "saved" | "error">("idle");
-  const dirty = status !== m.status || note.trim() !== (m.admin_note ?? "");
+  const showCommercial = m.page === "for-businesses" || m.page === "preview" || !!m.service_package;
+  const dirty = status !== m.status || note.trim() !== (m.admin_note ?? "") || quoteAmount !== (m.quote_amount_npr?.toString() ?? "") || paidAmount !== String(m.paid_amount_npr ?? 0) || paymentStatus !== m.payment_status;
   const src = leadSource(m.page);
   const topicKey = m.topic ? optionLabel("topic", m.topic) : null;
   const slug = m.source_listing_slug;
@@ -1014,9 +1019,19 @@ function LeadCard({
   async function save() {
     setState("saving");
     const admin_note = note.trim() ? note.trim().slice(0, 2000) : null;
+    const quote_amount_npr = quoteAmount.trim() ? Number(quoteAmount) : null;
+    const paid_amount_npr = Number(paidAmount.trim() || "0");
+    const validAmount = (value: number | null) => value === null || (Number.isSafeInteger(value) && value >= 0 && value <= 5000000);
+    const stateValid =
+      paymentStatus === "cancelled" || paymentStatus === "refunded" ||
+      (paymentStatus === "not_quoted" && quote_amount_npr === null && paid_amount_npr === 0) ||
+      ((paymentStatus === "quoted" || paymentStatus === "awaiting_payment") && quote_amount_npr !== null && quote_amount_npr > 0 && paid_amount_npr === 0) ||
+      (paymentStatus === "partially_paid" && quote_amount_npr !== null && paid_amount_npr > 0 && paid_amount_npr < quote_amount_npr) ||
+      (paymentStatus === "paid" && quote_amount_npr !== null && quote_amount_npr > 0 && paid_amount_npr === quote_amount_npr);
+    if (!validAmount(quote_amount_npr) || !validAmount(paid_amount_npr) || !stateValid) return setState("error");
     const { data, error } = await supabase
       .from("contact_messages")
-      .update({ status, admin_note })
+      .update({ status, admin_note, quote_amount_npr, paid_amount_npr, payment_status: paymentStatus })
       .eq("id", m.id)
       .select("*")
       .single();
@@ -1065,6 +1080,12 @@ function LeadCard({
         </div>
       ) : (
         <p className="text-sm text-muted-foreground">{t("adLeadNoPhone")}</p>
+      )}
+      {(m.service_package || m.budget_band) && (
+        <div className="rounded-xl border border-border p-3 text-sm">
+          {m.service_package && <p><strong>{t("adServicePackage")}:</strong> {t(`pkg_${m.service_package}_title` as Key)}</p>}
+          {m.budget_band && <p className="mt-1"><strong>{t("adBudgetBand")}:</strong> {t(`budget_${m.budget_band}` as Key)}</p>}
+        </div>
       )}
       <p className="whitespace-pre-wrap break-words rounded-xl bg-muted/60 p-3 leading-relaxed">
         {m.message}
@@ -1120,6 +1141,31 @@ function LeadCard({
             ))}
           </div>
         </div>
+        {showCommercial && (
+          <section className="space-y-3 rounded-xl bg-muted/40 p-3" aria-label={t("adPaymentStatus")}>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <Field label={t("adQuoteNpr")}>
+                <input className="field min-h-11" type="number" inputMode="numeric" min="1" max="5000000" step="1" value={quoteAmount} onChange={(e) => { setQuoteAmount(e.target.value); setState("idle"); if (paymentStatus === "paid") setPaidAmount(e.target.value); }} />
+              </Field>
+              <Field label={t("adPaidNpr")}>
+                <input className="field min-h-11" type="number" inputMode="numeric" min="0" max="5000000" step="1" value={paidAmount} onChange={(e) => { setPaidAmount(e.target.value); setState("idle"); }} />
+              </Field>
+            </div>
+            <Field label={t("adPaymentStatus")}>
+              <select className="field min-h-11" value={paymentStatus} onChange={(e) => {
+                const next = e.target.value as PaymentStatus;
+                setPaymentStatus(next);
+                if (next === "not_quoted") { setQuoteAmount(""); setPaidAmount("0"); }
+                if (next === "quoted" || next === "awaiting_payment") setPaidAmount("0");
+                if (next === "paid" && quoteAmount) setPaidAmount(quoteAmount);
+                setState("idle");
+              }}>
+                {PAYMENT_STATUSES.map((value) => <option key={value} value={value}>{t(`pay_${value}` as Key)}</option>)}
+              </select>
+            </Field>
+            <p className="text-xs leading-relaxed text-muted-foreground">{t("adPaymentHelp")}</p>
+          </section>
+        )}
         <Field label={t("adLeadNote")} hint={t("adLeadNoteHint")}>
           <textarea
             className="field min-h-20"
