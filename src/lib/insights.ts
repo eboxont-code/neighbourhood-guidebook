@@ -39,3 +39,23 @@ export function funnel(rows: EventRow[], days: number, now = new Date()) {
   });
   return { steps, topPreviews: top(views, 10) };
 }
+
+
+export type LeadRow = { source_listing_slug: string | null; created_at: string };
+
+/** Counts saved listing enquiries without exposing or retaining any contact details. */
+export function summariseLeads(rows: LeadRow[], days: number, now = new Date()) {
+  const since = now.getTime() - days * 86400000;
+  const listings = new Map<string, number>();
+  let total = 0;
+
+  for (const row of rows) {
+    const createdAt = new Date(row.created_at).getTime();
+    const slug = row.source_listing_slug?.trim();
+    if (!slug || !Number.isFinite(createdAt) || createdAt < since || createdAt > now.getTime()) continue;
+    total += 1;
+    bump(listings, slug);
+  }
+
+  return { total, listings: top(listings, 10) };
+}
