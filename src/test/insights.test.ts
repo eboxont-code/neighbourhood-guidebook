@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { summarise } from "@/lib/insights";
+import { summarise, summariseLeads } from "@/lib/insights";
 import { trackPayload, TRACK_EVENTS } from "@/lib/track";
 
 const now = new Date("2026-10-28T00:00:00Z");
@@ -24,5 +24,24 @@ describe("admin insights", () => {
     expect(Object.keys(p).sort()).toEqual(["event", "lang", "listing_slug", "path", "query"]);
     expect(p.query).toBe("hair salon");
     expect(TRACK_EVENTS).toContain("search_zero");
+  });
+});
+
+
+describe("business lead insights", () => {
+  it("counts only recent listing-linked enquiries and ranks their source listings", () => {
+    const result = summariseLeads([
+      { source_listing_slug: "salon-a", created_at: at(1) },
+      { source_listing_slug: "salon-a", created_at: at(2) },
+      { source_listing_slug: "clinic-b", created_at: at(1) },
+      { source_listing_slug: null, created_at: at(1) },
+      { source_listing_slug: "salon-a", created_at: at(10) },
+      { source_listing_slug: "future-lead", created_at: new Date(now.getTime() + 86400000).toISOString() },
+    ], 7, now);
+
+    expect(result).toEqual({
+      total: 3,
+      listings: [["salon-a", 2], ["clinic-b", 1]],
+    });
   });
 });
