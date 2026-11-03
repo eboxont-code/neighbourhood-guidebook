@@ -158,15 +158,35 @@ export const fetchPublishedListings = createServerFn({ method: "GET" }).handler(
         return fetch(input, { ...init, headers: h });
       } },
     });
-    const [l, r] = await Promise.all([
+    const now = new Date().toISOString();
+    const [l, r, p] = await Promise.all([
       db.from("listings").select("id, slug, name, area, category, data").eq("status", "published").order("sort_order").order("id"),
       db.from("slug_redirects").select("old_slug, new_slug"),
+      db.from("listing_promotions").select("listing_id, placement, target_area, target_category, starts_at, ends_at")
+        .eq("status", "paid").lte("starts_at", now).gt("ends_at", now),
     ]);
     if (l.error) throw l.error;
     const redirects: Record<string, string> = {};
     for (const x of r.data ?? []) redirects[x.old_slug] = x.new_slug;
     if (r.error) console.error("[listings] slug redirects unavailable", r.error.message);
-    return { items: (l.data ?? []).map(rowToBusiness), redirects };
+    if (p.error) console.warn("[listings] sponsored placements unavailable", p.error.message);
+    const promotionMap = new Map<string, NonNullable<Business["promotions"]>>();
+    for (const promotion of p.data ?? []) {
+      const current = promotionMap.get(promotion.listing_id) ?? [];
+      current.push({
+        placement: promotion.placement as "area_featured" | "category_featured",
+        target_area: promotion.target_area,
+        target_category: promotion.target_category,
+        starts_at: promotion.starts_at,
+        ends_at: promotion.ends_at,
+      });
+      promotionMap.set(promotion.listing_id, current);
+    }
+    const items = (l.data ?? []).map((row) => ({
+      ...rowToBusiness(row),
+      promotions: promotionMap.get(row.id) ?? [],
+    }));
+    return { items, redirects };
   } catch (e) {
     console.error("[listings] query failed, using bundled snapshot", e instanceof Error ? e.message : e);
     return null;
