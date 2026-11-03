@@ -1,7 +1,9 @@
 import type { Tables } from "@/integrations/supabase/types";
 import { useI18n, type Key } from "@/lib/i18n";
 
-export function AdminServiceRevenue({ rows }: { rows: Tables<"contact_messages">[] }) {
+type RevenueRow = Pick<Tables<"contact_messages">, "service_package" | "page" | "quote_amount_npr" | "paid_amount_npr" | "payment_status">;
+
+export function AdminServiceRevenue({ rows }: { rows: RevenueRow[] }) {
   const { t } = useI18n();
   const leads = rows.filter((row) => !!row.service_package || row.page === "for-businesses" || row.page === "preview");
   const active = leads.filter((row) => row.payment_status !== "cancelled" && row.payment_status !== "refunded");
