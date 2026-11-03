@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-: "\${POSTGRES_CONTAINER_ID:?GitHub PostgreSQL service container ID is required}"
+: "${POSTGRES_CONTAINER_ID:?GitHub PostgreSQL service container ID is required}"
 
 echo "Waiting for disposable PostgreSQL..."
 docker exec "$POSTGRES_CONTAINER_ID" pg_isready -U postgres -d sewa_ci >/dev/null
@@ -87,7 +87,7 @@ for attempt in $(seq 1 8); do
 done
 
 failed=0
-for pid in "\${pids[@]}"; do
+for pid in "${pids[@]}"; do
   wait "$pid" || failed=1
 done
 if [[ "$failed" -ne 0 ]]; then
