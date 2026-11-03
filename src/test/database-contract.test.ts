@@ -66,11 +66,18 @@ describe("SEWA database contracts", () => {
 
     expect(parallel).toBe(deployed);
     expect(deployed).toMatch(/SECURITY DEFINER/i);
-    expect(deployed).toMatch(/SET search_path\s*=\s*pg_catalog,\s*public/i);
-    const lock = deployed.indexOf("pg_advisory_xact_lock");
+    expect(deployed).toMatch(/SET search_path\s*=\s*pg_catalog\b/i);
+    expect(deployed).not.toMatch(/SET search_path\s*=\s*pg_catalog\s*,\s*public/i);
+    expect([...deployed.matchAll(/SET search_path\s*=\s*pg_catalog\b/gi)]).toHaveLength(5);
+    const lock = deployed.indexOf("pg_catalog.pg_advisory_xact_lock");
+    const eventTime = deployed.indexOf("event_time := pg_catalog.clock_timestamp()");
     const firstCount = deployed.indexOf("SELECT count(*)");
     expect(lock).toBeGreaterThanOrEqual(0);
-    expect(firstCount).toBeGreaterThan(lock);
+    expect(eventTime).toBeGreaterThan(lock);
+    expect(firstCount).toBeGreaterThan(eventTime);
+    expect(deployed).toMatch(/created_at\s*>\s*event_time\s*-\s*interval '10 minutes'/i);
+    expect(deployed).toMatch(/created_at\s*>\s*event_time\s*-\s*interval '1 hour'/i);
+    expect(deployed).toMatch(/INSERT INTO public\.form_rate_log \(key_hash, created_at\) VALUES \(k, event_time\)/i);
     expect(deployed).toMatch(/NEW\.client_key\s*:=\s*NULL/i);
     expect(deployed).toMatch(/REVOKE ALL ON FUNCTION public\.enforce_form_rate_limit\(\) FROM PUBLIC, anon, authenticated/i);
 
@@ -90,8 +97,11 @@ describe("SEWA database contracts", () => {
       "supabase/migrations/20261102130000_atomic_form_rate_limits.sql",
     );
     expect(sql).toMatch(/REVOKE ALL ON FUNCTION public\.has_role\(uuid, public\.app_role\) FROM PUBLIC, anon/i);
-    expect(sql).toMatch(/GRANT EXECUTE ON FUNCTION public\.has_role\(uuid, public\.app_role\) TO authenticated, service_role/i);
-    expect(sql).toMatch(/SET search_path\s*=\s*pg_catalog,\s*public/i);
+    expect(sql).toMatch(/GRANT EXECUTE ON FUNCTION public\.has_role\(uuid, public\.app_role\) TO authenticated/i);
+    expect(sql).toMatch(/REVOKE ALL ON FUNCTION public\.has_role\(uuid, public\.app_role\) FROM PUBLIC, anon, service_role/i);
+    expect(sql).toMatch(/auth\.uid\(\) IS NOT NULL[\s\S]*?_user_id = auth\.uid\(\)/i);
+    expect(sql).toMatch(/SET search_path\s*=\s*pg_catalog\b/i);
+    expect(sql).not.toMatch(/SET search_path\s*=\s*pg_catalog\s*,\s*public/i);
   });
 
   it("keeps public form submission tables row-level protected and admin-only for private reads", () => {
