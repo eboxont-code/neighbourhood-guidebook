@@ -17,7 +17,7 @@ function extractAllowedEvents(sql: string): string[] {
 describe("SEWA database contracts", () => {
   it("keeps frontend analytics events aligned with the deployed SQL migration", () => {
     const sql = readProjectFile(
-      "supabase/migrations/20261029010000_analytics_funnel_events.sql",
+      "supabase/migrations/20261029004600_analytics_funnel_events.sql",
     );
     const allowed = extractAllowedEvents(sql);
 
@@ -27,7 +27,7 @@ describe("SEWA database contracts", () => {
 
   it("keeps the parallel migration history aligned with the deployed SQL migration", () => {
     const deployed = readProjectFile(
-      "supabase/migrations/20261029010000_analytics_funnel_events.sql",
+      "supabase/migrations/20261029004600_analytics_funnel_events.sql",
     );
     const parallel = readProjectFile(
       "drizzle/migrations/0009_analytics_funnel_events.sql",
