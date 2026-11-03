@@ -17,7 +17,7 @@ function extractAllowedEvents(sql: string): string[] {
 describe("SEWA database contracts", () => {
   it("keeps frontend analytics events aligned with the deployed SQL migration", () => {
     const sql = readProjectFile(
-      "supabase/migrations/20261029004600_analytics_funnel_events.sql",
+      "supabase/migrations/20261103114000_service_revenue_pipeline.sql",
     );
     const allowed = extractAllowedEvents(sql);
 
@@ -133,6 +133,8 @@ describe("SEWA database contracts", () => {
       expect(sql).toMatch(/payment_status text NOT NULL DEFAULT 'not_quoted'/i);
       expect(sql).toMatch(/GRANT INSERT \(service_package, budget_band\) ON public\.contact_messages TO anon, authenticated/i);
       expect(sql).toMatch(/GRANT UPDATE \(quote_amount_npr, paid_amount_npr, payment_status\) ON public\.contact_messages TO authenticated/i);
+      expect(sql).not.toMatch(/GRANT INSERT \([^)]*(?:quote_amount_npr|paid_amount_npr|payment_status)/i);
+      expect(sql).not.toMatch(/GRANT UPDATE \([^)]*(?:quote_amount_npr|paid_amount_npr|payment_status)\)[^;]*TO anon/i);
       expect(sql).toMatch(/service_package_select/);
       expect(sql).toMatch(/service_quote_submit/);
     }
