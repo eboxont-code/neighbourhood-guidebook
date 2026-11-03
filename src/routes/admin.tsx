@@ -44,7 +44,7 @@ import {
 import { AdminClaims } from "@/components/admin-claims";
 import { AdminInsights } from "@/components/admin-insights";
 import { offersPreview, previewPath } from "@/lib/preview";
-import { PAYMENT_STATUSES, isPaymentStatus, type PaymentStatus } from "@/lib/commerce";
+import { PAYMENT_STATUSES, isPaymentStatus, summariseRevenue, type PaymentStatus } from "@/lib/commerce";
 import { optionLabel, submissionStatuses } from "@/lib/form-options";
 import { freshnessBucket, freshnessBuckets, stalestFirst } from "@/lib/verification";
 
@@ -1031,11 +1031,12 @@ function LeadCard({
     if (!validAmount(quote_amount_npr) || !validAmount(paid_amount_npr) || !stateValid) return setState("error");
     const { data, error } = await supabase
       .from("contact_messages")
-      .update({ status, admin_note, quote_amount_npr, paid_amount_npr, payment_status: paymentStatus })
+      .update({ status: paymentStatus === "paid" ? "won" : status, admin_note, quote_amount_npr, paid_amount_npr, payment_status: paymentStatus })
       .eq("id", m.id)
       .select("*")
       .single();
     if (error || !data) return setState("error");
+    setStatus(data.status as LeadStatus);
     setState("saved");
     onSaved(data);
   }
@@ -1245,6 +1246,7 @@ function Messages({ onCount }: { onCount?: (n: number) => void }) {
     load();
   }, []);
   const counts = useMemo(() => countByStatus(data?.c ?? []), [data]);
+  const revenue = useMemo(() => summariseRevenue(data?.c ?? []), [data]);
   useEffect(() => {
     if (data) onCount?.(counts.new);
   }, [data, counts.new, onCount]);
@@ -1268,8 +1270,33 @@ function Messages({ onCount }: { onCount?: (n: number) => void }) {
         {val}
       </p>
     ) : null;
+  const formatNpr = (amount: number) => `NPR ${new Intl.NumberFormat("en").format(amount)}`;
   return (
     <div className="space-y-8">
+      <section aria-labelledby="revenue-title" className={card}>
+        <div className="flex flex-wrap items-start justify-between gap-2">
+          <div>
+            <h2 id="revenue-title" className="text-lg font-semibold">{t("adRevenueTitle")}</h2>
+            <p className="mt-1 text-sm text-muted-foreground">{t("adRevenueScope")}</p>
+          </div>
+          <span className="rounded-full bg-muted px-2.5 py-1 text-xs font-semibold">{t("adRevenueRecent")}</span>
+        </div>
+        <dl className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+          {[
+            [t("adRevenueEnquiries"), String(revenue.enquiries)],
+            [t("adRevenueQuotes"), String(revenue.quotes)],
+            [t("adRevenueQuoted"), formatNpr(revenue.quotedNpr)],
+            [t("adRevenueReceived"), formatNpr(revenue.receivedNpr)],
+            [t("adRevenueOutstanding"), formatNpr(revenue.outstandingNpr)],
+          ].map(([label, value]) => (
+            <div key={label} className="rounded-xl border border-border bg-background p-3">
+              <dt className="text-xs font-medium text-muted-foreground">{label}</dt>
+              <dd className="mt-1 text-lg font-bold tabular-nums">{value}</dd>
+            </div>
+          ))}
+        </dl>
+        <p className="mt-3 text-xs text-muted-foreground">{t("adRevenueCashNote")} {t("adRevenuePaidJobs").replace("{n}", String(revenue.paidJobs))}</p>
+      </section>
       <section aria-labelledby="leads-title">
         <h2 id="leads-title" className="text-lg font-semibold">
           {t("adLeadsTitle")}
