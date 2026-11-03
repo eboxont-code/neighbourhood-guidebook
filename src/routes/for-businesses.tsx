@@ -8,6 +8,7 @@ import { dict, useI18n, type Key } from "@/lib/i18n";
 import { SITE_NAME, SITE_URL } from "@/config";
 import { Thumb } from "@/components/venue";
 import { previewExamples } from "@/lib/preview";
+import { track } from "@/lib/track";
 import type { ServicePackageId } from "@/lib/commerce";
 
 type Search = { from?: "preview"; listing?: string; business?: string };
@@ -73,6 +74,7 @@ function ForBusinesses() {
   function choosePackage(id: ServicePackageId) {
     setSelectedPackage(id);
     setMsg(t(`quotePrefill_${id}` as Key));
+    track("service_package_select", { ...(pv ? { slug: pv.slug } : {}), query: id });
     toLead();
   }
 
