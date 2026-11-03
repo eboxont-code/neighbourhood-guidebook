@@ -6,19 +6,22 @@ CREATE OR REPLACE FUNCTION public.enforce_form_rate_limit()
 RETURNS trigger
 LANGUAGE plpgsql
 SECURITY DEFINER
-SET search_path = pg_catalog, public
+SET search_path = pg_catalog
 AS $$
 DECLARE
   hdr json;
   ip text;
   keys text[] := ARRAY[]::text[];
   k text;
+  event_time timestamptz;
 BEGIN
   -- Prevent concurrent requests from passing the same count check before either inserts.
   -- This lock is transaction-scoped and shared by every table using this trigger.
   PERFORM pg_catalog.pg_advisory_xact_lock(
     pg_catalog.hashtextextended('sewa:form-rate-limit:v1', 0)
   );
+  -- now() is fixed at transaction start; use wall-clock time after the lock wait.
+  event_time := pg_catalog.clock_timestamp();
 
   BEGIN
     hdr := current_setting('request.headers', true)::json;
@@ -49,14 +52,14 @@ BEGIN
   NEW.client_key := NULL;
 
   DELETE FROM public.form_rate_log
-  WHERE created_at < now() - interval '1 day';
+  WHERE created_at < event_time - interval '1 day';
 
   FOREACH k IN ARRAY keys LOOP
     IF (
       SELECT count(*)
       FROM public.form_rate_log
       WHERE key_hash = k
-        AND created_at > now() - interval '10 minutes'
+        AND created_at > event_time - interval '10 minutes'
     ) >= 3 THEN
       RAISE EXCEPTION 'rate_limited' USING ERRCODE = 'P0001';
     END IF;
@@ -66,15 +69,15 @@ BEGIN
     SELECT count(*)
     FROM public.form_rate_log
     WHERE key_hash = 'all'
-      AND created_at > now() - interval '1 hour'
+      AND created_at > event_time - interval '1 hour'
   ) >= 100 THEN
     RAISE EXCEPTION 'rate_limited' USING ERRCODE = 'P0001';
   END IF;
 
   FOREACH k IN ARRAY keys LOOP
-    INSERT INTO public.form_rate_log (key_hash) VALUES (k);
+    INSERT INTO public.form_rate_log (key_hash, created_at) VALUES (k, event_time);
   END LOOP;
-  INSERT INTO public.form_rate_log (key_hash) VALUES ('all');
+  INSERT INTO public.form_rate_log (key_hash, created_at) VALUES ('all', event_time);
 
   RETURN NEW;
 END;
@@ -82,30 +85,33 @@ $$;
 
 REVOKE ALL ON FUNCTION public.enforce_form_rate_limit() FROM PUBLIC, anon, authenticated;
 
--- Restrict role checks to signed-in sessions and resolve objects from trusted schemas.
+-- A signed-in caller may only check their own role; never expose other users' role membership.
 CREATE OR REPLACE FUNCTION public.has_role(_user_id uuid, _role public.app_role)
 RETURNS boolean
 LANGUAGE sql
 STABLE
 SECURITY DEFINER
-SET search_path = pg_catalog, public
-AS $$
-  SELECT EXISTS (
-    SELECT 1
-    FROM public.user_roles
-    WHERE user_id = _user_id AND role = _role
-  )
-$$;
+SET search_path = pg_catalog
+AS $
+  SELECT
+    auth.uid() IS NOT NULL
+    AND _user_id = auth.uid()
+    AND EXISTS (
+      SELECT 1
+      FROM public.user_roles
+      WHERE user_id = auth.uid() AND role = _role
+    )
+$;
 
-REVOKE ALL ON FUNCTION public.has_role(uuid, public.app_role) FROM PUBLIC, anon;
-GRANT EXECUTE ON FUNCTION public.has_role(uuid, public.app_role) TO authenticated, service_role;
+REVOKE ALL ON FUNCTION public.has_role(uuid, public.app_role) FROM PUBLIC, anon, service_role;
+GRANT EXECUTE ON FUNCTION public.has_role(uuid, public.app_role) TO authenticated;
 
 -- Keep the claim trigger's security-definer lookup on an explicit trusted search path.
 CREATE OR REPLACE FUNCTION public.validate_business_claim()
 RETURNS trigger
 LANGUAGE plpgsql
 SECURITY DEFINER
-SET search_path = pg_catalog, public
+SET search_path = pg_catalog
 AS $$
 BEGIN
   SELECT id
@@ -128,7 +134,7 @@ REVOKE ALL ON FUNCTION public.validate_business_claim() FROM PUBLIC, anon, authe
 CREATE OR REPLACE FUNCTION public.listings_before_update()
 RETURNS trigger
 LANGUAGE plpgsql
-SET search_path = pg_catalog, public
+SET search_path = pg_catalog
 AS $$
 BEGIN
   NEW.updated_at := now();
@@ -146,7 +152,7 @@ $$;
 CREATE OR REPLACE FUNCTION public.touch_lead_status()
 RETURNS trigger
 LANGUAGE plpgsql
-SET search_path = pg_catalog, public
+SET search_path = pg_catalog
 AS $$
 BEGIN
   IF NEW.status IS DISTINCT FROM OLD.status THEN
