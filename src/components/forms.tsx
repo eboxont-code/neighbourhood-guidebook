@@ -19,8 +19,8 @@ export const contactSchema = z.object({
   message: z.string().trim().min(1, "errMessage").max(2000, "errTooLong"),
   source_listing_slug: opt(100),
   topic: z.enum(contactTopics).nullable().optional(),
-  service_package: z.enum(SERVICE_PACKAGE_IDS).nullable().optional(),
-  budget_band: z.enum(SERVICE_BUDGET_BANDS).nullable().optional(),
+  service_package: z.enum(SERVICE_PACKAGE_IDS).nullable().default(null),
+  budget_band: z.enum(SERVICE_BUDGET_BANDS).nullable().default(null),
 });
 
 export const correctionSchema = z.object({
@@ -128,7 +128,15 @@ export function ContactForm({ business, listing, page, message = "", doneText, s
     setStatus("sending");
     const { error } = await supabase.from("contact_messages").insert({ ...parsed.data, topic: parsed.data.topic ?? null, page: page ?? (listing ? "listing" : "contact"), client_key: clientKey() });
     const st = statusFromError(error);
-    if (st === "done" && (topic === "website" || page === "for-businesses" || page === "preview")) track("enquiry_submit", listing ? { slug: listing } : {});
+    if (st === "done" && serviceOptions) {
+      track("service_quote_submit", {
+        ...(listing ? { slug: listing } : {}),
+        query: parsed.data.service_package ?? "custom",
+      });
+    }
+    if (st === "done" && (topic === "website" || page === "for-businesses" || page === "preview")) {
+      track("enquiry_submit", listing ? { slug: listing } : {});
+    }
     setStatus(st);
   }
 
@@ -145,7 +153,11 @@ export function ContactForm({ business, listing, page, message = "", doneText, s
       {serviceOptions && (
         <>
           <Field id="service-package" label={t("servicePackageLabel")}>
-            <select id="service-package" className="field min-h-11 text-base" value={servicePackage} onChange={(e) => setServicePackage(e.target.value as ServicePackageId | "")}>
+            <select id="service-package" className="field min-h-11 text-base" value={servicePackage} onChange={(e) => {
+              const value = e.target.value as ServicePackageId | "";
+              setServicePackage(value);
+              if (value) track("service_package_select", { ...(listing ? { slug: listing } : {}), query: value });
+            }}>
               <option value="">{t("servicePackageCustom")}</option>
               {SERVICE_PACKAGE_IDS.map((id) => <option key={id} value={id}>{t(`pkg_${id}_title` as Key)}</option>)}
             </select>
