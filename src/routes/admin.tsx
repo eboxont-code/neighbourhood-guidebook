@@ -44,6 +44,7 @@ import {
 import { AdminClaims } from "@/components/admin-claims";
 import { AdminInsights } from "@/components/admin-insights";
 import { offersPreview, previewPath } from "@/lib/preview";
+import { AdminServiceRevenue } from "@/components/admin-service-revenue";
 import { PAYMENT_STATUSES, isPaymentStatus, type PaymentStatus } from "@/lib/commerce";
 import { optionLabel, submissionStatuses } from "@/lib/form-options";
 import { freshnessBucket, freshnessBuckets, stalestFirst } from "@/lib/verification";
