@@ -17,12 +17,13 @@ BEGIN
       'correction_reports',
       'business_submissions',
       'business_claims',
-      'analytics_events'
+      'analytics_events',
+      'listing_promotions'
     ])
     AND c.relrowsecurity;
 
-  IF secured_tables <> 5 THEN
-    RAISE EXCEPTION 'expected RLS on all five private form/analytics tables; found %', secured_tables;
+  IF secured_tables <> 6 THEN
+    RAISE EXCEPTION 'expected RLS on five private tables and listing_promotions; found %', secured_tables;
   END IF;
 
   SELECT count(*)
@@ -35,12 +36,13 @@ BEGIN
       'has_role',
       'validate_business_claim',
       'listings_before_update',
-      'touch_lead_status'
+      'touch_lead_status',
+      'guard_listing_promotion_slot'
     ])
     AND p.proconfig @> ARRAY['search_path=pg_catalog'];
 
-  IF hardened_functions <> 5 THEN
-    RAISE EXCEPTION 'expected five functions with pg_catalog-only search_path; found %', hardened_functions;
+  IF hardened_functions <> 6 THEN
+    RAISE EXCEPTION 'expected six functions with pg_catalog-only search_path; found %', hardened_functions;
   END IF;
 
   IF has_function_privilege('anon', 'public.has_role(uuid, public.app_role)', 'EXECUTE') THEN
@@ -113,7 +115,19 @@ BEGIN
     RAISE EXCEPTION 'authenticated admins must be able to record quote and payment fields';
   END IF;
 END
-$$;
+$;
+
+-- The public role may read active campaigns only; all campaign writes are admin-only.
+DO $
+BEGIN
+  IF NOT has_table_privilege('anon', 'public.listing_promotions', 'SELECT')
+     OR has_table_privilege('anon', 'public.listing_promotions', 'INSERT')
+     OR has_table_privilege('anon', 'public.listing_promotions', 'UPDATE')
+     OR has_table_privilege('anon', 'public.listing_promotions', 'DELETE') THEN
+    RAISE EXCEPTION 'anonymous campaign permissions are incorrect';
+  END IF;
+END
+$;
 
 INSERT INTO auth.users (id) VALUES
   ('11111111-1111-4111-8111-111111111111'),
@@ -123,6 +137,46 @@ ON CONFLICT DO NOTHING;
 INSERT INTO public.user_roles (user_id, role)
 VALUES ('22222222-2222-4222-8222-222222222222', 'admin'::public.app_role)
 ON CONFLICT (user_id, role) DO NOTHING;
+
+-- Admins can reserve and pay for a promotion slot; overlapping quoted/paid campaigns are blocked.
+SET ROLE authenticated;
+SELECT set_config('request.jwt.claim.sub', '22222222-2222-4222-8222-222222222222', false);
+INSERT INTO public.listing_promotions
+  (listing_id, placement, target_area, starts_at, ends_at, quote_amount_npr, paid_amount_npr, status)
+VALUES
+  ('b1', 'area_featured', 'durbar-marg', now() - interval '1 minute',
+   now() + interval '1 day', 5000, 5000, 'paid');
+
+DO $
+DECLARE
+  blocked boolean := false;
+BEGIN
+  BEGIN
+    INSERT INTO public.listing_promotions
+      (listing_id, placement, target_area, starts_at, ends_at, quote_amount_npr, status)
+    VALUES
+      ('b5', 'area_featured', 'durbar-marg', now(),
+       now() + interval '12 hours', 6000, 'quoted');
+  EXCEPTION WHEN SQLSTATE '23P01' THEN
+    blocked := true;
+  END;
+  IF NOT blocked THEN
+    RAISE EXCEPTION 'overlapping quoted or paid promotions were not blocked';
+  END IF;
+END
+$;
+RESET ROLE;
+
+-- Anonymous visitors can see the paid campaign only while its window is live.
+SET ROLE anon;
+DO $
+BEGIN
+  IF (SELECT count(*) FROM public.listing_promotions) <> 1 THEN
+    RAISE EXCEPTION 'anonymous visitors could not read the live paid placement';
+  END IF;
+END
+$;
+RESET ROLE;
 
 -- Exercise the public submission trigger as an anonymous caller. Three requests
 -- are accepted; a fourth request through a different form must be rejected.
@@ -184,7 +238,7 @@ BEGIN
 END
 $$;
 
--- A signed-in non-admin cannot inspect another user's role or read private leads.
+-- A signed-in non-admin cannot inspect another user's role, private leads or promotion administration.
 SET ROLE authenticated;
 SELECT set_config('request.jwt.claim.sub', '11111111-1111-4111-8111-111111111111', false);
 DO $$
@@ -198,6 +252,17 @@ BEGIN
   IF (SELECT count(*) FROM public.contact_messages WHERE name = 'SEWA CI Rate Test') <> 0 THEN
     RAISE EXCEPTION 'a non-admin caller read private contact messages';
   END IF;
+  IF (SELECT count(*) FROM public.listing_promotions) <> 1 THEN
+    RAISE EXCEPTION 'a non-admin caller could not see the public active campaign';
+  END IF;
+  BEGIN
+    INSERT INTO public.listing_promotions
+      (listing_id, placement, target_category, starts_at, ends_at, status)
+    VALUES ('b1', 'category_featured', 'salons', now(), now() + interval '1 day', 'draft');
+    RAISE EXCEPTION 'a non-admin caller inserted a promotion';
+  EXCEPTION WHEN insufficient_privilege THEN
+    NULL;
+  END;
   UPDATE public.contact_messages
     SET quote_amount_npr = 999, payment_status = 'quoted'
     WHERE id = (SELECT id FROM public.contact_messages WHERE name = 'SEWA CI Rate Test' ORDER BY id LIMIT 1);
