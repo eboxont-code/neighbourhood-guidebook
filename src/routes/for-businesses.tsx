@@ -8,6 +8,7 @@ import { dict, useI18n, type Key } from "@/lib/i18n";
 import { SITE_NAME, SITE_URL } from "@/config";
 import { Thumb } from "@/components/venue";
 import { previewExamples } from "@/lib/preview";
+import type { ServicePackageId } from "@/lib/commerce";
 
 type Search = { from?: "preview"; listing?: string; business?: string };
 
@@ -43,6 +44,7 @@ export const Route = createFileRoute("/for-businesses")({
 });
 
 const LEAD_ID = "quote";
+const PACKAGE_IDS: ServicePackageId[] = ["launch", "growth", "care"];
 
 function toLead() {
   const el = document.getElementById(LEAD_ID);
@@ -63,9 +65,16 @@ function ForBusinesses() {
   const pv = search.from === "preview" && search.listing ? getBusiness(search.listing) : undefined;
   const pvName = pv ? pv.name : "";
   const [msg, setMsg] = useState(pv ? t("pvLeadMsg").replace("{name}", pvName) : "");
+  const [selectedPackage, setSelectedPackage] = useState<ServicePackageId | "">("");
   const [leadVisible, setLeadVisible] = useState(false);
   const leadRef = useRef<HTMLElement>(null);
   const pillHidden = leadVisible;
+
+  function choosePackage(id: ServicePackageId) {
+    setSelectedPackage(id);
+    setMsg(t(`quotePrefill_${id}` as Key));
+    toLead();
+  }
 
   useEffect(() => {
     const el = leadRef.current;
@@ -97,6 +106,39 @@ function ForBusinesses() {
             <h1 className="mt-3 text-[1.75rem] leading-[1.15] font-bold tracking-tight sm:text-[2.5rem]">{t("fbHeroTitle")}</h1>
             <p className="mt-3 max-w-xl text-[16px] leading-relaxed text-muted-foreground">{t("fbOwnerIntro")}</p>
           </div>
+        </div>
+      </section>
+
+      {/* Clear website-service packages make the existing business enquiry actionable. */}
+      <section className="bg-muted/50 py-10 lg:py-14" aria-labelledby="pricing">
+        <div className="mx-auto max-w-5xl px-5">
+          <div className="max-w-2xl">
+            <Kicker>{t("fbPricingKicker")}</Kicker>
+            <h2 id="pricing" className="mt-2 text-xl font-bold tracking-tight sm:text-2xl">{t("fbPricingTitle")}</h2>
+            <p className="mt-2 leading-relaxed text-muted-foreground">{t("fbPricingBody")}</p>
+          </div>
+          <div className="mt-5 grid gap-3 md:grid-cols-3">
+            {PACKAGE_IDS.map((id) => (
+              <article key={id} className={`flex flex-col rounded-2xl border bg-card p-4 shadow-[var(--shadow-card)] ${id === "growth" ? "border-primary ring-1 ring-primary/20" : "border-border"}`}>
+                <h3 className="text-base font-bold">{t(`pkg_${id}_title` as Key)}</h3>
+                <p className="mt-3 text-2xl font-bold tracking-tight">{t(`pkg_${id}_price` as Key)}</p>
+                <p className="text-sm text-muted-foreground">{t(`pkg_${id}_billing` as Key)}</p>
+                <p className="mt-3 min-h-12 text-sm leading-relaxed text-muted-foreground">{t(`pkg_${id}_body` as Key)}</p>
+                <ul className="mt-3 flex-1 space-y-2 text-sm">
+                  {[1, 2, 3, 4].map((n) => (
+                    <li key={n} className="flex items-start gap-2">
+                      <Check aria-hidden className="mt-0.5 h-4 w-4 shrink-0 text-success" />
+                      <span>{t(`pkg_${id}_feature_${n}` as Key)}</span>
+                    </li>
+                  ))}
+                </ul>
+                <button type="button" onClick={() => choosePackage(id)} className="action-btn action-primary mt-5 min-h-11 w-full text-sm">
+                  {t("fbChoosePackage")}
+                </button>
+              </article>
+            ))}
+          </div>
+          <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{t("fbPricingNote")}</p>
         </div>
       </section>
 
@@ -168,7 +210,7 @@ function ForBusinesses() {
             )}
             <p className="mb-4 text-sm leading-relaxed text-muted-foreground">{t("fbOwnerFindIntro")} <Link to="/search" search={{ q: "" }} className="inline-flex min-h-11 items-center text-primary underline underline-offset-4">{t("fbOwnerFindLink")}</Link></p>
             <div className="form-card">
-              <ContactForm key={`${msg}|${pv?.slug ?? ""}`} business={pvName} listing={pv ? pv.slug : ""} page={pv ? "preview" : "for-businesses"} message={msg} doneText={t("fb2Thanks")} submitLabel={t("fbOwnerSend")} />
+              <ContactForm key={`${msg}|${selectedPackage}|${pv?.slug ?? ""}`} business={pvName} listing={pv ? pv.slug : ""} page={pv ? "preview" : "for-businesses"} message={msg} serviceOptions initialServicePackage={selectedPackage} doneText={t("fb2Thanks")} submitLabel={t("fbOwnerSend")} />
             </div>
           </section>
         </div>
