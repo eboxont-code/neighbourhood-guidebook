@@ -8,6 +8,7 @@ import { useI18n, type Key } from "@/lib/i18n";
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { contactTopics, correctionTypes, type ContactTopic } from "@/lib/form-options";
+import { SERVICE_BUDGET_BANDS, SERVICE_PACKAGE_IDS, type ServiceBudgetBand, type ServicePackageId } from "@/lib/commerce";
 
 const opt = (max: number) => z.string().trim().max(max, "errTooLong").optional().transform((v) => (v ? v : null));
 
@@ -18,6 +19,8 @@ export const contactSchema = z.object({
   message: z.string().trim().min(1, "errMessage").max(2000, "errTooLong"),
   source_listing_slug: opt(100),
   topic: z.enum(contactTopics).nullable().optional(),
+  service_package: z.enum(SERVICE_PACKAGE_IDS).nullable().optional(),
+  budget_band: z.enum(SERVICE_BUDGET_BANDS).nullable().optional(),
 });
 
 export const correctionSchema = z.object({
@@ -95,9 +98,11 @@ export function errorsFrom(issues: z.ZodIssue[], t: (k: Key) => string) {
   return out;
 }
 
-export function ContactForm({ business, listing, page, message = "", doneText, submitLabel, topicPicker = false, initialTopic = "" }: { business: string; listing: string; page?: string; message?: string; doneText?: string; submitLabel?: string; topicPicker?: boolean; initialTopic?: ContactTopic | "" }) {
+export function ContactForm({ business, listing, page, message = "", doneText, submitLabel, topicPicker = false, initialTopic = "", serviceOptions = false, initialServicePackage = "" }: { business: string; listing: string; page?: string; message?: string; doneText?: string; submitLabel?: string; topicPicker?: boolean; initialTopic?: ContactTopic | ""; serviceOptions?: boolean; initialServicePackage?: ServicePackageId | "" }) {
   const { t } = useI18n();
   const [topic, setTopic] = useState<ContactTopic | "">(initialTopic);
+  const [servicePackage, setServicePackage] = useState<ServicePackageId | "">(initialServicePackage);
+  const [budgetBand, setBudgetBand] = useState<ServiceBudgetBand | "">("");
   const [v, setV] = useState({ name: "", business_name: business, phone: "", message });
   const [errors, setErrors] = useState<{ [k: string]: string | undefined }>({});
   const [status, setStatus] = useState<Status>("idle");
@@ -108,7 +113,7 @@ export function ContactForm({ business, listing, page, message = "", doneText, s
     e.preventDefault();
     if (topicPicker && !topic) { setErrors({ topic: t("errChoice") }); document.getElementById("topic")?.focus(); return; }
     if (topic === "add") return;
-    const parsed = contactSchema.safeParse({ ...v, source_listing_slug: listing, topic: topic || null });
+    const parsed = contactSchema.safeParse({ ...v, source_listing_slug: listing, topic: topic || null, service_package: servicePackage || null, budget_band: budgetBand || null });
     if (!parsed.success) {
       const errs = errorsFrom(parsed.error.issues, t);
       setErrors(errs);
@@ -137,6 +142,22 @@ export function ContactForm({ business, listing, page, message = "", doneText, s
       <Field id="business" label={t("fBusiness")} hint={t("fBusinessHint")} error={errors["business_name"]}>
         <input id="business" aria-invalid={!!errors["business_name"]} aria-describedby={errors["business_name"] ? "business-error" : undefined} className="field" type="text" autoComplete="organization" autoCapitalize="words" enterKeyHint="next" maxLength={150} value={v.business_name} onChange={(e) => setV({ ...v, business_name: e.target.value })} />
       </Field>
+      {serviceOptions && (
+        <>
+          <Field id="service-package" label={t("servicePackageLabel")}>
+            <select id="service-package" className="field min-h-11 text-base" value={servicePackage} onChange={(e) => setServicePackage(e.target.value as ServicePackageId | "")}>
+              <option value="">{t("servicePackageCustom")}</option>
+              {SERVICE_PACKAGE_IDS.map((id) => <option key={id} value={id}>{t(`pkg_${id}_title` as Key)}</option>)}
+            </select>
+          </Field>
+          <Field id="service-budget" label={t("serviceBudgetLabel")}>
+            <select id="service-budget" className="field min-h-11 text-base" value={budgetBand} onChange={(e) => setBudgetBand(e.target.value as ServiceBudgetBand | "")}>
+              <option value="">{t("chooseOption")}</option>
+              {SERVICE_BUDGET_BANDS.map((band) => <option key={band} value={band}>{t(`budget_${band}` as Key)}</option>)}
+            </select>
+          </Field>
+        </>
+      )}
       <Field id="phone" label={t("fPhone")} hint={t("fPhoneHint")} error={errors["phone"]}>
         <input id="phone" aria-invalid={!!errors["phone"]} aria-describedby={errors["phone"] ? "phone-error" : undefined} className="field" type="tel" enterKeyHint="next" inputMode="tel" autoComplete="tel" maxLength={30} value={v.phone} onChange={(e) => setV({ ...v, phone: e.target.value })} />
       </Field>
