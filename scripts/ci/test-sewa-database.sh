@@ -60,17 +60,23 @@ docker exec -i "$POSTGRES_CONTAINER_ID" psql -v ON_ERROR_STOP=1 -U postgres -d s
 echo "Testing concurrent submissions from one shared IP and client key..."
 tmpdir="$(mktemp -d)"
 trap 'rm -rf "$tmpdir"' EXIT
-concurrent_sql=$(cat <<'SQL'
-SET ROLE anon;
-SELECT set_config('request.headers', '{"cf-connecting-ip":"198.51.100.78"}', false);
-SELECT pg_sleep(0.15);
-INSERT INTO public.contact_messages (name, message, page, client_key)
-VALUES ('SEWA CI Concurrent Test', 'Disposable concurrent rate-limit test', 'contact', 'sewa-concurrent-session');
-SQL
-)
-
 pids=()
 for attempt in $(seq 1 8); do
+  concurrent_sql=$(cat <<SQL
+SET ROLE anon;
+SELECT set_config('request.headers', '{"cf-connecting-ip":"198.51.100.78"}', false);
+DO \$\$
+BEGIN
+  IF current_setting('request.headers', true)::json->>'cf-connecting-ip' <> '198.51.100.78' THEN
+    RAISE EXCEPTION 'ci_header_not_set';
+  END IF;
+END
+\$\$;
+SELECT pg_sleep(0.15);
+INSERT INTO public.contact_messages (name, message, page, client_key)
+VALUES ('SEWA CI Concurrent Test', 'Disposable concurrent rate-limit test', 'contact', 'sewa-concurrent-$attempt');
+SQL
+  )
   (
     log="$tmpdir/$attempt.log"
     if docker exec "$POSTGRES_CONTAINER_ID" psql -v ON_ERROR_STOP=1 -q -U postgres -d sewa_ci -c "$concurrent_sql" >"$log" 2>&1; then
@@ -95,9 +101,9 @@ if [[ "$failed" -ne 0 ]]; then
   exit 1
 fi
 
-accepted="$(grep -l '^accepted$' "$tmpdir"/*.result | wc -l | tr -d ' ')"
-limited="$(grep -l '^limited$' "$tmpdir"/*.result | wc -l | tr -d ' ')"
-unexpected="$(grep -l '^unexpected-error$' "$tmpdir"/*.result | wc -l | tr -d ' ')"
+accepted="$(awk '$0 == "accepted" { n++ } END { print n+0 }' "$tmpdir"/*.result)"
+limited="$(awk '$0 == "limited" { n++ } END { print n+0 }' "$tmpdir"/*.result)"
+unexpected="$(awk '$0 == "unexpected-error" { n++ } END { print n+0 }' "$tmpdir"/*.result)"
 if [[ "$accepted" -ne 3 || "$limited" -ne 5 || "$unexpected" -ne 0 ]]; then
   echo "Expected 3 accepted and 5 rate-limited submissions; got accepted=$accepted limited=$limited unexpected=$unexpected." >&2
   for log in "$tmpdir"/*.log; do cat "$log" >&2; done
