@@ -19,6 +19,15 @@ describe("admin insights", () => {
     expect(s.clicks).toEqual([["click_call", 1]]);
     expect(s.listings).toEqual([["a", 1]]);
   });
+  it("tracks the SEWA service quote funnel without personal data", () => {
+    expect(TRACK_EVENTS).toContain("service_package_select");
+    expect(TRACK_EVENTS).toContain("service_quote_submit");
+    const payload = trackPayload("service_quote_submit", { slug: "sewa-business", query: "Launch" });
+    expect(payload.event).toBe("service_quote_submit");
+    expect(payload.listing_slug).toBe("sewa-business");
+    expect(payload.query).toBe("launch");
+    expect(Object.keys(payload).sort()).toEqual(["event", "lang", "listing_slug", "path", "query"]);
+  });
   it("sends no personal data or location", () => {
     const p = trackPayload("search", { query: "  Hair   SALON " });
     expect(Object.keys(p).sort()).toEqual(["event", "lang", "listing_slug", "path", "query"]);
