@@ -92,6 +92,29 @@ BEGIN
 END
 $$;
 
+-- Public visitors may select service options but cannot set commercial amounts or payment state.
+DO $$
+BEGIN
+  IF NOT has_column_privilege('anon', 'public.contact_messages', 'service_package', 'INSERT')
+     OR NOT has_column_privilege('anon', 'public.contact_messages', 'budget_band', 'INSERT') THEN
+    RAISE EXCEPTION 'anonymous visitors must be able to submit service requests';
+  END IF;
+  IF has_column_privilege('anon', 'public.contact_messages', 'quote_amount_npr', 'INSERT')
+     OR has_column_privilege('anon', 'public.contact_messages', 'paid_amount_npr', 'INSERT')
+     OR has_column_privilege('anon', 'public.contact_messages', 'payment_status', 'INSERT')
+     OR has_column_privilege('anon', 'public.contact_messages', 'quote_amount_npr', 'UPDATE')
+     OR has_column_privilege('anon', 'public.contact_messages', 'paid_amount_npr', 'UPDATE')
+     OR has_column_privilege('anon', 'public.contact_messages', 'payment_status', 'UPDATE') THEN
+    RAISE EXCEPTION 'anonymous visitors must not write quote or payment fields';
+  END IF;
+  IF NOT has_column_privilege('authenticated', 'public.contact_messages', 'quote_amount_npr', 'UPDATE')
+     OR NOT has_column_privilege('authenticated', 'public.contact_messages', 'paid_amount_npr', 'UPDATE')
+     OR NOT has_column_privilege('authenticated', 'public.contact_messages', 'payment_status', 'UPDATE') THEN
+    RAISE EXCEPTION 'authenticated admins must be able to record quote and payment fields';
+  END IF;
+END
+$$;
+
 INSERT INTO auth.users (id) VALUES
   ('11111111-1111-4111-8111-111111111111'),
   ('22222222-2222-4222-8222-222222222222')
@@ -111,8 +134,8 @@ DECLARE
   blocked boolean := false;
 BEGIN
   FOR attempt IN 1..3 LOOP
-    INSERT INTO public.contact_messages (name, message, page, client_key)
-    VALUES ('SEWA CI Rate Test', 'Disposable rate-limit test', 'contact', 'sewa-rate-session');
+    INSERT INTO public.contact_messages (name, message, page, client_key, service_package)
+    VALUES ('SEWA CI Rate Test', 'Disposable rate-limit test', 'contact', 'sewa-rate-session', 'launch');
   END LOOP;
 
   BEGIN
@@ -135,7 +158,9 @@ RESET ROLE;
 DO $$
 BEGIN
   IF (SELECT count(*) FROM public.contact_messages
-      WHERE name = 'SEWA CI Rate Test' AND client_key IS NULL) <> 3 THEN
+      WHERE name = 'SEWA CI Rate Test' AND client_key IS NULL
+        AND service_package = 'launch' AND quote_amount_npr IS NULL
+        AND paid_amount_npr = 0 AND payment_status = 'not_quoted') <> 3 THEN
     RAISE EXCEPTION 'raw client keys were not cleared or the first three requests were not stored';
   END IF;
   IF (SELECT count(*) FROM public.form_rate_log
