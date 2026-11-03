@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import type { Tables } from "@/integrations/supabase/types";
 import { funnel, summarise, type Counted, type EventRow } from "@/lib/insights";
 import { useI18n, type Key } from "@/lib/i18n";
 
