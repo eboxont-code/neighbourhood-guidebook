@@ -7,6 +7,7 @@ import { useI18n } from "@/lib/i18n";
 import { HoursLine, Monogram } from "@/components/site";
 import { VenueRow } from "@/components/venue";
 import { distanceTo, formatDistance, useLocation } from "@/lib/geo";
+import { track } from "@/lib/track";
 
 const TONES = categories.map((c) => c.slug);
 /** A stable tone per area, borrowed from the category palette so areas read as the same family. */
@@ -71,7 +72,7 @@ export function Carousel({ items, label }: { items: Business[]; label: string })
 }
 
 /** Dense list row: many fit on a phone screen. */
-export function CompactRow({ b }: { b: Business }) {
+export function CompactRow({ b, sponsored = false }: { b: Business; sponsored?: boolean }) {
   const { t, lang } = useI18n();
   const cat = getCategory(b.category);
   const area = getArea(b.area);
@@ -81,7 +82,8 @@ export function CompactRow({ b }: { b: Business }) {
     <li className="relative flex items-center gap-3 px-4 py-3 transition-colors hover:bg-muted/60">
       <Monogram name={b.name} category={b.category} size="sm" />
       <div className="min-w-0 flex-1">
-        <Link to="/s/$slug" params={{ slug: b.slug }} className="stretched-row block truncate text-[15px] font-semibold">{b.name}</Link>
+        <Link to="/s/$slug" params={{ slug: b.slug }} onClick={() => { if (sponsored) track("sponsored_click", { slug: b.slug }); }} className="stretched-row block truncate text-[15px] font-semibold">{b.name}</Link>
+        {sponsored && <span className="mt-1 inline-flex rounded-md border border-brand-accent/50 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-brand-accent-foreground">{t("sponsoredLabel")}</span>}
         <p className="text-[13px] text-muted-foreground">{lang === "ne" ? cat?.nameNe : cat?.name} · {placeName(area, lang)}{d !== null && <> · <span className="whitespace-nowrap">{formatDistance(d, lang)}</span></>}</p>
         <p className="mt-0.5 text-[13px] leading-relaxed"><HoursLine b={b} /></p><VerificationBadge b={b} />
       </div>
@@ -94,8 +96,18 @@ export function CompactRow({ b }: { b: Business }) {
   );
 }
 
-export function RowList({ items }: { items: Business[] }) {
-  return <ul className="divide-y divide-border overflow-hidden rounded-2xl border border-border bg-card shadow-[var(--shadow-card)]">{items.map((b) => <CompactRow key={b.id} b={b} />)}</ul>;
+export function RowList({ items, sponsored = false }: { items: Business[]; sponsored?: boolean }) {
+  return <ul className="divide-y divide-border overflow-hidden rounded-2xl border border-border bg-card shadow-[var(--shadow-card)]">{items.map((b) => <CompactRow key={b.id} b={b} sponsored={sponsored} />)}</ul>;
+}
+
+export function SponsoredRows({ items, title }: { items: Business[]; title: string }) {
+  if (!items.length) return null;
+  return (
+    <section className="space-y-2" aria-label={title}>
+      <h2 className="text-base font-semibold">{title}</h2>
+      <RowList items={items} sponsored />
+    </section>
+  );
 }
 
 export function BusinessBand() {
