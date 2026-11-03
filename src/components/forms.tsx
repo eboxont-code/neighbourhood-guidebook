@@ -123,7 +123,7 @@ export function ContactForm({ business, listing, page, message = "", doneText, s
     setStatus("sending");
     const { error } = await supabase.from("contact_messages").insert({ ...parsed.data, topic: parsed.data.topic ?? null, page: page ?? (listing ? "listing" : "contact"), client_key: clientKey() });
     const st = statusFromError(error);
-    if (st === "done" && (topic === "website" || page === "for-businesses" || page === "preview")) track("enquiry_submit", listing ? { slug: listing } : {});
+    if (st === "done" && (listing || topic === "website" || page === "for-businesses" || page === "preview")) track("enquiry_submit", listing ? { slug: listing } : {});
     setStatus(st);
   }
 
