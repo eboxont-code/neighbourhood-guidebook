@@ -102,6 +102,22 @@ describe("SEWA database contracts", () => {
     expect(sql).toMatch(/auth\.uid\(\) IS NOT NULL[\s\S]*?_user_id = auth\.uid\(\)/i);
     expect(sql).toMatch(/SET search_path\s*=\s*pg_catalog\b/i);
     expect(sql).not.toMatch(/SET search_path\s*=\s*pg_catalog\s*,\s*public/i);
+
+    const policyMigrations = [
+      "drizzle/migrations/0002_listings_admin_and_roles.sql",
+      "drizzle/migrations/0003_contact_messages_lead_status.sql",
+      "drizzle/migrations/0005_business_submissions_and_form_topics.sql",
+      "drizzle/migrations/0007_business_claims.sql",
+      "drizzle/migrations/0008_analytics_events.sql",
+    ].map(readProjectFile).join("\n");
+    const rolePolicies = [...policyMigrations.matchAll(/CREATE POLICY[\s\S]*?;/gi)]
+      .map((match) => match[0])
+      .filter((policy) => /public\.has_role\s*\(/i.test(policy));
+    expect(rolePolicies.length).toBeGreaterThan(0);
+    for (const policy of rolePolicies) {
+      expect(policy).toMatch(/\bTO authenticated\b/i);
+      expect(policy).not.toMatch(/\bTO anon\b/i);
+    }
   });
 
   it("keeps public form submission tables row-level protected and admin-only for private reads", () => {
