@@ -92,7 +92,7 @@ LANGUAGE sql
 STABLE
 SECURITY DEFINER
 SET search_path = pg_catalog
-AS $
+AS $$
   SELECT
     auth.uid() IS NOT NULL
     AND _user_id = auth.uid()
@@ -101,7 +101,7 @@ AS $
       FROM public.user_roles
       WHERE user_id = auth.uid() AND role = _role
     )
-$;
+$$;
 
 REVOKE ALL ON FUNCTION public.has_role(uuid, public.app_role) FROM PUBLIC, anon, service_role;
 GRANT EXECUTE ON FUNCTION public.has_role(uuid, public.app_role) TO authenticated;
