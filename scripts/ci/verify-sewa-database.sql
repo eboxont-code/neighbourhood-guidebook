@@ -200,7 +200,7 @@ BEGIN
   END IF;
   UPDATE public.contact_messages
     SET quote_amount_npr = 999, payment_status = 'quoted'
-    WHERE id = (SELECT min(id) FROM public.contact_messages WHERE name = 'SEWA CI Rate Test');
+    WHERE id = (SELECT id FROM public.contact_messages WHERE name = 'SEWA CI Rate Test' ORDER BY id LIMIT 1);
   IF (SELECT count(*) FROM public.contact_messages WHERE name = 'SEWA CI Rate Test' AND quote_amount_npr IS NOT NULL) <> 0 THEN
     RAISE EXCEPTION 'a non-admin caller updated commercial quote fields';
   END IF;
@@ -222,13 +222,13 @@ BEGIN
   END IF;
   UPDATE public.contact_messages
     SET quote_amount_npr = 15000, payment_status = 'quoted'
-    WHERE id = (SELECT min(id) FROM public.contact_messages WHERE name = 'SEWA CI Rate Test');
+    WHERE id = (SELECT id FROM public.contact_messages WHERE name = 'SEWA CI Rate Test' ORDER BY id LIMIT 1);
   IF NOT FOUND THEN
     RAISE EXCEPTION 'the administrator could not record a quote';
   END IF;
   UPDATE public.contact_messages
     SET paid_amount_npr = 15000, payment_status = 'paid', status = 'won'
-    WHERE id = (SELECT min(id) FROM public.contact_messages WHERE name = 'SEWA CI Rate Test');
+    WHERE id = (SELECT id FROM public.contact_messages WHERE name = 'SEWA CI Rate Test' ORDER BY id LIMIT 1);
   IF NOT FOUND THEN
     RAISE EXCEPTION 'the administrator could not record payment received';
   END IF;
