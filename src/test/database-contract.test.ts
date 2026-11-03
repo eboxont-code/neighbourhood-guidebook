@@ -125,6 +125,7 @@ describe("SEWA database contracts", () => {
       readProjectFile("supabase/migrations/20261103114000_service_revenue_pipeline.sql"),
       readProjectFile("drizzle/migrations/0011_service_revenue_pipeline.sql"),
     ];
+    expect(migrations[0]).toBe(migrations[1]);
     for (const sql of migrations) {
       expect(sql).toMatch(/service_package text/i);
       expect(sql).toMatch(/budget_band text/i);
