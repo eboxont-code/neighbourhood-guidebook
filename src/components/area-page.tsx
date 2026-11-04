@@ -4,7 +4,7 @@ import { ArrowRight, Maximize2, MessageSquarePlus, Store } from "lucide-react";
 import { Page, useNow } from "@/components/site";
 import { FullMap, MapView } from "@/components/map-view";
 import { CatIcon } from "@/components/cover";
-import { areaTone, count, RowList } from "@/components/blocks";
+import { areaTone, count, RowList, SponsoredRows } from "@/components/blocks";
 import { VenueRow } from "@/components/venue";
 import { businessesIn, categoriesIn, getArea, placeName, type City } from "@/data/directory";
 import { isOpen } from "@/lib/filters";
@@ -14,7 +14,6 @@ import { newListings } from "@/lib/venue";
 import { useI18n, type Key } from "@/lib/i18n";
 import { areaLocalCategories } from "@/lib/local-pages";
 import { sponsoredFor } from "@/lib/promotions";
-import { SponsoredRows } from "@/components/blocks";
 
 /** Neighbourhood guide: facts, a jump bar, open-now first, groups sized to their real counts, a sticky map on desktop. */
 export function AreaGuide({ city, slug }: { city: City; slug: string }) {
