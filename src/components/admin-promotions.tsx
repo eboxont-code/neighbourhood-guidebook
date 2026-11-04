@@ -131,11 +131,11 @@ export function AdminPromotions() {
   async function save(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (busy || !form.listingId || !selectedListing) return;
-    const endExclusive = addDays(form.endDate, 1);
     if (!form.startDate || !form.endDate || form.endDate < form.startDate) {
       setNote(t("promoInvalidWindow"));
       return;
     }
+    const endExclusive = addDays(form.endDate, 1);
     if (!validQuote || ((form.status === "quoted" || form.status === "paid" || form.status === "refunded") && (!quote || quote < 1))) {
       setNote(t("promoInvalidAmounts"));
       return;
