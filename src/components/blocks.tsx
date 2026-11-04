@@ -82,7 +82,7 @@ export function CompactRow({ b, sponsored = false }: { b: Business; sponsored?: 
     <li className="relative flex items-center gap-3 px-4 py-3 transition-colors hover:bg-muted/60">
       <Monogram name={b.name} category={b.category} size="sm" />
       <div className="min-w-0 flex-1">
-        <Link to="/s/$slug" params={{ slug: b.slug }} onClick={() => { if (sponsored) track("sponsored_click", { slug: b.slug, ...(b.promotionClickId ? { query: b.promotionClickId } : {}) }); }} className="stretched-row block truncate text-[15px] font-semibold">{b.name}</Link>
+        <Link to="/s/$slug" params={{ slug: b.slug }} onClick={() => { if (sponsored) track("sponsored_click", { slug: b.slug, ...(b.promotionClickKey ? { query: b.promotionClickKey } : {}) }); }} className="stretched-row block truncate text-[15px] font-semibold">{b.name}</Link>
         {sponsored && <span className="mt-1 inline-flex rounded-md border border-brand-accent/50 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-brand-accent-foreground">{t("sponsoredLabel")}</span>}
         <p className="text-[13px] text-muted-foreground">{lang === "ne" ? cat?.nameNe : cat?.name} · {placeName(area, lang)}{d !== null && <> · <span className="whitespace-nowrap">{formatDistance(d, lang)}</span></>}</p>
         <p className="mt-0.5 text-[13px] leading-relaxed"><HoursLine b={b} /></p><VerificationBadge b={b} />
