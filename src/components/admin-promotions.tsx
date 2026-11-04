@@ -66,7 +66,7 @@ export function AdminPromotions() {
   const { t } = useI18n();
   const [promotions, setPromotions] = useState<Promotion[] | null>(null);
   const [listings, setListings] = useState<Listing[]>([]);
-  const [clicks, setClicks] = useState<Record<string, number>>({});
+  const [clickEvents, setClickEvents] = useState<{ query: string | null; created_at: string }[]>([]);
   const [failed, setFailed] = useState(false);
   const [busy, setBusy] = useState(false);
   const [note, setNote] = useState<string | null>(null);
@@ -87,11 +87,7 @@ export function AdminPromotions() {
     setPromotions(p.data ?? []);
     setListings((l.data ?? []) as Listing[]);
     if (!e.error) {
-      const counts: Record<string, number> = {};
-      for (const row of e.data ?? []) {
-        if (row.query) counts[row.query] = (counts[row.query] ?? 0) + 1;
-      }
-      setClicks(counts);
+      setClickEvents((e.data ?? []) as { query: string | null; created_at: string }[]);
     }
   }
 
@@ -105,8 +101,8 @@ export function AdminPromotions() {
     const upcoming = rows.filter((row) => row.status === "paid" && new Date(row.starts_at).getTime() > now).length;
     const quoted = rows.reduce((sum, row) => sum + (row.status === "quoted" || row.status === "paid" || row.status === "refunded" ? row.quote_amount_npr ?? 0 : 0), 0);
     const netCash = rows.reduce((sum, row) => sum + row.paid_amount_npr - row.refunded_amount_npr, 0);
-    return { active, upcoming, quoted, netCash, opens: Object.values(clicks).reduce((sum, count) => sum + count, 0) };
-  }, [promotions, clicks, now]);
+    return { active, upcoming, quoted, netCash, opens: clickEvents.length };
+  }, [promotions, clickEvents, now]);
 
   const set = (patch: Partial<FormState>) => setForm((current) => ({ ...current, ...patch }));
   const reset = () => { setForm(initialForm()); setNote(null); };
@@ -360,7 +356,7 @@ export function AdminPromotions() {
                       <td className="p-3 tabular-nums">{dateInKathmandu(row.starts_at)}<span className="block text-xs text-muted-foreground">– {addDays(dateInKathmandu(row.ends_at), -1)}</span></td>
                       <td className="p-3"><span className={"inline-flex rounded-lg px-2 py-1 text-xs font-semibold " + statusClass(row.status)}>{statusLabel(row.status)}</span></td>
                       <td className="p-3 text-right tabular-nums">{row.quote_amount_npr === null ? "—" : money(row.quote_amount_npr)}</td>
-                      <td className="p-3 text-right tabular-nums">{clicks[row.id] ?? 0}</td>
+                      <td className="p-3 text-right tabular-nums">{clickEvents.filter((event) => event.query === row.placement + ":" + (row.target_area ?? row.target_category) && event.created_at >= row.starts_at && event.created_at < row.ends_at).length}</td>
                       <td className="p-3">{row.status !== "refunded" && <button type="button" className="text-sm font-semibold text-primary underline" onClick={() => edit(row)}>{t("promoEdit")}</button>}</td>
                     </tr>
                   );
