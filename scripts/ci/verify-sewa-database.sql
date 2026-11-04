@@ -205,22 +205,6 @@ UPDATE public.business_sales_prospects
   SET stage = 'won', paid_amount_npr = 5000
   WHERE listing_id = 'b1';
 
-WITH inbound_message AS (
-  INSERT INTO public.contact_messages
-    (name, business_name, phone, message, page, service_package)
-  VALUES
-    ('SEWA CI inbound conversion', 'Sample business from enquiry', '9800000000',
-     'Disposable inbound conversion test', 'for-businesses', 'launch')
-  RETURNING id
-)
-INSERT INTO public.business_sales_prospects
-  (listing_id, contact_message_id, stage, service_interest, contact_channel)
-SELECT NULL, id, 'identified', 'website', 'none'
-FROM inbound_message;
-
-UPDATE public.contact_messages
-  SET quote_amount_npr = 15000, paid_amount_npr = 5000, payment_status = 'partially_paid', status = 'quoted'
-  WHERE name = 'SEWA CI inbound conversion';
 
 DO $sales$
 DECLARE
@@ -253,36 +237,9 @@ BEGIN
   IF NOT cash_lock THEN
     RAISE EXCEPTION 'recorded sales cash could be silently decreased';
   END IF;
-  IF (SELECT count(*) FROM public.business_sales_prospects p
-      JOIN public.contact_messages m ON m.id = p.contact_message_id
-      WHERE m.name = 'SEWA CI inbound conversion'
-        AND p.listing_id IS NULL
-        AND p.quote_amount_npr IS NULL
-        AND p.paid_amount_npr = 0
-        AND m.quote_amount_npr = 15000
-        AND m.paid_amount_npr = 5000
-        AND m.payment_status = 'partially_paid') <> 1 THEN
-    RAISE EXCEPTION 'inbound conversion duplicated or lost the canonical contact quote/payment';
-  END IF;
 END
 $sales$;
 
-DO $inbound_unique$
-DECLARE
-  duplicate_blocked boolean := false;
-BEGIN
-  BEGIN
-    INSERT INTO public.business_sales_prospects (contact_message_id, stage)
-    SELECT id, 'identified'
-    FROM public.contact_messages WHERE name = 'SEWA CI inbound conversion';
-  EXCEPTION WHEN unique_violation THEN
-    duplicate_blocked := true;
-  END;
-  IF NOT duplicate_blocked THEN
-    RAISE EXCEPTION 'duplicate inbound enquiry link was not rejected';
-  END IF;
-END
-$inbound_unique$;
 RESET ROLE;
 
 -- A paid receipt and terminal campaign state cannot be silently rewritten.
@@ -391,7 +348,59 @@ BEGIN
     RAISE EXCEPTION 'the rejected cross-form request was inserted';
   END IF;
 END
-$$;
+$;
+
+-- Import an inbound service enquiry only after the isolated rate-limit assertions.
+-- This keeps the fixture from changing the exact global rate-counter expectation above.
+SET ROLE authenticated;
+SELECT set_config('request.jwt.claim.sub', '22222222-2222-4222-8222-222222222222', false);
+SELECT set_config('request.headers', '{}', false);
+WITH inbound_message AS (
+  INSERT INTO public.contact_messages
+    (name, business_name, phone, message, page, service_package)
+  VALUES
+    ('SEWA CI inbound conversion', 'Sample business from enquiry', '9800000000',
+     'Disposable inbound conversion test', 'for-businesses', 'launch')
+  RETURNING id
+)
+INSERT INTO public.business_sales_prospects
+  (listing_id, contact_message_id, stage, service_interest, contact_channel)
+SELECT NULL, id, 'identified', 'website', 'none'
+FROM inbound_message;
+
+UPDATE public.contact_messages
+  SET quote_amount_npr = 15000, paid_amount_npr = 5000, payment_status = 'partially_paid', status = 'quoted'
+  WHERE name = 'SEWA CI inbound conversion';
+
+DO $inbound_integrity$
+DECLARE
+  duplicate_blocked boolean := false;
+BEGIN
+  IF (SELECT count(*) FROM public.business_sales_prospects p
+      JOIN public.contact_messages m ON m.id = p.contact_message_id
+      WHERE m.name = 'SEWA CI inbound conversion'
+        AND p.listing_id IS NULL
+        AND p.quote_amount_npr IS NULL
+        AND p.paid_amount_npr = 0
+        AND p.created_by = auth.uid()
+        AND m.quote_amount_npr = 15000
+        AND m.paid_amount_npr = 5000
+        AND m.payment_status = 'partially_paid') <> 1 THEN
+    RAISE EXCEPTION 'inbound conversion duplicated or lost the canonical contact quote/payment';
+  END IF;
+  BEGIN
+    INSERT INTO public.business_sales_prospects (contact_message_id, stage)
+    SELECT id, 'identified'
+    FROM public.contact_messages WHERE name = 'SEWA CI inbound conversion';
+  EXCEPTION WHEN unique_violation THEN
+    duplicate_blocked := true;
+  END;
+  IF NOT duplicate_blocked THEN
+    RAISE EXCEPTION 'duplicate inbound enquiry link was not rejected';
+  END IF;
+END
+$inbound_integrity$;
+RESET ROLE;
 
 -- A signed-in non-admin cannot inspect another user's role, private leads or promotion administration.
 SET ROLE authenticated;
