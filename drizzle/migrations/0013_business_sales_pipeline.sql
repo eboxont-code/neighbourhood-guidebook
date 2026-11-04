@@ -82,6 +82,9 @@ LANGUAGE plpgsql
 SET search_path = pg_catalog
 AS $$
 BEGIN
+  IF NEW.paid_amount_npr < OLD.paid_amount_npr THEN
+    RAISE EXCEPTION 'sales_cash_cannot_decrease';
+  END IF;
   NEW.updated_at := pg_catalog.now();
   RETURN NEW;
 END
