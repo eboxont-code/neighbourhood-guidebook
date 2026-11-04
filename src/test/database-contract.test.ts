@@ -154,6 +154,7 @@ describe("SEWA database contracts", () => {
     const promotionMigration = readProjectFile("drizzle/migrations/0012_listing_promotions.sql");
     expect(promotionMigration).toMatch(/service_package IN \('launch', 'growth', 'care', 'promotion'\)/i);
     expect(promotionMigration).toMatch(/promotion_paid_amount_locked/);
+    expect(promotionMigration).toMatch(/promotion_paid_booking_locked/);
     expect(promotionMigration).toMatch(/promotion_paid_campaign_terminal/);
     expect(packages).toMatch(/SERVICE_BUDGET_BANDS/);
   });
