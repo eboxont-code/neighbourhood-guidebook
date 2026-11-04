@@ -49,8 +49,8 @@ for migration in drizzle/migrations/[0-9][0-9][0-9][0-9]_*.sql; do
   migration_count=$((migration_count + 1))
 done
 
-if [[ "$migration_count" -ne 13 ]]; then
-  echo "Expected 13 migrations; found $migration_count." >&2
+if [[ "$migration_count" -ne 14 ]]; then
+  echo "Expected 14 migrations; found $migration_count." >&2
   exit 1
 fi
 
