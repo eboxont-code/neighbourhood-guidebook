@@ -103,6 +103,80 @@ export function inboundLeadInterest(servicePackage: string | null | undefined): 
   }
 }
 
+
+const proposalServiceCopy = {
+  en: {
+    website: "Business website",
+    redesign: "Website improvement",
+    care: "Website care",
+    sponsored_placement: "SEWA sponsored placement",
+    unsure: "Custom digital service",
+  },
+  ne: {
+    website: "व्यवसाय वेबसाइट",
+    redesign: "वेबसाइट सुधार",
+    care: "वेबसाइट हेरचाह",
+    sponsored_placement: "SEWA प्रायोजित स्थान",
+    unsure: "अनुकूलित डिजिटल सेवा",
+  },
+} as const;
+
+export type ServiceProposalInput = {
+  businessName: string;
+  interest: SalesInterest;
+  scope: string;
+  timeline: string;
+  quoteNpr: number;
+  preparedOn: string;
+  lang: "en" | "ne";
+};
+
+/** Builds a copy-ready custom proposal; no price or delivery promise is inferred. */
+export function buildServiceProposalDraft(input: ServiceProposalInput): string | null {
+  const businessName = input.businessName.trim().slice(0, 100);
+  const scope = input.scope.trim().slice(0, 520);
+  const timeline = input.timeline.trim().slice(0, 120);
+  if (!businessName || !scope || !Number.isSafeInteger(input.quoteNpr) || input.quoteNpr <= 0 || input.quoteNpr > 5_000_000) return null;
+  const amount = new Intl.NumberFormat(input.lang === "ne" ? "ne-NP" : "en-NP", { maximumFractionDigits: 0 }).format(input.quoteNpr);
+  const service = proposalServiceCopy[input.lang][input.interest];
+  if (input.lang === "ne") {
+    return [
+      "BOXONT | सेवा प्रस्ताव",
+      `व्यवसाय: ${businessName}`,
+      `सेवा: ${service}`,
+      `मिति: ${input.preparedOn.slice(0, 40)}`,
+      "",
+      "कामको दायरा तथा उपलब्धि:",
+      scope,
+      "",
+      "समयतालिका:",
+      timeline || "दायरा स्वीकृत भएपछि दुवै पक्षको सहमतिमा तय गरिनेछ।",
+      "",
+      `अनुकूलित कोट: NPR ${amount}`,
+      "अर्को चरण: कृपया दायरा समीक्षा गरी संशोधन वा स्वीकृति जानकारी दिनुहोस्। काम सुरु हुनुअघि अन्तिम समयतालिका र भुक्तानी व्यवस्था लिखित रूपमा पुष्टि गरिनेछ।",
+      "",
+      "Boxont | SEWA",
+    ].join("\n").slice(0, 1499);
+  }
+  return [
+    "BOXONT | SERVICE PROPOSAL",
+    `Prepared for: ${businessName}`,
+    `Service: ${service}`,
+    `Date: ${input.preparedOn.slice(0, 40)}`,
+    "",
+    "SCOPE AND DELIVERABLES:",
+    scope,
+    "",
+    "DELIVERY PLAN:",
+    timeline || "To be agreed in writing after the scope is approved.",
+    "",
+    `CUSTOM QUOTE: NPR ${amount}`,
+    "Next step: Please review the scope and reply with any changes or approval. The final schedule and payment arrangement will be confirmed in writing before work begins.",
+    "",
+    "Boxont | SEWA",
+  ].join("\n").slice(0, 1499);
+}
+
 export function isOpenSalesStage(stage: string): boolean {
   return stage !== "won" && stage !== "lost" && stage !== "do_not_contact";
 }
