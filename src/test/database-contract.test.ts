@@ -184,6 +184,8 @@ describe("SEWA database contracts", () => {
     expect(drizzle).toMatch(/REFERENCES public\.contact_messages\(id\) ON DELETE RESTRICT/i);
     expect(drizzle).toMatch(/business_sales_prospects_contact_message_id_key UNIQUE/i);
     expect(drizzle).toMatch(/business_sales_prospects_manual_listing_uidx/i);
+    expect(drizzle).toMatch(/listing_or_message_check/i);
+    expect(drizzle).toMatch(/contact_message_id uuid UNIQUE/i);
     expect(drizzle).not.toMatch(/ADD COLUMN (?:quote_amount_npr|paid_amount_npr)/i);
     expect(readProjectFile("scripts/ci/test-sewa-database.sh")).toMatch(/migration_count" -ne 15/);
     expect(readProjectFile("scripts/ci/verify-sewa-database.sql")).toMatch(/duplicate inbound enquiry link/i);
