@@ -18,12 +18,14 @@ BEGIN
       'business_submissions',
       'business_claims',
       'analytics_events',
-      'listing_promotions'
+      'listing_promotions',
+      'business_sales_prospects',
+      'business_sales_activities'
     ])
     AND c.relrowsecurity;
 
-  IF secured_tables <> 6 THEN
-    RAISE EXCEPTION 'expected RLS on five private tables and listing_promotions; found %', secured_tables;
+  IF secured_tables <> 8 THEN
+    RAISE EXCEPTION 'expected RLS on five private forms, listing_promotions and two private sales tables; found %', secured_tables;
   END IF;
 
   SELECT count(*)
@@ -37,12 +39,13 @@ BEGIN
       'validate_business_claim',
       'listings_before_update',
       'touch_lead_status',
-      'guard_listing_promotion_slot'
+      'guard_listing_promotion_slot',
+      'set_business_sales_prospect_updated_at'
     ])
     AND p.proconfig @> ARRAY['search_path=pg_catalog'];
 
-  IF hardened_functions <> 6 THEN
-    RAISE EXCEPTION 'expected six functions with pg_catalog-only search_path; found %', hardened_functions;
+  IF hardened_functions <> 7 THEN
+    RAISE EXCEPTION 'expected seven functions with pg_catalog-only search_path; found %', hardened_functions;
   END IF;
 
   IF has_function_privilege('anon', 'public.has_role(uuid, public.app_role)', 'EXECUTE') THEN
