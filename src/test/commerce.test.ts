@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { summariseRevenue, type RevenueRecord } from "@/lib/commerce";
+import { SERVICE_PACKAGE_IDS, summariseRevenue, type RevenueRecord } from "@/lib/commerce";
 import { dict } from "@/lib/i18n";
 
 const lead = (overrides: Partial<RevenueRecord> = {}): RevenueRecord => ({
@@ -58,8 +58,16 @@ describe("SEWA revenue totals", () => {
     });
   });
 
+  it("offers sponsored placements through the quote funnel", () => {
+    expect(SERVICE_PACKAGE_IDS).toContain("promotion");
+    expect(dict.en.pkg_promotion_price).toBe("Custom quote");
+    expect(dict.ne.pkg_promotion_price).toBe("अनुकूलित कोट");
+    expect(dict.en.quotePrefill_promotion).not.toContain("NPR ");
+    expect(dict.ne.quotePrefill_promotion).not.toContain("NPR ");
+  });
+
   it("does not publish unapproved package prices in English or Nepali", () => {
-    for (const id of ["launch", "growth", "care"] as const) {
+    for (const id of ["launch", "growth", "care", "promotion"] as const) {
       expect(dict.en[`pkg_${id}_price`]).toBe("Custom quote");
       expect(dict.ne[`pkg_${id}_price`]).toBe("कामको दायराअनुसार कोट");
       expect(dict.en[`quotePrefill_${id}`]).not.toContain("NPR ");
