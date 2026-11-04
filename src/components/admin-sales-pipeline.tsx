@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
-import { areas, type Business } from "@/data/directory";
+import type { Business } from "@/data/directory";
 import { rowToBusiness } from "@/lib/listings.functions";
 import { leadTel, leadWhatsapp } from "@/lib/leads";
 import { useI18n, type Key } from "@/lib/i18n";
@@ -31,7 +31,6 @@ type ProspectForm = {
 };
 
 const field = "field min-h-11 w-full";
-const DAY_MS = 86_400_000;
 
 function emptyForm(): ProspectForm {
   return {
