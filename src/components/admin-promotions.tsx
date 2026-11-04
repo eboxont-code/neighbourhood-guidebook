@@ -78,7 +78,7 @@ export function AdminPromotions() {
     const [p, l, e] = await Promise.all([
       supabase.from("listing_promotions").select("*").order("created_at", { ascending: false }),
       supabase.from("listings").select("id,name,slug,area,category,status").eq("status", "published").order("name"),
-      supabase.from("analytics_events").select("query").eq("event", "sponsored_click").gte("created_at", since).limit(10000),
+      supabase.from("analytics_events").select("query,created_at").eq("event", "sponsored_click").gte("created_at", since).limit(10000),
     ]);
     if (p.error || l.error) {
       setFailed(true);
