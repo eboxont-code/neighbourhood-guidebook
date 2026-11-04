@@ -7,12 +7,13 @@ export function sponsoredFor(
   target: string,
 ): Business[] {
   const now = Date.now();
-  return items.filter((business) =>
-    business.promotions?.some((promotion) =>
-      promotion.placement === placement &&
-      (placement === "area_featured" ? promotion.target_area === target : promotion.target_category === target) &&
-      Date.parse(promotion.starts_at) <= now &&
-      Date.parse(promotion.ends_at) > now,
-    ),
-  );
+  return items.flatMap((business) => {
+    const promotion = business.promotions?.find((entry) =>
+      entry.placement === placement &&
+      (placement === "area_featured" ? entry.target_area === target : entry.target_category === target) &&
+      Date.parse(entry.starts_at) <= now &&
+      Date.parse(entry.ends_at) > now,
+    );
+    return promotion ? [{ ...business, promotionClickId: promotion.id }] : [];
+  });
 }
