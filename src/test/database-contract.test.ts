@@ -182,6 +182,7 @@ describe("SEWA database contracts", () => {
     expect(drizzle).toMatch(/listing_id DROP NOT NULL/i);
     expect(drizzle).toMatch(/contact_message_id uuid/i);
     expect(drizzle).toMatch(/REFERENCES public\.contact_messages\(id\) ON DELETE RESTRICT/i);
+    expect(drizzle).toMatch(/REFERENCES public\.listings\(id\) ON DELETE CASCADE/i);
     expect(drizzle).toMatch(/business_sales_prospects_contact_message_id_key UNIQUE/i);
     expect(drizzle).toMatch(/business_sales_prospects_manual_listing_uidx/i);
     expect(drizzle).toMatch(/listing_or_message_check/i);
