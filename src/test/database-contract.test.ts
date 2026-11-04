@@ -17,7 +17,7 @@ function extractAllowedEvents(sql: string): string[] {
 describe("SEWA database contracts", () => {
   it("keeps frontend analytics events aligned with the deployed SQL migration", () => {
     const sql = readProjectFile(
-      "supabase/migrations/20261029004600_analytics_funnel_events.sql",
+      "supabase/migrations/20261103114000_service_revenue_pipeline.sql",
     );
     const allowed = extractAllowedEvents(sql);
 
@@ -118,6 +118,33 @@ describe("SEWA database contracts", () => {
       expect(policy).toMatch(/\bTO authenticated\b/i);
       expect(policy).not.toMatch(/\bTO anon\b/i);
     }
+  });
+
+  it("keeps website-service quote fields scoped to visitor requests and admin updates", () => {
+    const migrations = [
+      readProjectFile("supabase/migrations/20261103114000_service_revenue_pipeline.sql"),
+      readProjectFile("drizzle/migrations/0011_service_revenue_pipeline.sql"),
+    ];
+    expect(migrations[0]).toBe(migrations[1]);
+    for (const sql of migrations) {
+      expect(sql).toMatch(/service_package text/i);
+      expect(sql).toMatch(/budget_band text/i);
+      expect(sql).toMatch(/quote_amount_npr integer/i);
+      expect(sql).toMatch(/paid_amount_npr integer NOT NULL DEFAULT 0/i);
+      expect(sql).toMatch(/payment_status text NOT NULL DEFAULT 'not_quoted'/i);
+      expect(sql).toMatch(/GRANT INSERT \(service_package, budget_band\) ON public\.contact_messages TO anon, authenticated/i);
+      expect(sql).toMatch(/GRANT UPDATE \(quote_amount_npr, paid_amount_npr, payment_status\) ON public\.contact_messages TO authenticated/i);
+      expect(sql).not.toMatch(/GRANT INSERT \([^)]*(?:quote_amount_npr|paid_amount_npr|payment_status)/i);
+      expect(sql).not.toMatch(/GRANT UPDATE \([^)]*(?:quote_amount_npr|paid_amount_npr|payment_status)\)[^;]*TO anon/i);
+      expect(sql).toMatch(/service_package_select/);
+      expect(sql).toMatch(/service_quote_submit/);
+    }
+
+    const packages = readProjectFile("src/lib/commerce.ts");
+    expect(packages).toMatch(/launch/);
+    expect(packages).toMatch(/growth/);
+    expect(packages).toMatch(/care/);
+    expect(packages).toMatch(/SERVICE_BUDGET_BANDS/);
   });
 
   it("keeps public form submission tables row-level protected and admin-only for private reads", () => {

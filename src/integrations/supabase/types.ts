@@ -152,14 +152,19 @@ export type Database = {
       contact_messages: {
         Row: {
           admin_note: string | null
+          budget_band: string | null
           business_name: string | null
           client_key: string | null
           created_at: string
           id: string
           message: string
           name: string
+          paid_amount_npr: number
           page: string
+          payment_status: string
           phone: string | null
+          quote_amount_npr: number | null
+          service_package: string | null
           source_listing_slug: string | null
           status: string
           status_changed_at: string | null
@@ -167,14 +172,19 @@ export type Database = {
         }
         Insert: {
           admin_note?: string | null
+          budget_band?: string | null
           business_name?: string | null
           client_key?: string | null
           created_at?: string
           id?: string
           message: string
           name: string
+          paid_amount_npr?: number
           page?: string
+          payment_status?: string
           phone?: string | null
+          quote_amount_npr?: number | null
+          service_package?: string | null
           source_listing_slug?: string | null
           status?: string
           status_changed_at?: string | null
@@ -182,14 +192,19 @@ export type Database = {
         }
         Update: {
           admin_note?: string | null
+          budget_band?: string | null
           business_name?: string | null
           client_key?: string | null
           created_at?: string
           id?: string
           message?: string
           name?: string
+          paid_amount_npr?: number
           page?: string
+          payment_status?: string
           phone?: string | null
+          quote_amount_npr?: number | null
+          service_package?: string | null
           source_listing_slug?: string | null
           status?: string
           status_changed_at?: string | null

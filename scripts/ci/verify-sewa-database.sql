@@ -92,6 +92,29 @@ BEGIN
 END
 $$;
 
+-- Public visitors may select service options but cannot set commercial amounts or payment state.
+DO $$
+BEGIN
+  IF NOT has_column_privilege('anon', 'public.contact_messages', 'service_package', 'INSERT')
+     OR NOT has_column_privilege('anon', 'public.contact_messages', 'budget_band', 'INSERT') THEN
+    RAISE EXCEPTION 'anonymous visitors must be able to submit service requests';
+  END IF;
+  IF has_column_privilege('anon', 'public.contact_messages', 'quote_amount_npr', 'INSERT')
+     OR has_column_privilege('anon', 'public.contact_messages', 'paid_amount_npr', 'INSERT')
+     OR has_column_privilege('anon', 'public.contact_messages', 'payment_status', 'INSERT')
+     OR has_column_privilege('anon', 'public.contact_messages', 'quote_amount_npr', 'UPDATE')
+     OR has_column_privilege('anon', 'public.contact_messages', 'paid_amount_npr', 'UPDATE')
+     OR has_column_privilege('anon', 'public.contact_messages', 'payment_status', 'UPDATE') THEN
+    RAISE EXCEPTION 'anonymous visitors must not write quote or payment fields';
+  END IF;
+  IF NOT has_column_privilege('authenticated', 'public.contact_messages', 'quote_amount_npr', 'UPDATE')
+     OR NOT has_column_privilege('authenticated', 'public.contact_messages', 'paid_amount_npr', 'UPDATE')
+     OR NOT has_column_privilege('authenticated', 'public.contact_messages', 'payment_status', 'UPDATE') THEN
+    RAISE EXCEPTION 'authenticated admins must be able to record quote and payment fields';
+  END IF;
+END
+$$;
+
 INSERT INTO auth.users (id) VALUES
   ('11111111-1111-4111-8111-111111111111'),
   ('22222222-2222-4222-8222-222222222222')
@@ -111,8 +134,8 @@ DECLARE
   blocked boolean := false;
 BEGIN
   FOR attempt IN 1..3 LOOP
-    INSERT INTO public.contact_messages (name, message, page, client_key)
-    VALUES ('SEWA CI Rate Test', 'Disposable rate-limit test', 'contact', 'sewa-rate-session');
+    INSERT INTO public.contact_messages (name, message, page, client_key, service_package)
+    VALUES ('SEWA CI Rate Test', 'Disposable rate-limit test', 'contact', 'sewa-rate-session', 'launch');
   END LOOP;
 
   BEGIN
@@ -135,7 +158,9 @@ RESET ROLE;
 DO $$
 BEGIN
   IF (SELECT count(*) FROM public.contact_messages
-      WHERE name = 'SEWA CI Rate Test' AND client_key IS NULL) <> 3 THEN
+      WHERE name = 'SEWA CI Rate Test' AND client_key IS NULL
+        AND service_package = 'launch' AND quote_amount_npr IS NULL
+        AND paid_amount_npr = 0 AND payment_status = 'not_quoted') <> 3 THEN
     RAISE EXCEPTION 'raw client keys were not cleared or the first three requests were not stored';
   END IF;
   IF (SELECT count(*) FROM public.form_rate_log
@@ -173,6 +198,12 @@ BEGIN
   IF (SELECT count(*) FROM public.contact_messages WHERE name = 'SEWA CI Rate Test') <> 0 THEN
     RAISE EXCEPTION 'a non-admin caller read private contact messages';
   END IF;
+  UPDATE public.contact_messages
+    SET quote_amount_npr = 999, payment_status = 'quoted'
+    WHERE id = (SELECT id FROM public.contact_messages WHERE name = 'SEWA CI Rate Test' ORDER BY id LIMIT 1);
+  IF (SELECT count(*) FROM public.contact_messages WHERE name = 'SEWA CI Rate Test' AND quote_amount_npr IS NOT NULL) <> 0 THEN
+    RAISE EXCEPTION 'a non-admin caller updated commercial quote fields';
+  END IF;
 END
 $$;
 
@@ -188,6 +219,28 @@ BEGIN
   END IF;
   IF (SELECT count(*) FROM public.contact_messages WHERE name = 'SEWA CI Rate Test') <> 3 THEN
     RAISE EXCEPTION 'the administrator could not read private contact messages';
+  END IF;
+  UPDATE public.contact_messages
+    SET quote_amount_npr = 15000, payment_status = 'quoted'
+    WHERE id = (SELECT id FROM public.contact_messages WHERE name = 'SEWA CI Rate Test' ORDER BY id LIMIT 1);
+  IF NOT FOUND THEN
+    RAISE EXCEPTION 'the administrator could not record a quote';
+  END IF;
+  UPDATE public.contact_messages
+    SET paid_amount_npr = 15000, payment_status = 'paid', status = 'won'
+    WHERE id = (SELECT id FROM public.contact_messages WHERE name = 'SEWA CI Rate Test' ORDER BY id LIMIT 1);
+  IF NOT FOUND THEN
+    RAISE EXCEPTION 'the administrator could not record payment received';
+  END IF;
+  IF NOT EXISTS (
+    SELECT 1 FROM public.contact_messages
+    WHERE name = 'SEWA CI Rate Test'
+      AND quote_amount_npr = 15000
+      AND paid_amount_npr = 15000
+      AND payment_status = 'paid'
+      AND status = 'won'
+  ) THEN
+    RAISE EXCEPTION 'admin quote/payment values were not persisted';
   END IF;
 END
 $$;
