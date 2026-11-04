@@ -14,6 +14,6 @@ export function sponsoredFor(
       Date.parse(entry.starts_at) <= now &&
       Date.parse(entry.ends_at) > now,
     );
-    return promotion ? [{ ...business, promotionClickId: promotion.id }] : [];
+    return promotion ? [{ ...business, promotionClickKey: placement + ":" + target }] : [];
   });
 }
