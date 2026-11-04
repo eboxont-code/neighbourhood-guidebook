@@ -171,6 +171,7 @@ RESET ROLE;
 DO $$
 DECLARE
   amount_locked boolean := false;
+  booking_locked boolean := false;
   cancellation_blocked boolean := false;
 BEGIN
   BEGIN
@@ -183,14 +184,22 @@ BEGIN
   END;
   BEGIN
     UPDATE public.listing_promotions
+      SET ends_at = ends_at + interval '1 day'
+      WHERE listing_id = 'b1' AND placement = 'area_featured';
+  EXCEPTION WHEN SQLSTATE 'P0001' THEN
+    IF SQLERRM <> 'promotion_paid_booking_locked' THEN RAISE; END IF;
+    booking_locked := true;
+  END;
+  BEGIN
+    UPDATE public.listing_promotions
       SET status = 'cancelled', paid_amount_npr = 0
       WHERE listing_id = 'b1' AND placement = 'area_featured';
   EXCEPTION WHEN SQLSTATE 'P0001' THEN
     IF SQLERRM <> 'promotion_paid_campaign_terminal' THEN RAISE; END IF;
     cancellation_blocked := true;
   END;
-  IF NOT amount_locked OR NOT cancellation_blocked THEN
-    RAISE EXCEPTION 'paid campaign financial state could be rewritten';
+  IF NOT amount_locked OR NOT booking_locked OR NOT cancellation_blocked THEN
+    RAISE EXCEPTION 'paid campaign booking or financial state could be rewritten';
   END IF;
 END
 $$;
