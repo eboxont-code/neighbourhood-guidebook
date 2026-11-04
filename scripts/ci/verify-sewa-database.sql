@@ -115,10 +115,10 @@ BEGIN
     RAISE EXCEPTION 'authenticated admins must be able to record quote and payment fields';
   END IF;
 END
-$;
+$$;
 
 -- The public role may read active campaigns only; all campaign writes are admin-only.
-DO $
+DO $$
 BEGIN
   IF NOT has_table_privilege('anon', 'public.listing_promotions', 'SELECT')
      OR has_table_privilege('anon', 'public.listing_promotions', 'INSERT')
@@ -127,7 +127,7 @@ BEGIN
     RAISE EXCEPTION 'anonymous campaign permissions are incorrect';
   END IF;
 END
-$;
+$$;
 
 INSERT INTO auth.users (id) VALUES
   ('11111111-1111-4111-8111-111111111111'),
@@ -147,7 +147,7 @@ VALUES
   ('b1', 'area_featured', 'durbar-marg', now() - interval '1 minute',
    now() + interval '1 day', 5000, 5000, 'paid');
 
-DO $
+DO $$
 DECLARE
   blocked boolean := false;
 BEGIN
@@ -164,11 +164,11 @@ BEGIN
     RAISE EXCEPTION 'overlapping quoted or paid promotions were not blocked';
   END IF;
 END
-$;
+$$;
 RESET ROLE;
 
 -- A paid receipt and terminal campaign state cannot be silently rewritten.
-DO $
+DO $$
 DECLARE
   amount_locked boolean := false;
   cancellation_blocked boolean := false;
@@ -193,17 +193,17 @@ BEGIN
     RAISE EXCEPTION 'paid campaign financial state could be rewritten';
   END IF;
 END
-$;
+$$;
 
 -- Anonymous visitors can see the paid campaign only while its window is live.
 SET ROLE anon;
-DO $
+DO $$
 BEGIN
   IF (SELECT count(*) FROM public.listing_promotions) <> 1 THEN
     RAISE EXCEPTION 'anonymous visitors could not read the live paid placement';
   END IF;
 END
-$;
+$$;
 RESET ROLE;
 
 -- Exercise the public submission trigger as an anonymous caller. Three requests
