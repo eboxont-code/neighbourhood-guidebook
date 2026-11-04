@@ -73,6 +73,21 @@ LANGUAGE plpgsql
 SET search_path = pg_catalog
 AS $$
 BEGIN
+  IF TG_OP = 'UPDATE' THEN
+    IF OLD.status = 'refunded' THEN
+      RAISE EXCEPTION 'promotion_refunded_campaign_closed';
+    END IF;
+    IF OLD.status = 'paid' AND NEW.status NOT IN ('paid', 'refunded') THEN
+      RAISE EXCEPTION 'promotion_paid_campaign_terminal';
+    END IF;
+    IF OLD.status = 'paid' AND (
+      NEW.quote_amount_npr IS DISTINCT FROM OLD.quote_amount_npr
+      OR NEW.paid_amount_npr IS DISTINCT FROM OLD.paid_amount_npr
+    ) THEN
+      RAISE EXCEPTION 'promotion_paid_amount_locked';
+    END IF;
+  END IF;
+
   IF NEW.status NOT IN ('quoted', 'paid') THEN
     RETURN NEW;
   END IF;
