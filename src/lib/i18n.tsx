@@ -364,6 +364,7 @@ export const dict = {
     salesActivitySaveError: "Could not save this activity. Please try again.",
     salesDuplicate: "This business is already in the sales pipeline. Open the existing prospect instead.",
     salesInvalidMoney: "Enter a valid quote and cash amount. Cash received cannot exceed the quoted amount.",
+    salesCashCannotDecrease: "Recorded cash can only increase in this pipeline. Use the payment history to review previous receipts; refunds are not supported here.",
     salesInvalidDate: "Choose a valid follow-up date and time.",
     salesLoading: "Loading the sales pipeline…",
     salesLoadError: "Could not load the sales pipeline. Check the database migration and refresh.",
@@ -979,6 +980,7 @@ export const dict = {
     salesActivitySaveError: "गतिविधि सुरक्षित गर्न सकिएन। फेरि प्रयास गर्नुहोस्।",
     salesDuplicate: "यो व्यवसाय बिक्री पाइपलाइनमा पहिल्यै छ। पुरानो अभिलेख खोल्नुहोस्।",
     salesInvalidMoney: "मान्य कोट र प्राप्त रकम राख्नुहोस्। प्राप्त रकम कोटभन्दा बढी हुन मिल्दैन।",
+    salesCashCannotDecrease: "यस पाइपलाइनमा अभिलेख गरिएको नगद घटाउन मिल्दैन। अघिल्लो प्राप्ति गतिविधि इतिहासमा जाँच गर्नुहोस्; यहाँ रकम फिर्ता व्यवस्थापन छैन।"
     salesInvalidDate: "मान्य फलोअप मिति र समय छान्नुहोस्।",
     salesLoading: "बिक्री पाइपलाइन लोड हुँदैछ…",
     salesLoadError: "बिक्री पाइपलाइन लोड गर्न सकिएन। डाटाबेस माइग्रेशन जाँचेर रिफ्रेस गर्नुहोस्।",
