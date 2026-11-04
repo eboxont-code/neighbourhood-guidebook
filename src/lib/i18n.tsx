@@ -327,6 +327,7 @@ export const dict = {
     adSignOut: "Sign out",
     adSignedInAs: "Signed in as {e}",
     promoConfirmReceived: "I confirm the full campaign payment has been received.",
+    promoPaidQuoteLocked: "The quoted and received amount is locked after payment. Record a full refund if the campaign is being returned.",
     promoConfirmRefunded: "I confirm the full campaign payment has been refunded.",
     promoRefundRule: "A paid campaign cannot be cancelled or reset. Record a full refund instead; a refunded campaign stays closed.",
     promoSaveError: "Could not save the campaign. Check the campaign details and try again.",
@@ -854,6 +855,7 @@ export const dict = {
     adSignOut: "साइन आउट",
     adSignedInAs: "{e} को रूपमा साइन इन",
     promoConfirmReceived: "अभियानको पूरा रकम प्राप्त भएको म पुष्टि गर्छु।",
+    promoPaidQuoteLocked: "भुक्तानीपछि कोट र प्राप्त रकम परिवर्तन गर्न मिल्दैन। रकम फिर्ता भएमा पूरा फिर्ता अभिलेख गर्नुहोस्।"
     promoConfirmRefunded: "अभियानको पूरा रकम फिर्ता गरिएको म पुष्टि गर्छु।",
     promoRefundRule: "भुक्तानी भएको अभियान रद्द वा मस्यौदामा फर्काउन मिल्दैन। पूरा रकम फिर्ता गरेर मात्र फिर्ता भएको अभिलेख गर्नुहोस्।",
     promoSaveError: "अभियान सुरक्षित गर्न सकिएन। विवरण जाँचेर फेरि प्रयास गर्नुहोस्।",
