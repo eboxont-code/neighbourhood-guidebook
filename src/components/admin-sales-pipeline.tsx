@@ -215,7 +215,7 @@ export function AdminSalesPipeline() {
   const history = selected ? activities.filter((activity) => activity.prospect_id === selected.id) : [];
   const draft = outreachBusiness ? buildSalesOutreachDraft(outreachBusiness, form.interest, lang) : "";
   const proposalQuote = selectedMessage ? selectedMessage.quote_amount_npr : selected?.quote_amount_npr ?? null;
-  const proposalName = selectedBusiness?.name ?? selectedMessage?.business_name ?? selectedMessage?.name ?? "";
+  const proposalName = selectedBusiness?.name ?? selectedMessage?.business_name || selectedMessage?.name || "";
   const proposalDate = new Intl.DateTimeFormat(lang === "ne" ? "ne-NP" : "en-NP", {
     timeZone: "Asia/Kathmandu",
     day: "numeric",
