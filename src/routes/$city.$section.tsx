@@ -9,12 +9,11 @@ import { requestLocation, sortByDistance, useLocation } from "@/lib/geo";
 import { CatIcon } from "@/components/cover";
 import { AreaGuide } from "@/components/area-page";
 import { areaBreadcrumbJsonLd, itemListJsonLd } from "@/lib/seo";
-import { Carousel, RowList, SectionHead } from "@/components/blocks";
+import { Carousel, RowList, SectionHead, SponsoredRows } from "@/components/blocks";
 import { placeName, areasIn, businessesIn, categoryRedirects, categoriesIn, getArea, getCategory, getCity, resolveSection } from "@/data/directory";
 import { applyCatFilters, parseCatSearch, type CatFilters } from "@/lib/filters";
 import { useI18n, type Key } from "@/lib/i18n";
 import { sponsoredFor } from "@/lib/promotions";
-import { SponsoredRows } from "@/components/blocks";
 import { categoryLocalAreas } from "@/lib/local-pages";
 
 export const Route = createFileRoute("/$city/$section")({
