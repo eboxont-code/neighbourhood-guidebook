@@ -162,7 +162,7 @@ export const fetchPublishedListings = createServerFn({ method: "GET" }).handler(
     const [l, r, p] = await Promise.all([
       db.from("listings").select("id, slug, name, area, category, data").eq("status", "published").order("sort_order").order("id"),
       db.from("slug_redirects").select("old_slug, new_slug"),
-      db.from("listing_promotions").select("listing_id, placement, target_area, target_category, starts_at, ends_at")
+      db.from("listing_promotions").select("id, listing_id, placement, target_area, target_category, starts_at, ends_at")
         .eq("status", "paid").lte("starts_at", now).gt("ends_at", now),
     ]);
     if (l.error) throw l.error;
@@ -174,6 +174,7 @@ export const fetchPublishedListings = createServerFn({ method: "GET" }).handler(
     for (const promotion of p.data ?? []) {
       const current = promotionMap.get(promotion.listing_id) ?? [];
       current.push({
+        id: promotion.id,
         placement: promotion.placement as "area_featured" | "category_featured",
         target_area: promotion.target_area,
         target_category: promotion.target_category,
