@@ -161,7 +161,10 @@ export function AdminSalesPipeline() {
   const businessById = useMemo(() => new Map(businesses.map((business) => [business.id, business])), [businesses]);
   const messageById = useMemo(() => new Map(inboundMessages.map((message) => [message.id, message])), [inboundMessages]);
   const linkedMessageIds = useMemo(() => new Set((prospects ?? []).map((prospect) => prospect.contact_message_id).filter((id): id is string => Boolean(id))), [prospects]);
-  const unconvertedMessages = inboundMessages.filter((message) => !linkedMessageIds.has(message.id));
+  const unconvertedMessages = inboundMessages.filter((message) =>
+    !linkedMessageIds.has(message.id) &&
+    (message.page === "for-businesses" || message.page === "preview" || Boolean(message.service_package) || Boolean(message.source_listing_slug))
+  ).slice(0, 50);
   const now = Date.now();
   const open = (prospects ?? []).filter((prospect) => isOpenSalesStage(prospect.stage));
   const overdue = open.filter((prospect) => salesFollowUpState(prospect.next_follow_up_at, now) === "overdue");
@@ -230,7 +233,7 @@ export function AdminSalesPipeline() {
   async function saveProspect(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (busy) return;
-    const hasLinkedEnquiry = Boolean(form.contactMessageId && messageById.has(form.contactMessageId));
+    const hasLinkedEnquiry = Boolean(form.contactMessageId);
     if (!hasLinkedEnquiry && (!form.listingId || !businessById.has(form.listingId))) {
       setNote(t("salesSelectBusiness"));
       return;
@@ -516,7 +519,7 @@ export function AdminSalesPipeline() {
               <label className="block">
                 <span className="mb-1.5 block text-sm font-semibold">{t("salesBusiness")}</span>
                 <select className={field} required={!form.contactMessageId} disabled={Boolean(form.id)} value={form.listingId} onChange={(e) => set({ listingId: e.target.value })}>
-                  <option value="">{t("salesSelectBusiness")}</option>
+                  <option value="">{form.contactMessageId && selectedMessage ? `${t("salesInboundLead")}: ${selectedMessage.business_name || selectedMessage.name}` : t("salesSelectBusiness")}</option>
                   {businesses.map((business) => <option key={business.id} value={business.id}>{business.name} · {business.area}</option>)}
                 </select>
               </label>
