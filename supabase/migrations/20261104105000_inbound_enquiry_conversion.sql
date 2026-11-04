@@ -11,7 +11,7 @@ ALTER TABLE public.business_sales_prospects
 
 ALTER TABLE public.business_sales_prospects
   ADD CONSTRAINT business_sales_prospects_listing_id_fkey
-    FOREIGN KEY (listing_id) REFERENCES public.listings(id) ON DELETE SET NULL,
+    FOREIGN KEY (listing_id) REFERENCES public.listings(id) ON DELETE CASCADE,
   ADD CONSTRAINT business_sales_prospects_contact_message_id_fkey
     FOREIGN KEY (contact_message_id) REFERENCES public.contact_messages(id) ON DELETE RESTRICT,
   ADD CONSTRAINT business_sales_prospects_listing_or_message_check
