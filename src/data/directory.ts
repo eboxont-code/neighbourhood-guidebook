@@ -20,7 +20,6 @@ export interface Area {
 
 export type ListingPromotionPlacement = "area_featured" | "category_featured";
 export interface LiveListingPromotion {
-  id: string;
   placement: ListingPromotionPlacement;
   target_area: string | null;
   target_category: string | null;
@@ -58,7 +57,7 @@ export interface Business {
   lng?: number | undefined;
   addedOn?: string; // ISO date the listing entered the directory
   promotions?: LiveListingPromotion[]; // currently paid, in-window campaigns only
-  promotionClickId?: string; // ephemeral campaign ID for anonymous click attribution
+  promotionClickKey?: string; // public placement key for anonymous click attribution
   fieldSources?: Partial<Record<"phone" | "hours" | "address" | "website" | "location", { tier: "website" | "official_social" | "maps" | "third_party" | "user_submission"; url?: string | undefined; checked?: string | undefined }>>;
 }
 
