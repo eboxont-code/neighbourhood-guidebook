@@ -150,10 +150,22 @@ export function AdminSalesPipeline() {
       setFailed(true);
       return;
     }
+    const linkedIds = (p.data ?? []).map((prospect) => prospect.contact_message_id).filter((id): id is string => Boolean(id));
+    const loadedIds = new Set((m.data ?? []).map((message) => message.id));
+    const missingIds = linkedIds.filter((id) => !loadedIds.has(id));
+    let linkedMessages: InboundMessage[] = [];
+    if (missingIds.length > 0) {
+      const linked = await supabase.from("contact_messages").select("*").in("id", missingIds);
+      if (linked.error) {
+        setFailed(true);
+        return;
+      }
+      linkedMessages = linked.data ?? [];
+    }
     setProspects(p.data ?? []);
     setBusinesses(((l.data ?? []) as ListingRow[]).map(rowToBusiness));
     setActivities(a.data ?? []);
-    setInboundMessages(m.data ?? []);
+    setInboundMessages([...(m.data ?? []), ...linkedMessages]);
   }
 
   useEffect(() => { void load(); }, []);
