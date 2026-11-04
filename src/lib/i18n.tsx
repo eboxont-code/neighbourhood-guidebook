@@ -814,7 +814,7 @@ export const dict = {
     pkg_care_feature_3: "व्यवसायका विवरण अद्यावधिक राख्न सहयोग",
     pkg_care_feature_4: "ठूला परिवर्तनको छुट्टै मूल्य",
     pkg_promotion_title: "प्रायोजित स्थान",
-    pkg_promotion_price: "अनुकूलित कोट",
+    pkg_promotion_price: "कामको दायराअनुसार कोट",
     pkg_promotion_billing: "निश्चित अवधिको अभियान",
     pkg_promotion_body: "छिमेक वा श्रेणीमा स्पष्ट रूपमा देखाइने सशुल्क स्थान। तपाईंको सूचीको प्रमाणीकरण र सामान्य क्रम अलग रहन्छ।",
     pkg_promotion_feature_1: "छिमेकमा विशेष स्थान",
