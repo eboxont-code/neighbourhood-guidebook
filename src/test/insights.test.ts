@@ -22,6 +22,7 @@ describe("admin insights", () => {
   it("tracks the SEWA service quote funnel without personal data", () => {
     expect(TRACK_EVENTS).toContain("service_package_select");
     expect(TRACK_EVENTS).toContain("service_quote_submit");
+    expect(TRACK_EVENTS).toContain("sponsored_click");
     const payload = trackPayload("service_quote_submit", { slug: "sewa-business", query: "Launch" });
     expect(payload.event).toBe("service_quote_submit");
     expect(payload.listing_slug).toBe("sewa-business");

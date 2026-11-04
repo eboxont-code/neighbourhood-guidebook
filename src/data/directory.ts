@@ -18,6 +18,15 @@ export interface Area {
   city: string;
 } // city slug
 
+export type ListingPromotionPlacement = "area_featured" | "category_featured";
+export interface LiveListingPromotion {
+  placement: ListingPromotionPlacement;
+  target_area: string | null;
+  target_category: string | null;
+  starts_at: string;
+  ends_at: string;
+}
+
 export interface Business {
   id: string;
   slug: string;
@@ -47,6 +56,8 @@ export interface Business {
   lat?: number | undefined; // only from a reliable source; never guessed
   lng?: number | undefined;
   addedOn?: string; // ISO date the listing entered the directory
+  promotions?: LiveListingPromotion[]; // currently paid, in-window campaigns only
+  promotionClickKey?: string; // public placement key for anonymous click attribution
   fieldSources?: Partial<Record<"phone" | "hours" | "address" | "website" | "location", { tier: "website" | "official_social" | "maps" | "third_party" | "user_submission"; url?: string | undefined; checked?: string | undefined }>>;
 }
 

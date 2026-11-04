@@ -302,6 +302,59 @@ export type Database = {
         }
         Relationships: []
       }
+      listing_promotions: {
+        Row: {
+          created_at: string
+          ends_at: string
+          id: string
+          listing_id: string
+          paid_amount_npr: number
+          placement: string
+          quote_amount_npr: number | null
+          refunded_amount_npr: number
+          starts_at: string
+          status: string
+          target_area: string | null
+          target_category: string | null
+        }
+        Insert: {
+          created_at?: string
+          ends_at: string
+          id?: string
+          listing_id: string
+          paid_amount_npr?: number
+          placement: string
+          quote_amount_npr?: number | null
+          refunded_amount_npr?: number
+          starts_at: string
+          status?: string
+          target_area?: string | null
+          target_category?: string | null
+        }
+        Update: {
+          created_at?: string
+          ends_at?: string
+          id?: string
+          listing_id?: string
+          paid_amount_npr?: number
+          placement?: string
+          quote_amount_npr?: number | null
+          refunded_amount_npr?: number
+          starts_at?: string
+          status?: string
+          target_area?: string | null
+          target_category?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "listing_promotions_listing_id_fkey"
+            columns: ["listing_id"]
+            isOneToOne: false
+            referencedRelation: "listings"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       slug_redirects: {
         Row: {
           created_at: string

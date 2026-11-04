@@ -17,12 +17,18 @@ function extractAllowedEvents(sql: string): string[] {
 describe("SEWA database contracts", () => {
   it("keeps frontend analytics events aligned with the deployed SQL migration", () => {
     const sql = readProjectFile(
-      "supabase/migrations/20261103114000_service_revenue_pipeline.sql",
+      "supabase/migrations/20261104100000_listing_promotions.sql",
     );
     const allowed = extractAllowedEvents(sql);
 
     expect(new Set(allowed).size).toBe(allowed.length);
     expect([...allowed].sort()).toEqual([...TRACK_EVENTS].sort());
+  });
+
+  it("keeps sponsored placement migrations byte-identical", () => {
+    expect(readProjectFile("drizzle/migrations/0012_listing_promotions.sql")).toBe(
+      readProjectFile("supabase/migrations/20261104100000_listing_promotions.sql"),
+    );
   });
 
   it("keeps the parallel migration history aligned with the deployed SQL migration", () => {
@@ -144,6 +150,12 @@ describe("SEWA database contracts", () => {
     expect(packages).toMatch(/launch/);
     expect(packages).toMatch(/growth/);
     expect(packages).toMatch(/care/);
+    expect(packages).toMatch(/promotion/);
+    const promotionMigration = readProjectFile("drizzle/migrations/0012_listing_promotions.sql");
+    expect(promotionMigration).toMatch(/service_package IN \('launch', 'growth', 'care', 'promotion'\)/i);
+    expect(promotionMigration).toMatch(/promotion_paid_amount_locked/);
+    expect(promotionMigration).toMatch(/promotion_paid_booking_locked/);
+    expect(promotionMigration).toMatch(/promotion_paid_campaign_terminal/);
     expect(packages).toMatch(/SERVICE_BUDGET_BANDS/);
   });
 

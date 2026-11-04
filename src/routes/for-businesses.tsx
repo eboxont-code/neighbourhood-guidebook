@@ -45,7 +45,7 @@ export const Route = createFileRoute("/for-businesses")({
 });
 
 const LEAD_ID = "quote";
-const PACKAGE_IDS: ServicePackageId[] = ["launch", "growth", "care"];
+const PACKAGE_IDS: ServicePackageId[] = ["launch", "growth", "care", "promotion"];
 
 function toLead() {
   const el = document.getElementById(LEAD_ID);
@@ -119,7 +119,7 @@ function ForBusinesses() {
             <h2 id="pricing" className="mt-2 text-xl font-bold tracking-tight sm:text-2xl">{t("fbPricingTitle")}</h2>
             <p className="mt-2 leading-relaxed text-muted-foreground">{t("fbPricingBody")}</p>
           </div>
-          <div className="mt-5 grid gap-3 md:grid-cols-3">
+          <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {PACKAGE_IDS.map((id) => (
               <article key={id} className={`flex flex-col rounded-2xl border bg-card p-4 shadow-[var(--shadow-card)] ${id === "growth" ? "border-primary ring-1 ring-primary/20" : "border-border"}`}>
                 <h3 className="text-base font-bold">{t(`pkg_${id}_title` as Key)}</h3>

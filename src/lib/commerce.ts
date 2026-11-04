@@ -1,4 +1,4 @@
-export const SERVICE_PACKAGE_IDS = ["launch", "growth", "care"] as const;
+export const SERVICE_PACKAGE_IDS = ["launch", "growth", "care", "promotion"] as const;
 export type ServicePackageId = (typeof SERVICE_PACKAGE_IDS)[number];
 
 export const SERVICE_BUDGET_BANDS = [

@@ -9,10 +9,11 @@ import { requestLocation, sortByDistance, useLocation } from "@/lib/geo";
 import { CatIcon } from "@/components/cover";
 import { AreaGuide } from "@/components/area-page";
 import { areaBreadcrumbJsonLd, itemListJsonLd } from "@/lib/seo";
-import { Carousel, RowList, SectionHead } from "@/components/blocks";
+import { Carousel, RowList, SectionHead, SponsoredRows } from "@/components/blocks";
 import { placeName, areasIn, businessesIn, categoryRedirects, categoriesIn, getArea, getCategory, getCity, resolveSection } from "@/data/directory";
 import { applyCatFilters, parseCatSearch, type CatFilters } from "@/lib/filters";
 import { useI18n, type Key } from "@/lib/i18n";
+import { sponsoredFor } from "@/lib/promotions";
 import { categoryLocalAreas } from "@/lib/local-pages";
 
 export const Route = createFileRoute("/$city/$section")({
@@ -73,6 +74,9 @@ function CategoryPage() {
   const c = getCategory(sec.slug)!;
   const all = businessesIn(city.slug).filter((b) => b.category === c.slug);
   const shown = applyCatFilters(all, f, now, loc.here);
+  const sponsored = !f.area ? sponsoredFor(shown, "category_featured", c.slug) : [];
+  const sponsoredIds = new Set(sponsored.map((b) => b.id));
+  const organic = shown.filter((b) => !sponsoredIds.has(b.id));
   useEffect(() => { if (f.sort === "near" && loc.state.status === "idle") requestLocation(); }, [f.sort]); // eslint-disable-line react-hooks/exhaustive-deps
   const setView = (v: "list" | "map") => set({ view: v === "map" ? "map" : undefined });
   const closeMap = useCallback(() => setView("list"), []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -115,6 +119,7 @@ function CategoryPage() {
           {localAreas.length > 0 && <nav aria-label={t("localAreaLinks").replace("{cat}", lang === "ne" ? c.nameNe : c.name)} className="mb-4 flex flex-wrap gap-x-4 gap-y-1">
             {localAreas.map(({ area }) => <Link key={area.slug} to="/a/$areaSlug/$categorySlug" params={{ areaSlug: area.slug, categorySlug: c.slug }} className="inline-flex min-h-11 items-center text-sm font-semibold text-primary underline underline-offset-4">{placeName(area, lang)}</Link>)}
           </nav>}
+          {sponsored.length > 0 && <div className="mb-5"><SponsoredRows items={sponsored} title={t("sponsoredCategoryTitle").replace("{category}", lang === "ne" ? c.nameNe : c.name)} /></div>}
           <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
             <label className="flex items-center gap-2 text-sm text-muted-foreground">
               {t("sortLabel")}
@@ -138,7 +143,7 @@ function CategoryPage() {
           {shown.length === 0 ? (
             <EmptyState title={t("noFilterTitle")} body={t("noFilterBody")} action={<button type="button" onClick={() => set({ area: undefined, open: undefined })} className="action-btn action-dark">{t("clearFilters")}</button>} />
           ) : (
-            <div key={view} className="page-enter">{view === "list" ? <RowList items={shown} /> : <FullMap items={shown} onClose={closeMap} closeLabel={t("showList")} />}</div>
+            <div key={view} className="page-enter">{view === "list" ? (organic.length ? <RowList items={organic} /> : null) : <FullMap items={shown} onClose={closeMap} closeLabel={t("showList")} />}</div>
           )}
         </div>
       </Page>
