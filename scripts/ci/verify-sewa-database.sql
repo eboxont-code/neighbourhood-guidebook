@@ -348,7 +348,7 @@ BEGIN
     RAISE EXCEPTION 'the rejected cross-form request was inserted';
   END IF;
 END
-$;
+$$;
 
 -- Import an inbound service enquiry only after the isolated rate-limit assertions.
 -- This keeps the fixture from changing the exact global rate-counter expectation above.
