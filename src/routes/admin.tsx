@@ -79,6 +79,7 @@ type Row = {
   data: unknown;
 };
 const card = "rounded-2xl border border-border bg-card p-4 sm:p-5";
+const ADMIN_PASSWORD_RECOVERY_REDIRECT = "https://sewa.boxont.com/admin";
 
 function Field({
   label,
@@ -109,9 +110,13 @@ function AdminPage() {
   const { t } = useI18n();
   const [session, setSession] = useState<Session | null | undefined>(undefined);
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
+  const [recoveryMode, setRecoveryMode] = useState(false);
   useEffect(() => {
+    const { data } = supabase.auth.onAuthStateChange((event, nextSession) => {
+      if (event === "PASSWORD_RECOVERY") setRecoveryMode(true);
+      setSession(nextSession);
+    });
     supabase.auth.getSession().then(({ data }) => setSession(data.session));
-    const { data } = supabase.auth.onAuthStateChange((_e, s) => setSession(s));
     return () => data.subscription.unsubscribe();
   }, []);
   useEffect(() => {
@@ -123,7 +128,9 @@ function AdminPage() {
   }, [session?.user.id]);
 
   let body: ReactNode;
-  if (session === undefined || (session && isAdmin === null))
+  if (recoveryMode)
+    body = <PasswordRecovery onComplete={() => setRecoveryMode(false)} />;
+  else if (session === undefined || (session && isAdmin === null))
     body = <p className="text-muted-foreground">{t("adLoading")}</p>;
   else if (!session) body = <SignIn />;
   else if (!isAdmin)
@@ -158,16 +165,42 @@ function SignIn() {
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<Key | null>(null);
+  const [notice, setNotice] = useState<{ key: Key; isError: boolean } | null>(null);
   async function submit(e: FormEvent) {
     e.preventDefault();
     setBusy(true);
     setErr(null);
+    setNotice(null);
     const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
     setBusy(false);
     if (error)
       setErr(
         error.status === 400 || /invalid/i.test(error.message) ? "adBadLogin" : "adLoginError",
       );
+  }
+  async function requestPasswordReset() {
+    const address = email.trim();
+    if (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(address)) {
+      setNotice({ key: "adResetEmailRequired", isError: true });
+      return;
+    }
+    setBusy(true);
+    setErr(null);
+    setNotice(null);
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(address, {
+        redirectTo: ADMIN_PASSWORD_RECOVERY_REDIRECT,
+      });
+      setNotice(
+        error
+          ? { key: "adResetRequestError", isError: true }
+          : { key: "adResetSent", isError: false },
+      );
+    } catch {
+      setNotice({ key: "adResetRequestError", isError: true });
+    } finally {
+      setBusy(false);
+    }
   }
   return (
     <form onSubmit={submit} className={`${card} max-w-md space-y-4`}>
@@ -192,6 +225,22 @@ function SignIn() {
           onChange={(e) => setPassword(e.target.value)}
         />
       </Field>
+      <button
+        type="button"
+        disabled={busy}
+        onClick={requestPasswordReset}
+        className="text-sm font-semibold text-primary underline underline-offset-4 disabled:opacity-60"
+      >
+        {t("adForgotPassword")}
+      </button>
+      {notice && (
+        <p
+          role={notice.isError ? "alert" : "status"}
+          className={`rounded-2xl p-3 text-sm font-semibold ${notice.isError ? "bg-error-soft text-error" : "bg-success-soft text-success"}`}
+        >
+          {t(notice.key)}
+        </p>
+      )}
       {err && (
         <p role="alert" className="rounded-2xl bg-error-soft p-3 text-sm font-semibold text-error">
           {t(err)}
@@ -203,6 +252,88 @@ function SignIn() {
         className="action-btn action-primary w-full disabled:opacity-60"
       >
         {busy ? t("adSigningIn") : t("adSignIn")}
+      </button>
+    </form>
+  );
+}
+
+function PasswordRecovery({ onComplete }: { onComplete: () => void }) {
+  const { t } = useI18n();
+  const [password, setPassword] = useState("");
+  const [again, setAgain] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<Key | null>(null);
+  const [done, setDone] = useState(false);
+
+  async function submit(e: FormEvent) {
+    e.preventDefault();
+    setError(null);
+    if (password.length < 8) return setError("adPwShort");
+    if (password !== again) return setError("adPwMismatch");
+
+    setBusy(true);
+    try {
+      const { error: updateError } = await supabase.auth.updateUser({ password });
+      if (updateError) setError("adResetError");
+      else setDone(true);
+    } catch {
+      setError("adResetError");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  if (done) {
+    return (
+      <div className={`${card} max-w-md space-y-4`}>
+        <h2 className="text-lg font-semibold">{t("adResetTitle")}</h2>
+        <p role="status" className="rounded-2xl bg-success-soft p-3 text-sm font-semibold text-success">
+          {t("adResetSuccess")}
+        </p>
+        <button type="button" className="action-btn action-primary w-full" onClick={onComplete}>
+          {t("adResetContinue")}
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <form onSubmit={submit} className={`${card} max-w-md space-y-4`}>
+      <h2 className="text-lg font-semibold">{t("adResetTitle")}</h2>
+      <p className="text-sm text-muted-foreground">{t("adPwHint")}</p>
+      <Field label={t("adPwNew")}>
+        <input
+          className="field"
+          type="password"
+          autoComplete="new-password"
+          minLength={8}
+          required
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+      </Field>
+      <Field label={t("adPwRepeat")}>
+        <input
+          className="field"
+          type="password"
+          autoComplete="new-password"
+          minLength={8}
+          required
+          value={again}
+          onChange={(e) => setAgain(e.target.value)}
+        />
+      </Field>
+      {error && (
+        <p role="alert" className="rounded-2xl bg-error-soft p-3 text-sm font-semibold text-error">
+          {t(error)}
+        </p>
+      )}
+      <button
+        type="submit"
+        disabled={busy}
+        className="action-btn action-primary w-full disabled:opacity-60"
+      >
+        {busy ? t("adLoading") : t("adResetSave")}
       </button>
     </form>
   );
