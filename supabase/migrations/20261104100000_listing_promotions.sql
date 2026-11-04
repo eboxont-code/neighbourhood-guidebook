@@ -1,3 +1,10 @@
+-- The existing Boxont quote form can request the promotion service too.
+ALTER TABLE public.contact_messages
+  DROP CONSTRAINT IF EXISTS contact_messages_service_package_check;
+ALTER TABLE public.contact_messages
+  ADD CONSTRAINT contact_messages_service_package_check
+  CHECK (service_package IS NULL OR service_package IN ('launch', 'growth', 'care', 'promotion'));
+
 -- SEWA sponsored placements. Campaigns are private to admins until fully paid and in date.
 -- Sponsorship affects a clearly labelled promotional slot only; it does not change verification.
 
