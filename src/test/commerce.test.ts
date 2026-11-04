@@ -61,7 +61,7 @@ describe("SEWA revenue totals", () => {
   it("offers sponsored placements through the quote funnel", () => {
     expect(SERVICE_PACKAGE_IDS).toContain("promotion");
     expect(dict.en.pkg_promotion_price).toBe("Custom quote");
-    expect(dict.ne.pkg_promotion_price).toBe("अनुकूलित कोट");
+    expect(dict.ne.pkg_promotion_price).toBe("कामको दायराअनुसार कोट");
     expect(dict.en.quotePrefill_promotion).not.toContain("NPR ");
     expect(dict.ne.quotePrefill_promotion).not.toContain("NPR ");
   });
