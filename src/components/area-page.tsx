@@ -13,6 +13,8 @@ import { areaFacts, otherAreas } from "@/lib/areas";
 import { newListings } from "@/lib/venue";
 import { useI18n, type Key } from "@/lib/i18n";
 import { areaLocalCategories } from "@/lib/local-pages";
+import { sponsoredFor } from "@/lib/promotions";
+import { SponsoredRows } from "@/components/blocks";
 
 /** Neighbourhood guide: facts, a jump bar, open-now first, groups sized to their real counts, a sticky map on desktop. */
 export function AreaGuide({ city, slug }: { city: City; slug: string }) {
@@ -37,6 +39,9 @@ export function AreaGuide({ city, slug }: { city: City; slug: string }) {
 
   if (!a) return null;
   const items = businessesIn(city.slug).filter((b) => b.area === a.slug);
+  const sponsored = sponsoredFor(items, "area_featured", a.slug);
+  const sponsoredIds = new Set(sponsored.map((b) => b.id));
+  const organicItems = items.filter((b) => !sponsoredIds.has(b.id));
   const order = <T extends typeof items>(list: T) => (here ? sortByDistance(list, here) : list);
   const areaName = placeName(a, lang);
   const altName = lang === "ne" ? a.name : a.nameNe;
@@ -45,8 +50,8 @@ export function AreaGuide({ city, slug }: { city: City; slug: string }) {
   const cats = categoriesIn(items);
   const localCategories = areaLocalCategories(a.slug);
   const facts = areaFacts(a.slug, now);
-  const open = order(items.filter((b) => isOpen(b, now)));
-  const fresh = now ? newListings(businessesIn(city.slug), now).filter((b) => b.area === a.slug) : [];
+  const open = order(organicItems.filter((b) => isOpen(b, now)));
+  const fresh = now ? newListings(businessesIn(city.slug), now).filter((b) => b.area === a.slug && !sponsoredIds.has(b.id)) : [];
   const pinned = facts.pinned > 0;
   const thin = items.length <= 2;
 
@@ -87,6 +92,7 @@ export function AreaGuide({ city, slug }: { city: City; slug: string }) {
       <Page wide>
         <div className={pinned ? "lg:grid lg:grid-cols-[minmax(0,1fr)_24rem] lg:gap-10 xl:grid-cols-[minmax(0,1fr)_28rem]" : ""}>
           <div id="g-all" data-group className="min-w-0 scroll-mt-32 space-y-9">
+            {sponsored.length > 0 && <SponsoredRows items={sponsored} title={t("sponsoredAreaTitle").replace("{area}", areaName)} />}
             {localCategories.length > 0 && <nav aria-label={t("localCategoryLinks").replace("{area}", areaName)} className="flex flex-wrap gap-x-4 gap-y-1">
               {localCategories.map(({ category }) => <Link key={category.slug} to="/a/$areaSlug/$categorySlug" params={{ areaSlug: a.slug, categorySlug: category.slug }} className="inline-flex min-h-11 items-center text-sm font-semibold text-primary underline underline-offset-4">{catName(category)}</Link>)}
             </nav>}
@@ -115,13 +121,14 @@ export function AreaGuide({ city, slug }: { city: City; slug: string }) {
             )}
 
             {cats.map((c) => {
-              const row = order(items.filter((b) => b.category === c.slug));
+              const row = order(organicItems.filter((b) => b.category === c.slug));
+              const categoryTotal = items.filter((b) => b.category === c.slug).length;
               return (
                 <section key={c.slug} id={`g-${c.slug}`} data-group className="scroll-mt-32">
                   <div className="mb-3 flex items-center justify-between gap-3">
                     <h2 className={`flex min-w-0 items-center gap-2.5 text-lg font-semibold cat-${c.slug}`}>
                       <span aria-hidden className="cat-tile-icon !h-8 !w-8 shrink-0 !bg-[var(--ph-bg)]"><CatIcon category={c.slug} className="h-4 w-4" /></span>
-                      <span className="min-w-0">{t("catInArea").replace("{cat}", catName(c)).replace("{area}", areaName)} <span className="text-sm font-normal text-muted-foreground">· {row.length}</span></span>
+                      <span className="min-w-0">{t("catInArea").replace("{cat}", catName(c)).replace("{area}", areaName)} <span className="text-sm font-normal text-muted-foreground">· {categoryTotal}</span></span>
                     </h2>
                     <Link to="/$city/$section/$category" params={{ city: city.slug, section: a.slug, category: c.slug }} className="-my-2 inline-flex min-h-11 shrink-0 items-center text-sm font-semibold text-foreground underline-offset-4 hover:underline">{t("seeAll")} ›</Link>
                   </div>
