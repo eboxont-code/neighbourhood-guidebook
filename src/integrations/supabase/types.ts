@@ -404,7 +404,7 @@ export type Database = {
           created_by: string
           id: string
           last_contacted_at: string | null
-          listing_id: string
+          listing_id: string | null
           next_follow_up_at: string | null
           notes: string | null
           paid_amount_npr: number
@@ -420,7 +420,7 @@ export type Database = {
           created_by?: string
           id?: string
           last_contacted_at?: string | null
-          listing_id: string
+          listing_id?: string | null
           next_follow_up_at?: string | null
           notes?: string | null
           paid_amount_npr?: number
@@ -431,11 +431,12 @@ export type Database = {
         }
         Update: {
           contact_channel?: string
+          contact_message_id?: string | null
           created_at?: string
           created_by?: string
           id?: string
           last_contacted_at?: string | null
-          listing_id?: string
+          listing_id?: string | null
           next_follow_up_at?: string | null
           notes?: string | null
           paid_amount_npr?: number
@@ -448,7 +449,7 @@ export type Database = {
           {
             foreignKeyName: "business_sales_prospects_listing_id_fkey"
             columns: ["listing_id"]
-            isOneToOne: true
+            isOneToOne: false
             referencedRelation: "listings"
             referencedColumns: ["id"]
           },
