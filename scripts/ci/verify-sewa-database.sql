@@ -206,6 +206,8 @@ UPDATE public.business_sales_prospects
   SET stage = 'won', paid_amount_npr = 5000
   WHERE listing_id = 'b1';
 DO $
+DECLARE
+  cash_lock boolean := false;
 BEGIN
   IF (SELECT count(*) FROM public.business_sales_prospects WHERE listing_id = 'b1'
       AND stage = 'won' AND quote_amount_npr = 15000 AND paid_amount_npr = 5000
@@ -222,6 +224,17 @@ BEGIN
       WHERE p.listing_id = 'b1' AND a.amount_npr = 5000
       AND a.activity_type = 'payment') <> 1 THEN
     RAISE EXCEPTION 'recorded cash activity did not persist';
+  END IF;
+  BEGIN
+    UPDATE public.business_sales_prospects
+      SET paid_amount_npr = 4000
+      WHERE listing_id = 'b1';
+  EXCEPTION WHEN SQLSTATE 'P0001' THEN
+    IF SQLERRM <> 'sales_cash_cannot_decrease' THEN RAISE; END IF;
+    cash_lock := true;
+  END;
+  IF NOT cash_lock THEN
+    RAISE EXCEPTION 'recorded sales cash could be silently decreased';
   END IF;
 END
 $;
