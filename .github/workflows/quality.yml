@@ -52,3 +52,29 @@ jobs:
 
       - name: Production build
         run: npm run build
+
+  database-migrations:
+    name: Disposable PostgreSQL migration and security tests
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_DB: sewa_ci
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: sewa_ci_only
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d sewa_ci"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v7
+
+      - name: Apply every migration and verify database security
+        env:
+          POSTGRES_CONTAINER_ID: ${{ job.services.postgres.id }}
+        run: bash scripts/ci/test-sewa-database.sh

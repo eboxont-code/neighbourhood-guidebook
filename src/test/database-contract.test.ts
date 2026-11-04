@@ -17,7 +17,7 @@ function extractAllowedEvents(sql: string): string[] {
 describe("SEWA database contracts", () => {
   it("keeps frontend analytics events aligned with the deployed SQL migration", () => {
     const sql = readProjectFile(
-      "supabase/migrations/20261029010000_analytics_funnel_events.sql",
+      "supabase/migrations/20261029004600_analytics_funnel_events.sql",
     );
     const allowed = extractAllowedEvents(sql);
 
@@ -27,7 +27,7 @@ describe("SEWA database contracts", () => {
 
   it("keeps the parallel migration history aligned with the deployed SQL migration", () => {
     const deployed = readProjectFile(
-      "supabase/migrations/20261029010000_analytics_funnel_events.sql",
+      "supabase/migrations/20261029004600_analytics_funnel_events.sql",
     );
     const parallel = readProjectFile(
       "drizzle/migrations/0009_analytics_funnel_events.sql",
@@ -56,4 +56,95 @@ describe("SEWA database contracts", () => {
     expect(sql).toMatch(/CREATE POLICY "Admins can change listings"/i);
     expect(sql).toMatch(/CREATE POLICY "Admins can remove listings"/i);
   });
+  it("keeps all public form rate checks atomic across concurrent submissions", () => {
+    const deployed = readProjectFile(
+      "supabase/migrations/20261102130000_atomic_form_rate_limits.sql",
+    );
+    const parallel = readProjectFile(
+      "drizzle/migrations/0010_atomic_form_rate_limits.sql",
+    );
+
+    expect(parallel).toBe(deployed);
+    expect(deployed).toMatch(/SECURITY DEFINER/i);
+    expect(deployed).toMatch(/SET search_path\s*=\s*pg_catalog\b/i);
+    expect(deployed).not.toMatch(/SET search_path\s*=\s*pg_catalog\s*,\s*public/i);
+    expect([...deployed.matchAll(/SET search_path\s*=\s*pg_catalog\b/gi)]).toHaveLength(5);
+    const lock = deployed.indexOf("pg_catalog.pg_advisory_xact_lock");
+    const eventTime = deployed.indexOf("event_time := pg_catalog.clock_timestamp()");
+    const firstCount = deployed.indexOf("SELECT count(*)");
+    expect(lock).toBeGreaterThanOrEqual(0);
+    expect(eventTime).toBeGreaterThan(lock);
+    expect(firstCount).toBeGreaterThan(eventTime);
+    expect(deployed).toMatch(/created_at\s*>\s*event_time\s*-\s*interval '10 minutes'/i);
+    expect(deployed).toMatch(/created_at\s*>\s*event_time\s*-\s*interval '1 hour'/i);
+    expect(deployed).toMatch(/INSERT INTO public\.form_rate_log \(key_hash, created_at\) VALUES \(k, event_time\)/i);
+    expect(deployed).toMatch(/NEW\.client_key\s*:=\s*NULL/i);
+    expect(deployed).toMatch(/REVOKE ALL ON FUNCTION public\.enforce_form_rate_limit\(\) FROM PUBLIC, anon, authenticated/i);
+
+    const rateTriggers = [
+      "drizzle/migrations/0001_form_rate_limit.sql",
+      "drizzle/migrations/0005_business_submissions_and_form_topics.sql",
+      "drizzle/migrations/0007_business_claims.sql",
+    ].map(readProjectFile).join("\n");
+    expect(rateTriggers).toMatch(/CREATE TRIGGER contact_messages_rate_limit[\s\S]*?ON public\.contact_messages[\s\S]*?EXECUTE FUNCTION public\.enforce_form_rate_limit\(\)/i);
+    expect(rateTriggers).toMatch(/CREATE TRIGGER correction_reports_rate_limit[\s\S]*?ON public\.correction_reports[\s\S]*?EXECUTE FUNCTION public\.enforce_form_rate_limit\(\)/i);
+    expect(rateTriggers).toMatch(/CREATE TRIGGER business_submissions_rate_limit[\s\S]*?ON public\.business_submissions[\s\S]*?EXECUTE FUNCTION public\.enforce_form_rate_limit\(\)/i);
+    expect(rateTriggers).toMatch(/CREATE TRIGGER business_claims_rate_limit[\s\S]*?ON public\.business_claims[\s\S]*?EXECUTE FUNCTION public\.enforce_form_rate_limit\(\)/i);
+  });
+
+  it("keeps admin authorization helpers unavailable to anonymous callers", () => {
+    const sql = readProjectFile(
+      "supabase/migrations/20261102130000_atomic_form_rate_limits.sql",
+    );
+    expect(sql).toMatch(/REVOKE ALL ON FUNCTION public\.has_role\(uuid, public\.app_role\) FROM PUBLIC, anon/i);
+    expect(sql).toMatch(/GRANT EXECUTE ON FUNCTION public\.has_role\(uuid, public\.app_role\) TO authenticated/i);
+    expect(sql).toMatch(/REVOKE ALL ON FUNCTION public\.has_role\(uuid, public\.app_role\) FROM PUBLIC, anon, service_role/i);
+    expect(sql).toMatch(/auth\.uid\(\) IS NOT NULL[\s\S]*?_user_id = auth\.uid\(\)/i);
+    expect(sql).toMatch(/SET search_path\s*=\s*pg_catalog\b/i);
+    expect(sql).not.toMatch(/SET search_path\s*=\s*pg_catalog\s*,\s*public/i);
+
+    const policyMigrations = [
+      "drizzle/migrations/0002_listings_admin_and_roles.sql",
+      "drizzle/migrations/0003_contact_messages_lead_status.sql",
+      "drizzle/migrations/0005_business_submissions_and_form_topics.sql",
+      "drizzle/migrations/0007_business_claims.sql",
+      "drizzle/migrations/0008_analytics_events.sql",
+    ].map(readProjectFile).join("\n");
+    const rolePolicies = [...policyMigrations.matchAll(/CREATE POLICY[\s\S]*?;/gi)]
+      .map((match) => match[0])
+      .filter((policy) => /public\.has_role\s*\(/i.test(policy));
+    expect(rolePolicies.length).toBeGreaterThan(0);
+    for (const policy of rolePolicies) {
+      expect(policy).toMatch(/\bTO authenticated\b/i);
+      expect(policy).not.toMatch(/\bTO anon\b/i);
+    }
+  });
+
+  it("keeps public form submission tables row-level protected and admin-only for private reads", () => {
+    const migrations = [
+      "drizzle/migrations/0000_create_contact_and_correction_forms.sql",
+      "drizzle/migrations/0002_listings_admin_and_roles.sql",
+      "drizzle/migrations/0005_business_submissions_and_form_topics.sql",
+      "drizzle/migrations/0007_business_claims.sql",
+      "drizzle/migrations/0008_analytics_events.sql",
+    ].map(readProjectFile).join("\n");
+
+    for (const table of [
+      "contact_messages",
+      "correction_reports",
+      "business_submissions",
+      "business_claims",
+      "analytics_events",
+    ]) {
+      expect(migrations).toMatch(new RegExp(`ALTER TABLE public\\.${table} ENABLE ROW LEVEL SECURITY`, "i"));
+      expect(migrations).not.toMatch(new RegExp(`GRANT\\s+(?:SELECT|UPDATE|DELETE|ALL)\\s+ON\\s+public\\.${table}\\s+TO\\s+anon`, "i"));
+    }
+
+    expect(migrations).toMatch(/CREATE POLICY "Admins can read contact messages"[\s\S]*?has_role\(auth\.uid\(\),\s*'admin'/i);
+    expect(migrations).toMatch(/CREATE POLICY "Admins can read correction reports"[\s\S]*?has_role\(auth\.uid\(\),\s*'admin'/i);
+    expect(migrations).toMatch(/CREATE POLICY "Admins read claims"[\s\S]*?has_role\(auth\.uid\(\),\s*'admin'/i);
+    expect(migrations).toMatch(/CREATE POLICY "Admins read business submissions"[\s\S]*?has_role\(auth\.uid\(\),\s*'admin'/i);
+    expect(migrations).toMatch(/CREATE POLICY "Admins can read events"[\s\S]*?has_role\(auth\.uid\(\),\s*'admin'/i);
+  });
+
 });

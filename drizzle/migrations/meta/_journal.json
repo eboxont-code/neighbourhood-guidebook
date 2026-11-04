@@ -71,6 +71,13 @@
       "when": 1793235600000,
       "tag": "0009_analytics_funnel_events",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1793624400000,
+      "tag": "0010_atomic_form_rate_limits",
+      "breakpoints": true
     }
   ]
 }
