@@ -69,7 +69,7 @@ describe("SEWA sponsored placements", () => {
     const result = sponsoredFor([item], "area_featured", "durbar-marg");
     expect(result).toHaveLength(1);
     expect(result[0]?.slug).toBe("sample-business");
-    expect(result[0]?.promotionClickId).toBe("active-area-campaign");
+    expect(result[0]?.promotionClickKey).toBe("area_featured:durbar-marg");
   });
 
   it("does not change the original business or its verification state", () => {
