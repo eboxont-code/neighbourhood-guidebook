@@ -43,6 +43,7 @@ import {
 } from "@/lib/leads";
 import { AdminClaims } from "@/components/admin-claims";
 import { AdminInsights } from "@/components/admin-insights";
+import { AdminPromotions } from "@/components/admin-promotions";
 import { offersPreview, previewPath } from "@/lib/preview";
 import { PAYMENT_STATUSES, isPaymentStatus, summariseRevenue, type PaymentStatus } from "@/lib/commerce";
 import { optionLabel, submissionStatuses } from "@/lib/form-options";
@@ -209,12 +210,13 @@ function SignIn() {
 
 function Dashboard({ email }: { email: string }) {
   const { t } = useI18n();
-  const [tab, setTab] = useState<"listings" | "messages" | "submissions" | "claims" | "insights" | "account">("listings");
+  const [tab, setTab] = useState<"listings" | "messages" | "submissions" | "claims" | "promotions" | "insights" | "account">("listings");
   const tabs = [
     ["listings", "adTabListings"],
     ["messages", "adTabMessages"],
     ["submissions", "adTabSubmissions"],
     ["claims", "adClaims"],
+    ["promotions", "adTabPromotions"],
     ["insights", "adInsights"],
     ["account", "adTabAccount"],
   ] as const;
@@ -272,6 +274,7 @@ function Dashboard({ email }: { email: string }) {
       {tab === "messages" && <Messages onCount={setNewLeads} />}
       {tab === "submissions" && <Submissions onCount={setNewSubs} />}
       {tab === "claims" && <AdminClaims onCount={setNewClaims} />}
+      {tab === "promotions" && <AdminPromotions />}
       {tab === "insights" && <AdminInsights />}
       {tab === "account" && <Account email={email} />}
     </div>
