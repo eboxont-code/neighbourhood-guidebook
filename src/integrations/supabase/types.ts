@@ -307,7 +307,7 @@ export type Database = {
           created_at: string
           ends_at: string
           id: string
-          listing_id: string | null
+          listing_id: string
           paid_amount_npr: number
           placement: string
           quote_amount_npr: number | null
@@ -335,7 +335,7 @@ export type Database = {
           created_at?: string
           ends_at?: string
           id?: string
-          listing_id?: string | null
+          listing_id?: string
           paid_amount_npr?: number
           placement?: string
           quote_amount_npr?: number | null
