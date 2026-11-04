@@ -307,7 +307,7 @@ export type Database = {
           created_at: string
           ends_at: string
           id: string
-          listing_id: string
+          listing_id: string | null
           paid_amount_npr: number
           placement: string
           quote_amount_npr: number | null
@@ -335,7 +335,7 @@ export type Database = {
           created_at?: string
           ends_at?: string
           id?: string
-          listing_id?: string
+          listing_id?: string | null
           paid_amount_npr?: number
           placement?: string
           quote_amount_npr?: number | null
@@ -399,6 +399,7 @@ export type Database = {
       business_sales_prospects: {
         Row: {
           contact_channel: string
+          contact_message_id: string | null
           created_at: string
           created_by: string
           id: string
@@ -414,6 +415,7 @@ export type Database = {
         }
         Insert: {
           contact_channel?: string
+          contact_message_id?: string | null
           created_at?: string
           created_by?: string
           id?: string
@@ -448,6 +450,13 @@ export type Database = {
             columns: ["listing_id"]
             isOneToOne: true
             referencedRelation: "listings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_sales_prospects_contact_message_id_fkey"
+            columns: ["contact_message_id"]
+            isOneToOne: true
+            referencedRelation: "contact_messages"
             referencedColumns: ["id"]
           }
         ]
