@@ -167,6 +167,34 @@ END
 $;
 RESET ROLE;
 
+-- A paid receipt and terminal campaign state cannot be silently rewritten.
+DO $
+DECLARE
+  amount_locked boolean := false;
+  cancellation_blocked boolean := false;
+BEGIN
+  BEGIN
+    UPDATE public.listing_promotions
+      SET quote_amount_npr = 6000, paid_amount_npr = 6000
+      WHERE listing_id = 'b1' AND placement = 'area_featured';
+  EXCEPTION WHEN SQLSTATE 'P0001' THEN
+    IF SQLERRM <> 'promotion_paid_amount_locked' THEN RAISE; END IF;
+    amount_locked := true;
+  END;
+  BEGIN
+    UPDATE public.listing_promotions
+      SET status = 'cancelled', paid_amount_npr = 0
+      WHERE listing_id = 'b1' AND placement = 'area_featured';
+  EXCEPTION WHEN SQLSTATE 'P0001' THEN
+    IF SQLERRM <> 'promotion_paid_campaign_terminal' THEN RAISE; END IF;
+    cancellation_blocked := true;
+  END;
+  IF NOT amount_locked OR NOT cancellation_blocked THEN
+    RAISE EXCEPTION 'paid campaign financial state could be rewritten';
+  END IF;
+END
+$;
+
 -- Anonymous visitors can see the paid campaign only while its window is live.
 SET ROLE anon;
 DO $
