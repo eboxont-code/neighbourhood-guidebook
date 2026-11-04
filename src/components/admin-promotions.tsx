@@ -125,6 +125,7 @@ export function AdminPromotions() {
   }
 
   const selectedListing = listingById.get(form.listingId);
+  const bookingLocked = form.status === "paid" || form.status === "refunded";
   const quote = form.quoteAmount.trim() === "" ? null : Number(form.quoteAmount);
   const validQuote = quote === null || (Number.isSafeInteger(quote) && quote > 0 && quote <= 5_000_000);
 
@@ -262,14 +263,14 @@ export function AdminPromotions() {
         <form className="space-y-3" onSubmit={save}>
           <label className="block">
             <span className="mb-1.5 block text-sm font-semibold">{t("promoListing")}</span>
-            <select className={field} required value={form.listingId} onChange={(e) => set({ listingId: e.target.value })}>
+            <select className={field} required disabled={bookingLocked} value={form.listingId} onChange={(e) => set({ listingId: e.target.value })}>
               <option value="">{t("promoSelectListing")}</option>
               {listings.map((listing) => <option key={listing.id} value={listing.id}>{listing.name} · {listing.area}</option>)}
             </select>
           </label>
           <label className="block">
             <span className="mb-1.5 block text-sm font-semibold">{t("promoPlacement")}</span>
-            <select className={field} value={form.placement} onChange={(e) => set({ placement: e.target.value as Placement })}>
+            <select className={field} disabled={bookingLocked} value={form.placement} onChange={(e) => set({ placement: e.target.value as Placement })}>
               <option value="area_featured">{t("promoAreaFeatured")}</option>
               <option value="category_featured">{t("promoCategoryFeatured")}</option>
             </select>
@@ -282,11 +283,11 @@ export function AdminPromotions() {
           <div className="grid gap-3 sm:grid-cols-2">
             <label className="block">
               <span className="mb-1.5 block text-sm font-semibold">{t("promoStartDate")}</span>
-              <input className={field} type="date" required value={form.startDate} onChange={(e) => set({ startDate: e.target.value })} />
+              <input className={field} type="date" required disabled={bookingLocked} value={form.startDate} onChange={(e) => set({ startDate: e.target.value })} />
             </label>
             <label className="block">
               <span className="mb-1.5 block text-sm font-semibold">{t("promoEndDate")}</span>
-              <input className={field} type="date" required min={form.startDate} value={form.endDate} onChange={(e) => set({ endDate: e.target.value })} />
+              <input className={field} type="date" required min={form.startDate} disabled={bookingLocked} value={form.endDate} onChange={(e) => set({ endDate: e.target.value })} />
             </label>
           </div>
           <label className="block">
