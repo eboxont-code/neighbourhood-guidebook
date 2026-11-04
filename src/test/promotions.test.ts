@@ -24,7 +24,6 @@ describe("SEWA sponsored placements", () => {
     const item = business({
       promotions: [
         {
-          id: "active-area-campaign",
           placement: "area_featured",
           target_area: "durbar-marg",
           target_category: null,
@@ -32,7 +31,6 @@ describe("SEWA sponsored placements", () => {
           ends_at: new Date(now + 60_000).toISOString(),
         },
         {
-          id: "other-area",
           placement: "area_featured",
           target_area: "thamel",
           target_category: null,
@@ -40,7 +38,6 @@ describe("SEWA sponsored placements", () => {
           ends_at: new Date(now + 60_000).toISOString(),
         },
         {
-          id: "category-campaign",
           placement: "category_featured",
           target_area: null,
           target_category: "salons",
@@ -48,7 +45,6 @@ describe("SEWA sponsored placements", () => {
           ends_at: new Date(now + 60_000).toISOString(),
         },
         {
-          id: "not-started",
           placement: "area_featured",
           target_area: "durbar-marg",
           target_category: null,
@@ -56,7 +52,6 @@ describe("SEWA sponsored placements", () => {
           ends_at: new Date(now + 120_000).toISOString(),
         },
         {
-          id: "expired",
           placement: "area_featured",
           target_area: "durbar-marg",
           target_category: null,
@@ -75,7 +70,6 @@ describe("SEWA sponsored placements", () => {
   it("does not change the original business or its verification state", () => {
     const item = business({
       promotions: [{
-        id: "campaign-1",
         placement: "category_featured",
         target_area: null,
         target_category: "salons",
@@ -86,14 +80,13 @@ describe("SEWA sponsored placements", () => {
 
     const result = sponsoredFor([item], "category_featured", "salons");
     expect(result[0]?.verification).toBe("not_verified");
-    expect(item.promotionClickId).toBeUndefined();
+    expect(item.promotionClickKey).toBeUndefined();
     expect(item.verification).toBe("not_verified");
   });
 
   it("returns nothing for a non-matching or absent campaign", () => {
     expect(sponsoredFor([business()], "area_featured", "durbar-marg")).toEqual([]);
     expect(sponsoredFor([business({ promotions: [{
-      id: "wrong-slot",
       placement: "category_featured",
       target_area: null,
       target_category: "salons",
