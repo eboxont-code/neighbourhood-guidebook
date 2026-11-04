@@ -116,4 +116,4 @@ if [[ "$stored" -ne 3 ]]; then
   exit 1
 fi
 
-echo "All 13 migrations and disposable PostgreSQL security/concurrency checks passed."
+echo "All 15 migrations and disposable PostgreSQL security/concurrency checks passed."
