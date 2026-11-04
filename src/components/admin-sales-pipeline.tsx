@@ -209,6 +209,11 @@ export function AdminSalesPipeline() {
     }
     const quote = form.quoteAmount.trim() === "" ? null : Number(form.quoteAmount);
     const paid = Number(form.paidAmount || "0");
+    const previousCash = form.id ? (prospects ?? []).find((row) => row.id === form.id)?.paid_amount_npr ?? 0 : 0;
+    if (paid < previousCash) {
+      setNote(t("salesCashCannotDecrease"));
+      return;
+    }
     if ((quote !== null && (!Number.isSafeInteger(quote) || quote < 1 || quote > 5_000_000))
       || !Number.isSafeInteger(paid) || paid < 0 || paid > 5_000_000 || paid > (quote ?? 0)) {
       setNote(t("salesInvalidMoney"));
