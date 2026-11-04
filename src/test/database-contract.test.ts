@@ -168,8 +168,9 @@ describe("SEWA database contracts", () => {
       expect(drizzle).toMatch(new RegExp(`CREATE POLICY "Admins manage ${table === "business_sales_prospects" ? "business sales prospects" : "business sales activities"}"`, "i"));
     }
     expect(drizzle).toMatch(/stage IN \('identified'.*'do_not_contact'\)/);
-    expect(drizzle).toMatch(/paid_amount_npr <= coalesce\\(quote_amount_npr, 0\\)/);
+    expect(drizzle).toMatch(/paid_amount_npr <= coalesce\(quote_amount_npr, 0\)/);
     expect(drizzle).toMatch(/set_business_sales_prospect_updated_at/);
+    expect(drizzle).toMatch(/sales_cash_cannot_decrease/);
     expect(readProjectFile("scripts/ci/test-sewa-database.sh")).toMatch(/migration_count" -ne 14/);
     expect(readProjectFile("scripts/ci/verify-sewa-database.sql")).toMatch(/private Boxont sales pipeline/);
   });
