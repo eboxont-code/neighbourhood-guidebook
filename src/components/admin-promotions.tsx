@@ -152,7 +152,12 @@ export function AdminPromotions() {
       setNote(t("promoConfirmRefunded"));
       return;
     }
-    if (form.id && (promotions ?? []).some((row) => row.id === form.id && row.status === "paid") && form.status === "cancelled") {
+    const previous = form.id ? (promotions ?? []).find((row) => row.id === form.id) : undefined;
+    if (form.status === "refunded" && (!previous || (previous.status !== "paid" && previous.status !== "refunded"))) {
+      setNote(t("promoRefundRule"));
+      return;
+    }
+    if (previous?.status === "paid" && form.status !== "paid" && form.status !== "refunded") {
       setNote(t("promoRefundRule"));
       return;
     }
@@ -216,7 +221,7 @@ export function AdminPromotions() {
     paid: "promoPaid",
     cancelled: "promoCancelled",
     refunded: "promoRefunded",
-  }[status] ?? "promoDraft") as "promoDraft");
+  }[status] ?? "promoDraft") as import("@/lib/i18n").Key);
   const statusClass = (status: string) => status === "paid"
     ? "bg-success-soft text-success"
     : status === "quoted" ? "bg-warning-soft text-warning" : "bg-muted text-muted-foreground";
