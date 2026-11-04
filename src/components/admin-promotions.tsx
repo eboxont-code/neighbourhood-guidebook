@@ -161,6 +161,14 @@ export function AdminPromotions() {
       setNote(t("promoRefundRule"));
       return;
     }
+    if (previous?.status === "paid" && quote !== previous.quote_amount_npr) {
+      setNote(t("promoPaidQuoteLocked"));
+      return;
+    }
+    if (previous?.status === "refunded") {
+      setNote(t("promoRefundRule"));
+      return;
+    }
     if (form.id && (promotions ?? []).some((row) => row.id === form.id && row.status === "refunded") && form.status !== "refunded") {
       setNote(t("promoRefundRule"));
       return;
@@ -287,16 +295,22 @@ export function AdminPromotions() {
           </div>
           <label className="block">
             <span className="mb-1.5 block text-sm font-semibold">{t("promoQuote")}</span>
-            <input className={field} type="number" min="1" max="5000000" step="1" inputMode="numeric" value={form.quoteAmount} onChange={(e) => set({ quoteAmount: e.target.value })} placeholder="NPR" />
+            <input className={field} type="number" min="1" max="5000000" step="1" inputMode="numeric" disabled={form.status === "paid" || form.status === "refunded"} value={form.quoteAmount} onChange={(e) => set({ quoteAmount: e.target.value })} placeholder="NPR" />
           </label>
           <label className="block">
             <span className="mb-1.5 block text-sm font-semibold">{t("promoStatus")}</span>
             <select className={field} value={form.status} onChange={(e) => set({ status: e.target.value as PromotionStatus })}>
-              <option value="draft">{t("promoDraft")}</option>
-              <option value="quoted">{t("promoQuoted")}</option>
-              <option value="paid">{t("promoPaid")}</option>
-              <option value="cancelled">{t("promoCancelled")}</option>
-              <option value="refunded">{t("promoRefunded")}</option>
+              {form.status === "paid" ? <>
+                <option value="paid">{t("promoPaid")}</option>
+                <option value="refunded">{t("promoRefunded")}</option>
+              </> : form.status === "refunded" ? (
+                <option value="refunded">{t("promoRefunded")}</option>
+              ) : <>
+                <option value="draft">{t("promoDraft")}</option>
+                <option value="quoted">{t("promoQuoted")}</option>
+                <option value="paid">{t("promoPaid")}</option>
+                <option value="cancelled">{t("promoCancelled")}</option>
+              </>}
             </select>
           </label>
           {form.status === "paid" && (
@@ -347,7 +361,7 @@ export function AdminPromotions() {
                       <td className="p-3"><span className={"inline-flex rounded-lg px-2 py-1 text-xs font-semibold " + statusClass(row.status)}>{statusLabel(row.status)}</span></td>
                       <td className="p-3 text-right tabular-nums">{row.quote_amount_npr === null ? "—" : money(row.quote_amount_npr)}</td>
                       <td className="p-3 text-right tabular-nums">{clicks[row.id] ?? 0}</td>
-                      <td className="p-3"><button type="button" className="text-sm font-semibold text-primary underline" onClick={() => edit(row)}>{t("promoEdit")}</button></td>
+                      <td className="p-3">{row.status !== "refunded" && <button type="button" className="text-sm font-semibold text-primary underline" onClick={() => edit(row)}>{t("promoEdit")}</button>}</td>
                     </tr>
                   );
                 })}
