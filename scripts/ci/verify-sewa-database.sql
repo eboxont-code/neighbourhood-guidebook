@@ -205,7 +205,7 @@ UPDATE public.business_sales_prospects
 UPDATE public.business_sales_prospects
   SET stage = 'won', paid_amount_npr = 5000
   WHERE listing_id = 'b1';
-DO $
+DO $sales$
 DECLARE
   cash_lock boolean := false;
 BEGIN
@@ -237,7 +237,7 @@ BEGIN
     RAISE EXCEPTION 'recorded sales cash could be silently decreased';
   END IF;
 END
-$;
+$sales$;
 RESET ROLE;
 
 -- A paid receipt and terminal campaign state cannot be silently rewritten.
