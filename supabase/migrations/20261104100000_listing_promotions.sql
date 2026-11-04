@@ -81,6 +81,16 @@ BEGIN
       RAISE EXCEPTION 'promotion_paid_campaign_terminal';
     END IF;
     IF OLD.status = 'paid' AND (
+      NEW.listing_id IS DISTINCT FROM OLD.listing_id
+      OR NEW.placement IS DISTINCT FROM OLD.placement
+      OR NEW.target_area IS DISTINCT FROM OLD.target_area
+      OR NEW.target_category IS DISTINCT FROM OLD.target_category
+      OR NEW.starts_at IS DISTINCT FROM OLD.starts_at
+      OR NEW.ends_at IS DISTINCT FROM OLD.ends_at
+    ) THEN
+      RAISE EXCEPTION 'promotion_paid_booking_locked';
+    END IF;
+    IF OLD.status = 'paid' AND (
       NEW.quote_amount_npr IS DISTINCT FROM OLD.quote_amount_npr
       OR NEW.paid_amount_npr IS DISTINCT FROM OLD.paid_amount_npr
     ) THEN
