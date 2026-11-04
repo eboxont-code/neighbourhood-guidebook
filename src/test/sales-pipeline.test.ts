@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildSalesOutreachDraft, isOpenSalesStage, salesFollowUpState } from "@/lib/sales-pipeline";
+import { buildSalesOutreachDraft, inboundLeadInterest, inboundLeadStage, isOpenSalesStage, salesFollowUpState } from "@/lib/sales-pipeline";
 
 const business = { name: "Sample Salon", area: "naxal" };
 
@@ -17,6 +17,23 @@ describe("Boxont sales pipeline", () => {
     expect(message).toContain("Sample Salon");
     expect(message).toContain("Boxont");
     expect(message).toContain("मोबाइलमैत्री व्यवसाय वेबसाइट");
+  });
+
+  it("maps existing enquiry statuses into sales stages without changing the source enquiry", () => {
+    expect(inboundLeadStage("new")).toBe("identified");
+    expect(inboundLeadStage("contacted")).toBe("contacted");
+    expect(inboundLeadStage("quoted")).toBe("proposal");
+    expect(inboundLeadStage("won")).toBe("won");
+    expect(inboundLeadStage("lost")).toBe("lost");
+  });
+
+  it("maps inbound service package choices into sales interests", () => {
+    expect(inboundLeadInterest("launch")).toBe("website");
+    expect(inboundLeadInterest("growth")).toBe("website");
+    expect(inboundLeadInterest("redesign")).toBe("redesign");
+    expect(inboundLeadInterest("care")).toBe("care");
+    expect(inboundLeadInterest("promotion")).toBe("sponsored_placement");
+    expect(inboundLeadInterest(null)).toBe("unsure");
   });
 
   it("keeps closed and do-not-contact prospects out of follow-up queues", () => {
