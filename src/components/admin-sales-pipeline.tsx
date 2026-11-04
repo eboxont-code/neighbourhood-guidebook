@@ -7,6 +7,7 @@ import { leadTel, leadWhatsapp } from "@/lib/leads";
 import { useI18n, type Key } from "@/lib/i18n";
 import {
   buildSalesOutreachDraft,
+  buildServiceProposalDraft,
   inboundLeadInterest,
   inboundLeadStage,
   isOpenSalesStage,
@@ -137,6 +138,8 @@ export function AdminSalesPipeline() {
   const [search, setSearch] = useState("");
   const [activityType, setActivityType] = useState<SalesActivityType>("whatsapp");
   const [activitySummary, setActivitySummary] = useState("");
+  const [proposalScope, setProposalScope] = useState("");
+  const [proposalTimeline, setProposalTimeline] = useState("");
 
   async function load() {
     setFailed(false);
@@ -211,6 +214,25 @@ export function AdminSalesPipeline() {
   const outreachPhone = selectedMessage?.phone ?? selectedBusiness?.whatsapp ?? selectedBusiness?.phone ?? null;
   const history = selected ? activities.filter((activity) => activity.prospect_id === selected.id) : [];
   const draft = outreachBusiness ? buildSalesOutreachDraft(outreachBusiness, form.interest, lang) : "";
+  const proposalQuote = selectedMessage ? selectedMessage.quote_amount_npr : selected?.quote_amount_npr ?? null;
+  const proposalName = selectedBusiness?.name ?? selectedMessage?.business_name ?? selectedMessage?.name ?? "";
+  const proposalDate = new Intl.DateTimeFormat(lang === "ne" ? "ne-NP" : "en-NP", {
+    timeZone: "Asia/Kathmandu",
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  }).format(new Date());
+  const proposalDraft = selected && proposalQuote && proposalQuote > 0 && isOpenSalesStage(form.stage)
+    ? buildServiceProposalDraft({
+      businessName: proposalName,
+      interest: form.interest,
+      scope: proposalScope,
+      timeline: proposalTimeline,
+      quoteNpr: proposalQuote,
+      preparedOn: proposalDate,
+      lang,
+    })
+    : null;
   const whatsappUrl = outreachPhone && draft && isOpenSalesStage(form.stage)
     ? leadWhatsapp(outreachPhone, draft)
     : null;
@@ -221,6 +243,8 @@ export function AdminSalesPipeline() {
   function startNew() {
     setSelectedId(null);
     setForm(emptyForm());
+    setProposalScope("");
+    setProposalTimeline("");
     setNote(null);
   }
 
@@ -239,6 +263,8 @@ export function AdminSalesPipeline() {
       notes: prospect.notes ?? "",
     });
     setActivitySummary("");
+    setProposalScope("");
+    setProposalTimeline("");
     setNote(null);
   }
 
@@ -355,6 +381,31 @@ export function AdminSalesPipeline() {
     await load();
     editProspect(result.data);
     setNote(logged.error ? t("salesConvertedHistoryWarning") : t("salesConverted"));
+  }
+
+  async function copyProposalDraft() {
+    if (!selected || !proposalDraft || !isOpenSalesStage(form.stage) || busy) return;
+    try {
+      if (!navigator.clipboard?.writeText) throw new Error("clipboard_unavailable");
+      await navigator.clipboard.writeText(proposalDraft);
+    } catch {
+      setNote(t("salesDraftCopyFailed"));
+      return;
+    }
+
+    setBusy(true);
+    const logged = await supabase.from("business_sales_activities").insert({
+      prospect_id: selected.id,
+      activity_type: "proposal",
+      summary: proposalDraft,
+    });
+    setBusy(false);
+    if (logged.error) {
+      setNote(t("salesProposalCopiedNotLogged"));
+      return;
+    }
+    await load();
+    setNote(t("salesProposalCopiedLogged"));
   }
 
   async function logActivity(e: FormEvent<HTMLFormElement>) {
@@ -613,6 +664,42 @@ export function AdminSalesPipeline() {
                       {whatsappUrl && <a className="action-btn action-secondary min-h-10" href={whatsappUrl} target="_blank" rel="noopener noreferrer">{t("salesOpenWhatsapp")}</a>}
                       {phoneUrl && <a className="action-btn action-secondary min-h-10" href={phoneUrl}>{t("salesCallBusiness")}</a>}
                     </div>
+                  </>
+                ) : <p className="mt-3 rounded-xl bg-muted/50 p-3 text-sm">{t("salesOutreachBlocked")}</p>}
+              </div>
+
+              <div className="rounded-2xl border border-border bg-card p-4">
+                <h3 className="font-semibold">{t("salesProposalComposer")}</h3>
+                <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{t("salesProposalIntro")}</p>
+                {isOpenSalesStage(form.stage) ? (
+                  <>
+                    <div className="mt-3 rounded-xl bg-muted/40 p-3 text-sm">
+                      <p>{t("salesProposalRecipient")}: <span className="font-semibold">{proposalName}</span></p>
+                      <p className="mt-1">{t("salesQuoteAmount")}: <span className="font-semibold">{proposalQuote && proposalQuote > 0 ? `NPR ${npr(proposalQuote)}` : t("salesProposalQuoteRequired")}</span></p>
+                      {selectedMessage && <p className="mt-1 text-xs text-muted-foreground">{t("salesLinkedFinancials")}</p>}
+                    </div>
+                    {!proposalQuote || proposalQuote <= 0 ? (
+                      <p className="mt-3 rounded-xl border border-border p-3 text-sm">{selectedMessage ? t("salesProposalSetQuoteInbox") : t("salesProposalSetQuote")}</p>
+                    ) : (
+                      <>
+                        <label className="mt-3 block">
+                          <span className="mb-1.5 block text-sm font-semibold">{t("salesProposalScope")}</span>
+                          <textarea className="field min-h-28 w-full" maxLength={520} rows={4} value={proposalScope} onChange={(e) => setProposalScope(e.target.value)} placeholder={t("salesProposalScopePlaceholder")} />
+                        </label>
+                        <label className="mt-3 block">
+                          <span className="mb-1.5 block text-sm font-semibold">{t("salesProposalTimeline")}</span>
+                          <input className={field} maxLength={120} value={proposalTimeline} onChange={(e) => setProposalTimeline(e.target.value)} placeholder={t("salesProposalTimelinePlaceholder")} />
+                        </label>
+                        <label className="mt-3 block">
+                          <span className="mb-1.5 block text-sm font-semibold">{t("salesProposalPreview")}</span>
+                          <textarea className="field min-h-52 w-full font-mono text-xs" rows={10} readOnly value={proposalDraft ?? ""} />
+                        </label>
+                        <div className="mt-3 flex flex-wrap items-center gap-2">
+                          <button type="button" disabled={busy || !proposalDraft} className="action-btn action-primary min-h-10 disabled:opacity-60" onClick={() => void copyProposalDraft()}>{t("salesProposalCopyLog")}</button>
+                          <span className="text-xs text-muted-foreground">{t("salesProposalHistoryHint")}</span>
+                        </div>
+                      </>
+                    )}
                   </>
                 ) : <p className="mt-3 rounded-xl bg-muted/50 p-3 text-sm">{t("salesOutreachBlocked")}</p>}
               </div>
