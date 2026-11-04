@@ -180,7 +180,7 @@ function SignIn() {
   }
   async function requestPasswordReset() {
     const address = email.trim();
-    if (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(address)) {
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(address)) {
       setNotice({ key: "adResetEmailRequired", isError: true });
       return;
     }
