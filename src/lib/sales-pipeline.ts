@@ -76,6 +76,33 @@ Thank you,
 Boxont`;
 }
 
+
+export function inboundLeadStage(status: string): SalesStage {
+  switch (status) {
+    case "contacted": return "contacted";
+    case "quoted": return "proposal";
+    case "won": return "won";
+    case "lost": return "lost";
+    default: return "identified";
+  }
+}
+
+export function inboundLeadInterest(servicePackage: string | null | undefined): SalesInterest {
+  switch (servicePackage) {
+    case "launch":
+    case "growth":
+      return "website";
+    case "redesign":
+      return "redesign";
+    case "care":
+      return "care";
+    case "promotion":
+      return "sponsored_placement";
+    default:
+      return "unsure";
+  }
+}
+
 export function isOpenSalesStage(stage: string): boolean {
   return stage !== "won" && stage !== "lost" && stage !== "do_not_contact";
 }
