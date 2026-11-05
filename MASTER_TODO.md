@@ -305,6 +305,7 @@ The primary funnel is Sewa discovery/prospect → free preview → attributed en
 - [ ] [TODO] Verify totals against source records, including partial payments/refunds where supported.
 - [ ] [TODO] Ensure every qualified enquiry has a clear next action and follow-up owner.
 - [ ] [TODO] Establish practical lead response and follow-up procedures.
+- [ ] [BLOCKED] Lead alert emails to the admin for new enquiries. Needs a free mail provider chosen and approved first.
 
 ### 3.2 Sponsored placements — conditional, not the current north star
 
@@ -314,7 +315,7 @@ The primary funnel is Sewa discovery/prospect → free preview → attributed en
 - [x] [DONE] Manual quote, full-payment and refund recording safeguards.
 - [x] [DONE] Campaign date-window and overlap protections.
 - [ ] [TODO] Audit the existing Bundle 6 implementation and test its safeguards before considering a pilot.
-- [ ] [BLOCKED] Do not publish pricing, actively sell, or activate new paid placements until the owner approves the offer, value, price, terms and launch gate.
+- [ ] [BLOCKED] Do not publish pricing, actively sell, or activate new paid placements until the owner approves the offer, value, price, terms and launch gate. Waiting on Boxont for prices for the featured spot, the verified badge and packages; paid listings stay blocked until then.
 - [ ] [TODO] Test a complete campaign from quote to paid activation only after approval.
 - [ ] [TODO] Confirm quoted/unpaid/draft campaigns never appear publicly.
 - [ ] [TODO] Confirm expired, cancelled and refunded campaigns are not shown.
@@ -366,6 +367,7 @@ The primary funnel is Sewa discovery/prospect → free preview → attributed en
 - [ ] [TODO] Define the first clear Boxont service offer and target customer.
 - [ ] [TODO] Prepare honest service descriptions for website launch, business websites and website care.
 - [ ] [TODO] Prepare professional English and Nepali outreach templates.
+- [ ] [BLOCKED] 3 outreach drafts are prepared. Waiting on Boxont to send or bin each one; nothing is sent without his approval.
 - [ ] [TODO] Manually review a small, relevant prospect list from legitimate public business information.
 - [ ] [TODO] Qualify prospects before contacting them.
 - [ ] [TODO] Record contact attempts, replies and follow-up dates in the CRM.
@@ -392,20 +394,26 @@ The primary funnel is Sewa discovery/prospect → free preview → attributed en
 
 Historical audit baseline (not a verified current count): 52 businesses, 8 categories, 7 neighbourhoods, with 21 listings mapped. Re-audit before presenting these numbers as current.
 
-- [ ] [TODO] Recount current published businesses, categories and neighbourhoods.
-- [ ] [TODO] Measure map-coordinate coverage and validate each pin.
+- [x] [DONE] Recount current published businesses, categories and neighbourhoods. 52 verified businesses as of 31 Oct 2026.
+- [ ] [IN PROGRESS] Measure map-coordinate coverage and validate each pin. 21 of 52 pinned as of 31 Oct 2026. Target 95%+ mapped. Skipped because OpenStreetMap did not match: Hankook Sarang, Thamel Physical Fitness, MTR, Tranquility Spa, Himalayan Java.
 - [ ] [TODO] Identify duplicates, closed businesses and stale records.
 - [ ] [TODO] Identify missing or unverified phone numbers, websites and hours.
 - [ ] [TODO] Identify unsupported claims and correct their verification status.
 - [ ] [TODO] Expand genuine coverage across underrepresented Kathmandu neighbourhoods.
+- [ ] [TODO] Grow to 1,000 verified businesses (52 as of 31 Oct 2026) without lowering verification standards.
 - [ ] [TODO] Improve category balance.
 - [ ] [TODO] Use traceable, legitimate sources for new listings.
 - [ ] [TODO] Preserve original business names, addresses and contact details.
-- [ ] [TODO] Record source and last-checked dates for important facts.
-- [ ] [TODO] Establish freshness/re-verification rules.
+- [x] [DONE] Record source and last-checked dates for important facts. Per-field sources for phone, hours, address and location, each with a last-checked date. Shipped by GuideBook bot, 26-31 Oct 2026.
+- [ ] [TODO] Add missing last-checked dates for Annapurna and Hair n Shanti.
+- [ ] [TODO] Establish freshness/re-verification rules. Admin freshness colours are live (Shipped by GuideBook bot, 26-31 Oct 2026); written re-verification rules still needed.
 - [ ] [TODO] Build an admin queue for corrections and stale-data review.
-- [ ] [TODO] Make owner claiming and correction simple.
+- [x] [DONE] Make owner claiming and correction simple. Free Claim this listing flow with a claims table and admin Claims tab; Report outdated with correction types; /add-a-business with a business_submissions table and admin Submissions tab. Shipped by GuideBook bot, 26-31 Oct 2026.
+- [ ] [TODO] Add category-specific fields to listings.
+- [ ] [TODO] Add photos for the 15 no-website previews.
 - [ ] [TODO] Do not publish uncertain data as fact.
+- [x] [DONE] Verification badge on verified listings. Shipped by GuideBook bot, 26-31 Oct 2026.
+- [x] [DONE] New Barber branch linking. Shipped by GuideBook bot, 26-31 Oct 2026.
 
 **Acceptance criteria:** Published listings have defensible sources, honest verification states and accurate location information where coordinates are available.
 
@@ -416,20 +424,23 @@ Historical audit baseline (not a verified current count): 52 businesses, 8 categ
 ### Search and discovery
 
 - [ ] [TODO] Audit search relevance and accuracy.
-- [ ] [TODO] Test English and Nepali queries and common spelling variants.
-- [ ] [TODO] Improve category/neighbourhood filtering.
-- [ ] [TODO] Verify nearby discovery and map interaction.
-- [ ] [TODO] Verify opening-status calculations, including overnight schedules and Kathmandu local time.
+- [x] [DONE] Test English and Nepali queries and common spelling variants. EN/NE synonym and typo-tolerant search shipped. Shipped by GuideBook bot, 26-31 Oct 2026.
+- [x] [DONE] Improve category/neighbourhood filtering. Area search such as 'cafe thamel' plus Open Sat and Open Sun filters. Shipped by GuideBook bot, 26-31 Oct 2026.
+- [ ] [TODO] Verify nearby discovery and map interaction. Near-me distances still to build.
+- [ ] [TODO] Verify opening-status calculations, including overnight schedules and Kathmandu local time. Structured day-by-day hours with Open now and Closes soon shipped (Shipped by GuideBook bot, 26-31 Oct 2026); overnight and timezone checks still open.
 - [ ] [TODO] Improve empty results and useful alternatives.
 - [ ] [TODO] Verify phone, WhatsApp, website and directions actions.
+- [x] [DONE] One-tap Call, Directions and Instagram buttons on listings. Shipped by GuideBook bot, 26-31 Oct 2026.
 - [ ] [TODO] Improve mapped-listing coverage without inventing coordinates.
 
 ### SEO and structured discovery
 
 - [ ] [TODO] Audit indexing and canonical URLs.
 - [ ] [TODO] Verify sitemap and robots rules.
-- [ ] [TODO] Validate LocalBusiness structured data.
-- [ ] [TODO] Improve useful neighbourhood and category landing pages.
+- [ ] [BLOCKED] Submit the sitemap in Google Search Console. Waiting on Boxont.
+- [x] [DONE] Validate LocalBusiness structured data. LocalBusiness schema added. Shipped by GuideBook bot, 26-31 Oct 2026.
+- [x] [DONE] Improve useful neighbourhood and category landing pages. Local pages /a/durbar-marg/salons and /a/lazimpat/spas added and listed in the sitemap. Shipped by GuideBook bot, 26-31 Oct 2026.
+- [ ] [TODO] Add more area x category pages only where real listing data exists.
 - [ ] [TODO] Avoid thin, duplicated or fabricated SEO pages.
 - [ ] [TODO] Improve social preview metadata.
 - [ ] [TODO] Use free search performance tools where available.
@@ -444,7 +455,16 @@ Historical audit baseline (not a verified current count): 52 businesses, 8 categ
 - [ ] [TODO] Test English/Nepali switching across public and admin journeys.
 - [ ] [TODO] Improve profile readability and prominent contact actions.
 - [ ] [TODO] Test saved listings and nearby discovery.
+- [ ] [TODO] Add helpful links on the empty Saved page.
+- [ ] [TODO] Write a fuller About page.
 - [ ] [TODO] Remove broken links, dead actions and confusing copy.
+- [x] [DONE] Boxont logo favicon. Shipped by GuideBook bot, 26-31 Oct 2026.
+- [x] [DONE] Homepage line showing the real business count. Shipped by GuideBook bot, 26-31 Oct 2026.
+- [x] [DONE] Footer links added. Shipped by GuideBook bot, 26-31 Oct 2026.
+- [x] [DONE] Contact page topic picker. Shipped by GuideBook bot, 26-31 Oct 2026.
+- [x] [DONE] /new renamed Recently verified. Shipped by GuideBook bot, 26-31 Oct 2026.
+- [x] [DONE] Preview card shown once, under the call buttons, with the line 'Free to look. No payment or sign up needed.' Shipped by GuideBook bot, 26-31 Oct 2026.
+- [ ] [BLOCKED] Bookings. Deferred until later; see Workstream 24 launch gate.
 
 **Acceptance criteria:** A new visitor can find a relevant local business, understand what is known and unknown, and take a useful next step.
 
@@ -467,9 +487,11 @@ Historical audit baseline (not a verified current count): 52 businesses, 8 categ
 - [ ] [TODO] Review RLS performance and overlapping permissive policies.
 - [ ] [TODO] Review unused indexes before changing anything.
 - [ ] [TODO] Establish and test a backup/recovery process using existing included capabilities.
-- [ ] [TODO] Review audit logging for sensitive administrator actions.
+- [ ] [TODO] Review audit logging for sensitive administrator actions. Admin audit history view still to build.
 - [ ] [TODO] Remove personal data and sensitive details from analytics/logs.
 - [ ] [TODO] Review privacy disclosures and data retention.
+- [x] [DONE] Privacy line stating that location stays on the phone. Shipped by GuideBook bot, 26-31 Oct 2026.
+- [x] [DONE] Public /how-we-verify page. Shipped by GuideBook bot, 26-31 Oct 2026.
 
 **Acceptance criteria:** Public users see only public information; customer and business-owner records remain private; important admin changes are appropriately protected and traceable.
 
@@ -481,8 +503,8 @@ Historical audit baseline (not a verified current count): 52 businesses, 8 categ
 - [ ] [TODO] Confirm no unnecessary personal information is collected.
 - [ ] [TODO] Distinguish listing opens from impressions.
 - [ ] [TODO] Distinguish contact button taps from completed calls/messages.
-- [ ] [TODO] Measure search usage and no-result queries safely.
-- [ ] [TODO] Measure enquiry submissions.
+- [x] [DONE] Measure search usage and no-result queries safely. Admin Insights tab shows searches, including zero-result ones, and action taps, backed by an analytics table. Shipped by GuideBook bot, 26-31 Oct 2026.
+- [x] [DONE] Measure enquiry submissions. Funnel tracking from listing to preview to enquiry. Shipped by GuideBook bot, 26-31 Oct 2026.
 - [ ] [TODO] Measure qualified opportunities.
 - [ ] [TODO] Measure follow-up completion.
 - [ ] [TODO] Measure proposals sent and outcomes.
@@ -523,6 +545,8 @@ Historical audit baseline (not a verified current count): 52 businesses, 8 categ
 - [ ] [TODO] Never rewrite migrations already applied to production.
 - [ ] [TODO] Keep secrets out of Git history and logs.
 - [ ] [TODO] Monitor free-tier limits before release work.
+- [ ] [BLOCKED] Daily GuideBook bot runs failing since 1 Nov 2026 because the account has no Grok Bot usage left. Waiting on Boxont.
+- [ ] [BLOCKED] Move to new GitHub, Vercel, Supabase and Sentry accounts. Waiting on Boxont's own yes or no.
 - [ ] [TODO] Maintain a recovery path if hosting becomes unavailable.
 - [ ] [TODO] Evaluate alternative hosting only for a concrete need and only after checking genuinely free options.
 - [ ] [TODO] Document material architectural decisions.
@@ -1269,11 +1293,11 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [TODO] **SW-0532 · P1 · Audit current state** — Test “open now” across a midnight boundary in Nepal local time.
 - [ ] [TODO] **SW-0533 · P1 · Audit current state** — Normalize case and common whitespace in query matching.
 - [ ] [TODO] **SW-0534 · P1 · Audit current state** — Normalize accents so café and cafe find equivalent relevant results.
-- [ ] [TODO] **SW-0535 · P1 · Audit current state** — Add safe synonym mapping for salon, beauty parlour, and hair salon.
-- [ ] [TODO] **SW-0536 · P1 · Audit current state** — Add safe synonym mapping for cafe, coffee shop, and café.
+- [x] [DONE] **SW-0535 · P1 · Audit current state** — Add safe synonym mapping for salon, beauty parlour, and hair salon. Shipped by GuideBook bot, 26-31 Oct 2026.
+- [x] [DONE] **SW-0536 · P1 · Audit current state** — Add safe synonym mapping for cafe, coffee shop, and café. Shipped by GuideBook bot, 26-31 Oct 2026.
 - [ ] [TODO] **SW-0537 · P1 · Audit current state** — Add safe synonym mapping for dentist, dental clinic, and dental care where appropriate.
 - [ ] [TODO] **SW-0538 · P1 · Audit current state** — Add service synonyms such as massage to relevant spa services when sourced.
-- [ ] [TODO] **SW-0539 · P2 · Audit current state** — Add typo tolerance for common misspellings only after a clear exact-match result is not found.
+- [x] [DONE] **SW-0539 · P2 · Audit current state** — Add typo tolerance for common misspellings only after a clear exact-match result is not found. Shipped by GuideBook bot, 26-31 Oct 2026.
 - [ ] [TODO] **SW-0540 · P2 · Audit current state** — Support partial prefixes without requiring the full business name.
 - [ ] [TODO] **SW-0541 · P2 · Audit current state** — Tokenize category and area terms so query word order does not have to be exact.
 - [ ] [TODO] **SW-0542 · P2 · Audit current state** — Avoid treating every word in a business description as equal to an exact category match.
@@ -1324,7 +1348,7 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [TODO] **SW-0581 · P2 · Audit current state** — Avoid promising “verified” in a snippet when the relevant field has not been checked.
 - [ ] [TODO] **SW-0582 · P2 · Audit current state** — Keep the homepage and Kathmandu page from sharing an ambiguous title if they are distinct pages.
 - [ ] [TODO] **SW-0583 · P2 · Audit current state** — Check title and description output in the final HTML rather than only client-side state.
-- [ ] [TODO] **SW-0584 · P2 · Audit current state** — Implement LocalBusiness or a more specific supported schema type only where visible facts support it.
+- [x] [DONE] **SW-0584 · P2 · Audit current state** — Implement LocalBusiness or a more specific supported schema type only where visible facts support it. Shipped by GuideBook bot, 26-31 Oct 2026.
 - [ ] [TODO] **SW-0585 · P2 · Audit current state** — Use PostalAddress only when the address fields are actually known.
 - [ ] [TODO] **SW-0586 · P2 · Audit current state** — Use GeoCoordinates only for sufficiently reliable coordinates.
 - [ ] [TODO] **SW-0587 · P2 · Audit current state** — Use OpeningHoursSpecification only when hours are structured and confirmed enough to display.
@@ -1355,7 +1379,7 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [TODO] **SW-0606 · P1 · Audit current state** — Use a factual current listing count only after checking the database.
 - [ ] [TODO] **SW-0607 · P1 · Audit current state** — Use a factual mapped count only after confirming the counting method.
 - [ ] [TODO] **SW-0608 · P1 · Audit current state** — Use “last checked” dates only when a timestamp exists for the relevant check.
-- [ ] [TODO] **SW-0609 · P1 · Audit current state** — Write a public “How we verify” page with the exact current method.
+- [x] [DONE] **SW-0609 · P1 · Audit current state** — Write a public “How we verify” page with the exact current method. Shipped by GuideBook bot, 26-31 Oct 2026.
 - [ ] [TODO] **SW-0610 · P1 · Audit current state** — Explain the difference between business existence and individual data-field verification.
 - [ ] [TODO] **SW-0611 · P1 · Audit current state** — Explain which source types are used and how source quality is evaluated.
 - [ ] [TODO] **SW-0612 · P1 · Audit current state** — Explain that opening hours can change after a check.
@@ -1364,7 +1388,7 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [TODO] **SW-0615 · P1 · Audit current state** — Explain how a business can request removal or correction of its information.
 - [ ] [TODO] **SW-0616 · P1 · Audit current state** — Explain what the site does not guarantee.
 - [ ] [TODO] **SW-0617 · P1 · Audit current state** — Describe the operator and service brand in a way that matches the actual business arrangement.
-- [ ] [TODO] **SW-0618 · P2 · Audit current state** — Expand the About page with a clear purpose and practical methodology.
+- [ ] [TODO] **SW-0618 · P2 · Audit current state** — Expand the About page with a clear purpose and practical methodology. Still open: write a fuller About page.
 - [ ] [TODO] **SW-0619 · P2 · Audit current state** — Keep About copy factual and avoid unsupported claims about being Nepal's largest or best.
 - [ ] [TODO] **SW-0620 · P2 · Audit current state** — Keep the statement about sitting beside a map app if it still matches the product.
 - [ ] [TODO] **SW-0621 · P2 · Audit current state** — Make the free-listing promise clear and consistent across the site.
@@ -1626,7 +1650,7 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [REVIEW] **SW-0841 · P1 · Claim capture reported; regression-test** — Audit the existing claim buttons and database writes before changing the claim experience.
 - [ ] [REVIEW] **SW-0842 · P1 · Claim capture reported; regression-test** — Verify a claim request records the correct listing ID and business slug.
 - [ ] [REVIEW] **SW-0843 · P1 · Claim capture reported; regression-test** — Verify a claim request appears in the admin pipeline with its claim source label.
-- [ ] [TODO] **SW-0844 · P1 · Audit current state** — Separate “claim this business” from “request a website quote.”
+- [x] [DONE] **SW-0844 · P1 · Audit current state** — Separate “claim this business” from “request a website quote.” Shipped by GuideBook bot, 26-31 Oct 2026.
 - [ ] [TODO] **SW-0845 · P1 · Audit current state** — Explain that claiming a listing is not the same as buying a website.
 - [ ] [TODO] **SW-0846 · P1 · Audit current state** — Define the minimum evidence required to verify an owner or authorised manager.
 - [ ] [TODO] **SW-0847 · P1 · Audit current state** — Evaluate verification options such as official-domain email, business phone, or documented manual review.
