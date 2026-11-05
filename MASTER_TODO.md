@@ -153,18 +153,20 @@ Never mark work [DONE] merely because code exists, a PR is merged, or a preview 
 - [x] [DONE] Confirmed the repository issue search returned no GitHub issues; the master plan remains the execution tracker.
 - [x] [DONE] Confirmed the 1,000-point register contains every unique ID from `SW-0001` through `SW-1000`.
 
-Latest verified `main` commit: `c6741670caaf036df1a94935831599fd16a6a3db` (5 November 2026 UTC).
+Latest verified application-code commit: `c6741670caaf036df1a94935831599fd16a6a3db` (5 November 2026 UTC), message `Verified bilingual targets`.
 
-Commit message: `Verified bilingual targets`.
+The two commits made after that application-code baseline were documentation-only:
+- `7c4983c80318dd97de59e92eb40af8760c69a5ab` — reconciled this master plan.
+- `ee9ff6ba5a8d59907ed6dc073ee52a921aa24617` — made this file the single roadmap source of truth.
 
-Latest verified Vercel Production deployment:
-- Deployment: `dpl_9TZnvwv7cGbpfDMBy5wpKkDwohK8`
+Latest verified Vercel Production deployment at the time of this audit:
+- Deployment: `dpl_DBNmQXmsk9P8wTsGKbjsTabpmq3S`
 - State / target: `READY` / `production`
-- Git source: `main` at `c6741670caaf036df1a94935831599fd16a6a3db`
-- Aliases attached to that deployment include `sewa.boxont.com`.
+- Git source: `main` at documentation commit `ee9ff6ba5a8d59907ed6dc073ee52a921aa24617`
+- Alias attached and verified: `sewa.boxont.com`.
 - Vercel project plan: Hobby. No upgrade or paid resource was requested or created.
 
-This verifies the production deployment's commit and domain mapping. It does **not** prove that the public enquiry, admin sign-in or password-recovery journeys work end to end; those checks remain open below.
+This verifies that the current application-code baseline and the subsequent documentation-only changes reached a READY Production deployment with the custom domain attached. It does **not** prove that the public enquiry, admin sign-in or password-recovery journeys work end to end; those checks remain open below.
 
 ### Known merged work
 
