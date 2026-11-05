@@ -159,8 +159,8 @@ export type Database = {
           id: string
           message: string
           name: string
-          paid_amount_npr: number
           page: string
+          paid_amount_npr: number
           payment_status: string
           phone: string | null
           quote_amount_npr: number | null
@@ -179,8 +179,8 @@ export type Database = {
           id?: string
           message: string
           name: string
-          paid_amount_npr?: number
           page?: string
+          paid_amount_npr?: number
           payment_status?: string
           phone?: string | null
           quote_amount_npr?: number | null
@@ -199,8 +199,8 @@ export type Database = {
           id?: string
           message?: string
           name?: string
-          paid_amount_npr?: number
           page?: string
+          paid_amount_npr?: number
           payment_status?: string
           phone?: string | null
           quote_amount_npr?: number | null
@@ -260,48 +260,6 @@ export type Database = {
         }
         Relationships: []
       }
-      listings: {
-        Row: {
-          area: string
-          category: string
-          city: string
-          created_at: string
-          data: Json
-          id: string
-          name: string
-          slug: string
-          sort_order: number
-          status: string
-          updated_at: string
-        }
-        Insert: {
-          area: string
-          category: string
-          city?: string
-          created_at?: string
-          data?: Json
-          id: string
-          name: string
-          slug: string
-          sort_order?: number
-          status?: string
-          updated_at?: string
-        }
-        Update: {
-          area?: string
-          category?: string
-          city?: string
-          created_at?: string
-          data?: Json
-          id?: string
-          name?: string
-          slug?: string
-          sort_order?: number
-          status?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
       listing_promotions: {
         Row: {
           created_at: string
@@ -352,8 +310,50 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "listings"
             referencedColumns: ["id"]
-          }
+          },
         ]
+      }
+      listings: {
+        Row: {
+          area: string
+          category: string
+          city: string
+          created_at: string
+          data: Json
+          id: string
+          name: string
+          slug: string
+          sort_order: number
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          area: string
+          category: string
+          city?: string
+          created_at?: string
+          data?: Json
+          id: string
+          name: string
+          slug: string
+          sort_order?: number
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          area?: string
+          category?: string
+          city?: string
+          created_at?: string
+          data?: Json
+          id?: string
+          name?: string
+          slug?: string
+          sort_order?: number
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       slug_redirects: {
         Row: {
