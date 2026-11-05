@@ -152,6 +152,7 @@ export type Database = {
       contact_messages: {
         Row: {
           admin_note: string | null
+          budget_band: string | null
           business_name: string | null
           client_key: string | null
           created_at: string
@@ -159,7 +160,11 @@ export type Database = {
           message: string
           name: string
           page: string
+          paid_amount_npr: number
+          payment_status: string
           phone: string | null
+          quote_amount_npr: number | null
+          service_package: string | null
           source_listing_slug: string | null
           status: string
           status_changed_at: string | null
@@ -167,6 +172,7 @@ export type Database = {
         }
         Insert: {
           admin_note?: string | null
+          budget_band?: string | null
           business_name?: string | null
           client_key?: string | null
           created_at?: string
@@ -174,7 +180,11 @@ export type Database = {
           message: string
           name: string
           page?: string
+          paid_amount_npr?: number
+          payment_status?: string
           phone?: string | null
+          quote_amount_npr?: number | null
+          service_package?: string | null
           source_listing_slug?: string | null
           status?: string
           status_changed_at?: string | null
@@ -182,6 +192,7 @@ export type Database = {
         }
         Update: {
           admin_note?: string | null
+          budget_band?: string | null
           business_name?: string | null
           client_key?: string | null
           created_at?: string
@@ -189,7 +200,11 @@ export type Database = {
           message?: string
           name?: string
           page?: string
+          paid_amount_npr?: number
+          payment_status?: string
           phone?: string | null
+          quote_amount_npr?: number | null
+          service_package?: string | null
           source_listing_slug?: string | null
           status?: string
           status_changed_at?: string | null
@@ -244,6 +259,59 @@ export type Database = {
           key_hash?: string
         }
         Relationships: []
+      }
+      listing_promotions: {
+        Row: {
+          created_at: string
+          ends_at: string
+          id: string
+          listing_id: string
+          paid_amount_npr: number
+          placement: string
+          quote_amount_npr: number | null
+          refunded_amount_npr: number
+          starts_at: string
+          status: string
+          target_area: string | null
+          target_category: string | null
+        }
+        Insert: {
+          created_at?: string
+          ends_at: string
+          id?: string
+          listing_id: string
+          paid_amount_npr?: number
+          placement: string
+          quote_amount_npr?: number | null
+          refunded_amount_npr?: number
+          starts_at: string
+          status?: string
+          target_area?: string | null
+          target_category?: string | null
+        }
+        Update: {
+          created_at?: string
+          ends_at?: string
+          id?: string
+          listing_id?: string
+          paid_amount_npr?: number
+          placement?: string
+          quote_amount_npr?: number | null
+          refunded_amount_npr?: number
+          starts_at?: string
+          status?: string
+          target_area?: string | null
+          target_category?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "listing_promotions_listing_id_fkey"
+            columns: ["listing_id"]
+            isOneToOne: false
+            referencedRelation: "listings"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       listings: {
         Row: {
