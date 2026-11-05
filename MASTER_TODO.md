@@ -81,22 +81,22 @@ Establish a baseline before choosing numerical targets. Do not invent targets or
 
 ## 1. Non-negotiable rules
 
-- [ ] **$0 additional expenditure.** Use existing free allowances and open-source software. Never upgrade, subscribe, purchase an API, create billable infrastructure or accept a charge without asking for explicit approval first.
-- [ ] Keep public SEWA directory discovery free.
-- [ ] Never invent business details, addresses, coordinates, opening hours, reviews, ratings, prices, verification or performance results.
-- [ ] Distinguish verified, source-checked, unknown and unverified information honestly.
-- [ ] English and Nepali are first-class interface languages.
-- [ ] Mobile usability, accessibility and performance are essential.
-- [ ] Do not send unsolicited messages automatically or introduce bulk-spam outreach.
-- [ ] Do not scrape private contact information.
-- [ ] A lead, enquiry, quote or proposal is not revenue. Record revenue only when money is actually received; account for refunds.
-- [ ] Sponsored placements must be clearly labelled and must never manipulate verification status or organic ranking.
-- [ ] Keep customer contact details, payment information, internal notes and commercial records private.
-- [ ] Never commit secrets, service-role keys, passwords, private deployment values or production credentials.
-- [ ] Never deploy stale or unreviewed branches.
-- [ ] Never apply production database migrations without checking their exact contents, dependencies and migration history.
-- [ ] Never claim a task is complete without evidence.
-- [ ] Do not repeat work already completed. Inspect the current repository and production state first.
+- **$0 additional expenditure.** Use existing free allowances and open-source software. Never upgrade, subscribe, purchase an API, create billable infrastructure or accept a charge without asking for explicit approval first.
+- Keep public SEWA directory discovery free.
+- Never invent business details, addresses, coordinates, opening hours, reviews, ratings, prices, verification or performance results.
+- Distinguish verified, source-checked, unknown and unverified information honestly.
+- English and Nepali are first-class interface languages.
+- Mobile usability, accessibility and performance are essential.
+- Do not send unsolicited messages automatically or introduce bulk-spam outreach.
+- Do not scrape private contact information.
+- A lead, enquiry, quote or proposal is not revenue. Record revenue only when money is actually received; account for refunds.
+- Sponsored placements must be clearly labelled and must never manipulate verification status or organic ranking.
+- Keep customer contact details, payment information, internal notes and commercial records private.
+- Never commit secrets, service-role keys, passwords, private deployment values or production credentials.
+- Never deploy stale or unreviewed branches.
+- Never apply production database migrations without checking their exact contents, dependencies and migration history.
+- Never claim a task is complete without evidence.
+- Do not repeat work already completed. Inspect the current repository and production state first.
 
 ---
 
@@ -595,22 +595,22 @@ npm run build
 
 For every database change:
 
-- [ ] Confirm Supabase and Drizzle SQL migration files are byte-identical.
-- [ ] Confirm migration journal consistency.
-- [ ] Run disposable PostgreSQL migration and security tests.
-- [ ] Inspect RLS, grants, functions, triggers and constraints.
-- [ ] Test anonymous, authenticated non-admin and admin access separately.
-- [ ] Check migration order against production migration history.
-- [ ] State clearly whether the migration has or has not been applied in production.
+- [ ] [TODO] Confirm Supabase and Drizzle SQL migration files are byte-identical.
+- [ ] [TODO] Confirm migration journal consistency.
+- [ ] [TODO] Run disposable PostgreSQL migration and security tests.
+- [ ] [TODO] Inspect RLS, grants, functions, triggers and constraints.
+- [ ] [TODO] Test anonymous, authenticated non-admin and admin access separately.
+- [ ] [TODO] Check migration order against production migration history.
+- [ ] [TODO] State clearly whether the migration has or has not been applied in production.
 
 For every release:
 
-- [ ] Identify exact commit to deploy.
-- [ ] Confirm required environment values exist.
-- [ ] Confirm build/deployment succeeds.
-- [ ] Confirm production domain points to the intended deployment.
-- [ ] Test the affected real production journey.
-- [ ] Record deployment URL, commit SHA and test evidence.
+- [ ] [TODO] Identify exact commit to deploy.
+- [ ] [TODO] Confirm required environment values exist.
+- [ ] [TODO] Confirm build/deployment succeeds.
+- [ ] [TODO] Confirm production domain points to the intended deployment.
+- [ ] [TODO] Test the affected real production journey.
+- [ ] [TODO] Record deployment URL, commit SHA and test evidence.
 
 **GitHub merge success, CI success, Vercel preview success and production release success are four different things. Record them separately.**
 
