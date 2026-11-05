@@ -455,7 +455,7 @@ Historical audit baseline (not a verified current count): 52 businesses, 8 categ
 - [ ] [TODO] Test English/Nepali switching across public and admin journeys.
 - [ ] [TODO] Improve profile readability and prominent contact actions.
 - [ ] [TODO] Test saved listings and nearby discovery.
-- [ ] [TODO] Add helpful links on the empty Saved page.
+- [x] [DONE] Add helpful links on the empty Saved page. Already shipped: "Browse places" button plus links to the three most-used categories, EN/NE, 44px tap targets. Verified 5 Nov 2026.
 - [ ] [TODO] Write a fuller About page.
 - [ ] [TODO] Remove broken links, dead actions and confusing copy.
 - [x] [DONE] Boxont logo favicon. Shipped by GuideBook bot, 26-31 Oct 2026.
