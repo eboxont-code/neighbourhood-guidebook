@@ -1,22 +1,23 @@
-# Roadmap
+# SEWA Roadmap
 
-## October 31 pack
-- [ ] Qualifying area/category pages, parent links and sitemap (at least three real listings)
-- [ ] Recorded brands and sibling branch links
-- [ ] Device-only location audit, sanitized error reports and privacy line
-- [ ] Header accessible name and single early preview invitation for unknown websites
-- [ ] Rule tests, full suite and 390px EN/NE checks
+> **Single source of truth:** [`MASTER_TODO.md`](./MASTER_TODO.md)
 
-## Current pack
-- [ ] Field provenance disclosure and methodology tiers
-- [ ] Recently verified page and navigation labels
-- [ ] Admin freshness queue and counts
-- [ ] Nearby listings within 500 m, maximum four
-- [ ] Factual About sections and saved category links
-- [ ] Tests and English/Nepali phone and desktop checks
+All active SEWA / Boxont planning lives in `MASTER_TODO.md`. This includes the product strategy, execution phases, completed work, TODOs, blocked items, review tasks, dependencies, release gates, the 1,000-point task register and the current active task.
 
-- [ ] Hours: structured weekly schedule, Closes soon / Open 24h / Open Sunday, Sunday+Saturday filters, 7-day table, JSON-LD
-- [ ] Analytics: analytics_events table, track helper, wiring, admin Insights tab, privacy line
-- [ ] Admin freshness colours on listings, stalest first, counts
-- [ ] Empty states: search suggestions + suggest link with ?name=, saved category links, /new as Recently verified
-- [ ] About page sections, header logo label, privacy location check
+This file is retained as a simple navigation entry point so older links do not break. Do not add a second checklist here or track duplicate task statuses.
+
+## Start here
+
+1. Read `MASTER_TODO.md` from top to bottom before project work.
+2. Check the verified repository snapshot and current production / database state.
+3. Continue the single task marked `[IN PROGRESS]`.
+4. Update the master plan with evidence before ending the work session.
+
+## Project rules
+
+- Keep the SEWA public directory free.
+- Preserve accurate sources, verification states and business data.
+- Keep English and Nepali at equal quality.
+- Protect admin and customer data.
+- No automated outreach or unapproved commercial launch.
+- **$0 additional spend. Ask in bold before any action that could cost money.**
