@@ -453,7 +453,7 @@ Historical audit baseline (not a verified current count): 52 businesses, 8 categ
 - [ ] [TODO] Improve loading speed and remove unnecessary client-side code.
 - [ ] [TODO] Test accessibility and keyboard navigation.
 - [ ] [TODO] Test English/Nepali switching across public and admin journeys.
-- [ ] [TODO] Improve profile readability and prominent contact actions.
+- [x] [DONE] Improve profile readability and prominent contact actions. Already implemented: readable profile sections and data-supported Call, Directions and Website actions near the profile heading. Verified at 390px in EN/NE on 5 Nov 2026: contact targets 94px wide and 57px high, no horizontal overflow.
 - [ ] [TODO] Test saved listings and nearby discovery.
 - [x] [DONE] Add helpful links on the empty Saved page. Already shipped: "Browse places" button plus links to the three most-used categories, EN/NE, 44px tap targets. Verified 5 Nov 2026.
 - [ ] [TODO] Write a fuller About page.
