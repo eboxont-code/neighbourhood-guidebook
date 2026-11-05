@@ -147,51 +147,76 @@ Never mark work [DONE] merely because code exists, a PR is merged, or a preview 
 
 - [x] [DONE] Private GitHub repository identified: `eboxont-code/neighbourhood-guidebook`.
 - [x] [DONE] Production domain recorded as `https://sewa.boxont.com`.
-- [x] [DONE] README describes the SEWA product, architecture, local setup, database rules and deployment checklist.
-- [x] [DONE] Project scripts exist for typecheck, lint, tests and production build.
-- [x] [DONE] Project documentation requires Supabase and Drizzle migration histories to remain aligned.
+- [x] [DONE] README documents SEWA product principles, architecture, local setup, database rules and deployment checklist.
+- [x] [DONE] Quality scripts and the Supabase/Drizzle migration-parity rule are documented.
+- [x] [DONE] Enumerated all 13 branches and reconciled all 9 repository PR records on 5 November 2026.
+- [x] [DONE] Confirmed the repository issue search returned no GitHub issues; the master plan remains the execution tracker.
+- [x] [DONE] Confirmed the 1,000-point register contains every unique ID from `SW-0001` through `SW-1000`.
 
-Latest verified `main` commit: `4924b105bb314651ed09024de5d91fd72961cc7f` (4 November 2026 UTC).
+Latest verified `main` commit: `c6741670caaf036df1a94935831599fd16a6a3db` (5 November 2026 UTC).
 
-Commit message: `Add SEWA master project plan and living TODO`. Its parent is `a625ff94c48b03aa268bfdf885ff0eb974f5c664` (`Fix SEWA admin password recovery redirect (#9)`).
+Commit message: `Verified bilingual targets`.
 
-The latest observed commit status included a Vercel failure caused by the free daily deployment quota. This is a deployment blocker, not proof that the source code failed to build.
+Latest verified Vercel Production deployment:
+- Deployment: `dpl_9TZnvwv7cGbpfDMBy5wpKkDwohK8`
+- State / target: `READY` / `production`
+- Git source: `main` at `c6741670caaf036df1a94935831599fd16a6a3db`
+- Aliases attached to that deployment include `sewa.boxont.com`.
+- Vercel project plan: Hobby. No upgrade or paid resource was requested or created.
+
+This verifies the production deployment's commit and domain mapping. It does **not** prove that the public enquiry, admin sign-in or password-recovery journeys work end to end; those checks remain open below.
 
 ### Known merged work
 
+- [x] [DONE] Bundle 1 — project foundation, repository rules and quality gate — merged to `main`.
+- [x] [DONE] Bundle 2 — data integrity and opening-hours trust — merged to `main`.
 - [x] [DONE] Bundle 3 — security and operations hardening — merge commit `5569ca8254277479fd350ab623afbb786ab31349`.
 - [x] [DONE] Bundle 5 — Boxont quote-to-cash revenue engine — merge commit `d5f104affdb29e7cd4a287b4a36e34cb86c3800b`.
 - [x] [DONE] Bundle 6 — sponsored placement revenue channel — merge commit `74fe507db70a45a538dfec4bd3730a45d51e4ae2`.
-- [x] [DONE] PR #9 — admin password recovery production redirect — merged to main; merge commit `a625ff94c48b03aa268bfdf885ff0eb974f5c664`.
-
-The repository README also confirms the core SEWA foundation, directory discovery, business profiles, owner submissions/claims, administration, structured metadata and local quality scripts. Recheck individual historical PR states before relying on them.
+- [x] [DONE] PR #9 — admin password recovery production redirect — merged into `main`; merge commit `a625ff94c48b03aa268bfdf885ff0eb974f5c664`.
 
 ### Open pull requests verified on 5 November 2026
 
-| PR | Work | Verified state / current base |
+| PR | Work | Verified state / branch relationship |
 |---|---|---|
-| #4 | Call and WhatsApp contact insights | Open draft; based on `main`; inspect whether still needed and compare its base SHA before porting |
-| #7 | Boxont prospecting and sales pipeline | Open draft; based on `sewa/bundle-06-sponsored-placements`; not based directly on current `main` |
-| #8 | Convert inbound enquiries into sales opportunities | Open draft; stacked on PR #7's branch; reconcile only after Bundle 7 |
-| #9 | Admin password recovery | Merged into `main` at `a625ff94c48b03aa268bfdf885ff0eb974f5c664` |
+| #4 | Call and WhatsApp contact insights | Open draft; `sewa/bundle-04-revenue-lead-attribution` → `main` |
+| #7 | Boxont prospecting and sales pipeline | Open draft; `sewa/bundle-07-sales-pipeline` is based on `sewa/bundle-06-sponsored-placements` |
+| #8 | Convert inbound enquiries into sales opportunities | Open draft; `sewa/bundle-08-inbound-conversion` is based on `sewa/bundle-07-sales-pipeline` |
 
 PR references:
 - #4: https://github.com/eboxont-code/neighbourhood-guidebook/pull/4
 - #7: https://github.com/eboxont-code/neighbourhood-guidebook/pull/7
 - #8: https://github.com/eboxont-code/neighbourhood-guidebook/pull/8
-- #9: https://github.com/eboxont-code/neighbourhood-guidebook/pull/9
+- #9 (merged): https://github.com/eboxont-code/neighbourhood-guidebook/pull/9
+
+### Current branch inventory
+
+The 13 branches returned by the repository branch search are:
+
+- `main`
+- `sewa/admin-password-recovery-production-redirect` — PR #9 merged
+- `sewa/bundle-01-foundation` — PR #1 merged
+- `sewa/bundle-02-data-integrity` — PR #2 merged
+- `sewa/bundle-03-security-operations` — PR #3 merged
+- `sewa/bundle-04-admin-audit-health` — no PR found in the current PR search
+- `sewa/bundle-04-revenue-engine` — no PR found in the current PR search
+- `sewa/bundle-04-revenue-lead-attribution` — PR #4 open
+- `sewa/bundle-05-revenue-engine` — PR #5 merged
+- `sewa/bundle-06-sponsored-placements` — PR #6 merged
+- `sewa/bundle-07-sales-pipeline` — PR #7 open
+- `sewa/bundle-08-inbound-conversion` — PR #8 open
+- `sewa/bundle-09-proposal-composer` — no PR found in the current PR search
 
 ### Branch audit warning
 
-- PR #4 currently targets `main`; its base SHA must be compared with current `main` before any merge or port.
-- PR #7 targets `sewa/bundle-06-sponsored-placements`.
-- PR #8 targets `sewa/bundle-07-sales-pipeline`, so it is stacked on Bundle 7.
-- PR #7 and #8 must not be merged directly into `main` without rebuilding/reconciling the intended changes against the current base.
-- The Proposal Composer branch `sewa/bundle-09-proposal-composer` was recorded in the earlier audit, but its current PR/branch state was not rechecked during this update.
+- PR #4 targets `main`, but its diff and current base SHA still need a fresh review before merge.
+- PR #7 and #8 are stacked on older feature branches, not directly on current `main`; do not merge them as-is.
+- The admin-audit-health and revenue-engine branches have no PR in the current search. Compare their unique changes with `main` before deciding whether to salvage or archive them.
+- The Proposal Composer branch exists but no PR was returned. Inspect its current diff and isolate it from the unmerged Bundle 7/8 work.
+- Merged feature branches remain in the branch list; their existence alone does not mean they are unfinished.
+- Full branch diff/ancestry review, cleanup decisions and any archive/delete action remain TODO. No branch has been deleted or rewritten.
 
-These are 5 November 2026 metadata observations. Compare fresh refs before acting. Do not infer ahead/behind counts from old notes.
-
----
+These are 5 November 2026 observations. Refresh refs and compare exact diffs before acting.
 
 ## 4. Last known blocker — production deployment and admin recovery
 
@@ -207,16 +232,16 @@ These are 5 November 2026 metadata observations. Compare fresh refs before actin
 - [x] [DONE] Generic response avoids revealing whether an email address has an account.
 - [x] [DONE] Email validation correction included in merged commit.
 - [x] [DONE] Project owner confirmed Supabase Auth URL configuration was updated to include the production redirect.
-- [ ] [BLOCKED] Production release has not yet been verified. Last production deployment still served the earlier application bundle.
-- [ ] [TODO] Recheck current Vercel deployment status and free daily quota.
-- [ ] [TODO] Deploy current approved `main` commit when the free quota permits.
-- [ ] [TODO] Verify production alias `sewa.boxont.com` points to the intended deployment and commit.
+- [x] [DONE] Current `main` is deployed to Vercel Production in READY state at commit `c6741670caaf036df1a94935831599fd16a6a3db`; the `sewa.boxont.com` alias is attached. End-to-end password recovery is still untested.
+- [x] [DONE] Rechecked Vercel deployment status and current production alias on 5 November 2026; latest `main` deployment is READY. The previous 4 November quota failure is no longer blocking this latest deployment.
+- [x] [DONE] Current approved `main` commit `c6741670caaf036df1a94935831599fd16a6a3db` is deployed to Production.
+- [x] [DONE] Verified `sewa.boxont.com` is an alias on the READY Production deployment for current `main` commit `c6741670caaf036df1a94935831599fd16a6a3db`.
 - [ ] [TODO] Inspect deployed assets to confirm the recovery code is actually present.
 - [ ] [TODO] Trigger a real recovery email and confirm the link opens the production domain, not localhost.
 - [ ] [TODO] Complete password reset and test a normal admin sign-in.
 - [ ] [TODO] Test expired/invalid recovery links and session handling safely.
 
-**Deployment note:** A Vercel attempt on 4 November 2026 was rejected with the free daily deployment limit error (`api-deployments-free-per-day`). The reported retry window was approximately 24 hours from the rejection. Recheck live status; do not assume the quota has reset at a particular time. Do not pay to bypass the limit.
+**Deployment note (5 November 2026):** The latest `main` deployment is READY in Production and carries the `sewa.boxont.com` alias. A 4 November attempt had failed because of Vercel's free daily deployment quota, but that old failure is superseded by the successful 5 November deployment. Do not upgrade or pay to bypass future limits.
 
 **Acceptance criteria:** The production domain serves the latest approved main commit and the admin password reset succeeds end-to-end. Until then, this feature is merged but not live.
 
@@ -229,9 +254,9 @@ These are 5 November 2026 metadata observations. Compare fresh refs before actin
 **Priority: CRITICAL**
 
 - [x] [DONE] Establish this master plan as the intended single source of truth.
-- [ ] [IN PROGRESS] Save this file in the repository root as `MASTER_TODO.md`.
-- [ ] [TODO] Audit all active branches and open PRs against current main.
-- [ ] [TODO] Map each branch to its unique feature, dependencies and PR.
+- [x] [DONE] Save this file in the repository root as `MASTER_TODO.md`; confirmed present on `main`.
+- [ ] [REVIEW] Inventory of all 13 branches and 9 PR records is complete (5 Nov 2026); exact branch diff/ancestry review remains open.
+- [ ] [REVIEW] PR-to-branch relationships for all open PRs are recorded above; identify and compare unique changes on branches without PRs.
 - [ ] [TODO] Identify obsolete branches and duplicate bundle numbering.
 - [ ] [TODO] Standardise future branch and PR naming.
 - [ ] [TODO] Require a clear scope and acceptance criteria for every new task.
@@ -246,9 +271,9 @@ These are 5 November 2026 metadata observations. Compare fresh refs before actin
 
 **Priority: CRITICAL**
 
-- [ ] [IN PROGRESS] Recheck Vercel deployment status, quota and current production alias.
-- [ ] [TODO] Deploy the latest approved main commit using the existing free allowance.
-- [ ] [TODO] Confirm production alias and deployed commit SHA.
+- [x] [DONE] Recheck Vercel deployment status, quota and current production alias (5 Nov 2026); current `main` is READY in Production and `sewa.boxont.com` is attached.
+- [x] [DONE] Deploy the latest approved `main` commit `c6741670caaf036df1a94935831599fd16a6a3db` using the existing Vercel allowance.
+- [x] [DONE] Confirm production alias `sewa.boxont.com` and deployed commit SHA `c6741670caaf036df1a94935831599fd16a6a3db`.
 - [ ] [TODO] Verify homepage, neighbourhood pages and business profiles.
 - [ ] [TODO] Verify admin sign-in.
 - [ ] [TODO] Complete admin password recovery end-to-end.
@@ -299,7 +324,7 @@ The primary funnel is Sewa discovery/prospect → free preview → attributed en
 - [x] [DONE] Admin quote/payment tracking foundation.
 - [x] [DONE] Separate quoted value from cash received.
 - [x] [DONE] Revenue summary foundation.
-- [ ] [TODO] Test full public enquiry → admin inbox → quote → payment journey.
+- [ ] [IN PROGRESS] Test full public enquiry → admin inbox → quote → payment journey using safe test data; verify persistence, source/business attribution, admin-only commercial fields and cleanup.
 - [ ] [TODO] Confirm visitors can submit enquiries but cannot write commercial fields.
 - [ ] [TODO] Confirm only authorised admins can record quotes and payments.
 - [ ] [TODO] Verify totals against source records, including partial payments/refunds where supported.
@@ -395,7 +420,7 @@ The primary funnel is Sewa discovery/prospect → free preview → attributed en
 Historical audit baseline (not a verified current count): 52 businesses, 8 categories, 7 neighbourhoods, with 21 listings mapped. Re-audit before presenting these numbers as current.
 
 - [x] [DONE] Recount current published businesses, categories and neighbourhoods. 52 verified businesses as of 31 Oct 2026.
-- [ ] [IN PROGRESS] Measure map-coordinate coverage and validate each pin. 21 of 52 pinned as of 31 Oct 2026. Target 95%+ mapped. Skipped because OpenStreetMap did not match: Hankook Sarang, Thamel Physical Fitness, MTR, Tranquility Spa, Himalayan Java.
+- [ ] [TODO] Re-measure map-coordinate coverage and validate each pin. The 21-of-52 figure is a historical baseline from 31 Oct 2026, not a verified current count. Target 95%+ mapped. Previously unmatched names must be rechecked against authoritative sources before any coordinate is added.
 - [ ] [TODO] Identify duplicates, closed businesses and stale records.
 - [ ] [TODO] Identify missing or unverified phone numbers, websites and hours.
 - [ ] [TODO] Identify unsupported claims and correct their verification status.
@@ -626,10 +651,10 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 
 | Order | Task | Status |
 |---:|---|---|
-| 1 | Test the production preview → quote form → database → admin lead path end to end | TODO |
+| 1 | Test the production preview → quote form → database → admin lead path end to end | IN PROGRESS |
 | 2 | Verify lead source, business, preview URL and campaign attribution across each form | TODO |
 | 3 | Revalidate the existing 20-business prospect CSV and each website status | TODO |
-| 4 | Check the production deployment and complete admin password recovery verification | TODO; last deployment blocker recorded 4 Nov |
+| 4 | Confirm production deployment and complete admin password recovery verification | Deployment + domain mapping DONE 5 Nov; password-reset journey TODO |
 | 5 | Review the 390px preview and quote form; capture real screenshots | TODO |
 | 6 | Reconcile Bundle 7 Sales Pipeline against current `main` | TODO |
 | 7 | Reconcile Bundle 8 after Bundle 7; preserve original enquiry/payment records | TODO |
@@ -639,7 +664,8 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 
 ### Current active task
 
-**Task 1 — Validate the existing production revenue loop.**
+**Task 1 — Validate the existing production revenue loop.**  
+**Status: IN PROGRESS.**
 
 Test a real safe enquiry from an existing website preview through database persistence and the private admin lead pipeline. Verify the business, preview URL and source survive the full flow. Use approved test data and clean it up safely. Do not send outreach or publish prices. If production is still serving an old release or the form is broken, record the exact blocker and handle the release path using existing free allowances only.
 
