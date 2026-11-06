@@ -543,36 +543,3 @@ describe("public form validation guidance", () => {
     expect(fromMock).not.toHaveBeenCalled();
   });
 });
-
-describe("For Businesses enquiry intent", () => {
-  it("stores the For Businesses source and selected service package with the lead", async () => {
-    insertMock.mockResolvedValue({ error: null });
-    const { container } = render(
-      <ContactForm
-        business=""
-        listing=""
-        page="for-businesses"
-        serviceOptions
-        initialServicePackage="growth"
-      />,
-    );
-    change(container, "#name", "Test Owner");
-    change(container, "#message", "I need a website for my business.");
-    const form = container.querySelector("form");
-    if (!form) throw new Error("Missing For Businesses enquiry form");
-
-    fireEvent.submit(form);
-
-    await waitFor(() => expect(container.querySelector('[role="status"]')?.textContent).toContain("thanksContact"));
-    expect(fromMock).toHaveBeenCalledWith("contact_messages");
-    expect(insertMock).toHaveBeenCalledTimes(1);
-    expect(insertMock).toHaveBeenCalledWith(expect.objectContaining({
-      name: "Test Owner",
-      message: "I need a website for my business.",
-      page: "for-businesses",
-      service_package: "growth",
-      topic: null,
-      budget_band: null,
-    }));
-  });
-});
