@@ -159,7 +159,7 @@ Never mark work [DONE] merely because code exists, a PR is merged, or a preview 
 
 - [x] [DONE] Private repository: eboxont-code/neighbourhood-guidebook.
 - [x] [DONE] Default branch is main at ee38ca0e978f0149ca10f5b2caadb33282729148; the commit message is “docs: record Bundle 7 reconciliation and passing quality gate”.
-- [x] [DONE] GitHub reports 26 branches and a 238-entry main tree. The open-issue query returned no open issues.
+- [x] [DONE] GitHub reports 27 branches and a 238-entry main tree. The open-issue query returned no open issues.
 - [x] [DONE] Read AGENTS.md, README.md, roadmap.md, package.json, and .lovable/north-star/north-star.md. The repository tree contains one root AGENTS.md; roadmap.md directs all planning to this file.
 - [x] [DONE] The register contains every unique ID from SW-0001 through SW-1000. SW-0298 and SW-0299 are currently concatenated on one Markdown line; their IDs and descriptions remain present.
 - [x] [DONE] The Lovable north-star file was left unchanged; its blob SHA is 9d748d0f22dd60969680c61964f18ea4fe6900df.
@@ -168,7 +168,7 @@ Never mark work [DONE] merely because code exists, a PR is merged, or a preview 
 
 ### Open pull requests — read-only snapshot
 
-All 12 open pull requests are drafts. The latest observed GitHub Quality Gate push/PR runs for each listed head passed. Vercel status is recorded separately:
+All 13 open pull requests are drafts. The latest observed GitHub Quality Gate push/PR runs for each listed head passed. Vercel status is recorded separately:
 
 | PR | Branch → base | GitHub Quality Gate | Vercel status / dependency |
 |---:|---|---|---|
@@ -184,12 +184,14 @@ All 12 open pull requests are drafts. The latest observed GitHub Quality Gate pu
 | #17 | preview-location-fields-20261107 → PR #16 branch | #42261545545 / #42261556878 passed | Vercel preview build rate-limited. |
 | #18 | preview-location-reliability-20261107 → PR #17 branch | #42270631894 / #42270639047 passed | Vercel preview build rate-limited. |
 | #19 | preview-phone-verification-20261107 → PR #18 branch | #42279835329 / #42279844174 passed | Vercel preview build rate-limited. |
+| #20 | define-qualified-lead-20261107 → current main ee38ca0e | #42289004499 / #42289189951 passed | Success; draft, documentation-only SW-0002 completion. |
 
 PR #7 is closed unmerged; PR #9 is merged. PRs #13–#19 form a dependent chain and must not be treated as independent current-main releases. PR #4 has a stale main base. PR #8 is stacked on the older Bundle 7 branch. No PR was merged, no branch was deleted or rewritten, and no force-push was made. The Vercel Hobby build-rate limit is not approval to upgrade.
 
 ### Current branch inventory
 
 - main
+- sewa/define-qualified-lead-20261107
 - sewa/admin-password-recovery-production-redirect
 - sewa/analytics-listing-views-20261106
 - sewa/analytics-submission-guard-20261106
@@ -698,6 +700,7 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 - The definition is grounded in the current contact form and production schema: website intent, identifiable business context, non-empty request, a manually checked phone reply route, and manual spam/duplicate screening.
 - Budget or assumed willingness to pay is explicitly excluded from qualification.
 - No code, schema, production data, or business pricing/outreach settings were changed.
+- PR #20: https://github.com/eboxont-code/neighbourhood-guidebook/pull/20; branch sewa/define-qualified-lead-20261107; task commit b27a4101723fb6f961517eb3a93a45227144f8b9. Push run #42289004499 and PR run #42289189951 both passed; the PR head Vercel status is success. Draft only; not merged.
 
 ### Next eligible task
 
