@@ -1,7 +1,7 @@
 import { act, cleanup, fireEvent, render, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ClaimForm } from "@/components/claim-form";
-import { ContactForm } from "@/components/forms";
+import { BusinessSubmissionForm, ContactForm, CorrectionForm } from "@/components/forms";
 
 const { fromMock, insertMock, trackMock } = vi.hoisted(() => {
   const insertMock = vi.fn();
@@ -128,6 +128,71 @@ describe("analytics submission de-duplication", () => {
     await waitFor(() => expect(trackMock).toHaveBeenCalledTimes(2));
     expect(trackMock).toHaveBeenCalledWith("service_quote_submit", { query: "custom" });
     expect(trackMock).toHaveBeenCalledWith("enquiry_submit", {});
+  });
+
+  it("writes one correction report for same-tick duplicate submits", async () => {
+    const pending = deferred<{ error: null }>();
+    insertMock.mockReturnValue(pending.promise);
+    const { container } = render(<CorrectionForm listing="aavaran-durbar-marg" />);
+
+    change(container, "#correction-type", "phone");
+    change(container, "#wrong", "The listed phone number needs correction.");
+    const form = container.querySelector("form");
+    if (!form) throw new Error("Missing correction form");
+
+    submitTwiceInOneBatch(form);
+    expect(fromMock).toHaveBeenCalledTimes(1);
+    expect(fromMock).toHaveBeenCalledWith("correction_reports");
+    expect(insertMock).toHaveBeenCalledTimes(1);
+
+    await act(async () => {
+      pending.resolve({ error: null });
+      await pending.promise;
+    });
+  });
+
+  it("writes one business submission for same-tick duplicate submits", async () => {
+    const pending = deferred<{ error: null }>();
+    insertMock.mockReturnValue(pending.promise);
+    const { container } = render(<BusinessSubmissionForm initialName="Test Cafe" />);
+
+    change(container, "#sub-category", "cafes");
+    change(container, "#sub-area", "thamel");
+    change(container, "#sub-is_owner", "yes");
+    change(container, "#sub-contact", "owner@example.com");
+    const form = container.querySelector("form");
+    if (!form) throw new Error("Missing business submission form");
+
+    submitTwiceInOneBatch(form);
+    expect(fromMock).toHaveBeenCalledTimes(1);
+    expect(fromMock).toHaveBeenCalledWith("business_submissions");
+    expect(insertMock).toHaveBeenCalledTimes(1);
+
+    await act(async () => {
+      pending.resolve({ error: null });
+      await pending.promise;
+    });
+  });
+
+  it("writes one general contact lead for same-tick duplicate submits", async () => {
+    const pending = deferred<{ error: null }>();
+    insertMock.mockReturnValue(pending.promise);
+    const { container } = render(<ContactForm business="" listing="" page="contact" />);
+
+    change(container, "#name", "Test Visitor");
+    change(container, "#message", "I have a question about the directory.");
+    const form = container.querySelector("form");
+    if (!form) throw new Error("Missing general contact form");
+
+    submitTwiceInOneBatch(form);
+    expect(fromMock).toHaveBeenCalledTimes(1);
+    expect(fromMock).toHaveBeenCalledWith("contact_messages");
+    expect(insertMock).toHaveBeenCalledTimes(1);
+
+    await act(async () => {
+      pending.resolve({ error: null });
+      await pending.promise;
+    });
   });
 
 });
