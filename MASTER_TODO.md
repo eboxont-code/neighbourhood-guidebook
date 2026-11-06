@@ -172,11 +172,11 @@ Never mark work [DONE] merely because code exists, a PR is merged, or a preview 
 | #8 | sewa/bundle-08-inbound-conversion → sewa/bundle-07-reconciled-main-20261106 | Open draft; still stacked on the old Bundle 7 branch at a6deac36. Do not merge as-is. |
 | #10 | sewa/bundle-07-reconciled-main-20261106 → main | Open draft; current-main base ee38ca0e, 16 commits, 11 files. Push run #351 and PR run #344 passed. Owner review/approval remains required. |
 | #11 | sewa/bundle-04-contact-insights-main-20261106 → main | Open draft; current-main base ee38ca0e, 7 commits, 5 files. Push run #365 and PR run #366 passed. |
-| #12 | sewa/analytics-submission-guard-20261106 → main | Open draft; current-main base ee38ca0e, 3 commits and 4 files; code commit c447e63cf548a9274c3d21800cef4efc79125c60; latest head 3df0d155fa735b80b09f39b5aab40512f3bb2639. Code run #368 and latest-head push/PR runs #372/#373 passed. Not merged. |
+| #12 | sewa/analytics-submission-guard-20261106 → main | Open draft; current-main base ee38ca0e, 5 commits and 4 files; code commit c447e63cf548a9274c3d21800cef4efc79125c60; latest head d9293bf195a0c1b987b2a67a6a8aa3a41e13b4a3. Push Quality Gate #376 and PR Quality Gate #377 passed on this head, including TypeScript, lint, unit/component tests, production build and disposable PostgreSQL migration/security tests. Vercel preview READY. Not merged. |
 
 - PR #7 is closed unmerged; PR #9 is merged.
 - Main commit ee38ca0e has successful Quality Gate run #345 and earlier run #337. Later run #355 was cancelled. The combined Vercel status for this main commit is successful.
-- PR #12 code run #368 and latest-head push/PR runs #372/#373 passed TypeScript validation, lint, unit/component tests, production build, and disposable PostgreSQL migration/security tests.
+- PR #12 latest head d9293bf195a0c1b987b2a67a6a8aa3a41e13b4a3; push run #376 and PR run #377 both passed TypeScript validation, lint, unit/component tests, production build and disposable PostgreSQL migration/security tests. Preview deployment dpl_7eUxU27HqJjtZTfpQpiPwsJbBxNL is READY; production remains on main and was not changed.
 - PRs #4, #8, #10, #11 and #12 remain drafts. No release PR was merged.
 
 ### Current branch inventory
@@ -804,7 +804,7 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 **Definition of done:** The owner can answer where qualified leads came from, which page generated them, and which funnel step leaks.
 
 - [x] [DONE] **SW-0041 · P0 · Audit current state** — Check whether production analytics are already installed before adding another analytics product. Evidence: first-party Supabase analytics already exist; five events were counted read-only in the checked project.
-- [ ] [REVIEW] **SW-0042 · P0 · Audit current state** — Verify that analytics events are not double-fired during route changes or form submissions. Evidence: same-tick contact/claim duplicate-submit regression tests pass in PR #12 CI run #368. Evidence: same-tick contact/claim duplicate-submit regression tests pass in PR #12 CI; implementation remains unmerged and undeployed.
+- [ ] [REVIEW] **SW-0042 · P0 · Audit current state** — Verify that analytics events are not double-fired during route changes or form submissions. Evidence: preview-view effect is keyed by business slug; search tracking is debounced with timer cleanup; the root/router has no React StrictMode wrapper. Same-tick duplicate-submit tests cover preview ContactForm, For Businesses ContactForm and ClaimForm; push run #376 and PR run #377 passed on head d9293bf. Implementation remains in draft PR #12, unmerged and undeployed.
 - [ ] [BLOCKED] **SW-0043 · P0 · Audit current state** — Record weekly unique visitors and pageviews by landing page. Evidence: unique visitor/pageview reporting needs an owner-approved privacy and retention policy before adding identifiers.
 - [ ] [BLOCKED] **SW-0044 · P0 · Audit current state** — Record organic-search visits separately from direct, referral, and campaign visits where data supports it. Evidence: UTM/referrer/campaign fields are absent; source policy and safe migration target are required.
 - [ ] [BLOCKED] **SW-0045 · P0 · Audit current state** — Record visits to listing pages separately from website-preview pages. Evidence: no listing_view event exists in code or DB constraint; migration target/history mismatch remains unresolved.
@@ -853,7 +853,7 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [BLOCKED] **SW-0082 · P0 · Forms reported saving to database; regression-test** — Submit a production test lead through the For Businesses route. Evidence: requires an authorised test account and safe non-production database; production test submissions are prohibited.
 - [ ] [BLOCKED] **SW-0083 · P0 · Forms reported saving to database; regression-test** — Submit a production test lead through a listing claim action. Evidence: requires an authorised test account and safe non-production database; production test submissions are prohibited.
 - [ ] [BLOCKED] **SW-0084 · P0 · Forms reported saving to database; regression-test** — Submit a production test lead through the general contact form. Evidence: requires an authorised test account and safe non-production database; production test submissions are prohibited.
-- [ ] [TODO] **SW-0085 · P0 · Audit current state** — Verify each form creates exactly one database lead for one successful submission.
+- [ ] [REVIEW] **SW-0085 · P0 · Audit current state** — Verify each website-enquiry/claim path creates exactly one database lead for one successful submission. Evidence: same-tick duplicate-submit tests assert one contact_messages insert for preview and For Businesses ContactForm variants, and one business_claims insert for ClaimForm; push run #376 and PR run #377 passed. This remains review-only in unmerged PR #12; no production test lead was written.
 - [ ] [TODO] **SW-0086 · P0 · Audit current state** — Verify the user receives a clear success state after a saved submission.
 - [ ] [TODO] **SW-0087 · P0 · Audit current state** — Verify a failed submission shows a useful retry message without losing typed values.
 - [ ] [TODO] **SW-0088 · P0 · Audit current state** — Verify form validation explains which required field needs attention.
