@@ -1064,7 +1064,7 @@ const GENERIC_ADDRESS_WORDS = new Set([
 ]);
 
 function addressWords(value: string) {
-  return value.normalize("NFKC").toLowerCase().match(/[\\p{L}\\p{N}]+/gu) ?? [];
+  return value.normalize("NFKC").toLowerCase().match(/[\p{L}\p{N}]+/gu) ?? [];
 }
 
 /** An area/city label alone is not a street-level destination for directions. */
@@ -1090,7 +1090,7 @@ function hasDetailedAddress(b: Business) {
     (word) =>
       !contextWords.has(word) &&
       !GENERIC_ADDRESS_WORDS.has(word) &&
-      /[\\p{L}]/u.test(word),
+      /[\p{L}]/u.test(word),
   );
 }
 
