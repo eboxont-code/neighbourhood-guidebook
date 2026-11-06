@@ -89,6 +89,19 @@ A **qualified website lead** is a successfully saved contact_messages record tha
 
 Budget and assumed willingness to pay are not qualification criteria. A click, preview view, claim request, quote, proposal, or enquiry that fails any of these checks is not a qualified website lead. This is an internal measurement definition only; it does not approve pricing, outreach, or a paid offer.
 
+### Primary website-enquiry conversion — 7 November 2026
+
+The **primary conversion** is one successfully persisted row in `public.contact_messages` that meets both conditions:
+
+1. **Website intent:** `topic = 'website'`, or the recorded source page is `preview` or `for-businesses`. A free-preview CTA carries the preview page and listing context into the contact form; the For Businesses form records its own source page.
+2. **Identifiable business context:** the trimmed `business_name` is non-empty, or `source_listing_slug` resolves to a published SEWA listing. A non-empty but unresolved slug by itself is not enough.
+
+The current form and database require a non-empty contact name and message. Count each qualifying saved row once, using its `contact_messages.id` as the record identity. This is a gross enquiry conversion, not proof that the request is genuine, reachable, qualified, quoted, won, or paid. The later manual checks in the qualified-lead definition remain separate.
+
+Do **not** count preview views, preview CTA clicks, form starts, validation failures, rate-limited or failed inserts, honeypot-only success screens, claim/fix/add/other topics, correction reports, or new-business submissions as this conversion. The honeypot path can show a success state without inserting a row, so a success screen alone is not evidence.
+
+The `enquiry_submit` analytics event is emitted after a successful contact insert for website-intent forms, but its delivery is best-effort and can be skipped by Do Not Track or a network failure. Use the persisted contact row as the source of truth; use the event only for funnel diagnostics. `preview_enquiry_click` is an earlier step. `service_quote_submit` may be emitted for the same saved service form and must not be added as a second primary conversion.
+
 ---
 
 ## 1. Non-negotiable rules
@@ -670,6 +683,7 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 | 8 | Isolate and review Proposal Composer after its dependencies | BLOCKED — depends on the released Bundle 7 and Bundle 8 sequence |
 | 9 | Use the funnel baseline to fix the largest conversion leak | BLOCKED — production has only 8 analytics events across 3 event types and no recorded enquiry submissions; insufficient evidence to identify a conversion leak |
 | 10 | Improve directory quality and coverage based on real user demand and lead value | BLOCKED — only 2 zero-result searches and no saved enquiries are present in the current production snapshot; the prospect CSV is also unavailable, so demand/lead-value prioritisation is not evidence-based yet |
+| 11 | Define secondary conversions for preview views, preview CTA clicks, claim requests, contact-form sends, and repeat visits | TODO — SW-0004 is the next independently actionable register item; keep each event distinct from the primary saved website enquiry |
 
 ### Task 1 verification notes — 7 November 2026
 
@@ -685,6 +699,16 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 - `contact_messages` has no UTM, campaign ID, landing/referrer route, or explicit preview URL fields. `analytics_events` records `listing_slug`, event, query, language and path, but no UTM/campaign fields. Sponsored clicks are counted by listing, placement/target key and date window; they are not joined to a specific campaign or later enquiry. No promotions or sponsored-click rows currently exist in production.
 - Keep SW-0060 and SW-0061 TODO. Mark SW-0062 REVIEW: the preview slug/page mapping is present in code, but the browser submit/validation journey has not been exercised end to end. No schema or application changes were made during this audit.
 
+### Task 3 primary conversion definition — 7 November 2026
+
+- Audited the current `ContactForm`, contact/For Businesses/preview routes, event helper, and deployed `contact_messages` / `analytics_events` schema.
+- The form inserts a `contact_messages` row with `business_name`, `source_listing_slug`, `page`, and `topic`; the required name and message are validated before insert. `enquiry_submit` is emitted only after a successful insert for website-intent forms. The honeypot success path does not insert a row.
+- Analytics insertion is asynchronous and intentionally ignores failures; Do Not Track also suppresses it. The saved contact row is therefore the canonical conversion record. The service quote event is not an additional conversion for the same row.
+- Read-only production snapshot: 52 published listings; 0 contact messages; 8 analytics events (5 `preview_view`, 1 `claim_click`, 2 `search_zero`). The definition does not imply that any production conversion has occurred.
+- Task commit `3a276d7986dd09087f7a5c2eaa2313745b7bd3ab`; draft PR #21: https://github.com/eboxont-code/neighbourhood-guidebook/pull/21, stacked on PR #20. GitHub Quality Gate push run #42295950727 and PR run #42295971021 both passed on the exact task commit, including TypeScript, ESLint, unit/component tests, production build, and disposable PostgreSQL migration/security tests.
+- Vercel preview status is blocked by the Hobby daily deployment limit (`api-deployments-free-per-day`); no manual deployment or upgrade was attempted.
+- No application code, schema, production data, Auth settings, pricing, outreach, or deployment was changed. Additional spend: $0.
+
 ### Bundle 7 current state — 7 November 2026
 
 - Current-main replacement PR #10 is open as a draft from sewa/bundle-07-reconciled-main-20261106 to main at ee38ca0e. Its latest GitHub push run #42218893839 and PR run #42218901255 passed.
@@ -692,20 +716,21 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 - Owner review/approval remains the release gate. PR #8 still targets the older Bundle 7 branch and must not be merged as-is.
 - Do not proceed with Bundle 8 release work until Bundle 7 is reviewed and released; then rebuild/rebase Bundle 8 on the resulting main.
 
-### Current task
+### Completed task — SW-0003
 
-**SW-0002 — Define a qualified website lead using observable criteria.**  
-**Status: DONE — definition recorded in Section 0 and the 1,000-task register.**
+**Define the primary conversion as a completed website enquiry with identifiable business context.**  
+**Status: DONE — the definition and measurement boundaries are recorded in Section 0 and the 1,000-task register.**
 
-- The definition is grounded in the current contact form and production schema: website intent, identifiable business context, non-empty request, a manually checked phone reply route, and manual spam/duplicate screening.
-- Budget or assumed willingness to pay is explicitly excluded from qualification.
-- No code, schema, production data, or business pricing/outreach settings were changed.
-- PR #20: https://github.com/eboxont-code/neighbourhood-guidebook/pull/20; branch sewa/define-qualified-lead-20261107. Task commit b27a4101723fb6f961517eb3a93a45227144f8b9 passed runs #42289004499 and #42289189951. Plan-evidence commit f188549b14b7e4e78ae14d7d248638f28fed8229 passed runs #42289502496 and #42289510045. The initial Vercel preview succeeded; the latest Vercel status is build-rate-limited. Draft only; not merged.
+- One qualifying `contact_messages` row is the conversion; it requires website intent and identifiable business context.
+- The saved database row, not a success screen or best-effort analytics event, is authoritative. Clicks, views, failed submissions and unrelated form types are separate funnel steps.
+- The definition remains distinct from SW-0002 manual qualification and from quote, won-job, and cash metrics.
+- No application or production changes were needed. Production database inspection was read-only; additional spend was $0.
 
 ### Next eligible task
 
-**SW-0003 — Define the primary conversion as a completed website enquiry with identifiable business context.**  
-This can be documented independently of the blocked production form test and does not require a customer submission.
+**SW-0004 — Define secondary conversions for preview views, preview CTA clicks, claim requests, contact-form sends, and repeat visits.**  
+This is independently documentable from the existing event and route implementation. It does not require a production submission, owner credentials, or a production database write.
+
 
 ---
 
@@ -746,7 +771,7 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 
 - [x] [DONE] **SW-0001 · P0 · Audit current state** — Write a one-sentence north-star goal: generate qualified website-design opportunities for Boxont from Sewa. Already recorded in Section 0 and verified 7 November 2026.
 - [x] [DONE] **SW-0002 · P0 · Audit current state** — Define a qualified website lead using observable criteria, not assumptions about willingness to pay. Definition and current-schema limitations recorded in Section 0 on 7 November 2026.
-- [ ] [TODO] **SW-0003 · P0 · Audit current state** — Define the primary conversion as a completed website enquiry with identifiable business context.
+- [x] [DONE] **SW-0003 · P0 · Audit current state** — Define the primary conversion as a completed website enquiry with identifiable business context. Definition and source-of-truth rules recorded in Section 0 on 7 November 2026.
 - [ ] [TODO] **SW-0004 · P0 · Audit current state** — Define secondary conversions for preview views, preview CTA clicks, claim requests, contact-form sends, and repeat visits.
 - [ ] [TODO] **SW-0005 · P0 · Audit current state** — Separate website-design revenue metrics from future listing-subscription and booking revenue metrics.
 - [ ] [TODO] **SW-0006 · P0 · Audit current state** — Record that directory traffic alone is not success unless it creates useful customer or business-owner outcomes.
