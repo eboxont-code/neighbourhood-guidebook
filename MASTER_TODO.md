@@ -702,12 +702,14 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 
 - Repository default branch is `main` at `ee38ca0e978f0149ca10f5b2caadb33282729148`. GitHub Quality Gate run #337 passed on that exact SHA; the combined commit status is successful.
 - Production Vercel deployment `dpl_Gou24q64tcmGASESDmvqbxzrWpP7` is READY on that exact `main` SHA. `sewa.boxont.com` is attached. No production deployment was initiated in this session.
-- Seven open draft PRs are present: #4 (older Bundle 4), #8 (Bundle 8), #10 (current-main Bundle 7), #11 (current-main contact insights), #12 (form protection/regression coverage), #13 (preview route regression), and #14 (preview business-name render regression).
-- PR #12 targets `main` at `ee38ca0e`; current head is `1f120d7305ca43dea2da0cc7cafa7e493525d2ef`. Its Unicode round-trip Quality Gate #429 passed on code head `66533a47`; documentation refresh runs #430/#431 passed (push and PR).
-- PR #13 is a draft stacked on PR #12. Current head is `4631b5685a361eac30b0b8d44f3cf31944c4ab08`; route regression code head `38d79188` passed runs #437 (push) and #438 (PR). Its plan update run #440 (PR) passed; push run #439 is still being checked.
-- PR #14 is a draft stacked on PR #13. Current code head is `7c5b7869c02769fcada1922195f3f5b9c7bc307d`; runs #442 (push) and #443 (PR) both passed. The application job passed TypeScript, ESLint (0 errors; 25 warnings), 26 test files / 215 tests, and production build. Disposable PostgreSQL applied all 13 repository migrations and passed existing security/concurrency checks.
-- PR #13's initial test attempt (#435/#436) caught an incorrect assertion about TanStack Router's legacy redirect representation. Runtime evidence showed a standard HTTP `Response` with status 301; the test was corrected to assert that status and the redirect-map target. Corrected runs #437/#438 passed.
-- Vercel reports a build-rate-limit failure for current PR #12–#14 heads (`upgradeToPro=build-rate-limit`). The latest observed READY preview is for earlier PR #12 head `404d5aa2`; no manual preview deployment was attempted. This Vercel limit does not invalidate passing GitHub Quality Gates.
+- Nine open draft PRs are present: #4 (older Bundle 4), #8 (Bundle 8), #10 (current-main Bundle 7), #11 (current-main contact insights), #12 (form protection/regression coverage), #13 (preview route regression), #14 (preview business-name render regression), #15 (preview hours trust), and #16 (no-hours preview regression).
+- PR #12 targets `main` at `ee38ca0e`; current head is `1f120d7305ca43dea2da0cc7cafa7e493525d2ef`. Its Unicode round-trip Quality Gate #429 passed on code head `66533a47`; documentation refresh runs #430/#431 passed.
+- PR #13 is a draft stacked on PR #12. Current head is `4631b5685a361eac30b0b8d44f3cf31944c4ab08`; route regression code head `38d79188` passed runs #437/#438, and plan refresh runs #439/#440 passed.
+- PR #14 is a draft stacked on PR #13. Current head is `668405a23016e8c28bee77249f0ad0fab0072f91`; business-name render code head `7c5b7869` passed runs #442/#443, and plan refresh runs #444/#445 passed.
+- PR #15 is a draft stacked on PR #14. Current head is `a17ff0c9ccb51076c89531710da76dd3d10de580`; hours-trust code head `e8d7ece9` passed runs #450/#451, and plan refresh runs #452/#453 passed.
+- PR #16 is a draft stacked on PR #15. Current head is `b0b867fd0dc5cb235ea3bd5d21c1dc73ede92058`; runs #455 (push) and #456 (PR) both passed. The application job passed TypeScript, ESLint (0 errors; 25 warnings), 27 test files / 219 tests, and production build. Disposable PostgreSQL applied all 13 repository migrations and passed the existing security/concurrency checks.
+- Earlier CI failures were corrected and are not current failures: PR #13's redirect assertion was updated to match the actual HTTP 301 Response; PR #15's synthetic no-source fixture was updated to respect `exactOptionalPropertyTypes`. The corrected heads passed.
+- Vercel reports a build-rate-limit failure for current PR #12–#16 heads (`upgradeToPro=build-rate-limit`). The latest observed READY preview is for earlier PR #12 head `404d5aa2`; no manual preview deployment was attempted. This Vercel limit does not invalidate passing GitHub Quality Gates.
 - Supabase project `zvbavpcsyvibvpkxjzkn` (`neighbourhood-guidebook`) remains ACTIVE_HEALTHY. Remote migration history contains 8 entries; the last three versions (`20261104111910`, `20261104111922`, `20261104111936`) still differ from local migration filenames (`20261102130000`, `20261103114000`, `20261104100000`). No migration or repair was attempted.
 - Read-only database counts remain: 52 listings; 0 contact messages; 0 business claims; 0 business submissions; 0 correction reports; 5 analytics events; 0 listing promotions; 3 form-rate rows; 1 user role. `business_sales_prospects` and `business_sales_activities` are absent. No rows were changed.
 - The current `main` copy of `MASTER_TODO.md` contains 999 task rows and omits `SW-0299`. The original Library CSV confirms `SW-0299` is “Do not promise search rankings, guaranteed leads, or a specific sales result.” This PR branch contains all 1,000 unique IDs, including the restored task. Do not overwrite the restored register with the stale `main` copy.
@@ -975,13 +977,23 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 - Draft PR [#15](https://github.com/eboxont-code/neighbourhood-guidebook/pull/15) remains stacked on draft PR #14 and unmerged. Keep this task at REVIEW until the stacked work is owner-reviewed and released.
 - No production data, schema, migrations, settings, outreach, pricing or deployment changes. Additional spend: $0.
 
-### Current task — SW-0167
+### Previous task — SW-0167
 
-**Status: IN PROGRESS — verify a preview does not invent or display opening hours when the listing has no recorded hours.**
+**Status: REVIEW — the preview renders no schedule, no live status and no fabricated times when a listing has no recorded hours.**
 
-- Audit the existing preview's quick-fact, weekly-hours and live-status rendering with a fixture that has no `hours` schedule.
-- Add a focused render regression test proving that absent hours produce the existing unavailable state and no fabricated times or open/closed claim. Reuse the existing preview test harness and real directory fixtures; do not alter listing data.
-- Do not invent or edit business hours. No production data, migrations, settings, or deployment changes are required.
+- Audited the real directory fixture `kathmandu-spa-thamel` (Kathmandu Spa): it has no `hours` array and no `hoursSource`. No directory data was modified.
+- Added a static-render regression test to `src/test/preview-hours.test.tsx` using that real fixture. It asserts the existing “add hours” fallback in the quick fact and weekly-hours section, an empty live-status slot, no schedule rows, and no time-like values.
+- The test reuses the preview component harness and the current `previewHours` guard; no application code change was required for this task.
+- Quality Gate runs #455 (push) and #456 (pull request) both passed on head `b0b867fd0dc5cb235ea3bd5d21c1dc73ede92058`: TypeScript, ESLint (0 errors; 25 warnings), 27 test files / 219 tests, production build, and disposable PostgreSQL migration/security/concurrency checks.
+- Keep REVIEW rather than DONE because the regression test is in a draft stacked PR and has not been merged or released. No production data, business hours, schema, migrations, settings, or deployment changed.
+
+### Current task — SW-0168
+
+**Status: IN PROGRESS — verify the preview uses the correct area and address fields without upgrading a vague area into an exact address.**
+
+- Audit the existing preview location section, map/directions URL and directory address/area fields. Compare exact addresses with area-only records.
+- Add focused render/URL tests using existing fixtures: an exact recorded address must remain exact; a vague area must not be promoted to a street address; map/directions controls must use only recorded reliable location data.
+- Do not invent, enrich or edit business addresses or coordinates. No production data, migrations, settings, or deployment changes are required.
 ---
 
 ## 10. Instruction for every future AI session
@@ -1209,8 +1221,8 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [REVIEW] **SW-0164 · P0 · Audit current state** — Verify preview routes use the expected business slug and fail safely for an unknown slug. Evidence: three route-loader tests cover exact business resolution, legacy 301 redirect mapping and unknown-slug not-found; Quality Gate runs #437/#438 passed (25 files / 213 tests, TypeScript, lint, build and disposable PostgreSQL security tests). Draft PR #13, unmerged.
 - [ ] [REVIEW] **SW-0165 · P0 · Audit current state** — Verify the preview displays the correct business name from the listing record. Evidence: static-render tests use two real directory fixtures and assert the exact name in hero, navigation and footer; Quality Gate runs #442/#443 passed (26 files / 215 tests, TypeScript, lint, build and disposable PostgreSQL security tests). Draft PR #14, unmerged.
 - [ ] [REVIEW] **SW-0166 · P0 · Audit current state** — Verify the preview displays only hours that exist and are sufficiently trustworthy. Evidence: preview hours require a non-empty schedule and recorded source; unverified sourced hours are labelled and live status requires verified hours. Three render tests; Quality Gate #451 passed (27 files / 218 tests, TypeScript, ESLint, build and disposable PostgreSQL security/concurrency checks). Draft PR #15, unmerged; keep REVIEW until release.
-- [ ] [IN PROGRESS] **SW-0167 · P0 · Audit current state** — Verify the preview never invents opening hours when the listing lacks them. Next independent task after SW-0166; test an hours-absent fixture without changing directory data.
-- [ ] [TODO] **SW-0168 · P0 · Audit current state** — Verify the preview uses the correct area and address fields without upgrading a vague area into an exact address.
+- [ ] [REVIEW] **SW-0167 · P0 · Audit current state** — Verify the preview never invents opening hours when the listing lacks them. Evidence: real no-hours fixture `kathmandu-spa-thamel` renders the existing fallback, no status, no schedule rows and no time values; Quality Gate runs #455/#456 passed (27 files / 219 tests, TypeScript, lint, build and disposable PostgreSQL security tests). Draft PR #16, unmerged.
+- [ ] [IN PROGRESS] **SW-0168 · P0 · Audit current state** — Verify the preview uses the correct area and address fields without upgrading a vague area into an exact address. Auditing existing preview location rendering and directory fixtures; no addresses or coordinates will be invented or edited.
 - [ ] [TODO] **SW-0169 · P0 · Audit current state** — Verify the map/directions action appears only when a reliable location exists.
 - [ ] [TODO] **SW-0170 · P0 · Audit current state** — Verify the phone action appears only when a verified public phone exists.
 - [ ] [TODO] **SW-0171 · P0 · Audit current state** — Verify the website action is omitted or clearly unavailable when no working official website exists.
