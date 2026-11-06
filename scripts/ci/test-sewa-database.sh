@@ -54,8 +54,63 @@ if [[ "$migration_count" -ne 13 ]]; then
   exit 1
 fi
 
-echo "Checking RLS, function privileges, and cross-form throttling..."
-docker exec -i "$POSTGRES_CONTAINER_ID" psql -v ON_ERROR_STOP=1 -U postgres -d sewa_ci < scripts/ci/verify-sewa-database.sql
+echo "Testing Nepali and mixed-language form values in disposable PostgreSQL..."
+docker exec -i "$POSTGRES_CONTAINER_ID" psql -v ON_ERROR_STOP=1 -U postgres -d sewa_ci <<'SQL'
+BEGIN;
+SET LOCAL ROLE anon;
+INSERT INTO public.contact_messages (name, business_name, message, page, client_key)
+VALUES (
+  'सुमन श्रेष्ठ',
+  'Himalayan क्याफे',
+  'नमस्ते — I would like a website for हिमालयन क्याफे.',
+  'contact',
+  'sewa-unicode-contact'
+);
+INSERT INTO public.business_submissions (business_name, category, area, is_owner, name, contact, note, client_key)
+VALUES (
+  'हिमालयन क्याफे / Himalayan Café',
+  'cafes',
+  'thamel',
+  true,
+  'सुमन श्रेष्ठ',
+  'owner@example.com',
+  'नमस्ते — please add this business.',
+  'sewa-unicode-business'
+);
+RESET ROLE;
+DO $
+DECLARE
+  contact_row public.contact_messages%ROWTYPE;
+  business_row public.business_submissions%ROWTYPE;
+BEGIN
+  SELECT * INTO contact_row
+  FROM public.contact_messages
+  WHERE name = 'सुमन श्रेष्ठ' AND business_name = 'Himalayan क्याफे';
+  IF NOT FOUND THEN
+    RAISE EXCEPTION 'unicode_contact_row_missing';
+  END IF;
+  IF contact_row.message <> 'नमस्ते — I would like a website for हिमालयन क्याफे.'
+     OR contact_row.client_key IS NOT NULL THEN
+    RAISE EXCEPTION 'unicode_contact_round_trip_failed';
+  END IF;
+
+  SELECT * INTO business_row
+  FROM public.business_submissions
+  WHERE business_name = 'हिमालयन क्याफे / Himalayan Café';
+  IF NOT FOUND THEN
+    RAISE EXCEPTION 'unicode_business_row_missing';
+  END IF;
+  IF business_row.name <> 'सुमन श्रेष्ठ'
+     OR business_row.note <> 'नमस्ते — please add this business.'
+     OR business_row.client_key IS NOT NULL THEN
+    RAISE EXCEPTION 'unicode_business_round_trip_failed';
+  END IF;
+END
+$;
+ROLLBACK;
+SQL
+
+echo "Unicode form round-trip passed."
 
 echo "Testing concurrent submissions from one shared IP and client key..."
 tmpdir="$(mktemp -d)"

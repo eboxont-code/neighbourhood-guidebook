@@ -687,3 +687,27 @@ describe("public form privacy note", () => {
     expect(container.querySelector('a[href="/privacy"]')?.textContent).toBe("formPrivacyLink");
   });
 });
+
+describe("mixed-language lead values", () => {
+  it("preserves Nepali and mixed-language contact details in separate fields", async () => {
+    insertMock.mockResolvedValue({ error: null });
+    const { container } = render(<ContactForm business="" listing="" page="contact" />);
+    change(container, "#name", "सुमन श्रेष्ठ");
+    change(container, "#business", "Himalayan क्याफे");
+    change(container, "#message", "नमस्ते — I would like a website for हिमालयन क्याफे.");
+    const form = container.querySelector("form");
+    if (!form) throw new Error("Missing mixed-language contact form");
+
+    fireEvent.submit(form);
+
+    await waitFor(() => expect(container.querySelector('[role="status"]')?.textContent).toContain("thanksContact"));
+    const payload = insertMock.mock.calls[0]?.[0];
+    if (!payload) throw new Error("Missing mixed-language contact payload");
+    expect(payload).toMatchObject({
+      name: "सुमन श्रेष्ठ",
+      business_name: "Himalayan क्याफे",
+      message: "नमस्ते — I would like a website for हिमालयन क्याफे.",
+      page: "contact",
+    });
+  });
+});

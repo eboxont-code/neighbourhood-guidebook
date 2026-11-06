@@ -152,7 +152,7 @@ Never mark work [DONE] merely because code exists, a PR is merged, or a preview 
 
 ---
 
-## 3. Verified repository snapshot — 6 November 2026
+## 3. Verified repository snapshot — 7 November 2026
 
 ### Repository baseline
 
@@ -701,7 +701,7 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 ### Repository and production refresh — 7 November 2026
 
 - `main` remains `ee38ca0e978f0149ca10f5b2caadb33282729148`; Quality Gate run #337 passed. The branch is unprotected and required status checks are disabled; this was recorded, not changed.
-- Five open draft PRs remain: #4 (older Bundle 4), #8 (stacked Bundle 8), #10 (current-main Bundle 7), #11 (current-main Bundle 4 port), and #12 (form guard and regression coverage). PR #12 targets `main` at `ee38ca0e` and now heads `57e1c278a376f0b06c9e37a70449705d9db2c95d` after SW-0094 source-fallback tests; push run #416 and PR run #417 passed both quality jobs, and the matching Vercel Preview is READY.
+- Five open draft PRs remain: #4 (older Bundle 4), #8 (stacked Bundle 8), #10 (current-main Bundle 7), #11 (current-main Bundle 4 port), and #12 (form guard and regression coverage). PR #12 targets `main` at `ee38ca0e` and now heads `bfcdd27ec44a80fa2f440fd25c50646332d701a4`; push run #424 and PR run #425 passed the full Quality Gate. The latest observed Vercel preview is READY for prior head `404d5aa2`; no manual preview or production deployment was initiated for `bfcdd27e`.
 - Vercel Production deployment `dpl_Gou24q64tcmGASESDmvqbxzrWpP7` is READY on `main` at `ee38ca0e`; `sewa.boxont.com` is attached. PR #12 preview `dpl_D6apeuQqZfM1mf8HWS7W4sHGc88u` is READY and is not a Production deployment.
 - Supabase project `zvbavpcsyvibvpkxjzkn` (`neighbourhood-guidebook`) is ACTIVE_HEALTHY. Remote migration history has 8 entries; the first five match local filenames, while the last three remote versions (`20261104111910`, `20261104111922`, `20261104111936`) differ from local main filenames (`20261102130000`, `20261103114000`, `20261104100000`). No migration or repair was attempted. The Vercel environment-to-project binding was not re-derived from encrypted environment values in this run.
 - Read-only counts: 52 published listings; 0 contact messages; 0 business claims; 0 business submissions; 0 correction reports; 5 analytics events; 0 listing promotions; 3 form-rate rows; 1 user role. `business_sales_prospects` and `business_sales_activities` do not exist in this database.
@@ -800,29 +800,138 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 
 **Status: REVIEW — For Businesses enquiry intent is verified at component-payload level on draft PR #12.**
 
-- Audited the route/component contract. The For Businesses route explicitly supplies `page="for-businesses"` when opened normally and `page="preview"` when entered from an eligible preview; it passes the selected service package to `ContactForm`.
-- Added a component test using the route-equivalent props with the `growth` package selected. It verifies the persisted payload keeps `page="for-businesses"`, `service_package="growth"`, and nullable topic/budget fields.
-- Test commit: `05638e25e0b7e5c0e466e90d136273901124d9e7`. Push run #414 and PR run #415 both passed TypeScript, ESLint, unit/component tests, production build and disposable PostgreSQL migration/security tests. The preview for head `8f4b79a2` was READY.
-- Supabase calls are mocked. No Production records, settings, migrations or deployment were changed.
-- Live browser-to-database persistence remains blocked under Task 1; this REVIEW status does not claim real persistence.
+- Audited the route/component contract. The For Businesses route explicitly supplies `page="for-businesses"` or `page="preview"` and passes the selected service package to `ContactForm`.
+- The component test verifies `page="for-businesses"`, `service_package="growth"`, and nullable topic/budget fields.
+- Test commit `05638e25`; push run #414 and PR run #415 passed the full Quality Gate. Preview for head `8f4b79a2` was READY.
+- Supabase calls are mocked. Live persistence remains blocked under Task 1.
 
 ### Previous task — SW-0094
 
 **Status: REVIEW — source fallback is used only when no explicit route or listing source is available.**
 
-- Audited `/contact` search validation: only the known `claim` and `preview` origins are accepted; unknown `from` values are discarded rather than persisted as arbitrary source labels.
-- Audited the For Businesses route: it always supplies `for-businesses` or `preview`. `ContactForm` preserves an explicit page; if no page is supplied it falls back to `listing` when a listing slug exists, otherwise to generic `contact`.
-- Added two component tests for the two fallback cases: known listing with no page → `page="listing"`; no page and no listing → `page="contact"`. Existing preview and For Businesses payload tests prove explicit origins are preserved.
-- Test commit: `57e1c278a376f0b06c9e37a70449705d9db2c95d`. Push run #416 and PR run #417 both passed TypeScript, ESLint, unit/component tests, production build and disposable PostgreSQL migration/security tests. The matching preview deployment is READY.
-- No source schema or runtime behavior change was necessary; no production writes, migrations or deployment occurred. Live persistence remains blocked under Task 1.
+- `/contact` accepts only known `claim` and `preview` origins. For Businesses supplies `for-businesses` or `preview`.
+- `ContactForm` preserves explicit sources; without one it uses `listing` when a listing slug exists, otherwise generic `contact`.
+- Component tests cover both fallback cases and preserve explicit route origins.
+- Test commit `57e1c278`; push run #416 and PR run #417 passed the full Quality Gate.
 
-### Current task — SW-0095
+### Previous task — SW-0095
 
-**Status: IN PROGRESS — store source metadata in structured columns rather than embedding it only in a message string.**
+**Status: REVIEW — source metadata is stored in structured columns.**
 
-- Initial audit confirms the live schema already has structured columns: `contact_messages.page`, `source_listing_slug`, `topic`, `service_package`, `budget_band`, and `business_name`; `business_claims.listing_slug/listing_id`; `correction_reports.listing_slug/correction_type`; and structured `business_submissions` fields.
-- Existing components write these values as separate columns. No schema change appears necessary.
-- Next: add/extend component assertions for correction and new-business payloads, then run the full Quality Gate. Supabase calls remain mocked; production is read-only.
+- Verified separate columns and insert payloads for contact source/topic/package/budget/business name, claim listing identity, correction type/listing identity, and new-business details.
+- Added payload assertions for correction and new-business submissions. Initial runs #420/#421 caught strict TypeScript optional-indexing errors; commit `404d5aa2` added explicit missing-payload guards. Push run #422 and PR run #423 then passed TypeScript, ESLint, unit/component tests, production build and disposable PostgreSQL security tests.
+
+### Previous task — SW-0096
+
+**Status: REVIEW — business name is separate from the person's name.**
+
+- The contact form schema and database store `name` and `business_name` separately. Existing preview test asserts `name="Test Owner"` and `business_name="Aavaran"`.
+- The new-business payload test separately asserts `business_name="Test Cafe"` and `name="Test Submitter"`. No schema change was needed.
+
+### Blocked task — SW-0097
+
+**Status: BLOCKED — no approved reply-method policy.**
+
+- Contact/quote forms collect an optional phone number and no email address; `contact_messages` has no email column.
+- Missing owner decision: require phone, add email, or approve another reply method. No form requirement or schema was changed.
+
+### Blocked task — SW-0098
+
+**Status: BLOCKED — depends on SW-0097.**
+
+- Phone cannot safely remain optional when no alternative reply channel is collected. Needs the same owner-approved reply-method decision.
+
+### Previous task — SW-0099
+
+**Status: REVIEW — sales enquiry forms avoid home address and precise-location collection.**
+
+- Contact/quote and correction forms collect no address or precise coordinates. The separate Add Business form has an optional business address for the directory listing; it is not part of the sales enquiry form.
+- No personal location was added to analytics.
+
+### Previous task — SW-0100
+
+**Status: REVIEW — privacy note added to contact/quote and correction forms.**
+
+- Added English and Nepali copy beside submission controls, linked to the existing privacy page. The wording matches the current policy: details are stored to reply and are not shared.
+- Tests verify the note and `/privacy` link on both form types. Commit `bfcdd27e`; push run #424 and PR run #425 passed the full Quality Gate.
+- Claim and Add Business forms are intentionally not covered by the note because the current privacy policy does not describe those collection flows. Expanding that policy scope remains blocked pending owner approval.
+
+### Previous task — SW-0101
+
+**Status: REVIEW — the quote form explains what happens after submission.**
+
+- The For Businesses route supplies `fb2Thanks`: a person will read the request and reply, usually by phone or the details supplied. No fixed turnaround time is stated.
+
+### Blocked task — SW-0102
+
+**Status: BLOCKED — no owner-approved response service standard.**
+
+- Existing copy says the team will reply but contains no measurable SLA. No response-time promise was invented. A specific expectation requires owner approval.
+
+### Blocked task — SW-0103
+
+**Status: BLOCKED — real mobile-network testing is unavailable.**
+
+- Component tests cannot establish whether the current rate limit blocks ordinary users behind mobile-carrier/shared IPs. Requires an authorised device/network test; no production form submissions were made.
+
+### Previous task — SW-0104
+
+**Status: REVIEW — honeypot is hidden from assistive technology.**
+
+- The honeypot wrapper has `aria-hidden="true"`, is positioned off-screen, and its input has `tabIndex={-1}` and `autoComplete="off"`.
+
+### Previous task — SW-0105
+
+**Status: REVIEW — rapid duplicate submissions are guarded.**
+
+- Same-tick duplicate-submit component tests cover all six public submission journeys and assert one insert. The synchronous `useRef` guards prevent the React state-update gap. Physical mobile double-tap testing remains unverified.
+
+### Blocked task — SW-0106
+
+**Status: BLOCKED — shared-network-safe rate thresholds need an owner decision.**
+
+- Read-only inspection of the actual Production trigger confirms 3 submissions per IP hash and 3 per per-tab-key hash in 10 minutes, plus 100 global submissions per hour. The shared-IP threshold can reject unrelated users behind a carrier, office or household NAT.
+- Changing thresholds requires an approved abuse policy and representative traffic evidence. No production settings or migrations were changed.
+
+### Blocked task — SW-0107
+
+**Status: BLOCKED — privacy-safe rate-log retention needs an approved design.**
+
+- Production stores MD5 hashes of IP and per-tab keys; the raw `client_key` is cleared from lead rows. The trigger deletes expired rate-log rows only when another form insert occurs.
+- Read-only SQL found 3 `form_rate_log` rows dated 2026-10-19, older than the nominal one-day window. With no new submissions, the trigger cleanup does not run, so stale hashes remain.
+- A reliable scheduled cleanup and stronger keyed-hash approach need an approved privacy/retention design and production migration. No live rows were deleted.
+
+### Blocked task — SW-0108
+
+**Status: BLOCKED — admin queue access needs an authorised account session.**
+
+- Static audit confirms the admin dashboard queries contact messages, business submissions, claims and correction reports. Verifying actual sign-in and private inbox access requires owner-controlled credentials/session; none was used.
+
+### Blocked task — SW-0109
+
+**Status: BLOCKED — no approved notification channel or provider credentials.**
+
+- No third-party email/notification service is integrated. Adding failure logging requires an approved delivery channel and account access.
+
+### Blocked task — SW-0110
+
+**Status: BLOCKED — depends on an approved notification service.**
+
+- No delivery state currently exists to retry or reconcile. Do not invent a provider or create a paid resource.
+
+### Previous task — SW-0111
+
+**Status: REVIEW — submissions are not coupled to a third-party email service.**
+
+- Public forms insert directly into Supabase and show an error state when persistence fails. No third-party email provider is present in the form path, so an email-provider outage cannot silently discard an otherwise-saved lead. Actual admin access remains blocked under SW-0108.
+
+### Current task — SW-0112
+
+**Status: IN PROGRESS — test Nepali characters and mixed-language business names end to end using disposable infrastructure.**
+
+- Added a component regression test preserving Nepali contact names, mixed-language business names and message text in the structured payload.
+- Extending the disposable PostgreSQL CI script to insert and read back Unicode contact and business-submission rows inside a transaction, verify client keys are cleared, then roll the transaction back.
+- No production data, schema, migration history or settings are touched.
 ---
 
 ## 10. Instruction for every future AI session
@@ -966,24 +1075,24 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [REVIEW] **SW-0092 · P0 · Audit current state** — Retain the originating listing when a lead comes from a claim button. Evidence: listing CTA passes the slug to `/claim`, ClaimForm writes both `listing_slug` and `listing_id`, and the payload assertion verifies slug `aavaran-durbar-marg` plus directory ID `b1`; Quality Gate runs #410/#411 passed.
 - [ ] [REVIEW] **SW-0093 · P0 · Audit current state** — Retain the form intent when a lead comes from the For Businesses page. Evidence: route supplies `page="for-businesses"` or `page="preview"` and selected service package; payload assertion verifies `page="for-businesses"` and `service_package="growth"`; push/PR Quality Gate runs #414/#415 passed. Live persistence remains blocked under Task 1.
 - [ ] [REVIEW] **SW-0094 · P0 · Audit current state** — Set a default source only when the source genuinely cannot be identified. Evidence: `/contact` accepts only known `claim`/`preview` origins; explicit `for-businesses`/`preview` sources are preserved; tests verify listing fallback and generic-contact fallback only when the origin is otherwise unknown; push/PR runs #416/#417 passed. Live persistence remains blocked under Task 1.
-- [ ] [IN PROGRESS] **SW-0095 · P0 · Audit current state** — Store source metadata in structured columns rather than embedding it only in a message string. Initial audit found the required columns and separate insert payloads; correction and new-business payload assertions are pending.
-- [ ] [TODO] **SW-0096 · P0 · Audit current state** — Capture business name as a separate field from the person's name.
-- [ ] [TODO] **SW-0097 · P1 · Audit current state** — Capture a reply method that the user can reasonably respond to, without demanding excessive data.
-- [ ] [TODO] **SW-0098 · P1 · Audit current state** — Make phone optional when email or another agreed reply method is sufficient.
-- [ ] [TODO] **SW-0099 · P1 · Audit current state** — Avoid collecting home address, precise location, or unrelated personal information in sales forms.
-- [ ] [TODO] **SW-0100 · P1 · Audit current state** — Add a human-readable privacy note beside form submission.
-- [ ] [TODO] **SW-0101 · P1 · Audit current state** — Make the quote form explain what happens after submission.
-- [ ] [TODO] **SW-0102 · P1 · Audit current state** — Set an honest response expectation only after the owner has approved a service standard.
-- [ ] [TODO] **SW-0103 · P1 · Audit current state** — Check whether spam controls block real submissions on mobile networks.
-- [ ] [TODO] **SW-0104 · P1 · Audit current state** — Check that the honeypot field is not exposed to screen readers as a normal requested field.
-- [ ] [TODO] **SW-0105 · P1 · Audit current state** — Test duplicate-submit protection by tapping submit twice quickly.
-- [ ] [TODO] **SW-0106 · P2 · Audit current state** — Rate-limit abusive form traffic without blocking ordinary users behind shared networks.
-- [ ] [TODO] **SW-0107 · P2 · Audit current state** — Confirm anti-spam logs do not retain unnecessary identifying data.
-- [ ] [TODO] **SW-0108 · P2 · Audit current state** — Check whether form notifications reach the intended private inbox or admin queue.
-- [ ] [TODO] **SW-0109 · P2 · Audit current state** — Record notification failures in a way the operator can diagnose.
-- [ ] [TODO] **SW-0110 · P2 · Audit current state** — Add a safe retry or reconciliation path for a saved lead whose notification failed.
-- [ ] [TODO] **SW-0111 · P2 · Audit current state** — Verify that form submissions are not silently discarded when a third-party email service fails.
-- [ ] [TODO] **SW-0112 · P2 · Audit current state** — Test Nepali characters and mixed-language business names end to end.
+- [ ] [REVIEW] **SW-0095 · P0 · Audit current state** — Store source metadata in structured columns rather than embedding it only in a message string. Correction and new-business payload assertions added; strict TypeScript issue fixed in `404d5aa2`; push/PR runs #422/#423 passed.
+- [ ] [REVIEW] **SW-0096 · P0 · Audit current state** — Capture business name as a separate field from the person's name. Preview contact and Add Business tests assert distinct `name` and `business_name` values; existing schema already has separate columns.
+- [ ] [BLOCKED] **SW-0097 · P1 · Audit current state** — Capture a reply method that the user can reasonably respond to, without demanding excessive data. Blocker: phone is optional and no email field/column exists; owner must approve the reply-method policy.
+- [ ] [BLOCKED] **SW-0098 · P1 · Audit current state** — Make phone optional when email or another agreed reply method is sufficient. Blocker: no alternative reply method is collected; depends on SW-0097 owner decision.
+- [ ] [REVIEW] **SW-0099 · P1 · Audit current state** — Avoid collecting home address, precise location, or unrelated personal information in sales forms. Contact/quote and correction forms collect no address or coordinates; Add Business has only an optional business-listing address.
+- [ ] [REVIEW] **SW-0100 · P1 · Audit current state** — Add a human-readable privacy note beside form submission. English/Nepali note and `/privacy` link added to contact/quote and correction forms; claim/Add Business coverage remains blocked until policy scope is approved.
+- [ ] [REVIEW] **SW-0101 · P1 · Audit current state** — Make the quote form explain what happens after submission. For Businesses success copy says a person will read and reply, usually by phone or supplied details; no fixed SLA.
+- [ ] [BLOCKED] **SW-0102 · P1 · Audit current state** — Set an honest response expectation only after the owner has approved a service standard. Blocker: no owner-approved response-time standard; no SLA invented.
+- [ ] [BLOCKED] **SW-0103 · P1 · Audit current state** — Check whether spam controls block real submissions on mobile networks. Blocker: no authorised mobile device/network test; live submissions prohibited.
+- [ ] [REVIEW] **SW-0104 · P1 · Audit current state** — Check that the honeypot field is not exposed to screen readers as a normal requested field. Wrapper is `aria-hidden`, off-screen; input is `tabIndex=-1` and autocomplete off.
+- [ ] [REVIEW] **SW-0105 · P1 · Audit current state** — Test duplicate-submit protection by tapping submit twice quickly. Same-tick duplicate-submit tests cover all six form journeys; physical mobile double-tap remains unverified.
+- [ ] [BLOCKED] **SW-0106 · P2 · Audit current state** — Rate-limit abusive form traffic without blocking ordinary users behind shared networks. Production limit is 3 per IP/per-tab key in 10 minutes and 100 global/hour; changing shared-IP thresholds requires owner-approved abuse policy and traffic evidence.
+- [ ] [BLOCKED] **SW-0107 · P2 · Audit current state** — Confirm anti-spam logs do not retain unnecessary identifying data. Production stores MD5 IP/session hashes; cleanup runs only on a later insert; 3 rows from 2026-10-19 remain. Requires approved retention/keying design and production migration.
+- [ ] [BLOCKED] **SW-0108 · P2 · Audit current state** — Check whether form notifications reach the intended private inbox or admin queue. Admin queue code exists; actual sign-in/read verification requires owner-controlled account session.
+- [ ] [BLOCKED] **SW-0109 · P2 · Audit current state** — Record notification failures in a way the operator can diagnose. Blocker: no approved notification channel/provider or credentials.
+- [ ] [BLOCKED] **SW-0110 · P2 · Audit current state** — Add a safe retry or reconciliation path for a saved lead whose notification failed. Blocker: no notification provider/delivery state; depends on SW-0109.
+- [ ] [REVIEW] **SW-0111 · P2 · Audit current state** — Verify that form submissions are not silently discarded when a third-party email service fails. Forms persist directly to Supabase and surface DB errors; no third-party email provider is in the submission path.
+- [ ] [IN PROGRESS] **SW-0112 · P2 · Audit current state** — Test Nepali characters and mixed-language business names end to end. Component and disposable PostgreSQL round-trip tests are being added; production data remains untouched.
 - [ ] [TODO] **SW-0113 · P2 · Audit current state** — Test punctuation, apostrophes, slashes, and long URLs in free-text fields.
 - [ ] [TODO] **SW-0114 · P2 · Audit current state** — Protect against HTML/script injection in stored messages and rendered admin views.
 - [ ] [TODO] **SW-0115 · P2 · Audit current state** — Ensure invalid external URLs are not blindly converted into clickable links in the admin.
