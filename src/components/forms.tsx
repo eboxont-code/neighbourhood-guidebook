@@ -1,5 +1,5 @@
 import { track } from "@/lib/track";
-import { useState, type FormEvent, type ReactNode } from "react";
+import { useRef, useState, type FormEvent, type ReactNode } from "react";
 import { z } from "zod";
 import { CheckCircle2, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -106,11 +106,13 @@ export function ContactForm({ business, listing, page, message = "", doneText, s
   const [v, setV] = useState({ name: "", business_name: business, phone: "", message });
   const [errors, setErrors] = useState<{ [k: string]: string | undefined }>({});
   const [status, setStatus] = useState<Status>("idle");
+  const submitting = useRef(false);
   const [hp, setHp] = useState("");
   if (status === "done") return <Done text={doneText ?? t("thanksContact")} />;
 
   async function submit(e: FormEvent) {
     e.preventDefault();
+    if (submitting.current || status === "sending") return;
     if (topicPicker && !topic) { setErrors({ topic: t("errChoice") }); document.getElementById("topic")?.focus(); return; }
     if (topic === "add") return;
     const parsed = contactSchema.safeParse({ ...v, source_listing_slug: listing, topic: topic || null, service_package: servicePackage || null, budget_band: budgetBand || null });
@@ -125,19 +127,26 @@ export function ContactForm({ business, listing, page, message = "", doneText, s
     }
     setErrors({});
     if (isBot(hp)) return setStatus("done");
+    submitting.current = true;
     setStatus("sending");
-    const { error } = await supabase.from("contact_messages").insert({ ...parsed.data, topic: parsed.data.topic ?? null, page: page ?? (listing ? "listing" : "contact"), client_key: clientKey() });
-    const st = statusFromError(error);
-    if (st === "done" && serviceOptions) {
-      track("service_quote_submit", {
-        ...(listing ? { slug: listing } : {}),
-        query: parsed.data.service_package ?? "custom",
-      });
+    try {
+      const { error } = await supabase.from("contact_messages").insert({ ...parsed.data, topic: parsed.data.topic ?? null, page: page ?? (listing ? "listing" : "contact"), client_key: clientKey() });
+      const st = statusFromError(error);
+      if (st === "done" && serviceOptions) {
+        track("service_quote_submit", {
+          ...(listing ? { slug: listing } : {}),
+          query: parsed.data.service_package ?? "custom",
+        });
+      }
+      if (st === "done" && (topic === "website" || page === "for-businesses" || page === "preview")) {
+        track("enquiry_submit", listing ? { slug: listing } : {});
+      }
+      if (st !== "done") submitting.current = false;
+      setStatus(st);
+    } catch {
+      submitting.current = false;
+      setStatus("error");
     }
-    if (st === "done" && (topic === "website" || page === "for-businesses" || page === "preview")) {
-      track("enquiry_submit", listing ? { slug: listing } : {});
-    }
-    setStatus(st);
   }
 
   return (
