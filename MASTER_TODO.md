@@ -2,7 +2,7 @@
 
 > **Single source of truth for SEWA/Boxont execution. Read the whole file before each work session and update it before ending. This file combines the repository plan, revenue-first strategy and the 1,000-task register.**
 >
-> **Last reviewed:** 6 November 2026  
+> **Last reviewed:** 7 November 2026  
 >
 > **Merged inputs:** existing repository `MASTER_TODO.md`, the revenue-first strategy and 1,000-point checklist, and the matching 1,000-row CSV task register. The CSV and checklist IDs, priorities and task descriptions were reconciled. This file is now the only project execution plan.
 >
@@ -698,7 +698,17 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 - `contact_messages` has no UTM, campaign ID, landing/referrer route, email field or explicit preview URL fields. `analytics_events` records listing_slug, event, query, language and path, but no UTM/campaign/referrer fields. Sponsored clicks are counted by listing, placement/target key and date window; they are not joined to a specific campaign or later enquiry. The checked database has no promotion rows.
 - Keep SW-0060 and SW-0061 TODO. Mark SW-0062 REVIEW: the preview slug/page mapping is present in code, but the browser submit/validation journey has not been exercised end to end. No schema or application changes were made during this audit.
 
-### Current task
+### Repository and production refresh — 7 November 2026
+
+- `main` remains `ee38ca0e978f0149ca10f5b2caadb33282729148`; Quality Gate run #337 passed. The branch is unprotected and required status checks are disabled; this was recorded, not changed.
+- Five open draft PRs: #4 (older Bundle 4), #8 (Bundle 8), #10 (current-main Bundle 7), #11 (current-main Bundle 4 port), and #12 (form duplicate-write guard). PR #12 targets `main` at `ee38ca0e` and now heads `847446c7ab489e6c3f1f00f066d6b51d3011b615`.
+- Vercel Production deployment `dpl_Gou24q64tcmGASESDmvqbxzrWpP7` is READY on `main` at `ee38ca0e`; `sewa.boxont.com` is attached. PR #12 preview `dpl_D6apeuQqZfM1mf8HWS7W4sHGc88u` is READY and is not a Production deployment.
+- Supabase project `zvbavpcsyvibvpkxjzkn` (`neighbourhood-guidebook`) is ACTIVE_HEALTHY. Remote migration history has 8 entries; the first five match local filenames, while the last three remote versions (`20261104111910`, `20261104111922`, `20261104111936`) differ from local main filenames (`20261102130000`, `20261103114000`, `20261104100000`). No migration or repair was attempted. The Vercel environment-to-project binding was not re-derived from encrypted environment values in this run.
+- Read-only counts: 52 published listings; 0 contact messages; 0 business claims; 0 business submissions; 0 correction reports; 5 analytics events; 0 listing promotions; 3 form-rate rows; 1 user role. `business_sales_prospects` and `business_sales_activities` do not exist in this database.
+- The Lovable north-star file `.lovable/north-star/north-star.md` remains at blob SHA `9d748d0f22dd60969680c61964f18ea4fe6900df`.
+- The 1,000-task register was read in full: IDs `SW-0001`–`SW-1000`, all unique. No production data, settings, migrations, or deployment were changed.
+
+### Previous task — SW-0042
 
 **SW-0042 — Verify that analytics events are not double-fired during route changes or form submissions.**  
 **Status: REVIEW — implementation and plan updates are in draft PR #12; code run #368 and latest-head runs #372 (push) and #373 (PR) passed. PR remains unmerged and undeployed.**
@@ -719,7 +729,17 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 - SW-0046, SW-0047 and SW-0048 DONE: listing preview click, preview view with slug, and preview CTA click are already tracked in code and allowed by the database constraint.
 - SW-0049 and SW-0050 BLOCKED: form-start and claim-start events are not in the event enum/constraint; do not add them before the migration gate is resolved.
 
-**Next independent P0 task:** SW-0085 — extend single-write regression coverage across the remaining lead-entry paths without writing to Production. Production form/admin tests (SW-0081–SW-0084) remain BLOCKED pending a safe test environment and authorised account.
+### Current task — SW-0085
+
+**Status: IN PROGRESS — scoped duplicate-write guards and six component regression cases are on draft PR #12. The latest push/PR CI runs are pending, so this task is not marked complete.**
+
+- Audited every public form component that writes to Supabase. `ContactForm` and `ClaimForm` already used synchronous `useRef` guards; `CorrectionForm` and `BusinessSubmissionForm` did not.
+- Added synchronous in-flight guards to the two missing forms. A returned database error or rejected request releases the guard so a later retry remains possible; a successful insert leaves the form locked while its success state replaces the form.
+- Extended `src/test/analytics-submission.test.tsx` to cover duplicate submit events in one React batch for preview, For Businesses and general contact, claim, correction, and business-submission flows. Every case asserts exactly one insert against the expected table. Existing contact/claim analytics assertions verify one success event.
+- Code commit: `afa24bf885058d3f502a4e8a4dac13b67e2e7544`; test commit: `847446c7ab489e6c3f1f00f066d6b51d3011b615`. Draft PR #12 remains open.
+- GitHub Quality Gate runs #384 (push) and #385 (pull request) are pending at this update. The preview deployment is READY; no Production deployment was initiated.
+- All database calls in these component tests are mocked. Live persistence remains unverified because the safe test database/account dependency is still blocked; no Production rows were created or changed.
+- No schema, migration, analytics event, customer data, pricing, production setting, or Lovable north-star changes.
 ---
 
 ## 10. Instruction for every future AI session
@@ -849,11 +869,11 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 **Phase:** 1 - Revenue foundation  
 **Definition of done:** Every enquiry reaches the database, retains its business/source context, and has a usable next action.
 
-- [ ] [BLOCKED] **SW-0081 · P0 · Forms reported saving to database; regression-test** — Submit a production test lead through the website-preview quote form. Evidence: requires an authorised test account and safe non-production database; production test submissions are prohibited.
-- [ ] [BLOCKED] **SW-0082 · P0 · Forms reported saving to database; regression-test** — Submit a production test lead through the For Businesses route. Evidence: requires an authorised test account and safe non-production database; production test submissions are prohibited.
-- [ ] [BLOCKED] **SW-0083 · P0 · Forms reported saving to database; regression-test** — Submit a production test lead through a listing claim action. Evidence: requires an authorised test account and safe non-production database; production test submissions are prohibited.
-- [ ] [BLOCKED] **SW-0084 · P0 · Forms reported saving to database; regression-test** — Submit a production test lead through the general contact form. Evidence: requires an authorised test account and safe non-production database; production test submissions are prohibited.
-- [ ] [REVIEW] **SW-0085 · P0 · Audit current state** — Verify each form creates exactly one database lead for one successful submission. Evidence: same-tick duplicate-submit tests assert one contact_messages insert for preview and For Businesses ContactForm variants, and one business_claims insert for ClaimForm; push run #376 and PR run #377 passed. Other form types remain unverified, so this stays in REVIEW in unmerged PR #12; no production test lead was written.
+- [ ] [BLOCKED] **SW-0081 · P0 · Forms reported saving to database; regression-test** — Submit a production test lead through the website-preview quote form. Evidence: requires an authorised test account and safe non-production database; production test submissions are prohibited. Blocker: requires a safe non-production database and authorised test session; no test lead may be inserted into live Production.
+- [ ] [BLOCKED] **SW-0082 · P0 · Forms reported saving to database; regression-test** — Submit a production test lead through the For Businesses route. Evidence: requires an authorised test account and safe non-production database; production test submissions are prohibited. Blocker: requires a safe non-production database and authorised test session; no test lead may be inserted into live Production.
+- [ ] [BLOCKED] **SW-0083 · P0 · Forms reported saving to database; regression-test** — Submit a production test lead through a listing claim action. Evidence: requires an authorised test account and safe non-production database; production test submissions are prohibited. Blocker: requires a safe non-production database and authorised test session; no test lead may be inserted into live Production.
+- [ ] [BLOCKED] **SW-0084 · P0 · Forms reported saving to database; regression-test** — Submit a production test lead through the general contact form. Evidence: requires an authorised test account and safe non-production database; production test submissions are prohibited. Blocker: requires a safe non-production database and authorised test session; no test lead may be inserted into live Production.
+- [ ] [IN PROGRESS] **SW-0085 · P0 · Audit current state** — Verify each form creates exactly one database lead for one successful submission. Expanded in draft PR #12: synchronous in-flight guards now cover CorrectionForm and BusinessSubmissionForm as well as the existing ContactForm and ClaimForm guards. Same-tick duplicate-submit tests cover preview, For Businesses and general contact ContactForm variants, ClaimForm, CorrectionForm, and BusinessSubmissionForm; each asserts one insert to its expected table. Contact/claim success analytics are asserted once. Commits `afa24bf885058d3f502a4e8a4dac13b67e2e7544` and `847446c7ab489e6c3f1f00f066d6b51d3011b615`. CI runs #384 (push) and #385 (PR) are pending; mocked Supabase calls do not prove live persistence. No Production writes.
 - [ ] [TODO] **SW-0086 · P0 · Audit current state** — Verify the user receives a clear success state after a saved submission.
 - [ ] [TODO] **SW-0087 · P0 · Audit current state** — Verify a failed submission shows a useful retry message without losing typed values.
 - [ ] [TODO] **SW-0088 · P0 · Audit current state** — Verify form validation explains which required field needs attention.
