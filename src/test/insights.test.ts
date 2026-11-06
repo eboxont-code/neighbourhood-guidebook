@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { summarise } from "@/lib/insights";
+import { summarise, summariseContactActions } from "@/lib/insights";
 import { trackPayload, TRACK_EVENTS } from "@/lib/track";
 
 const now = new Date("2026-10-28T00:00:00Z");
@@ -34,5 +34,28 @@ describe("admin insights", () => {
     expect(Object.keys(p).sort()).toEqual(["event", "lang", "listing_slug", "path", "query"]);
     expect(p.query).toBe("hair salon");
     expect(TRACK_EVENTS).toContain("search_zero");
+  });
+});
+
+
+describe("business contact-action insights", () => {
+  it("counts recent call and WhatsApp taps by listing, excluding unrelated, unlinked, invalid and out-of-window events", () => {
+    const result = summariseContactActions([
+      { event: "click_call", listing_slug: "salon-a", query: null, created_at: at(1) },
+      { event: "click_whatsapp", listing_slug: "salon-a", query: null, created_at: at(2) },
+      { event: "click_whatsapp", listing_slug: "clinic-b", query: null, created_at: at(1) },
+      { event: "click_directions", listing_slug: "salon-a", query: null, created_at: at(1) },
+      { event: "click_call", listing_slug: null, query: null, created_at: at(1) },
+      { event: "click_call", listing_slug: "salon-a", query: null, created_at: at(10) },
+      { event: "click_call", listing_slug: "future", query: null, created_at: new Date(now.getTime() + 86400000).toISOString() },
+      { event: "click_call", listing_slug: "invalid", query: null, created_at: "not-a-date" },
+    ], 7, now);
+
+    expect(result).toEqual({
+      total: 3,
+      calls: 1,
+      whatsapps: 2,
+      listings: [["salon-a", 2], ["clinic-b", 1]],
+    });
   });
 });
