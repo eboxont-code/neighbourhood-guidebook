@@ -184,7 +184,7 @@ All 13 open pull requests are drafts. The latest observed GitHub Quality Gate pu
 | #17 | preview-location-fields-20261107 → PR #16 branch | #42261545545 / #42261556878 passed | Vercel preview build rate-limited. |
 | #18 | preview-location-reliability-20261107 → PR #17 branch | #42270631894 / #42270639047 passed | Vercel preview build rate-limited. |
 | #19 | preview-phone-verification-20261107 → PR #18 branch | #42279835329 / #42279844174 passed | Vercel preview build rate-limited. |
-| #20 | define-qualified-lead-20261107 → current main ee38ca0e | #42289004499 / #42289189951 passed | Success; draft, documentation-only SW-0002 completion. |
+| #20 | define-qualified-lead-20261107 → current main ee38ca0e | #42289004499 / #42289189951 (task commit) and #42289502496 / #42289510045 (plan-evidence follow-up) passed | Initial preview succeeded; latest preview build was rate-limited. No upgrade or manual deployment. |
 
 PR #7 is closed unmerged; PR #9 is merged. PRs #13–#19 form a dependent chain and must not be treated as independent current-main releases. PR #4 has a stale main base. PR #8 is stacked on the older Bundle 7 branch. No PR was merged, no branch was deleted or rewritten, and no force-push was made. The Vercel Hobby build-rate limit is not approval to upgrade.
 
@@ -700,7 +700,7 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 - The definition is grounded in the current contact form and production schema: website intent, identifiable business context, non-empty request, a manually checked phone reply route, and manual spam/duplicate screening.
 - Budget or assumed willingness to pay is explicitly excluded from qualification.
 - No code, schema, production data, or business pricing/outreach settings were changed.
-- PR #20: https://github.com/eboxont-code/neighbourhood-guidebook/pull/20; branch sewa/define-qualified-lead-20261107; task commit b27a4101723fb6f961517eb3a93a45227144f8b9. Push run #42289004499 and PR run #42289189951 both passed; the PR head Vercel status is success. Draft only; not merged.
+- PR #20: https://github.com/eboxont-code/neighbourhood-guidebook/pull/20; branch sewa/define-qualified-lead-20261107. Task commit b27a4101723fb6f961517eb3a93a45227144f8b9 passed runs #42289004499 and #42289189951. Plan-evidence commit f188549b14b7e4e78ae14d7d248638f28fed8229 passed runs #42289502496 and #42289510045. The initial Vercel preview succeeded; the latest Vercel status is build-rate-limited. Draft only; not merged.
 
 ### Next eligible task
 
