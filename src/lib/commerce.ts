@@ -27,12 +27,14 @@ export function isPaymentStatus(value: string): value is PaymentStatus {
 
 export type RevenueRecord = {
   page: string;
+  topic: string | null;
   service_package: string | null;
   quote_amount_npr: number | null;
   paid_amount_npr: number;
   payment_status: string;
 };
 
+const WEBSITE_SERVICE_PACKAGES = new Set(["launch", "growth", "care"]);
 const ACTIVE_QUOTE_STATUSES = new Set<PaymentStatus>([
   "quoted",
   "awaiting_payment",
@@ -40,15 +42,19 @@ const ACTIVE_QUOTE_STATUSES = new Set<PaymentStatus>([
   "paid",
 ]);
 
-/** Summarise recorded commercial enquiries without treating quotes as collected revenue. */
+/** Summarise website-service enquiries without mixing in sponsored-placement requests. */
 export function summariseRevenue(rows: RevenueRecord[]) {
-  const commercial = rows.filter(
-    (row) => row.page === "for-businesses" || row.page === "preview" || Boolean(row.service_package),
-  );
-  const quoted = commercial.filter(
+  const websiteServices = rows.filter((row) => {
+    if (row.service_package === "promotion") return false;
+    return row.topic === "website" ||
+      row.page === "for-businesses" ||
+      row.page === "preview" ||
+      WEBSITE_SERVICE_PACKAGES.has(row.service_package ?? "");
+  });
+  const quoted = websiteServices.filter(
     (row) => isPaymentStatus(row.payment_status) && ACTIVE_QUOTE_STATUSES.has(row.payment_status),
   );
-  const received = commercial.filter(
+  const received = websiteServices.filter(
     (row) => row.payment_status === "partially_paid" || row.payment_status === "paid",
   );
 
@@ -60,9 +66,9 @@ export function summariseRevenue(rows: RevenueRecord[]) {
   );
 
   return {
-    enquiries: commercial.length,
+    enquiries: websiteServices.length,
     quotes: quoted.length,
-    paidJobs: commercial.filter((row) => row.payment_status === "paid").length,
+    paidJobs: websiteServices.filter((row) => row.payment_status === "paid").length,
     quotedNpr,
     receivedNpr,
     outstandingNpr,
