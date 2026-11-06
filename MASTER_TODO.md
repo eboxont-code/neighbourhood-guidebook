@@ -658,7 +658,7 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 | 3 | Revalidate the existing 20-business prospect CSV and each website status | BLOCKED — original 20-business CSV not found in `main` or the Library; do not recreate or guess the list |
 | 4 | Confirm production deployment and complete admin password recovery verification | Deployment + domain mapping DONE 5 Nov; password-reset journey TODO |
 | 5 | Review the 390px preview and quote form; capture real screenshots | DONE 6 Nov 2026: EN/NE at 390×844 first, then 1280×1800; screenshots captured of preview sections, enquiry forms and inline errors. No horizontal overflow; 44px+ effective targets; labeled 16px inputs. Enlarged language controls, linked form hints, removed duplicated optional wording and prevented the hidden quote pill covering the form. 179 tests pass; preview build/typecheck OK. Presentation only; no enquiries sent, schema/attribution/admin changes, outreach, publishing or deployment. |
-| 6 | Reconcile Bundle 7 Sales Pipeline against current `main` | IN PROGRESS — scoped reconciliation started; PR #7 is 24 commits ahead and 28 behind `main`; preserve newer `main` sales/proposal helpers before integrating |
+| 6 | Reconcile Bundle 7 Sales Pipeline against current `main` | REVIEW — reconciled branch ready; PostgreSQL migration/security tests, TypeScript, lint, unit/component tests and production build passed; previous PR #7 remains closed by owner |
 | 7 | Reconcile Bundle 8 after Bundle 7; preserve original enquiry/payment records | TODO |
 | 8 | Isolate and review Proposal Composer after its dependencies | TODO |
 | 9 | Use the funnel baseline to fix the largest conversion leak | TODO |
@@ -681,9 +681,15 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 ### Current task
 
 **Task 6 — Reconcile Bundle 7 Sales Pipeline against current `main`.**  
-**Status: IN PROGRESS — one task only.**
+**Status: REVIEW — code reconciled on a clean branch; owner review is the remaining gate.**
 
-Initial reconciliation check (6 November 2026): PR #7 remains a draft targeting the old `sewa/bundle-06-sponsored-placements` branch. Its head is 24 commits ahead and 28 commits behind current `main` (merge base `5c2b65b`; current `main` `6f89bfa`). The branch's `src/lib/sales-pipeline.ts` is an older, shorter version than `main`: current `main` already contains inbound-lead mapping and proposal-draft helpers that must not be overwritten. The PR also adds the Sales Pipeline admin component, migration, types, translations and CI coverage. Do not retarget, merge or deploy the stacked PR until the feature is reconciled against current `main` and its checks pass. Next bounded step: integrate only the missing Bundle 7 pieces while preserving all current `main` code; keep later bundles untouched.
+- Created `sewa/bundle-07-reconciled-main` from current `main`. The branch contains the Bundle 7 feature delta only; current `main`'s newer `src/lib/sales-pipeline.ts` was preserved, including inbound-lead mapping and proposal-draft helpers.
+- Integrated the admin Sales Pipeline tab, component, typed Supabase tables, English/Nepali translations, Drizzle and Supabase migrations, migration journal entry, database contract test and disposable PostgreSQL security checks.
+- Preserved the newer proposal and inbound-conversion tests already on `main`; the older Bundle 7 copy no longer replaces them.
+- Drizzle and Supabase migration files are byte-identical. CI migration count and success message both correctly report 14 migrations.
+- GitHub Quality Gate run [#42216569490](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42216569490) passed: disposable PostgreSQL migration/security tests, TypeScript validation, lint, unit/component tests and production build.
+- Original PR #7 was closed unmerged by the repository owner on 6 November 2026. It was not reopened and no replacement PR was opened. The new reconciliation branch is ready for review; wait for owner direction before opening a replacement PR or moving to Bundle 8.
+- No production database migration, production deployment, production setting change or merge was performed. Bundle 8 was left untouched.
 
 ---
 
