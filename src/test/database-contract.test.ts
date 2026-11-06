@@ -198,9 +198,27 @@ describe("SEWA database contracts", () => {
     expect(drizzle).toMatch(/paid_amount_npr <= coalesce\(quote_amount_npr, 0\)/);
     expect(drizzle).toMatch(/set_business_sales_prospect_updated_at/);
     expect(drizzle).toMatch(/sales_cash_cannot_decrease/);
-    expect(readProjectFile("scripts/ci/test-sewa-database.sh")).toMatch(/migration_count" -ne 14/);
+    expect(readProjectFile("scripts/ci/test-sewa-database.sh")).toMatch(/migration_count" -ne 15/);
     expect(readProjectFile("scripts/ci/verify-sewa-database.sql")).toMatch(/private Boxont sales pipeline/);
   });
 
+
+
+  it("links inbound enquiries without duplicating contact, quote or payment data", () => {
+    const drizzle = readProjectFile("drizzle/migrations/0014_inbound_enquiry_conversion.sql");
+    const supabase = readProjectFile("supabase/migrations/20261104105000_inbound_enquiry_conversion.sql");
+    expect(drizzle).toBe(supabase);
+    expect(drizzle).toMatch(/listing_id DROP NOT NULL/i);
+    expect(drizzle).toMatch(/contact_message_id uuid/i);
+    expect(drizzle).toMatch(/REFERENCES public\.contact_messages\(id\) ON DELETE RESTRICT/i);
+    expect(drizzle).toMatch(/REFERENCES public\.listings\(id\) ON DELETE CASCADE/i);
+    expect(drizzle).toMatch(/business_sales_prospects_contact_message_id_key UNIQUE/i);
+    expect(drizzle).toMatch(/business_sales_prospects_manual_listing_uidx/i);
+    expect(drizzle).toMatch(/listing_or_message_check/i);
+    expect(drizzle).toMatch(/ADD CONSTRAINT business_sales_prospects_contact_message_id_key UNIQUE \(contact_message_id\)/i);
+    expect(drizzle).not.toMatch(/ADD COLUMN (?:quote_amount_npr|paid_amount_npr)/i);
+    expect(readProjectFile("scripts/ci/test-sewa-database.sh")).toMatch(/migration_count" -ne 15/);
+    expect(readProjectFile("scripts/ci/verify-sewa-database.sql")).toMatch(/duplicate inbound enquiry link/i);
+  });
 
 });

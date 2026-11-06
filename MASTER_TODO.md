@@ -190,8 +190,8 @@ This confirms the current `main` revision is deployed and READY. It does not pro
 | PR | Work | Verified state / branch relationship |
 |---|---|---|
 | #4 | Call and WhatsApp contact insights | Open draft; `sewa/bundle-04-revenue-lead-attribution` → `main` |
-| #7 | Older Boxont prospecting and sales pipeline | Closed without merge; old branch retained temporarily for PR #8 ancestry |
-| #8 | Convert inbound enquiries into sales opportunities | Open draft; still based on the old Bundle 7 branch |
+| #7 | Older Boxont prospecting and sales pipeline | Closed without merge; historical branch retained for ancestry only; no open PR now targets it |
+| #8 | Convert inbound enquiries into sales opportunities | Open draft; based directly on canonical Bundle 7 PR #10; nine Bundle 8 files only; final CI passed on `a3a685d011a600eb7c17b15efa11fdf2cecc67ce` |
 | #10 | Reconciled Bundle 7 Sales Pipeline | Open draft; `sewa/bundle-07-reconciled-main-20261106`, synchronized with current `main`; no release merge |
 
 PR references:
@@ -205,11 +205,11 @@ PR references:
 
 - PR #4 still needs a fresh code review before merge.
 - PR #7 is closed unmerged; do not reopen or merge it.
-- PR #8 remains stacked on the old Bundle 7 branch and must be reconciled before review.
-- PR #10 is the clean Bundle 7 replacement. Its prior code head passed all quality checks; the current-main sync is documentation-only and its new CI run must finish before the PR is considered fully revalidated.
+- PR #8 targets the canonical PR #10 branch; its diff contains only Bundle 8 schema, admin UI, types, translations and database checks.
+- PR #10 is the canonical Bundle 7 replacement; its current-main documentation sync passed Quality Gate run #42218901255. It remains a draft and is not merged or deployed.
 - The admin-audit-health and revenue-engine branches have no current PR; compare their unique diffs before any salvage or archive decision.
 - The Proposal Composer branch exists without a PR; keep it isolated from the unmerged Bundle 7/8 work.
-- No branch has been deleted, force-pushed, rebased or rewritten.
+- Bundle 8 was rebased as a merge commit onto PR #10, preserving its original history as a second parent. No unique feature work was discarded; the old PR #7 branch remains historical.
 
 
 ## 4. Last known blocker — production deployment and admin recovery
@@ -290,9 +290,9 @@ PR references:
 - [x] [DONE] Create clean current-main-based Sales Pipeline PR #10: https://github.com/eboxont-code/neighbourhood-guidebook/pull/10.
 - [x] [DONE] Run all quality and database-contract tests on the clean branch; TypeScript, lint, unit/component tests, production build and disposable PostgreSQL security/migration checks all passed on code head `3fa170958aec02925718588b7322df36e31fc120` (run #323).
 - [ ] [TODO] Merge Sales Pipeline only after owner review/approval; keep PR #10 draft and do not migrate production or deploy beforehand.
-- [ ] [TODO] Inspect PR #8 inbound conversion and confirm it depends on reconciled Bundle 7 PR #10.
-- [ ] [TODO] Rebuild inbound conversion on the updated main branch, preserving only its unique changes.
-- [ ] [TODO] Test duplicate prevention and canonical enquiry/payment record integrity.
+- [x] [DONE] Rebase PR #8 directly on PR #10 and verify its review diff contains only nine Bundle 8 files.
+- [x] [DONE] Port Bundle 8's unique schema, UI, bilingual copy and database checks onto canonical Bundle 7; reuse mapping helpers/tests already present in the newer base.
+- [x] [DONE] Duplicate-link protection, canonical enquiry/payment records and migration parity passed disposable PostgreSQL checks; TypeScript, lint, unit/component tests and production build all passed on final head.
 - [ ] [TODO] Merge inbound conversion only after review and checks pass.
 - [ ] [TODO] Inspect `sewa/bundle-09-proposal-composer`.
 - [ ] [TODO] Isolate Proposal Composer changes from inherited Bundle 7/8 code.
@@ -358,7 +358,7 @@ The primary funnel is Sewa discovery/prospect → free preview → attributed en
 
 ### 3.4 Incoming enquiries (Bundle 8)
 
-- [ ] [TODO] Reconcile and release Bundle 8 after Bundle 7.
+- [ ] [REVIEW] Bundle 8 is reconciled on PR #8 with PR #10 as its base; final Quality Gate run #42219567806 passed; owner review/approval remains before release.
 - [ ] [TODO] Verify direct service enquiries can become opportunities.
 - [ ] [TODO] Verify listing-related enquiries can become opportunities.
 - [ ] [TODO] Prevent duplicate conversion.
@@ -651,7 +651,7 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 | 4 | Confirm production deployment and complete admin password recovery verification | BLOCKED — current deployment is READY, but the real recovery-email and signed-in admin journey require account/email access that is not available in this run |
 | 5 | Review the 390px preview and quote form; capture real screenshots | DONE 6 Nov 2026 — EN/NE at 390×844 and 1280×1800 reviewed; screenshots captured; no horizontal overflow; 44px+ effective targets; labeled 16px inputs; 179 tests and preview build/typecheck passed. Presentation-only changes; no enquiries, schema changes, outreach, publishing or deployment. |
 | 6 | Reconcile Bundle 7 Sales Pipeline against current `main` | REVIEW — clean draft PR #10 is synchronized with current `main`; prior exact code head passed CI; current sync CI must finish; owner review/approval is required before merge or release |
-| 7 | Reconcile Bundle 8 after Bundle 7; preserve original enquiry/payment records | BLOCKED — PR #10 is still a draft and cannot be merged or released without owner approval; PR #8 remains based on the closed legacy PR #7 branch |
+| 7 | Reconcile Bundle 8 after Bundle 7; preserve original enquiry/payment records | REVIEW — PR #8 is based directly on canonical PR #10; nine-file Bundle 8 diff; final Quality Gate run #42219567806 passed on `a3a685d011a600eb7c17b15efa11fdf2cecc67ce`; owner review remains. |
 | 8 | Isolate and review Proposal Composer after its dependencies | BLOCKED — depends on approved/released Bundle 7 and reconciled Bundle 8; do not merge or release the dependent feature chain |
 | 9 | Use the funnel baseline to fix the largest conversion leak | BLOCKED — production currently has only 5 analytics events and 0 contact messages; there is not enough evidence to identify a reliable largest leak |
 | 10 | Improve directory quality and coverage based on real user demand and lead value | BLOCKED — current demand/lead evidence is insufficient; do not expand or alter listing data without verified sources and a demonstrated gap |
@@ -679,6 +679,18 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 - The Bundle 7 code delta preserves `main`'s newer inbound-lead mapping and proposal-draft helpers. Supabase and Drizzle migration files are byte-identical; the disposable CI suite covers all 14 migrations, RLS, admin/non-admin access, activity history and cash integrity.
 - GitHub Quality Gate run #332 passed on the previous exact code head `a6deac36ba512f61604a09bbb41b2fed5c5efa86`: TypeScript, lint, unit/component tests, production build and disposable PostgreSQL checks. The current-main sync adds documentation only; wait for its new CI run before treating the updated branch as revalidated.
 - No merge to `main`, production migration, production-data change, production setting change or production deployment was performed. Keep PR #10 draft until owner review/approval.
+
+
+### Task 7 reconciliation — 6 November 2026
+
+**Status: REVIEW — Bundle 8 is stacked directly on canonical Bundle 7 PR #10; final CI passed and release review remains.**
+
+- PR #8 remains a draft and targets `sewa/bundle-07-reconciled-main-20261106`.
+- Reconciliation is based on latest PR #10 head `49367a038f2ae53a727fdc18cb07a040d98e8a44`; the original Bundle 8 history is preserved as a second parent.
+- The Bundle 8 review diff is limited to its own migration, migration journal, database verification, admin UI, generated types, translations and contract test. Bundle 7 files are not duplicated in the PR diff.
+- The original Bundle 8 history is retained as a second parent. The original contact message remains the canonical customer, quote and payment record; the new prospect stores a unique relationship only.
+- Quality Gate run #42219567806 passed on exact head `a3a685d011a600eb7c17b15efa11fdf2cecc67ce`: TypeScript, lint, unit/component tests, production build and disposable PostgreSQL migration/security checks. The initial over-escaped test assertion was corrected before this passing run.
+- No merge, production migration, production-data change, settings change, outreach or deployment was made. Keep PRs #8 and #10 draft pending owner review.
 
 ### Production database and project verification — 6 November 2026
 
