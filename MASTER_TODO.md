@@ -183,7 +183,7 @@ This verifies that the current application-code baseline and the subsequent docu
 | PR | Work | Verified state / branch relationship |
 |---|---|---|
 | #4 | Call and WhatsApp contact insights | Open draft; `sewa/bundle-04-revenue-lead-attribution` → `main` |
-| #7 | Boxont prospecting and sales pipeline | Older stacked draft; superseded by clean current-main PR #10. Do not merge. |
+| #7 | Boxont prospecting and sales pipeline | Closed 6 Nov without merge; superseded by clean current-main draft PR #10. Old branch retained temporarily for PR #8 ancestry. |
 | #8 | Convert inbound enquiries into sales opportunities | Open draft; still stacked on the older Bundle 7 branch and requires reconciliation onto the new dependency chain. |
 | #10 | Boxont prospecting and sales pipeline — reconciled | Open draft; `sewa/bundle-07-reconciled-main-20261106` is based directly on current `main`; code CI passed. |
 
@@ -208,7 +208,7 @@ The original 13-branch inventory has one additional current-main-based reconcili
 - `sewa/bundle-04-revenue-lead-attribution` — PR #4 open
 - `sewa/bundle-05-revenue-engine` — PR #5 merged
 - `sewa/bundle-06-sponsored-placements` — PR #6 merged
-- `sewa/bundle-07-sales-pipeline` — older PR #7 draft; superseded by #10, retained until dependent PR #8 is reconciled
+- `sewa/bundle-07-sales-pipeline` — PR #7 closed without merge; branch retained temporarily as PR #8's base until Bundle 8 is reconciled
 - `sewa/bundle-07-reconciled-main-20261106` — clean current-main-based Bundle 7 PR #10; code CI passed
 - `sewa/bundle-08-inbound-conversion` — PR #8 open, still based on old Bundle 7
 - `sewa/bundle-09-proposal-composer` — no PR found in the current PR search
@@ -216,7 +216,7 @@ The original 13-branch inventory has one additional current-main-based reconcili
 ### Branch audit warning
 
 - PR #4 targets `main`, but its diff and current base SHA still need a fresh review before merge.
-- PR #7 is an older stacked draft and is superseded by clean PR #10; do not merge PR #7.
+- PR #7 was closed without merging after PR #10 passed CI; its branch remains only as the current base of PR #8 until that dependency is rebuilt.
 - PR #8 is still based on the old Bundle 7 branch and must be reconciled onto the clean Bundle 7 dependency chain before review or merge.
 - PR #10 is the clean current-main-based Bundle 7 replacement; its TypeScript, lint, unit/component, production-build and disposable PostgreSQL migration/security CI jobs passed on code head `3fa170958aec02925718588b7322df36e31fc120` (run #323). It remains a draft and is not merged or deployed.
 - The admin-audit-health and revenue-engine branches have no PR in the current search. Compare their unique changes with `main` before deciding whether to salvage or archive them.
