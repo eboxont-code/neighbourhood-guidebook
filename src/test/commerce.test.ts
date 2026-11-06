@@ -4,6 +4,7 @@ import { dict } from "@/lib/i18n";
 
 const lead = (overrides: Partial<RevenueRecord> = {}): RevenueRecord => ({
   page: "for-businesses",
+  topic: null,
   service_package: "launch",
   quote_amount_npr: null,
   paid_amount_npr: 0,
@@ -45,6 +46,24 @@ describe("SEWA revenue totals", () => {
     });
   });
 
+  it("includes explicit website-topic enquiries and excludes sponsored placement requests", () => {
+    const summary = summariseRevenue([
+      lead({ page: "contact", topic: "website", service_package: null, quote_amount_npr: 12000, paid_amount_npr: 12000, payment_status: "paid" }),
+      lead({ page: "for-businesses", service_package: "promotion", quote_amount_npr: 45000, paid_amount_npr: 45000, payment_status: "paid" }),
+      lead({ page: "preview", service_package: "promotion", quote_amount_npr: 30000, paid_amount_npr: 30000, payment_status: "paid" }),
+      lead({ page: "contact", topic: "other", service_package: null, quote_amount_npr: 8000, paid_amount_npr: 8000, payment_status: "paid" }),
+    ]);
+
+    expect(summary).toEqual({
+      enquiries: 1,
+      quotes: 1,
+      paidJobs: 1,
+      quotedNpr: 12000,
+      receivedNpr: 12000,
+      outstandingNpr: 0,
+    });
+  });
+
   it("does not treat unsupported payment states as quotes or cash", () => {
     expect(summariseRevenue([
       lead({ quote_amount_npr: 10000, paid_amount_npr: 10000, payment_status: "unknown" }),
@@ -64,6 +83,11 @@ describe("SEWA revenue totals", () => {
     expect(dict.ne.pkg_promotion_price).toBe("कामको दायराअनुसार कोट");
     expect(dict.en.quotePrefill_promotion).not.toContain("NPR ");
     expect(dict.ne.quotePrefill_promotion).not.toContain("NPR ");
+  });
+
+  it("labels the website-service revenue scope separately in both languages", () => {
+    expect(dict.en.adRevenueScope).toContain("Sponsored placement campaigns are separate");
+    expect(dict.ne.adRevenueScope).toContain("प्रायोजित स्थान अभियान छुट्टै गणना हुन्छ");
   });
 
   it("does not publish unapproved package prices in English or Nepali", () => {
