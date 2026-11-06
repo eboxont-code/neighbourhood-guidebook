@@ -96,4 +96,38 @@ describe("analytics submission de-duplication", () => {
     await waitFor(() => expect(trackMock).toHaveBeenCalledTimes(1));
     expect(trackMock).toHaveBeenCalledWith("claim_submit", { slug: "aavaran-durbar-marg" });
   });
+
+  it("writes one website lead for a same-tick duplicate For Businesses submission", async () => {
+    const pending = deferred<{ error: null }>();
+    insertMock.mockReturnValue(pending.promise);
+    const { container } = render(
+      <ContactForm
+        business=""
+        listing=""
+        page="for-businesses"
+        topicPicker
+        initialTopic="website"
+        serviceOptions
+      />,
+    );
+
+    change(container, "#name", "Test Owner");
+    change(container, "#message", "I would like a website for my business.");
+    const form = container.querySelector("form");
+    if (!form) throw new Error("Missing For Businesses contact form");
+
+    submitTwiceInOneBatch(form);
+    expect(fromMock).toHaveBeenCalledTimes(1);
+    expect(fromMock).toHaveBeenCalledWith("contact_messages");
+    expect(insertMock).toHaveBeenCalledTimes(1);
+
+    await act(async () => {
+      pending.resolve({ error: null });
+      await pending.promise;
+    });
+    await waitFor(() => expect(trackMock).toHaveBeenCalledTimes(2));
+    expect(trackMock).toHaveBeenCalledWith("service_quote_submit", { query: "custom" });
+    expect(trackMock).toHaveBeenCalledWith("enquiry_submit", {});
+  });
+
 });
