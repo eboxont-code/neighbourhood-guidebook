@@ -178,7 +178,7 @@ export function ContactForm({ business, listing, page, message = "", doneText, s
       </Field>
       <Honeypot value={hp} onChange={setHp} />
       <SendStatus status={status} />
-      <Button type="submit" disabled={status === "sending"} aria-busy={status === "sending"} className="action-btn action-primary h-auto min-h-12 w-full gap-2 whitespace-normal px-6 py-3 text-center leading-relaxed disabled:opacity-70 sm:w-auto">
+      <Button type="submit" disabled={status === "sending"} aria-busy={status === "sending"} className="action-btn action-primary h-auto min-h-12 w-full gap-2 rounded-full whitespace-normal px-6 py-3 text-center leading-relaxed disabled:opacity-70 sm:w-auto">
         {status === "sending" && <Loader2 aria-hidden className="h-4 w-4 animate-spin" />}
         {status === "sending" ? t("sending") : submitLabel ?? t("send")}
       </Button>
