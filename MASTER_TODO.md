@@ -700,14 +700,15 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 
 ### Repository and production refresh — 7 November 2026
 
-- Repository default branch is `main` at `ee38ca0e978f0149ca10f5b2caadb33282729148`. GitHub Quality Gate run #337 completed successfully on that exact SHA; the combined commit status is successful.
-- Production Vercel deployment `dpl_Gou24q64tcmGASESDmvqbxzrWpP7` is READY on that exact `main` SHA. `sewa.boxont.com` is attached to the project. No production deployment was initiated in this session.
-- Five open draft PRs remain: #4 (older Bundle 4), #8 (Bundle 8), #10 (current-main Bundle 7), #11 (current-main contact insights), and #12 (form protection/regression coverage). PR #12 targets `main` at `ee38ca0e`; current head is `66533a47fe8705284ffe2c0d6a3dc98d18d0f03f` (31 commits, six changed files).
-- PR #12 Quality Gate run #429 completed successfully on the current head. The disposable PostgreSQL job applied all 13 repository migrations, passed the Nepali/mixed-language contact and business-submission round-trip assertions, and passed the existing security/concurrency checks. The application job passed TypeScript, ESLint (0 errors; 25 existing warnings), 25 test files / 210 tests, and the production build.
-- Vercel's current commit status for PR #12 head `66533a47` is a build-rate-limit failure (`upgradeToPro=build-rate-limit`). The latest observed READY preview is for the earlier commit `404d5aa2`; no manual preview deployment was attempted. The preview limit does not invalidate the passing GitHub Quality Gate.
-- Supabase project `zvbavpcsyvibvpkxjzkn` (`neighbourhood-guidebook`) is ACTIVE_HEALTHY. Remote migration history contains 8 entries; the last three versions (`20261104111910`, `20261104111922`, `20261104111936`) still differ from local migration filenames (`20261102130000`, `20261103114000`, `20261104100000`). No migration or repair was attempted.
-- Read-only database counts: 52 listings; 0 contact messages; 0 business claims; 0 business submissions; 0 correction reports; 5 analytics events; 0 listing promotions; 3 form-rate rows; 1 user role. `business_sales_prospects` and `business_sales_activities` are absent. No rows were changed.
-- The production project is the ACTIVE_HEALTHY project returned by Supabase. Encrypted Vercel environment values were not decrypted in this run to re-derive the project binding.
+- Repository default branch is `main` at `ee38ca0e978f0149ca10f5b2caadb33282729148`. GitHub Quality Gate run #337 passed on that exact SHA; the combined commit status is successful.
+- Production Vercel deployment `dpl_Gou24q64tcmGASESDmvqbxzrWpP7` is READY on that exact `main` SHA. `sewa.boxont.com` is attached. No production deployment was initiated in this session.
+- Six open draft PRs are present: #4 (older Bundle 4), #8 (Bundle 8), #10 (current-main Bundle 7), #11 (current-main contact insights), #12 (form protection/regression coverage), and #13 (preview route regression tests).
+- PR #12 targets `main` at `ee38ca0e`; current head is `1f120d7305ca43dea2da0cc7cafa7e493525d2ef`. Its Unicode round-trip Quality Gate #429 passed on code head `66533a47`; documentation refresh runs #430 (push) and #431 (PR) both passed on the current PR #12 head.
+- PR #13 is a draft stacked on PR #12's branch. Current head is `38d79188544ecd2078b992e85c02cdcbf9279e90`; it changes only `src/test/preview.test.ts`. Quality Gate runs #437 (push) and #438 (PR) both passed: TypeScript, ESLint, 25 test files / 213 tests, production build, and disposable PostgreSQL migration/security/concurrency tests.
+- The first PR #13 test attempt (#435/#436) caught an incorrect assertion about TanStack Router's legacy redirect representation. The route throws a standard HTTP `Response` with status 301; the test now asserts that status and separately verifies the legacy slug map points to `plush-lazimpat`. The corrected head passed both Quality Gates.
+- Vercel reports a build-rate-limit failure for current PR #12/#13 heads (`upgradeToPro=build-rate-limit`). The latest observed READY preview is for earlier PR #12 head `404d5aa2`; no manual preview deployment was attempted. This Vercel limit does not invalidate passing GitHub Quality Gates.
+- Supabase project `zvbavpcsyvibvpkxjzkn` (`neighbourhood-guidebook`) remains ACTIVE_HEALTHY. Remote migration history contains 8 entries; the last three versions (`20261104111910`, `20261104111922`, `20261104111936`) still differ from local migration filenames (`20261102130000`, `20261103114000`, `20261104100000`). No migration or repair was attempted.
+- Read-only database counts remain: 52 listings; 0 contact messages; 0 business claims; 0 business submissions; 0 correction reports; 5 analytics events; 0 listing promotions; 3 form-rate rows; 1 user role. `business_sales_prospects` and `business_sales_activities` are absent. No rows were changed.
 - The current `main` copy of `MASTER_TODO.md` contains 999 task rows and omits `SW-0299`. The original Library CSV confirms `SW-0299` is “Do not promise search rankings, guaranteed leads, or a specific sales result.” This PR branch contains all 1,000 unique IDs, including the restored task. Do not overwrite the restored register with the stale `main` copy.
 - Lovable north-star `.lovable/north-star/north-star.md` has the same blob SHA on `main` and this branch: `9d748d0f22dd60969680c61964f18ea4fe6900df`.
 - Bundle 7 reconciliation remains code-review complete but release/merge is blocked pending owner approval and migration-history resolution. Bundle 8 and Proposal Composer remain dependent on that gate. No production data, settings, migrations, merges, or deployment were changed. Additional spend: $0.
@@ -939,13 +940,23 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 - Current PR head `66533a47fe8705284ffe2c0d6a3dc98d18d0f03f`; Quality Gate run #429 passed both jobs. The database job logged “Unicode form round-trip passed” and “All 13 migrations and disposable PostgreSQL security/concurrency checks passed.” The application job passed TypeScript, ESLint (0 errors; 25 warnings), 25 test files / 210 tests and production build.
 - Keep REVIEW rather than DONE: the component payload and database contract are independently verified, but no authorised browser-driven form-to-database session was available. No production writes, migrations, or settings changes were made.
 
-### Current task — SW-0164
+### Previous task — SW-0164
 
-**Status: IN PROGRESS — verify the website-preview loader binds the requested slug to the matching business and fails safely for unknown slugs.**
+**Status: REVIEW — the preview route loader is covered for exact listing resolution, legacy-slug redirect and unknown-slug not-found behaviour.**
 
-- Audited `src/routes/s.$slug_.website-preview.tsx`: the loader resolves only `getBusiness(params.slug)`, redirects a known legacy/live slug to its replacement, and throws TanStack Router `notFound()` when neither the requested nor redirected business exists. It does not fall back to an unrelated listing.
-- Existing `src/test/preview.test.ts` covers route matching, preview path helpers, eligibility and sitemap exclusion, but does not exercise the route loader's exact-business, legacy-redirect or unknown-slug branches.
-- Add focused loader regression tests only; do not change route behaviour unless a test reveals a defect. Use the existing in-memory directory fixtures. No production data, migrations, settings, or deployment changes are required.
+- Audited the existing route before changing anything. `src/routes/s.$slug_.website-preview.tsx` resolves the requested slug with `getBusiness(params.slug)`, checks the static/live redirect maps only when the original slug is absent, and throws `notFound()` when no target business exists.
+- Added three focused tests to `src/test/preview.test.ts`: a valid slug returns that exact business; the known legacy slug `plush-kamaladi` redirects with HTTP 301 and its redirect map targets `plush-lazimpat`; an unknown slug produces a not-found result instead of another business.
+- The first test attempt (#435/#436) incorrectly expected a plain redirect object. Runtime evidence showed TanStack Router throws a standard `Response` with status 301. The assertion was corrected to check the response status and redirect map; no route implementation change was needed.
+- Corrected-head Quality Gate runs #437 (push) and #438 (pull request) both passed: TypeScript, ESLint, all 25 test files / 213 tests, production build, and disposable PostgreSQL migration/security/concurrency checks.
+- Keep REVIEW rather than DONE because the tests are in a draft stacked PR and have not been merged or released. No production data, schema, migration history, settings, or deployment was changed.
+
+### Current task — SW-0165
+
+**Status: IN PROGRESS — verify the preview displays the exact business name from the resolved listing record.**
+
+- The route loader returns a `business` object for the requested slug. The preview component uses `b.name` in its title, hero, navigation and footer; audit the render path and existing test patterns before adding coverage.
+- Add a focused component/render regression test using an existing listing fixture. Assert the displayed business name is from that fixture, not a hard-coded or stale name. Do not change business data or public copy.
+- No production data, migrations, settings, or deployment changes are required.
 ---
 
 ## 10. Instruction for every future AI session
@@ -1170,8 +1181,8 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [REVIEW] **SW-0161 · P0 · Reported preview template exists; regression-test** — Regression-test the existing shared preview template against a business with no website.
 - [ ] [REVIEW] **SW-0162 · P0 · Reported preview template exists; regression-test** — Regression-test the template against a business whose listed website is broken.
 - [ ] [REVIEW] **SW-0163 · P0 · Reported preview template exists; regression-test** — Regression-test the template against a business with a working website to ensure it is not mislabelled.
-- [ ] [IN PROGRESS] **SW-0164 · P0 · Audit current state** — Verify preview routes use the expected business slug and fail safely for an unknown slug. Auditing the existing route loader and adding exact-slug, legacy-redirect and unknown-slug regression tests; no production changes.
-- [ ] [TODO] **SW-0165 · P0 · Audit current state** — Verify the preview displays the correct business name from the listing record.
+- [ ] [REVIEW] **SW-0164 · P0 · Audit current state** — Verify preview routes use the expected business slug and fail safely for an unknown slug. Evidence: three route-loader tests cover exact business resolution, legacy 301 redirect mapping and unknown-slug not-found; Quality Gate runs #437/#438 passed (25 files / 213 tests, TypeScript, lint, build and disposable PostgreSQL security tests). Draft PR #13, unmerged.
+- [ ] [IN PROGRESS] **SW-0165 · P0 · Audit current state** — Verify the preview displays the correct business name from the listing record. Auditing the existing PreviewPage render path and adding a fixture-backed component/render regression test; no production data changes.
 - [ ] [TODO] **SW-0166 · P0 · Audit current state** — Verify the preview displays only hours that exist and are sufficiently trustworthy.
 - [ ] [TODO] **SW-0167 · P0 · Audit current state** — Verify the preview never invents opening hours when the listing lacks them.
 - [ ] [TODO] **SW-0168 · P0 · Audit current state** — Verify the preview uses the correct area and address fields without upgrading a vague area into an exact address.
