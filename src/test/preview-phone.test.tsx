@@ -147,6 +147,14 @@ describe("website preview phone trust", () => {
       source: { tier: "website" as const, url: "https://www.aavaranskin.com/contact" },
     },
     {
+      label: "a future field check date",
+      source: {
+        tier: "website" as const,
+        url: "https://www.aavaranskin.com/contact",
+        checked: "2999-12-31",
+      },
+    },
+    {
       label: "an invalid field check date",
       source: {
         tier: "website" as const,
@@ -182,7 +190,8 @@ describe("website preview phone trust", () => {
   });
 
   it("does not show a call action when the phone number is missing", () => {
-    const { phone: _phone, ...business } = baseBusiness();
+    const business: Business = { ...baseBusiness() };
+    delete business.phone;
     const document = renderPreview(business);
 
     expect(callAction(document)).toBeNull();

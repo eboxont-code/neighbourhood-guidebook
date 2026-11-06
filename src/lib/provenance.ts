@@ -1,5 +1,5 @@
 import { hasPin, type Business } from '@/data/directory';
-import { checkedDate, officialWebsite } from '@/lib/verification';
+import { checkedDate, checkedDaysAgo, officialWebsite } from '@/lib/verification';
 
 export type SourceField = 'phone' | 'hours' | 'address' | 'website' | 'location';
 export type FieldSource = NonNullable<Business['fieldSources']>[SourceField];
@@ -44,7 +44,7 @@ export function verifiedPublicPhone(b: Business): string | undefined {
   const source = fieldSource(b, 'phone');
   if (!source || (source.tier !== 'website' && source.tier !== 'official_social')) return undefined;
   if (!sourceUrl(source.url) || !source.checked) return undefined;
-  if (!checkedDate({ ...b, lastChecked: source.checked })) return undefined;
+  if (checkedDaysAgo({ ...b, lastChecked: source.checked }, new Date()) === null) return undefined;
 
   return phone;
 }
