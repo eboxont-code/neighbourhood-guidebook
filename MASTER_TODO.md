@@ -2,7 +2,7 @@
 
 > **Single source of truth for SEWA/Boxont execution. Read the whole file before each work session and update it before ending. This file combines the repository plan, revenue-first strategy and the 1,000-task register.**
 >
-> **Last reviewed:** 6 November 2026  
+> **Last reviewed:** 7 November 2026  
 >
 > **Merged inputs:** existing repository `MASTER_TODO.md`, the revenue-first strategy and 1,000-point checklist, and the matching 1,000-row CSV task register. The CSV and checklist IDs, priorities and task descriptions were reconciled. This file is now the only project execution plan.
 >
@@ -77,6 +77,18 @@ The free-preview format is also used by other website-design providers. That sho
 
 Establish a baseline before choosing numerical targets. Do not invent targets or public performance claims.
 
+### Qualified website lead definition — 7 November 2026
+
+A **qualified website lead** is a successfully saved contact_messages record that meets every condition below:
+
+1. **Website intent:** topic is website, or the recorded source page is preview or for-businesses. Do not infer website intent from an unstructured message alone.
+2. **Identifiable business:** business_name is present, or source_listing_slug identifies the originating listing.
+3. **A real request:** message is non-empty.
+4. **A usable reply route:** the current contact form/schema has an optional phone field but no email field. A phone number must therefore be present and manually checked as plausible and reachable before the lead is counted as qualified.
+5. **Manual quality review:** an operator confirms the record is neither spam nor a duplicate. The current contact_messages schema has no automatic spam/duplicate flag, so do not infer this from the lead stage.
+
+Budget and assumed willingness to pay are not qualification criteria. A click, preview view, claim request, quote, proposal, or enquiry that fails any of these checks is not a qualified website lead. This is an internal measurement definition only; it does not approve pricing, outreach, or a paid offer.
+
 ---
 
 ## 1. Non-negotiable rules
@@ -141,111 +153,106 @@ Never mark work [DONE] merely because code exists, a PR is merged, or a preview 
 
 ---
 
-## 3. Verified repository snapshot — 5 November 2026
+## 3. Verified repository snapshot — 7 November 2026
 
 ### Repository baseline
 
-- [x] [DONE] Private GitHub repository identified: `eboxont-code/neighbourhood-guidebook`.
-- [x] [DONE] Production domain recorded as `https://sewa.boxont.com`.
-- [x] [DONE] README documents SEWA product principles, architecture, local setup, database rules and deployment checklist.
-- [x] [DONE] Quality scripts and the Supabase/Drizzle migration-parity rule are documented.
-- [x] [DONE] Enumerated all 13 branches and reconciled all 9 repository PR records on 5 November 2026.
-- [x] [DONE] Confirmed the repository issue search returned no GitHub issues; the master plan remains the execution tracker.
-- [x] [DONE] Confirmed the 1,000-point register contains every unique ID from `SW-0001` through `SW-1000`.
+- [x] [DONE] Private repository: eboxont-code/neighbourhood-guidebook.
+- [x] [DONE] Default branch is main at ee38ca0e978f0149ca10f5b2caadb33282729148; the commit message is “docs: record Bundle 7 reconciliation and passing quality gate”.
+- [x] [DONE] GitHub reports 27 branches and a 238-entry main tree. The open-issue query returned no open issues.
+- [x] [DONE] Read AGENTS.md, README.md, roadmap.md, package.json, and .lovable/north-star/north-star.md. The repository tree contains one root AGENTS.md; roadmap.md directs all planning to this file.
+- [x] [DONE] The register contains every unique ID from SW-0001 through SW-1000. SW-0298 and SW-0299 are currently concatenated on one Markdown line; their IDs and descriptions remain present.
+- [x] [DONE] The Lovable north-star file was left unchanged; its blob SHA is 9d748d0f22dd60969680c61964f18ea4fe6900df.
+- [ ] [BLOCKED] A local checkout/working-tree status is not exposed by the connected GitHub surface in this run. The remote main ref and tree were verified; no claim is made about local uncommitted files.
+- [x] [DONE] Main Quality Gate run #42217060656 completed successfully. The combined Vercel status for ee38ca0e is success.
 
-Latest verified application-code commit: `c6741670caaf036df1a94935831599fd16a6a3db` (5 November 2026 UTC), message `Verified bilingual targets`.
+### Open pull requests — read-only snapshot
 
-The two commits made after that application-code baseline were documentation-only:
-- `7c4983c80318dd97de59e92eb40af8760c69a5ab` — reconciled this master plan.
-- `ee9ff6ba5a8d59907ed6dc073ee52a921aa24617` — made this file the single roadmap source of truth.
+All 13 open pull requests are drafts. The latest observed GitHub Quality Gate push/PR runs for each listed head passed. Vercel status is recorded separately:
 
-Latest verified Vercel Production deployment at the time of this audit:
-- Deployment: `dpl_DBNmQXmsk9P8wTsGKbjsTabpmq3S`
-- State / target: `READY` / `production`
-- Git source: `main` at documentation commit `ee9ff6ba5a8d59907ed6dc073ee52a921aa24617`
-- Alias attached and verified: `sewa.boxont.com`.
-- Vercel project plan: Hobby. No upgrade or paid resource was requested or created.
+| PR | Branch → base | GitHub Quality Gate | Vercel status / dependency |
+|---:|---|---|---|
+| #4 | bundle-04-revenue-lead-attribution → main at stale dcff9d80 | #41655923735 / #41655935077 passed | Success; recompare with current main before any release. |
+| #8 | bundle-08-inbound-conversion → bundle-07-reconciled-main at a6deac36 | #42219887248 / #42219894685 passed | Success; still based on the older Bundle 7 branch, not PR #10. |
+| #10 | bundle-07-reconciled-main-20261106 → current main ee38ca0e | #42218893839 / #42218901255 passed | Success; owner review/approval is still required. |
+| #11 | bundle-04-contact-insights-main-20261106 → current main ee38ca0e | #42221414713 / #42221420761 passed | Success; draft, not merged. |
+| #12 | analytics-submission-guard-20261106 → current main ee38ca0e | #42252427416 / #42252435434 passed | Vercel preview build rate-limited; no upgrade or manual deployment. |
+| #13 | preview-route-regression-20261107 → PR #12 branch | #42253387830 / #42253397893 passed | Success; first PR in the stacked preview chain. |
+| #14 | preview-business-name-20261107 → PR #13 branch | #42253998096 / #42254009266 passed | Vercel preview build rate-limited. |
+| #15 | preview-hours-trust-20261107 → PR #14 branch | #42254916156 / #42254923064 passed | Vercel preview build rate-limited. |
+| #16 | preview-no-hours-20261107 → PR #15 branch | #42255449082 / #42255459881 passed | Vercel preview build rate-limited. |
+| #17 | preview-location-fields-20261107 → PR #16 branch | #42261545545 / #42261556878 passed | Vercel preview build rate-limited. |
+| #18 | preview-location-reliability-20261107 → PR #17 branch | #42270631894 / #42270639047 passed | Vercel preview build rate-limited. |
+| #19 | preview-phone-verification-20261107 → PR #18 branch | #42279835329 / #42279844174 passed | Vercel preview build rate-limited. |
+| #20 | define-qualified-lead-20261107 → current main ee38ca0e | #42289004499 / #42289189951 (task commit) and #42289502496 / #42289510045 (plan-evidence follow-up) passed | Initial preview succeeded; latest preview build was rate-limited. No upgrade or manual deployment. |
 
-This verifies that the current application-code baseline and the subsequent documentation-only changes reached a READY Production deployment with the custom domain attached. It does **not** prove that the public enquiry, admin sign-in or password-recovery journeys work end to end; those checks remain open below.
-
-### Known merged work
-
-- [x] [DONE] Bundle 1 — project foundation, repository rules and quality gate — merged to `main`.
-- [x] [DONE] Bundle 2 — data integrity and opening-hours trust — merged to `main`.
-- [x] [DONE] Bundle 3 — security and operations hardening — merge commit `5569ca8254277479fd350ab623afbb786ab31349`.
-- [x] [DONE] Bundle 5 — Boxont quote-to-cash revenue engine — merge commit `d5f104affdb29e7cd4a287b4a36e34cb86c3800b`.
-- [x] [DONE] Bundle 6 — sponsored placement revenue channel — merge commit `74fe507db70a45a538dfec4bd3730a45d51e4ae2`.
-- [x] [DONE] PR #9 — admin password recovery production redirect — merged into `main`; merge commit `a625ff94c48b03aa268bfdf885ff0eb974f5c664`.
-
-### Open pull requests verified on 5 November 2026
-
-| PR | Work | Verified state / branch relationship |
-|---|---|---|
-| #4 | Call and WhatsApp contact insights | Open draft; `sewa/bundle-04-revenue-lead-attribution` → `main` |
-| #7 | Boxont prospecting and sales pipeline | Open draft; `sewa/bundle-07-sales-pipeline` is based on `sewa/bundle-06-sponsored-placements` |
-| #8 | Convert inbound enquiries into sales opportunities | Open draft; `sewa/bundle-08-inbound-conversion` is based on `sewa/bundle-07-sales-pipeline` |
-
-PR references:
-- #4: https://github.com/eboxont-code/neighbourhood-guidebook/pull/4
-- #7: https://github.com/eboxont-code/neighbourhood-guidebook/pull/7
-- #8: https://github.com/eboxont-code/neighbourhood-guidebook/pull/8
-- #9 (merged): https://github.com/eboxont-code/neighbourhood-guidebook/pull/9
+PR #7 is closed unmerged; PR #9 is merged. PRs #13–#19 form a dependent chain and must not be treated as independent current-main releases. PR #4 has a stale main base. PR #8 is stacked on the older Bundle 7 branch. No PR was merged, no branch was deleted or rewritten, and no force-push was made. The Vercel Hobby build-rate limit is not approval to upgrade.
 
 ### Current branch inventory
 
-The 13 branches returned by the repository branch search are:
+- main
+- sewa/define-qualified-lead-20261107
+- sewa/admin-password-recovery-production-redirect
+- sewa/analytics-listing-views-20261106
+- sewa/analytics-submission-guard-20261106
+- sewa/bundle-01-foundation
+- sewa/bundle-02-data-integrity
+- sewa/bundle-03-security-operations
+- sewa/bundle-04-admin-audit-health
+- sewa/bundle-04-contact-insights-main-20261106
+- sewa/bundle-04-revenue-engine
+- sewa/bundle-04-revenue-lead-attribution
+- sewa/bundle-05-revenue-engine
+- sewa/bundle-06-sponsored-placements
+- sewa/bundle-07-reconciled-main
+- sewa/bundle-07-reconciled-main-20261106
+- sewa/bundle-07-sales-pipeline
+- sewa/bundle-08-inbound-conversion
+- sewa/bundle-08-reconciled-main-20261106
+- sewa/bundle-09-proposal-composer
+- sewa/preview-business-name-20261107
+- sewa/preview-hours-trust-20261107
+- sewa/preview-location-fields-20261107
+- sewa/preview-location-reliability-20261107
+- sewa/preview-no-hours-20261107
+- sewa/preview-phone-verification-20261107
+- sewa/preview-route-regression-20261107
 
-- `main`
-- `sewa/admin-password-recovery-production-redirect` — PR #9 merged
-- `sewa/bundle-01-foundation` — PR #1 merged
-- `sewa/bundle-02-data-integrity` — PR #2 merged
-- `sewa/bundle-03-security-operations` — PR #3 merged
-- `sewa/bundle-04-admin-audit-health` — no PR found in the current PR search
-- `sewa/bundle-04-revenue-engine` — no PR found in the current PR search
-- `sewa/bundle-04-revenue-lead-attribution` — PR #4 open
-- `sewa/bundle-05-revenue-engine` — PR #5 merged
-- `sewa/bundle-06-sponsored-placements` — PR #6 merged
-- `sewa/bundle-07-sales-pipeline` — PR #7 open
-- `sewa/bundle-08-inbound-conversion` — PR #8 open
-- `sewa/bundle-09-proposal-composer` — no PR found in the current PR search
+### Production deployment and public route checks
 
-### Branch audit warning
+- Vercel project: neighbourhood-guidebook, project ID prj_zdxJhQFdQrH76wYIefxmaOVRLFx8, Hobby plan.
+- Latest Production deployment: dpl_Gou24q64tcmGASESDmvqbxzrWpP7, READY, target production, built from main at ee38ca0e978f0149ca10f5b2caadb33282729148.
+- Alias sewa.boxont.com is attached to that READY deployment. The combined Vercel status for the main commit is success.
+- Read-only HTTP checks returned 200 for /, /for-businesses, /a/durbar-marg, /s/aavaran-durbar-marg/website-preview, /admin, /robots.txt, and /sitemap.xml.
+- The admin response includes noindex/nofollow; robots.txt disallows /admin. The sitemap returned 116 URLs and did not include website-preview routes. The preview response includes noindex.
+- The homepage currently renders “52 businesses across 7 neighbourhoods · 21 on the map”. The live database confirms 52 published listings; the pin count still requires its own reliable-coordinate audit.
+- The deployed client asset contains VITE_SUPABASE_URL=https://zvbavpcsyvibvpkxjzkn.supabase.co, confirming the production frontend points to the Supabase project described below.
 
-- PR #4 targets `main`, but its diff and current base SHA still need a fresh review before merge.
-- PR #7 and #8 are stacked on older feature branches, not directly on current `main`; do not merge them as-is.
-- The admin-audit-health and revenue-engine branches have no PR in the current search. Compare their unique changes with `main` before deciding whether to salvage or archive them.
-- The Proposal Composer branch exists but no PR was returned. Inspect its current diff and isolate it from the unmerged Bundle 7/8 work.
-- Merged feature branches remain in the branch list; their existence alone does not mean they are unfinished.
-- Full branch diff/ancestry review, cleanup decisions and any archive/delete action remain TODO. No branch has been deleted or rewritten.
+### Supabase production state — read-only
 
-These are 5 November 2026 observations. Refresh refs and compare exact diffs before acting.
+- Project: neighbourhood-guidebook, ref zvbavpcsyvibvpkxjzkn, region ap-south-1, status ACTIVE_HEALTHY, PostgreSQL 17.11.0.003.
+- Applied migration history contains eight entries: contact_messages_lead_status, business_submissions_and_form_topics, business_claims, analytics_events, analytics_funnel_events, atomic_form_rate_limits, service_revenue_pipeline, and listing_promotions.
+- Migration-version warning: production records the last three versions as 20261104111910, 20261104111922, and 20261104111936, while the current repository filenames use 20261102130000, 20261103114000, and 20261104100000 for those same names. Do not run db push or apply migrations until this version-label difference is reconciled against the exact SQL and migration journal.
+- Read-only row counts: 52 published listings, 8 analytics_events, 0 contact_messages, 0 business_claims, 0 business_submissions, 0 correction_reports, and 3 form_rate_log rows.
+- The eight analytics events are 5 preview_view, 1 claim_click, and 2 search_zero. There are no recorded enquiry_submit or preview_enquiry_click events. This is not enough evidence for a reliable conversion-rate or largest-leak conclusion.
+- Existing analytics are first-party: src/lib/track.ts inserts anonymous event data into Supabase, and the admin Insights component reads the same table. The event payload contains event, listing slug, normalized query, language, and path; it does not include names, account IDs, or precise location. No separate analytics product was added.
+- The read-only Supabase Security Advisor reported: form_rate_log has RLS enabled with no policies; public.has_role is SECURITY DEFINER and executable by authenticated users; leaked-password protection is disabled. These findings were observed only; no policy, function grant, or Auth setting was changed.
+- No production rows were inserted, updated, or deleted. No production migration, setting, secret, domain, billing, or deployment change was made.
 
-## 4. Last known blocker — production deployment and admin recovery
+---
 
-> **Status note:** The deployment and password-recovery observations below were last recorded on 4 November 2026. They were not re-tested during this document merge. Recheck before treating them as current.
+## 4. Production deployment and admin recovery
 
 ### Admin password recovery implementation
 
-- [x] [DONE] Forgot Password flow added to admin sign-in.
-- [x] [DONE] Reset emails explicitly redirect to `https://sewa.boxont.com/admin`.
-- [x] [DONE] Supabase `PASSWORD_RECOVERY` event handling added.
-- [x] [DONE] New-password and confirmation screen added.
-- [x] [DONE] English and Nepali recovery copy added.
-- [x] [DONE] Generic response avoids revealing whether an email address has an account.
-- [x] [DONE] Email validation correction included in merged commit.
-- [x] [DONE] Project owner confirmed Supabase Auth URL configuration was updated to include the production redirect.
-- [x] [DONE] Current `main` is deployed to Vercel Production in READY state at commit `c6741670caaf036df1a94935831599fd16a6a3db`; the `sewa.boxont.com` alias is attached. End-to-end password recovery is still untested.
-- [x] [DONE] Rechecked Vercel deployment status and current production alias on 5 November 2026; latest `main` deployment is READY. The previous 4 November quota failure is no longer blocking this latest deployment.
-- [x] [DONE] Current approved `main` commit `c6741670caaf036df1a94935831599fd16a6a3db` is deployed to Production.
-- [x] [DONE] Verified `sewa.boxont.com` is an alias on the READY Production deployment for current `main` commit `c6741670caaf036df1a94935831599fd16a6a3db`.
-- [ ] [TODO] Inspect deployed assets to confirm the recovery code is actually present.
-- [ ] [TODO] Trigger a real recovery email and confirm the link opens the production domain, not localhost.
-- [ ] [TODO] Complete password reset and test a normal admin sign-in.
-- [ ] [TODO] Test expired/invalid recovery links and session handling safely.
+- [x] [DONE] Forgot Password flow and production redirect are present in the deployed admin asset.
+- [x] [DONE] The deployed asset includes the PASSWORD_RECOVERY listener, resetPasswordForEmail, updateUser, and the exact redirect https://sewa.boxont.com/admin.
+- [x] [DONE] Production /admin route returns HTTP 200 and emits noindex/nofollow.
+- [ ] [BLOCKED] Trigger a real recovery email and confirm the link opens the production domain, not localhost. Requires the owner-controlled admin inbox and an authorised test session; no email was sent.
+- [ ] [BLOCKED] Complete password reset and test a normal admin sign-in. Requires the same owner-controlled inbox and authorised session; no credentials were entered.
+- [ ] [BLOCKED] Test expired/invalid recovery links and session handling safely. Requires an authorised test session; no session or password state was changed.
 
-**Deployment note (5 November 2026):** The latest `main` deployment is READY in Production and carries the `sewa.boxont.com` alias. A 4 November attempt had failed because of Vercel's free daily deployment quota, but that old failure is superseded by the successful 5 November deployment. Do not upgrade or pay to bypass future limits.
-
-**Acceptance criteria:** The production domain serves the latest approved main commit and the admin password reset succeeds end-to-end. Until then, this feature is merged but not live.
+**Acceptance criteria:** The production domain serves the intended main release and the admin password reset succeeds end to end. The deployed implementation is present, but the live recovery journey remains unverified until the owner-controlled test session is available.
 
 ---
 
@@ -326,7 +333,7 @@ The primary funnel is Sewa discovery/prospect → free preview → attributed en
 - [x] [DONE] Admin quote/payment tracking foundation.
 - [x] [DONE] Separate quoted value from cash received.
 - [x] [DONE] Revenue summary foundation.
-- [ ] [IN PROGRESS] Test full public enquiry → admin inbox → quote → payment journey using safe test data; verify persistence, source/business attribution, admin-only commercial fields and cleanup.
+- [ ] [BLOCKED] Test full public enquiry → admin inbox → quote → payment journey using safe test data; production database access is read-only and no disposable staging project or owner-authorised test session is available. Resume only with an approved non-production test target or explicit owner-authorised test session.
 - [ ] [TODO] Confirm visitors can submit enquiries but cannot write commercial fields.
 - [ ] [TODO] Confirm only authorised admins can record quotes and payments.
 - [ ] [TODO] Verify totals against source records, including partial payments/refunds where supported.
@@ -653,24 +660,24 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 
 | Order | Task | Status |
 |---:|---|---|
-| 1 | Test the production preview → quote form → database → admin lead path end to end | REVIEW — live route, prefill, anonymous insert permissions and admin quote/payment writes verified; real browser POST and signed-in admin UI remain unverified |
+| 1 | Test the production preview → quote form → database → admin lead path end to end | BLOCKED — production database is read-only for this workflow; no disposable staging project or owner-authorised test session is available |
 | 2 | Verify lead source, business, preview URL and campaign attribution across each form | DONE — source and listing attribution audited; UTM/referrer/campaign ID are not retained on lead records |
-| 3 | Revalidate the existing 20-business prospect CSV and each website status | BLOCKED — original 20-business CSV not found in `main` or the Library; do not recreate or guess the list |
-| 4 | Confirm production deployment and complete admin password recovery verification | Deployment + domain mapping DONE 5 Nov; password-reset journey TODO |
+| 3 | Revalidate the existing 20-business prospect CSV and each website status | BLOCKED — original 20-business CSV not found in main or the Library; do not recreate or guess the list |
+| 4 | Confirm production deployment and complete admin password recovery verification | BLOCKED — deployment, domain and deployed recovery code verified; real email/reset/sign-in requires the owner-controlled admin inbox and an authorised test session |
 | 5 | Review the 390px preview and quote form; capture real screenshots | DONE 6 Nov 2026: EN/NE at 390×844 first, then 1280×1800; screenshots captured of preview sections, enquiry forms and inline errors. No horizontal overflow; 44px+ effective targets; labeled 16px inputs. Enlarged language controls, linked form hints, removed duplicated optional wording and prevented the hidden quote pill covering the form. 179 tests pass; preview build/typecheck OK. Presentation only; no enquiries sent, schema/attribution/admin changes, outreach, publishing or deployment. |
-| 6 | Reconcile Bundle 7 Sales Pipeline against current `main` | REVIEW — reconciled branch ready; PostgreSQL migration/security tests, TypeScript, lint, unit/component tests and production build passed; previous PR #7 remains closed by owner |
-| 7 | Reconcile Bundle 8 after Bundle 7; preserve original enquiry/payment records | TODO |
-| 8 | Isolate and review Proposal Composer after its dependencies | TODO |
-| 9 | Use the funnel baseline to fix the largest conversion leak | TODO |
-| 10 | Improve directory quality and coverage based on real user demand and lead value | TODO |
+| 6 | Reconcile Bundle 7 Sales Pipeline against current main | BLOCKED — current-main PR #10 is open/draft and its GitHub Quality Gate passed; owner review/approval is required before release |
+| 7 | Reconcile Bundle 8 after Bundle 7; preserve original enquiry/payment records | BLOCKED — depends on Bundle 7 owner review/release; PR #8 is still based on the older Bundle 7 branch and must be rebased after release |
+| 8 | Isolate and review Proposal Composer after its dependencies | BLOCKED — depends on the released Bundle 7 and Bundle 8 sequence |
+| 9 | Use the funnel baseline to fix the largest conversion leak | BLOCKED — production has only 8 analytics events across 3 event types and no recorded enquiry submissions; insufficient evidence to identify a conversion leak |
+| 10 | Improve directory quality and coverage based on real user demand and lead value | BLOCKED — only 2 zero-result searches and no saved enquiries are present in the current production snapshot; the prospect CSV is also unavailable, so demand/lead-value prioritisation is not evidence-based yet |
 
-### Task 1 verification notes — 6 November 2026
+### Task 1 verification notes — 7 November 2026
 
-- Production `main` is `794b959b9056a9ec147414c39db4b6da6c0b79f1`. Vercel production deployment is READY on that exact commit; domain `sewa.boxont.com` is attached.
-- GitHub Quality Gate run #310 passed on that exact commit: TypeScript, lint, unit/component tests, production build, and disposable PostgreSQL migration/security tests.
-- Production homepage, `/for-businesses`, the `aavaran-durbar-marg` website preview, and its preview-origin contact URL returned HTTP 200. The preview CTA carried the listing slug and business name; the contact page rendered both prefilled, with a prefilled preview-specific message.
-- A rollback-only SQL test exercised a public `anon` insert and admin quote/payment updates (NPR 25,000 quoted, then paid). The transaction rolled back. Final production checks found zero contact messages, zero QA leads, and zero leftover QA rate-limit keys. Anonymous users cannot read leads or insert/update private quote/payment fields.
-- **Boundary:** this was not a browser-driven JavaScript form submission and did not authenticate to the visible `/admin` UI. Keep Task 1 at REVIEW; do not describe the complete browser journey as passed.
+- Production main is ee38ca0e978f0149ca10f5b2caadb33282729148. Vercel deployment dpl_Gou24q64tcmGASESDmvqbxzrWpP7 is READY on that exact commit and sewa.boxont.com is attached.
+- Main Quality Gate run #42217060656 passed. The combined Vercel status is success.
+- Read-only production HTTP checks returned 200 for the homepage, /for-businesses, /a/durbar-marg, the Aavaran website preview, /admin, robots.txt, and sitemap.xml. The preview and admin responses are noindex; the sitemap excludes preview routes.
+- Read-only production counts are 52 published listings, 8 analytics events, 0 contact_messages, 0 business_claims, 0 business_submissions, and 0 correction_reports.
+- **Boundary:** no production form was submitted, no production database write was attempted, and no admin session was opened. The end-to-end task is BLOCKED until an approved non-production test target or owner-authorised test session is available.
 
 ### Task 2 attribution audit — 6 November 2026
 
@@ -678,18 +685,27 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 - `contact_messages` has no UTM, campaign ID, landing/referrer route, or explicit preview URL fields. `analytics_events` records `listing_slug`, event, query, language and path, but no UTM/campaign fields. Sponsored clicks are counted by listing, placement/target key and date window; they are not joined to a specific campaign or later enquiry. No promotions or sponsored-click rows currently exist in production.
 - Keep SW-0060 and SW-0061 TODO. Mark SW-0062 REVIEW: the preview slug/page mapping is present in code, but the browser submit/validation journey has not been exercised end to end. No schema or application changes were made during this audit.
 
+### Bundle 7 current state — 7 November 2026
+
+- Current-main replacement PR #10 is open as a draft from sewa/bundle-07-reconciled-main-20261106 to main at ee38ca0e. Its latest GitHub push run #42218893839 and PR run #42218901255 passed.
+- The Vercel status for the PR #10 head is success. No merge or production migration was performed.
+- Owner review/approval remains the release gate. PR #8 still targets the older Bundle 7 branch and must not be merged as-is.
+- Do not proceed with Bundle 8 release work until Bundle 7 is reviewed and released; then rebuild/rebase Bundle 8 on the resulting main.
+
 ### Current task
 
-**Task 6 — Reconcile Bundle 7 Sales Pipeline against current `main`.**  
-**Status: REVIEW — code reconciled on a clean branch; owner review is the remaining gate.**
+**SW-0002 — Define a qualified website lead using observable criteria.**  
+**Status: DONE — definition recorded in Section 0 and the 1,000-task register.**
 
-- Created `sewa/bundle-07-reconciled-main` from current `main`. The branch contains the Bundle 7 feature delta only; current `main`'s newer `src/lib/sales-pipeline.ts` was preserved, including inbound-lead mapping and proposal-draft helpers.
-- Integrated the admin Sales Pipeline tab, component, typed Supabase tables, English/Nepali translations, Drizzle and Supabase migrations, migration journal entry, database contract test and disposable PostgreSQL security checks.
-- Preserved the newer proposal and inbound-conversion tests already on `main`; the older Bundle 7 copy no longer replaces them.
-- Drizzle and Supabase migration files are byte-identical. CI migration count and success message both correctly report 14 migrations.
-- GitHub Quality Gate run [#42216569490](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42216569490) passed: disposable PostgreSQL migration/security tests, TypeScript validation, lint, unit/component tests and production build.
-- Original PR #7 was closed unmerged by the repository owner on 6 November 2026. It was not reopened and no replacement PR was opened. The new reconciliation branch is ready for review; wait for owner direction before opening a replacement PR or moving to Bundle 8.
-- No production database migration, production deployment, production setting change or merge was performed. Bundle 8 was left untouched.
+- The definition is grounded in the current contact form and production schema: website intent, identifiable business context, non-empty request, a manually checked phone reply route, and manual spam/duplicate screening.
+- Budget or assumed willingness to pay is explicitly excluded from qualification.
+- No code, schema, production data, or business pricing/outreach settings were changed.
+- PR #20: https://github.com/eboxont-code/neighbourhood-guidebook/pull/20; branch sewa/define-qualified-lead-20261107. Task commit b27a4101723fb6f961517eb3a93a45227144f8b9 passed runs #42289004499 and #42289189951. Plan-evidence commit f188549b14b7e4e78ae14d7d248638f28fed8229 passed runs #42289502496 and #42289510045. The initial Vercel preview succeeded; the latest Vercel status is build-rate-limited. Draft only; not merged.
+
+### Next eligible task
+
+**SW-0003 — Define the primary conversion as a completed website enquiry with identifiable business context.**  
+This can be documented independently of the blocked production form test and does not require a customer submission.
 
 ---
 
@@ -728,8 +744,8 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 **Phase:** 1 - Revenue foundation  
 **Definition of done:** One page defines the revenue goal, what the site sells, what is deliberately deferred, and the rules that prevent trust or outreach mistakes.
 
-- [ ] [TODO] **SW-0001 · P0 · Audit current state** — Write a one-sentence north-star goal: generate qualified website-design opportunities for Boxont from Sewa.
-- [ ] [TODO] **SW-0002 · P0 · Audit current state** — Define a qualified website lead using observable criteria, not assumptions about willingness to pay.
+- [x] [DONE] **SW-0001 · P0 · Audit current state** — Write a one-sentence north-star goal: generate qualified website-design opportunities for Boxont from Sewa. Already recorded in Section 0 and verified 7 November 2026.
+- [x] [DONE] **SW-0002 · P0 · Audit current state** — Define a qualified website lead using observable criteria, not assumptions about willingness to pay. Definition and current-schema limitations recorded in Section 0 on 7 November 2026.
 - [ ] [TODO] **SW-0003 · P0 · Audit current state** — Define the primary conversion as a completed website enquiry with identifiable business context.
 - [ ] [TODO] **SW-0004 · P0 · Audit current state** — Define secondary conversions for preview views, preview CTA clicks, claim requests, contact-form sends, and repeat visits.
 - [ ] [TODO] **SW-0005 · P0 · Audit current state** — Separate website-design revenue metrics from future listing-subscription and booking revenue metrics.
