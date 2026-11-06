@@ -117,6 +117,25 @@ The `TRACK_EVENTS` allowlist and the live `analytics_events_event_check` constra
 
 No new analytics event, identifier, cookie, schema change, or tracking behaviour is introduced by this definition.
 
+### Revenue stream definitions — 7 November 2026
+
+Keep the current and future commercial streams separate. These are internal measurement rules, not approval to publish prices or launch a paid product.
+
+**Website services (current primary commercial stream).** The source of truth is `public.contact_messages`. Include a row when `topic = 'website'`, `page` is `preview` or `for-businesses`, or `service_package` is `launch`, `growth`, or `care`. An explicit `service_package = 'promotion'` always excludes the row from website-service totals, even if its page is `preview` or `for-businesses`. Count each saved row once. The admin summary reports:
+- Website-service enquiries: qualifying saved contact rows, whether or not a quote exists.
+- Quoted value and quote count: rows with payment status `quoted`, `awaiting_payment`, `partially_paid`, or `paid`; a quote is pipeline value, not cash received.
+- Cash received: `paid_amount_npr` for `partially_paid` and `paid` rows only.
+- Outstanding: `max(quote_amount_npr - paid_amount_npr, 0)` for those active quote statuses. A paid job means status `paid`, not merely a partial payment.
+- Fully refunded rows are excluded from current quote/cash totals. `contact_messages` has no `refunded_amount_npr` field, so partial refunds cannot be measured or reconciled. Do not label this metric net revenue until refund amounts can be recorded.
+
+**Sponsored placements (current separate stream).** `public.listing_promotions` is a time-limited, one-off campaign ledger, not a recurring subscription. Campaign quote value is not cash. Recorded campaign net cash is `paid_amount_npr - refunded_amount_npr`. `sponsored_click` and campaign opens are engagement, not revenue. A `contact_messages.service_package = 'promotion'` row is an enquiry only; the campaign and its quote/payment belong in `listing_promotions`. Do not record the same campaign payment in both ledgers. Prices, activation and selling remain owner-gated.
+
+**Future listing subscriptions.** No subscription table or recurring billing workflow exists. Report no listing-subscription revenue. If separately approved in the future, use a subscription/invoice ledger with a listing, plan and billing period plus billed, paid, refunded and status values. Do not reuse the one-off `listing_promotions` ledger.
+
+**Bookings.** Bookings remain deferred and there is no booking table or workflow. Report no booking revenue. If the booking launch gate is later satisfied, use a separate booking/settlement ledger for booking identity, fee or commission, payment, refund and settlement state.
+
+**Cross-stream reporting rule.** Keep website services, sponsored campaigns, listing subscriptions and bookings in separate totals. Never count quotes, clicks, unpaid campaigns or booking intent as cash. Any future combined cash figure must sum distinct recorded receipts after refunds and must not double-count a campaign across ledgers.
+
 ---
 
 ## 1. Non-negotiable rules
@@ -187,7 +206,7 @@ Never mark work [DONE] merely because code exists, a PR is merged, or a preview 
 
 - [x] [DONE] Private repository: eboxont-code/neighbourhood-guidebook.
 - [x] [DONE] Default branch is main at ee38ca0e978f0149ca10f5b2caadb33282729148; the commit message is “docs: record Bundle 7 reconciliation and passing quality gate”.
-- [x] [DONE] GitHub reports 27 branches and a 238-entry main tree. The open-issue query returned no open issues.
+- [x] [DONE] GitHub reports 30 branches and a 238-entry main tree; 16 open pull requests (all drafts) and 0 open issues were verified after PR #23 was opened.
 - [x] [DONE] Read AGENTS.md, README.md, roadmap.md, package.json, and .lovable/north-star/north-star.md. The repository tree contains one root AGENTS.md; roadmap.md directs all planning to this file.
 - [x] [DONE] The register contains every unique ID from SW-0001 through SW-1000. SW-0298 and SW-0299 are currently concatenated on one Markdown line; their IDs and descriptions remain present.
 - [x] [DONE] The Lovable north-star file was left unchanged; its blob SHA is 9d748d0f22dd60969680c61964f18ea4fe6900df.
@@ -196,7 +215,7 @@ Never mark work [DONE] merely because code exists, a PR is merged, or a preview 
 
 ### Open pull requests — read-only snapshot
 
-All 13 open pull requests are drafts. The latest observed GitHub Quality Gate push/PR runs for each listed head passed. Vercel status is recorded separately:
+All 16 open pull requests are drafts. The latest observed GitHub Quality Gate push/PR runs for the current task chain (#20-#23) passed. Vercel status is recorded separately:
 
 | PR | Branch → base | GitHub Quality Gate | Vercel status / dependency |
 |---:|---|---|---|
@@ -213,13 +232,15 @@ All 13 open pull requests are drafts. The latest observed GitHub Quality Gate pu
 | #18 | preview-location-reliability-20261107 → PR #17 branch | #42270631894 / #42270639047 passed | Vercel preview build rate-limited. |
 | #19 | preview-phone-verification-20261107 → PR #18 branch | #42279835329 / #42279844174 passed | Vercel preview build rate-limited. |
 | #20 | define-qualified-lead-20261107 → current main ee38ca0e | #42289004499 / #42289189951 (task commit) and #42289502496 / #42289510045 (plan-evidence follow-up) passed | Initial preview succeeded; latest preview build was rate-limited. No upgrade or manual deployment. |
+| #21 | define-primary-conversion-20261107 → PR #20 branch | #42296251126 / #42296258818 passed | Vercel preview build rate-limited; no upgrade or manual deployment. |
+| #22 | define-secondary-conversions-20261107 → PR #21 branch | #42304199699 / #42304480682 passed | Vercel preview build rate-limited; no upgrade or manual deployment. |
+| #23 | separate-revenue-streams-20261107 → PR #22 branch | #42311299208 / #42311352661 passed | Vercel preview status failed on the Hobby build-rate limit; no upgrade or manual deployment. |
 
-PR #7 is closed unmerged; PR #9 is merged. PRs #13–#19 form a dependent chain and must not be treated as independent current-main releases. PR #4 has a stale main base. PR #8 is stacked on the older Bundle 7 branch. No PR was merged, no branch was deleted or rewritten, and no force-push was made. The Vercel Hobby build-rate limit is not approval to upgrade.
+PR #7 is closed unmerged; PR #9 is merged. PRs #13–#19 form a dependent chain and must not be treated as independent current-main releases. PR #4 has a stale main base. PR #8 is stacked on the older Bundle 7 branch. No PR was merged during this run; no branch was deleted or rewritten, and no force-push was made. The Vercel Hobby build-rate limit is not approval to upgrade.
 
 ### Current branch inventory
 
 - main
-- sewa/define-qualified-lead-20261107
 - sewa/admin-password-recovery-production-redirect
 - sewa/analytics-listing-views-20261106
 - sewa/analytics-submission-guard-20261106
@@ -238,6 +259,9 @@ PR #7 is closed unmerged; PR #9 is merged. PRs #13–#19 form a dependent chain 
 - sewa/bundle-08-inbound-conversion
 - sewa/bundle-08-reconciled-main-20261106
 - sewa/bundle-09-proposal-composer
+- sewa/define-primary-conversion-20261107
+- sewa/define-qualified-lead-20261107
+- sewa/define-secondary-conversions-20261107
 - sewa/preview-business-name-20261107
 - sewa/preview-hours-trust-20261107
 - sewa/preview-location-fields-20261107
@@ -245,7 +269,7 @@ PR #7 is closed unmerged; PR #9 is merged. PRs #13–#19 form a dependent chain 
 - sewa/preview-no-hours-20261107
 - sewa/preview-phone-verification-20261107
 - sewa/preview-route-regression-20261107
-
+- sewa/separate-revenue-streams-20261107
 ### Production deployment and public route checks
 
 - Vercel project: neighbourhood-guidebook, project ID prj_zdxJhQFdQrH76wYIefxmaOVRLFx8, Hobby plan.
@@ -699,7 +723,8 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 | 9 | Use the funnel baseline to fix the largest conversion leak | BLOCKED — production has only 8 analytics events across 3 event types and no recorded enquiry submissions; insufficient evidence to identify a conversion leak |
 | 10 | Improve directory quality and coverage based on real user demand and lead value | BLOCKED — only 2 zero-result searches and no saved enquiries are present in the current production snapshot; the prospect CSV is also unavailable, so demand/lead-value prioritisation is not evidence-based yet |
 | 11 | Define secondary conversions for preview views, preview CTA clicks, claim requests, contact-form sends, and repeat visits | DONE 7 Nov 2026 — definitions and measurement limits recorded in Section 0 and verified against current code and the live event constraint |
-| 12 | Separate website-design revenue metrics from future listing-subscription and booking revenue metrics | IN PROGRESS — SW-0005; audit current revenue categorisation and define separate website-service, sponsored-placement, future subscription and deferred booking measures |
+| 12 | Separate website-design revenue metrics from future listing-subscription and booking revenue metrics | DONE 7 Nov 2026 — website-service totals now exclude promotion requests; current and future revenue streams and refund limits are defined and tested in PR #23 |
+| 13 | Record that directory traffic alone is not success unless it creates useful customer or business-owner outcomes | TODO — SW-0006 is the next independently actionable P0 register item; define outcomes without inventing numerical targets |
 
 ### Task 1 verification notes — 7 November 2026
 
@@ -765,21 +790,26 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 - Repeat visits are explicitly not measurable with the current anonymous event schema. No visitor identifier, cookie, or new tracking was added.
 - Production inspection was read-only; no code, schema, data, settings, or deployment changed. Additional spend was $0.
 
-### Current task — SW-0005
+### Completed task — SW-0005
 
 **Separate website-design revenue metrics from future listing-subscription and booking revenue metrics.**  
-**Status: IN PROGRESS.**
+**Status: DONE 7 November 2026 — category boundaries are documented, the current website-service summary is corrected, bilingual labels and regression tests are updated, and GitHub Quality Gate passed.**
 
-Intended result: make the website-service revenue summary exclude sponsored-placement requests, include explicit website-topic enquiries, and document separate source-of-truth and cash rules for current sponsored campaigns, future listing subscriptions, and deferred bookings.
+- The code audit found that the former `summariseRevenue` filter included every non-empty service package and all `preview`/`for-businesses` rows. That could mix `promotion` requests into website-service totals. It also omitted explicit `topic = 'website'` enquiries submitted from the generic contact page.
+- `src/lib/commerce.ts` now includes explicit website-topic rows, `preview` and `for-businesses` sources, and the `launch`, `growth`, and `care` packages. It explicitly excludes `service_package = 'promotion'`.
+- `src/lib/i18n.tsx` now labels the English and Nepali admin summary as website-service revenue and states that sponsored-placement campaigns are separate. `src/test/commerce.test.ts` covers website-topic inclusion, promotion exclusion on both source pages, and bilingual scope copy.
+- Section 0 now defines the current `contact_messages` website-service ledger, the separate one-off `listing_promotions` campaign ledger, and the absence of a listing-subscription or booking ledger. Quotes remain pipeline value; campaign clicks are engagement, not revenue. The current contact-message schema has no refund-amount column, so partial refunds cannot be measured.
+- GitHub Quality Gate push run [#42311299208](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42311299208) and PR run [#42311352661](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42311352661) both passed TypeScript validation, ESLint, unit/component tests, production build, and disposable PostgreSQL migration/security tests. The task code commits are `1f9c94eb6cddee4589c08c3aaee68739d77b14b4`, `a91ef257987b41681b4b805c8fdf672d3327c780`, and `e82bcdb003d1ab3de65e9e2fc80990b0d29a04a8`.
+- Draft PR [#23](https://github.com/eboxont-code/neighbourhood-guidebook/pull/23) is stacked on PR #22 and remains unmerged. The Vercel preview check is blocked by the Hobby build-rate limit; no upgrade or manual deployment was attempted. Production remains READY on main commit `ee38ca0e978f0149ca10f5b2caadb33282729148`, with the `sewa.boxont.com` alias.
+- Read-only production SQL snapshot: 52 published listings; 0 `contact_messages`; 0 `listing_promotions`; 8 analytics events (5 `preview_view`, 1 `claim_click`, 2 `search_zero`); 0 business claims, submissions, and correction reports. No subscription or booking table exists, and no website-service or sponsored-campaign revenue is recorded in these ledgers.
+- Supabase production project `zvbavpcsyvibvpkxjzkn` is ACTIVE_HEALTHY. Its 8 recorded migrations include three version-label differences from the repository filenames for atomic form rate limits, service revenue pipeline, and listing promotions. No production migration was run. Security Advisor still reports: `form_rate_log` RLS enabled without a policy (INFO), `has_role` SECURITY DEFINER callable by authenticated users (WARN), and leaked-password protection disabled (WARN). No production settings were changed.
+- GitHub snapshot after opening PR #23: 30 branches, 16 open draft PRs, 0 open issues. Main remains `ee38ca0e978f0149ca10f5b2caadb33282729148`; its Quality Gate run [#42217060656](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42217060656) passed. The runtime has no local repository checkout, so no local working-tree status is claimed.
+- No production rows, migrations, settings, secrets, DNS, billing, pricing, or deployment were changed. No outreach was sent. Additional spend: $0.
 
-Acceptance criteria:
-- Website build, redesign and care enquiries are measured from the existing contact-message ledger; sponsored-placement requests are excluded from website-service totals.
-- Quotes remain pipeline value, not cash received; received cash and outstanding balances retain their existing status rules.
-- Sponsored placements remain a separate, time-limited campaign ledger with paid cash less recorded refunds; clicks are not revenue and a promotion enquiry is not a paid campaign.
-- No listing-subscription or booking revenue is claimed while no corresponding ledger/workflow exists.
-- English and Nepali admin labels describe the website-service scope accurately.
-- Unit tests cover website-topic inclusion and promotion exclusion; GitHub Quality Gate verifies the full change.
-- Production database, settings and deployment remain read-only/unchanged; additional spend remains $0.
+### Next eligible task
+
+**SW-0006 — Record that directory traffic alone is not success unless it creates useful customer or business-owner outcomes.**  
+This is an independently actionable definition task. It can distinguish visitor activity from meaningful customer and business-owner outcomes without inventing targets or requiring owner input.
 
 
 ---
@@ -823,7 +853,7 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [x] [DONE] **SW-0002 · P0 · Audit current state** — Define a qualified website lead using observable criteria, not assumptions about willingness to pay. Definition and current-schema limitations recorded in Section 0 on 7 November 2026.
 - [x] [DONE] **SW-0003 · P0 · Audit current state** — Define the primary conversion as a completed website enquiry with identifiable business context. Definition and source-of-truth rules recorded in Section 0 on 7 November 2026.
 - [x] [DONE] **SW-0004 · P0 · Audit current state** — Define secondary conversions for preview views, preview CTA clicks, claim requests, contact-form sends, and repeat visits. Definitions and measurement limits recorded in Section 0 on 7 November 2026.
-- [ ] [IN PROGRESS] **SW-0005 · P0 · Audit current state** — Separate website-design revenue metrics from future listing-subscription and booking revenue metrics.
+- [x] [DONE] **SW-0005 · P0 · Audit current state** — Separate website-design revenue metrics from future listing-subscription and booking revenue metrics. Website-service categorisation, sponsored-placement separation, and future subscription/booking boundaries implemented and verified on 7 November 2026 in draft PR #23.
 - [ ] [TODO] **SW-0006 · P0 · Audit current state** — Record that directory traffic alone is not success unless it creates useful customer or business-owner outcomes.
 - [ ] [TODO] **SW-0007 · P0 · Audit current state** — Record that 1,000 listings is a conditional supply milestone, not the north-star KPI.
 - [ ] [TODO] **SW-0008 · P0 · Audit current state** — Set an initial decision window for evaluating the current funnel before redesigning it again.
