@@ -102,6 +102,21 @@ Do **not** count preview views, preview CTA clicks, form starts, validation fail
 
 The `enquiry_submit` analytics event is emitted after a successful contact insert for website-intent forms, but its delivery is best-effort and can be skipped by Do Not Track or a network failure. Use the persisted contact row as the source of truth; use the event only for funnel diagnostics. `preview_enquiry_click` is an earlier step. `service_quote_submit` may be emitted for the same saved service form and must not be added as a second primary conversion.
 
+### Secondary conversion definitions — 7 November 2026
+
+Secondary conversions describe useful funnel engagement, but they are not additional primary website-enquiry conversions. Count each underlying event or saved record once and keep clicks, views, and completed submissions separate.
+
+- **Listing-to-preview click — `preview_click`:** a click from a listing's owner card into its website preview. This is an entry step, not proof that the preview loaded.
+- **Preview view — `preview_view`:** one event emitted when the shared preview component mounts for a listing. Count raw event rows by listing and date; do not call them unique visitors or unique sessions. Reloads and remounts can create another event.
+- **Preview enquiry CTA click — `preview_enquiry_click`:** a click on the preview's owner enquiry CTA. It records intent to open the contact form, not a form start, saved enquiry, or lead.
+- **Claim request:** one successfully inserted `public.business_claims` row, counted by its row ID. `claim_click` means the claim route was opened; `claim_submit` is emitted only after a successful insert. The analytics event is best-effort, so the saved claim row is authoritative.
+- **Non-primary contact-form send:** one successfully inserted `public.contact_messages` row that does not meet the primary website-enquiry definition above, counted by its row ID. This excludes correction reports, business submissions, and claim requests because they have separate tables. The generic contact form has no dedicated `contact_submit` analytics event. Do not infer a send from a click, validation state, failed insert, rate limit, or honeypot-only success screen. A qualifying website enquiry remains primary and must not also be counted as a secondary contact send.
+- **Repeat visit:** conceptually, a later visit by the same visitor to a listing or preview after their first visit. This is **not currently measurable**: `analytics_events` stores event, listing slug, query, language, path, and timestamp, but no visitor or session identifier. The form `client_key` is a per-tab rate-limit key, not an analytics identity. Do not infer repeat visitors from repeated `preview_view` rows, and do not add cookies or identifiers without a separate privacy review and explicit approval.
+
+The `TRACK_EVENTS` allowlist and the live `analytics_events_event_check` constraint both contain the current 18 event names, including `preview_click`, `preview_view`, `preview_enquiry_click`, `claim_click`, and `claim_submit`; neither contains `contact_submit` or `repeat_visit`. `enquiry_submit` is the best-effort analytics event for a successfully saved website-intent contact form, while `service_quote_submit` may describe the same saved row. Neither is an extra conversion to add to the primary or secondary saved-row totals. Analytics is asynchronous, can fail silently, and is suppressed by Do Not Track; saved `contact_messages` and `business_claims` rows remain authoritative for completed submissions.
+
+No new analytics event, identifier, cookie, schema change, or tracking behaviour is introduced by this definition.
+
 ---
 
 ## 1. Non-negotiable rules
@@ -683,7 +698,8 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 | 8 | Isolate and review Proposal Composer after its dependencies | BLOCKED — depends on the released Bundle 7 and Bundle 8 sequence |
 | 9 | Use the funnel baseline to fix the largest conversion leak | BLOCKED — production has only 8 analytics events across 3 event types and no recorded enquiry submissions; insufficient evidence to identify a conversion leak |
 | 10 | Improve directory quality and coverage based on real user demand and lead value | BLOCKED — only 2 zero-result searches and no saved enquiries are present in the current production snapshot; the prospect CSV is also unavailable, so demand/lead-value prioritisation is not evidence-based yet |
-| 11 | Define secondary conversions for preview views, preview CTA clicks, claim requests, contact-form sends, and repeat visits | TODO — SW-0004 is the next independently actionable register item; keep each event distinct from the primary saved website enquiry |
+| 11 | Define secondary conversions for preview views, preview CTA clicks, claim requests, contact-form sends, and repeat visits | DONE 7 Nov 2026 — definitions and measurement limits recorded in Section 0 and verified against current code and the live event constraint |
+| 12 | Separate website-design revenue metrics from future listing-subscription and booking revenue metrics | TODO — SW-0005 is the next independently actionable P0 register item; preserve the paid-placement and booking launch gates |
 
 ### Task 1 verification notes — 7 November 2026
 
@@ -709,6 +725,18 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 - Vercel preview status is blocked by the Hobby daily deployment limit (`api-deployments-free-per-day`); no manual deployment or upgrade was attempted.
 - No application code, schema, production data, Auth settings, pricing, outreach, or deployment was changed. Additional spend: $0.
 
+### Task 4 secondary conversion definitions — 7 November 2026
+
+- Audited `src/lib/track.ts`, the listing owner actions, shared preview route, `ClaimForm`, `ContactForm`, and the production analytics schema.
+- `preview_click` records listing-to-preview navigation; `preview_view` is emitted on preview component mount; `preview_enquiry_click` records the preview CTA click. These are separate funnel steps and none is a saved enquiry.
+- `claim_click` records opening the claim route. `claim_submit` is emitted only after `business_claims` insert success; the saved row, not the best-effort event, is the claim-request source of truth.
+- `ContactForm` persists `contact_messages` rows. `enquiry_submit` is emitted only for website-intent forms; generic non-primary contact sends have no dedicated analytics event and must be counted from saved rows excluding rows already counted as primary website enquiries. `service_quote_submit` can accompany the same saved row and is not an additional conversion.
+- The 18-event `TRACK_EVENTS` allowlist matches the live `analytics_events_event_check` constraint. The analytics table has no visitor/session identifier; repeat visits cannot be deduplicated. The form `client_key` is a per-tab rate-limit key and is not reused for analytics.
+- Read-only production snapshot on 7 November 2026: 52 published listings; 8 analytics rows (5 `preview_view`, 1 `claim_click`, 2 `search_zero`); 0 `contact_messages`; 0 `business_claims`. These are observed stored rows only, not unique visitors or proof of untracked activity.
+- Task commit `e1f17f1919f88e589384e7dd76366473f44278c7` is in draft PR [#22](https://github.com/eboxont-code/neighbourhood-guidebook/pull/22), stacked on PR #21 and PR #20. GitHub Quality Gate run [#42304199699](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42304199699) passed TypeScript validation, ESLint, unit/component tests, production build, and disposable PostgreSQL migration/security checks.
+- Vercel preview deployment [`dpl_F29Snsd7xDiPYhZAbrFxYcY4hFwN`](https://vercel.com/boxont/neighbourhood-guidebook/F29Snsd7xDiPYhZAbrFxYcY4hFwN) is READY on the same task commit. This is a preview only; production remains on main `ee38ca0e978f0149ca10f5b2caadb33282729148`.
+- No application code, event allowlist, schema, production data, migration, Auth setting, production deployment, pricing, or outreach changed. All production/database queries were SELECT-only; additional spend was $0.
+
 ### Bundle 7 current state — 7 November 2026
 
 - Current-main replacement PR #10 is open as a draft from sewa/bundle-07-reconciled-main-20261106 to main at ee38ca0e. Its latest GitHub push run #42218893839 and PR run #42218901255 passed.
@@ -726,10 +754,21 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 - The definition remains distinct from SW-0002 manual qualification and from quote, won-job, and cash metrics.
 - No application or production changes were needed. Production database inspection was read-only; additional spend was $0.
 
+### Completed task — SW-0004
+
+**Define secondary conversions for preview views, preview CTA clicks, claim requests, contact-form sends, and repeat visits.**  
+**Status: DONE — definitions, source-of-truth rules, and current privacy/measurement limits are recorded in Section 0 and the 1,000-task register.**
+
+- Preview navigation, preview views, preview CTA clicks, claim-route clicks, and successful claim submissions are distinct events.
+- Completed claim and contact submissions are counted from saved database rows; best-effort analytics events are diagnostics, not the source of truth.
+- Non-primary contact rows are separated from primary website enquiries; the same saved row or service-quote event is never double-counted.
+- Repeat visits are explicitly not measurable with the current anonymous event schema. No visitor identifier, cookie, or new tracking was added.
+- Production inspection was read-only; no code, schema, data, settings, or deployment changed. Additional spend was $0.
+
 ### Next eligible task
 
-**SW-0004 — Define secondary conversions for preview views, preview CTA clicks, claim requests, contact-form sends, and repeat visits.**  
-This is independently documentable from the existing event and route implementation. It does not require a production submission, owner credentials, or a production database write.
+**SW-0005 — Separate website-design revenue metrics from future listing-subscription and booking revenue metrics.**  
+This can be defined from the existing revenue-first plan without publishing prices, activating paid placements, or building deferred booking functionality.
 
 
 ---
@@ -772,7 +811,7 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [x] [DONE] **SW-0001 · P0 · Audit current state** — Write a one-sentence north-star goal: generate qualified website-design opportunities for Boxont from Sewa. Already recorded in Section 0 and verified 7 November 2026.
 - [x] [DONE] **SW-0002 · P0 · Audit current state** — Define a qualified website lead using observable criteria, not assumptions about willingness to pay. Definition and current-schema limitations recorded in Section 0 on 7 November 2026.
 - [x] [DONE] **SW-0003 · P0 · Audit current state** — Define the primary conversion as a completed website enquiry with identifiable business context. Definition and source-of-truth rules recorded in Section 0 on 7 November 2026.
-- [ ] [TODO] **SW-0004 · P0 · Audit current state** — Define secondary conversions for preview views, preview CTA clicks, claim requests, contact-form sends, and repeat visits.
+- [x] [DONE] **SW-0004 · P0 · Audit current state** — Define secondary conversions for preview views, preview CTA clicks, claim requests, contact-form sends, and repeat visits. Definitions and measurement limits recorded in Section 0 on 7 November 2026.
 - [ ] [TODO] **SW-0005 · P0 · Audit current state** — Separate website-design revenue metrics from future listing-subscription and booking revenue metrics.
 - [ ] [TODO] **SW-0006 · P0 · Audit current state** — Record that directory traffic alone is not success unless it creates useful customer or business-owner outcomes.
 - [ ] [TODO] **SW-0007 · P0 · Audit current state** — Record that 1,000 listings is a conditional supply milestone, not the north-star KPI.
