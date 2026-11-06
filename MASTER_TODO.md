@@ -701,7 +701,7 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 ### Repository and production refresh — 7 November 2026
 
 - `main` remains `ee38ca0e978f0149ca10f5b2caadb33282729148`; Quality Gate run #337 passed. The branch is unprotected and required status checks are disabled; this was recorded, not changed.
-- Five open draft PRs: #4 (older Bundle 4), #8 (Bundle 8), #10 (current-main Bundle 7), #11 (current-main Bundle 4 port), and #12 (form duplicate-write guard). PR #12 targets `main` at `ee38ca0e` and now heads `e7999adbc85798703a3be4ccec4a9164bd6b15f4` after adding SW-0088 validation-guidance tests; its new CI and preview are pending.
+- Five open draft PRs: #4 (older Bundle 4), #8 (Bundle 8), #10 (current-main Bundle 7), #11 (current-main Bundle 4 port), and #12 (form duplicate-write guard). PR #12 targets `main` at `ee38ca0e` and now heads `6a4e27eea252852589e7b9f601839e9ab6577abf` after adding SW-0091 preview-attribution coverage; its new CI and preview are pending.
 - Vercel Production deployment `dpl_Gou24q64tcmGASESDmvqbxzrWpP7` is READY on `main` at `ee38ca0e`; `sewa.boxont.com` is attached. PR #12 preview `dpl_D6apeuQqZfM1mf8HWS7W4sHGc88u` is READY and is not a Production deployment.
 - Supabase project `zvbavpcsyvibvpkxjzkn` (`neighbourhood-guidebook`) is ACTIVE_HEALTHY. Remote migration history has 8 entries; the first five match local filenames, while the last three remote versions (`20261104111910`, `20261104111922`, `20261104111936`) differ from local main filenames (`20261102130000`, `20261103114000`, `20261104100000`). No migration or repair was attempted. The Vercel environment-to-project binding was not re-derived from encrypted environment values in this run.
 - Read-only counts: 52 published listings; 0 contact messages; 0 business claims; 0 business submissions; 0 correction reports; 5 analytics events; 0 listing promotions; 3 form-rate rows; 1 user role. `business_sales_prospects` and `business_sales_activities` do not exist in this database.
@@ -761,15 +761,30 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 - Pull-request Quality Gate #395 passed TypeScript, lint, unit/component tests, production build and disposable PostgreSQL migration/security tests. The preview for `eb37ba7` is READY and is not Production.
 - All Supabase calls are mocked. No live customer rows or production settings were changed. Full browser/database persistence remains blocked under Task 1.
 
-### Current task — SW-0088
+### Previous task — SW-0088
 
-**Status: IN PROGRESS — verify form validation explains which required field needs attention.**
+**Status: REVIEW — five field-validation guidance tests are covered by the passing Quality Gate.** Runs #398 (push) and #399 (pull request) both passed on head `bb8ed71fb655a9c19beffa0af05e0dba80e31bc3`.
 
-- Audited the existing validation path before changing anything. The forms use Zod schemas, map field-level issues through `errorsFrom`, render the translated field error with `role="alert"`, set `aria-invalid` and `aria-describedby`, and focus the first invalid field where the component already implements focus handling.
+- Audited the existing validation path before changing anything. The forms use Zod schemas, map field-level issues through `errorsFrom`, render translated field errors with `role="alert"`, set `aria-invalid` and `aria-describedby`, and focus the first invalid field where the component already implements focus handling.
 - Added five component tests for preview enquiry, For Businesses topic selection, business claim, correction report and new-business submission. They assert the relevant field message and invalid state; where supported, they also assert focus moves to the first invalid control. They verify no Supabase insert occurs for invalid input.
-- Test commit: `e7999adbc85798703a3be4ccec4a9164bd6b15f4`. CI and the matching preview are pending.
-- No validation rules or business eligibility rules were changed; tests exercise the existing behaviour only.
-- Acceptance: the five field-guidance tests and full Quality Gate pass. Live form persistence remains separately blocked under Task 1.
+- Test commit: `e7999adbc85798703a3be4ccec4a9164bd6b15f4`; documentation commit: `bb8ed71fb655a9c19beffa0af05e0dba80e31bc3`.
+- Runs #398 and #399 passed TypeScript, ESLint, all unit/component tests, production build and disposable PostgreSQL migration/security checks. The preview for `bb8ed71` is READY and is not Production.
+- No validation rules or business eligibility rules were changed. Real browser and live persistence checks remain separate.
+
+### Blocked tasks skipped in priority order
+
+- **SW-0089 — BLOCKED:** the task requires real keyboard-only navigation on desktop and a phone-sized/mobile browser. This run has no interactive browser/device session; jsdom component tests cannot prove actual browser tab order, mobile virtual-keyboard behaviour or device-level focus. No owner manual steps requested.
+- **SW-0090 — BLOCKED:** the public code renders business listing phone values from `b.phone` and collects a visitor's own phone in forms; no operator/owner phone field or hard-coded operator number was found in the inspected public components/routes. The owner-private number itself is not identified in an approved source, so it cannot be compared against public listing data without inventing a sensitive fact. No owner manual steps requested.
+
+### Current task — SW-0091
+
+**Status: IN PROGRESS — retain the source route and business slug when a lead comes from a preview.**
+
+- Audited the route chain: the preview CTA passes `from=preview`, the listing slug and business name to `/contact`; the contact route validates those search values and passes them to `ContactForm`; `ContactForm` persists `page="preview"` and `source_listing_slug` with the lead.
+- Added an assertion to the preview enquiry component test that the Supabase insert payload contains the preview source, business name and exact listing slug.
+- Test commit: `6a4e27eea252852589e7b9f601839e9ab6577abf`. CI and the matching preview are pending.
+- Supabase calls remain mocked; no live customer records or Production settings were changed.
+- Acceptance: the attribution assertion and full Quality Gate pass. A browser-to-database live journey remains blocked under Task 1.
 ---
 
 ## 10. Instruction for every future AI session
@@ -906,10 +921,10 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [REVIEW] **SW-0085 · P0 · Audit current state** — Verify each form creates exactly one database lead for one successful submission. Evidence: six same-tick duplicate-submit component tests pass on draft PR #12; runs #386 (push) and #387 (PR) passed on head `8a3faa1e83522d1b834dad5e2ea43ad862415af9`. Live persistence remains blocked pending an authorised safe test database/session.
 - [ ] [REVIEW] **SW-0086 · P0 · Audit current state** — Verify the user receives a clear success state after a saved submission. Evidence: six mocked-Supabase component tests verify accessible success status and form replacement for preview, For Businesses, general contact, claim, correction and new-business flows; Quality Gate runs #390/#391 passed. Live persistence remains blocked under Task 1.
 - [ ] [REVIEW] **SW-0087 · P0 · Audit current state** — Verify a failed submission shows a useful retry message without losing typed values. Evidence: six mocked-Supabase component tests cover returned errors/rejected requests across all public form flows, accessible alerts, retained fields, enabled retry and a successful second attempt; Quality Gate #395 passed. Live persistence remains blocked under Task 1.
-- [ ] [IN PROGRESS] **SW-0088 · P0 · Audit current state** — Verify form validation explains which required field needs attention. Evidence pending: five component tests added for preview, For Businesses, claim, correction and new-business forms; assert field-specific messages, invalid state, focus where supported and no insert; CI pending.
-- [ ] [TODO] **SW-0089 · P0 · Audit current state** — Verify the form works with keyboard-only interaction on desktop and mobile.
-- [ ] [TODO] **SW-0090 · P0 · Audit current state** — Verify the form does not publish the owner's private phone number.
-- [ ] [TODO] **SW-0091 · P0 · Audit current state** — Retain the source route and business slug when a lead comes from a preview.
+- [ ] [REVIEW] **SW-0088 · P0 · Audit current state** — Verify form validation explains which required field needs attention. Evidence: five component tests verify field-specific messages, invalid state, first-field focus where supported and no insert; Quality Gate runs #398/#399 passed.
+- [ ] [BLOCKED] **SW-0089 · P0 · Audit current state** — Verify the form works with keyboard-only interaction on desktop and mobile. Blocker: no interactive desktop/mobile browser or device session is available; jsdom cannot establish real tab order or mobile keyboard/focus behaviour.
+- [ ] [BLOCKED] **SW-0090 · P0 · Audit current state** — Verify the form does not publish the owner's private phone number. Blocker: no approved source identifies the owner's private number for comparison; public listing phone values are business data and must not be guessed or treated as the owner's number.
+- [ ] [IN PROGRESS] **SW-0091 · P0 · Audit current state** — Retain the source route and business slug when a lead comes from a preview. Evidence pending: route chain passes `from=preview`, business name and listing slug to ContactForm; a payload assertion has been added; CI pending.
 - [ ] [TODO] **SW-0092 · P0 · Audit current state** — Retain the originating listing when a lead comes from a claim button.
 - [ ] [TODO] **SW-0093 · P0 · Audit current state** — Retain the form intent when a lead comes from the For Businesses page.
 - [ ] [TODO] **SW-0094 · P0 · Audit current state** — Set a default source only when the source genuinely cannot be identified.
