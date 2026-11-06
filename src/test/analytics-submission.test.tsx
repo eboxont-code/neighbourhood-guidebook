@@ -576,3 +576,43 @@ describe("For Businesses enquiry intent", () => {
     }));
   });
 });
+
+describe("contact source fallback", () => {
+  it("uses the listing source when a listing is known and no page source is supplied", async () => {
+    insertMock.mockResolvedValue({ error: null });
+    const { container } = render(
+      <ContactForm business="Aavaran" listing="aavaran-durbar-marg" />,
+    );
+    change(container, "#name", "Test Visitor");
+    change(container, "#message", "I have a question about this listing.");
+    const form = container.querySelector("form");
+    if (!form) throw new Error("Missing listing contact form");
+
+    fireEvent.submit(form);
+
+    await waitFor(() => expect(container.querySelector('[role="status"]')?.textContent).toContain("thanksContact"));
+    expect(insertMock).toHaveBeenCalledTimes(1);
+    expect(insertMock).toHaveBeenCalledWith(expect.objectContaining({
+      page: "listing",
+      source_listing_slug: "aavaran-durbar-marg",
+    }));
+  });
+
+  it("uses the generic contact source only when neither a page nor listing identifies the origin", async () => {
+    insertMock.mockResolvedValue({ error: null });
+    const { container } = render(<ContactForm business="" listing="" />);
+    change(container, "#name", "Test Visitor");
+    change(container, "#message", "I have a general question.");
+    const form = container.querySelector("form");
+    if (!form) throw new Error("Missing general contact form");
+
+    fireEvent.submit(form);
+
+    await waitFor(() => expect(container.querySelector('[role="status"]')?.textContent).toContain("thanksContact"));
+    expect(insertMock).toHaveBeenCalledTimes(1);
+    expect(insertMock).toHaveBeenCalledWith(expect.objectContaining({
+      page: "contact",
+      source_listing_slug: null,
+    }));
+  });
+});
