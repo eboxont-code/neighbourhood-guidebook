@@ -233,7 +233,7 @@ All 16 open pull requests are drafts. The latest observed GitHub Quality Gate pu
 | #19 | preview-phone-verification-20261107 → PR #18 branch | #42279835329 / #42279844174 passed | Vercel preview build rate-limited. |
 | #20 | define-qualified-lead-20261107 → current main ee38ca0e | #42289004499 / #42289189951 (task commit) and #42289502496 / #42289510045 (plan-evidence follow-up) passed | Initial preview succeeded; latest preview build was rate-limited. No upgrade or manual deployment. |
 | #21 | define-primary-conversion-20261107 → PR #20 branch | #42296251126 / #42296258818 passed | Vercel preview build rate-limited; no upgrade or manual deployment. |
-| #22 | define-secondary-conversions-20261107 → PR #21 branch | #42304199699 / #42304480682 passed | Vercel preview build rate-limited; no upgrade or manual deployment. |
+| #22 | define-secondary-conversions-20261107 → PR #21 branch | #42304472918 / #42304480682 passed | Vercel preview build rate-limited; no upgrade or manual deployment. |
 | #23 | separate-revenue-streams-20261107 → PR #22 branch | #42311299208 / #42311352661 passed | Vercel preview status failed on the Hobby build-rate limit; no upgrade or manual deployment. |
 
 PR #7 is closed unmerged; PR #9 is merged. PRs #13–#19 form a dependent chain and must not be treated as independent current-main releases. PR #4 has a stale main base. PR #8 is stacked on the older Bundle 7 branch. No PR was merged during this run; no branch was deleted or rewritten, and no force-push was made. The Vercel Hobby build-rate limit is not approval to upgrade.
@@ -270,6 +270,7 @@ PR #7 is closed unmerged; PR #9 is merged. PRs #13–#19 form a dependent chain 
 - sewa/preview-phone-verification-20261107
 - sewa/preview-route-regression-20261107
 - sewa/separate-revenue-streams-20261107
+
 ### Production deployment and public route checks
 
 - Vercel project: neighbourhood-guidebook, project ID prj_zdxJhQFdQrH76wYIefxmaOVRLFx8, Hobby plan.
