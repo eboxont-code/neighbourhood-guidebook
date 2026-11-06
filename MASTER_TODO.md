@@ -161,7 +161,7 @@ Never mark work [DONE] merely because code exists, a PR is merged, or a preview 
 - [x] [DONE] Read the full master plan/register, README.md and AGENTS.md. Repository rules confirm anonymous first-party analytics, no personal data or exact location in analytics, and migration parity requirements.
 - [x] [DONE] The register contains IDs SW-0001 through SW-1000. The main-branch SW-0298 and SW-0299 entries had been concatenated onto one line; this branch restores the missing line break without changing either task description.
 - [x] [DONE] Current branch inventory: 19 branches, listed below. No branch was deleted or rewritten.
-- [x] [DONE] Lovable north-star file .lovable/north-star/north-star.md was not changed; its main-branch blob SHA remains 9d748d0f7e1c09d1e77d6a6f5b0b7a63e22c6d43.
+- [x] [DONE] Lovable north-star file .lovable/north-star/north-star.md was not changed; its main-branch blob SHA remains 9d748d0f22dd60969680c61964f18ea4fe6900df.
 - [ ] [BLOCKED] Current branch-protection settings could not be read: GitHub returned HTTP 403 (resource not accessible by this integration). Do not assume the previous protection snapshot is current.
 
 ### Current open pull requests
