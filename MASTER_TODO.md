@@ -701,7 +701,7 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 ### Repository and production refresh — 7 November 2026
 
 - `main` remains `ee38ca0e978f0149ca10f5b2caadb33282729148`; Quality Gate run #337 passed. The branch is unprotected and required status checks are disabled; this was recorded, not changed.
-- Five open draft PRs: #4 (older Bundle 4), #8 (Bundle 8), #10 (current-main Bundle 7), #11 (current-main Bundle 4 port), and #12 (form duplicate-write guard). PR #12 targets `main` at `ee38ca0e` and now heads `c302531117106d4e87cb30db80f280a22bc57d2b` after adding SW-0092 claim-attribution coverage; its new CI and preview are pending.
+- Five open draft PRs: #4 (older Bundle 4), #8 (Bundle 8), #10 (current-main Bundle 7), #11 (current-main Bundle 4 port), and #12 (form duplicate-write guard). PR #12 targets `main` at `ee38ca0e` and now heads `05638e25e0b7e5c0e466e90d136273901124d9e7` after adding SW-0093 For Businesses intent coverage; its new CI and preview are pending.
 - Vercel Production deployment `dpl_Gou24q64tcmGASESDmvqbxzrWpP7` is READY on `main` at `ee38ca0e`; `sewa.boxont.com` is attached. PR #12 preview `dpl_D6apeuQqZfM1mf8HWS7W4sHGc88u` is READY and is not a Production deployment.
 - Supabase project `zvbavpcsyvibvpkxjzkn` (`neighbourhood-guidebook`) is ACTIVE_HEALTHY. Remote migration history has 8 entries; the first five match local filenames, while the last three remote versions (`20261104111910`, `20261104111922`, `20261104111936`) differ from local main filenames (`20261102130000`, `20261103114000`, `20261104100000`). No migration or repair was attempted. The Vercel environment-to-project binding was not re-derived from encrypted environment values in this run.
 - Read-only counts: 52 published listings; 0 contact messages; 0 business claims; 0 business submissions; 0 correction reports; 5 analytics events; 0 listing promotions; 3 form-rate rows; 1 user role. `business_sales_prospects` and `business_sales_activities` do not exist in this database.
@@ -786,15 +786,25 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 - Runs #402/#403 passed TypeScript, ESLint, unit/component tests, production build and disposable PostgreSQL migration/security checks. The `7b86acfb` preview is READY and is not Production.
 - Live browser-to-database persistence remains blocked under Task 1; tests use mocked Supabase and did not create customer records.
 
-### Current task — SW-0092
+### Previous task — SW-0092
 
-**Status: IN PROGRESS — retain the originating listing when a lead comes from a claim button.**
+**Status: REVIEW — claim-origin listing context is verified at route and component-payload level on draft PR #12.** Quality Gate runs #410 (push) and #411 (pull request) both passed on branch head `969e383ded9f71008454aa5c0ccaa494ca2729d0`.
 
 - Audited the route chain: the listing page's claim CTA passes `search={{ listing: b.slug }}` to `/claim`; the claim route validates the search value and passes it to `ClaimForm`; `ClaimForm` resolves the business and writes both `listing_slug` and `listing_id` to `business_claims`.
-- Added an assertion to the claim component regression test that the insert payload retains listing slug `aavaran-durbar-marg` and directory ID `b1`.
-- Test commit: `c302531117106d4e87cb30db80f280a22bc57d2b`. CI and the matching preview are pending.
+- Added a component assertion that the claim insert payload retains listing slug `aavaran-durbar-marg` and directory ID `b1`.
+- Test commit: `c302531117106d4e87cb30db80f280a22bc57d2b`. The branch was subsequently rechecked after the scoped cleanup commit `969e383ded9f71008454aa5c0ccaa494ca2729d0`.
+- Runs #410/#411 passed TypeScript, ESLint, unit/component tests, production build and disposable PostgreSQL migration/security checks. The `969e383` preview is READY and is not Production.
+- Live browser-to-database persistence remains blocked under Task 1; tests use mocked Supabase and did not create customer records.
+
+### Current task — SW-0093
+
+**Status: IN PROGRESS — retain the form intent when a lead comes from the For Businesses page.**
+
+- Audited the route/component contract. The For Businesses route passes `page="for-businesses"`, enables service options and forwards the selected service package to `ContactForm`. The form persists the page, topic and service-package fields in the contact lead.
+- Added a component test using the route's equivalent props with the `growth` package selected. It asserts the saved payload retains `page="for-businesses"`, `service_package="growth"`, and the expected nullable topic/budget fields.
+- Test commit: `05638e25e0b7e5c0e466e90d136273901124d9e7`. CI and the matching preview are pending.
 - Supabase calls are mocked; no Production records or settings were changed.
-- Acceptance: the claim-attribution assertion and full Quality Gate pass. Live browser-to-database persistence remains blocked under Task 1.
+- Acceptance: the intent-payload assertion and full Quality Gate pass. Live browser-to-database persistence remains blocked under Task 1.
 ---
 
 ## 10. Instruction for every future AI session
@@ -935,8 +945,8 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [BLOCKED] **SW-0089 · P0 · Audit current state** — Verify the form works with keyboard-only interaction on desktop and mobile. Blocker: no interactive desktop/mobile browser or device session is available; jsdom cannot establish real tab order or mobile keyboard/focus behaviour.
 - [ ] [BLOCKED] **SW-0090 · P0 · Audit current state** — Verify the form does not publish the owner's private phone number. Blocker: no approved source identifies the owner's private number for comparison; public listing phone values are business data and must not be guessed or treated as the owner's number.
 - [ ] [REVIEW] **SW-0091 · P0 · Audit current state** — Retain the source route and business slug when a lead comes from a preview. Evidence: route chain passes `from=preview`, business name and listing slug to ContactForm; payload assertion verifies `page="preview"` and `source_listing_slug`; Quality Gate runs #402/#403 passed. Live persistence remains blocked under Task 1.
-- [ ] [IN PROGRESS] **SW-0092 · P0 · Audit current state** — Retain the originating listing when a lead comes from a claim button. Evidence pending: claim route passes listing slug to ClaimForm; payload assertion verifies listing slug and listing ID; CI pending.
-- [ ] [TODO] **SW-0093 · P0 · Audit current state** — Retain the form intent when a lead comes from the For Businesses page.
+- [ ] [REVIEW] **SW-0092 · P0 · Audit current state** — Retain the originating listing when a lead comes from a claim button. Evidence: listing CTA passes the slug to `/claim`, ClaimForm writes both `listing_slug` and `listing_id`, and the payload assertion verifies slug `aavaran-durbar-marg` plus directory ID `b1`; Quality Gate runs #410/#411 passed.
+- [ ] [IN PROGRESS] **SW-0093 · P0 · Audit current state** — Retain the form intent when a lead comes from the For Businesses page. Evidence pending: route passes `page="for-businesses"` and selected service package to ContactForm; a payload assertion has been added; CI pending.
 - [ ] [TODO] **SW-0094 · P0 · Audit current state** — Set a default source only when the source genuinely cannot be identified.
 - [ ] [TODO] **SW-0095 · P0 · Audit current state** — Store source metadata in structured columns rather than embedding it only in a message string.
 - [ ] [TODO] **SW-0096 · P0 · Audit current state** — Capture business name as a separate field from the person's name.
