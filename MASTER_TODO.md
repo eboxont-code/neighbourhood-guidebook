@@ -2,7 +2,7 @@
 
 > **Single source of truth for SEWA/Boxont execution. Read the whole file before each work session and update it before ending. This file combines the repository plan, revenue-first strategy and the 1,000-task register.**
 >
-> **Last reviewed:** 6 November 2026  
+> **Last reviewed:** 7 November 2026  
 >
 > **Merged inputs:** existing repository `MASTER_TODO.md`, the revenue-first strategy and 1,000-point checklist, and the matching 1,000-row CSV task register. The CSV and checklist IDs, priorities and task descriptions were reconciled. This file is now the only project execution plan.
 >
@@ -19,7 +19,7 @@
 
 SEWA is a free, useful, neighbourhood-first directory for discovering real local businesses. Boxont is the commercial operator.
 
-**North star:** qualified website-design enquiries that can realistically become paid Boxont projects.
+**North star:** Generate qualified website-design enquiries for Boxont through SEWA's useful local discovery and free-preview experience.
 
 **Main funnel:** useful listing or qualified prospect → relevant free website preview → one clear CTA → attributed enquiry → manual qualification → quote/proposal → won or lost → payment and delivery.
 
@@ -76,6 +76,17 @@ The free-preview format is also used by other website-design providers. That sho
 - Production defects and mobile review findings
 
 Establish a baseline before choosing numerical targets. Do not invent targets or public performance claims.
+
+### Measurement definitions — 6 November 2026
+
+- **North star:** Generate qualified website-design enquiries for Boxont through SEWA's useful local discovery and free-preview experience.
+- **Primary conversion:** One successfully saved website enquiry with identifiable business context. A click, preview view, claim request, quote or proposal is not a primary conversion.
+- **Qualified website lead (operational definition):** a saved, non-spam, non-duplicate website-intent enquiry (topic = website or page = preview / for-businesses) with an identifiable business (business_name or source_listing_slug), a non-empty request and a usable reply route. The current contact schema has a phone field but no email field, so a phone must be present and manually checked for usability. Budget and willingness to pay are not qualification criteria; a lead that does not meet these observable conditions remains an enquiry, not a qualified lead.
+- **Secondary conversions:** listing-to-preview click, preview view, preview CTA click, claim-flow start and successful claim, contact-form start and successful enquiry, and privacy-safe repeat visits. Start and repeat-visit events are defined but are not currently collected; do not add identifiers or new event types until privacy and database changes are approved.
+- **Revenue separation:** report Boxont website-service quote value, won work and cash received separately from future paid directory placements. Booking revenue remains deferred and must not be combined with website-service revenue.
+- Directory traffic alone is not success without useful customer or business-owner outcomes. The 1,000-listing figure remains a conditional supply milestone, not the north-star KPI.
+
+These are measurement definitions, not pricing, outreach or paid-product approvals.
 
 ---
 
@@ -141,113 +152,122 @@ Never mark work [DONE] merely because code exists, a PR is merged, or a preview 
 
 ---
 
-## 3. Verified repository snapshot — 5 November 2026
+## 3. Verified repository snapshot — 7 November 2026
 
 ### Repository baseline
 
-- [x] [DONE] Private GitHub repository identified: `eboxont-code/neighbourhood-guidebook`.
-- [x] [DONE] Production domain recorded as `https://sewa.boxont.com`.
-- [x] [DONE] README documents SEWA product principles, architecture, local setup, database rules and deployment checklist.
-- [x] [DONE] Quality scripts and the Supabase/Drizzle migration-parity rule are documented.
-- [x] [DONE] Enumerated all 13 branches and reconciled all 9 repository PR records on 5 November 2026.
-- [x] [DONE] Confirmed the repository issue search returned no GitHub issues; the master plan remains the execution tracker.
-- [x] [DONE] Confirmed the 1,000-point register contains every unique ID from `SW-0001` through `SW-1000`.
+- [x] [DONE] Private GitHub repository: eboxont-code/neighbourhood-guidebook.
+- [x] [DONE] Default branch is main; the live Git ref was verified at ee38ca0e978f0149ca10f5b2caadb33282729148.
+- [x] [DONE] Read the full master plan/register, README.md and AGENTS.md. Repository rules confirm anonymous first-party analytics, no personal data or exact location in analytics, and migration parity requirements.
+- [x] [DONE] The register contains IDs SW-0001 through SW-1000. The main-branch SW-0298 and SW-0299 entries had been concatenated onto one line; this branch restores the missing line break without changing either task description.
+- [x] [DONE] Current branch inventory: 19 branches, listed below. No branch was deleted or rewritten.
+- [x] [DONE] Lovable north-star file .lovable/north-star/north-star.md was not changed; its main-branch blob SHA remains 9d748d0f22dd60969680c61964f18ea4fe6900df.
+- [ ] [BLOCKED] Current branch-protection settings could not be read: GitHub returned HTTP 403 (resource not accessible by this integration). Do not assume the previous protection snapshot is current.
 
-Latest verified application-code commit: `c6741670caaf036df1a94935831599fd16a6a3db` (5 November 2026 UTC), message `Verified bilingual targets`.
+### Current open pull requests
 
-The two commits made after that application-code baseline were documentation-only:
-- `7c4983c80318dd97de59e92eb40af8760c69a5ab` — reconciled this master plan.
-- `ee9ff6ba5a8d59907ed6dc073ee52a921aa24617` — made this file the single roadmap source of truth.
-
-Latest verified Vercel Production deployment at the time of this audit:
-- Deployment: `dpl_DBNmQXmsk9P8wTsGKbjsTabpmq3S`
-- State / target: `READY` / `production`
-- Git source: `main` at documentation commit `ee9ff6ba5a8d59907ed6dc073ee52a921aa24617`
-- Alias attached and verified: `sewa.boxont.com`.
-- Vercel project plan: Hobby. No upgrade or paid resource was requested or created.
-
-This verifies that the current application-code baseline and the subsequent documentation-only changes reached a READY Production deployment with the custom domain attached. It does **not** prove that the public enquiry, admin sign-in or password-recovery journeys work end to end; those checks remain open below.
-
-### Known merged work
-
-- [x] [DONE] Bundle 1 — project foundation, repository rules and quality gate — merged to `main`.
-- [x] [DONE] Bundle 2 — data integrity and opening-hours trust — merged to `main`.
-- [x] [DONE] Bundle 3 — security and operations hardening — merge commit `5569ca8254277479fd350ab623afbb786ab31349`.
-- [x] [DONE] Bundle 5 — Boxont quote-to-cash revenue engine — merge commit `d5f104affdb29e7cd4a287b4a36e34cb86c3800b`.
-- [x] [DONE] Bundle 6 — sponsored placement revenue channel — merge commit `74fe507db70a45a538dfec4bd3730a45d51e4ae2`.
-- [x] [DONE] PR #9 — admin password recovery production redirect — merged into `main`; merge commit `a625ff94c48b03aa268bfdf885ff0eb974f5c664`.
-
-### Open pull requests verified on 5 November 2026
-
-| PR | Work | Verified state / branch relationship |
+| PR | Branch → base | State and verification |
 |---|---|---|
-| #4 | Call and WhatsApp contact insights | Open draft; `sewa/bundle-04-revenue-lead-attribution` → `main` |
-| #7 | Boxont prospecting and sales pipeline | Open draft; `sewa/bundle-07-sales-pipeline` is based on `sewa/bundle-06-sponsored-placements` |
-| #8 | Convert inbound enquiries into sales opportunities | Open draft; `sewa/bundle-08-inbound-conversion` is based on `sewa/bundle-07-sales-pipeline` |
+| #4 | sewa/bundle-04-revenue-lead-attribution → main | Open draft; based on stale main SHA dcff9d80. Retained work has a current-main replacement in #11. |
+| #8 | sewa/bundle-08-inbound-conversion → sewa/bundle-07-reconciled-main-20261106 | Open draft; still stacked on the old Bundle 7 branch at a6deac36. Do not merge as-is. |
+| #10 | sewa/bundle-07-reconciled-main-20261106 → main | Open draft; current-main base ee38ca0e, 16 commits, 11 files. Push run #351 and PR run #344 passed. Owner review/approval remains required. |
+| #11 | sewa/bundle-04-contact-insights-main-20261106 → main | Open draft; current-main base ee38ca0e, 7 commits, 5 files. Push run #365 and PR run #366 passed. |
+| #12 | sewa/analytics-submission-guard-20261106 → main | Open draft on current-main base ee38ca0e. Code/test commit d9293bf195a0c1b987b2a67a6a8aa3a41e13b4a3 passed push run #376 and PR run #377, including TypeScript, lint, unit/component tests, production build and disposable PostgreSQL migration/security tests. Follow-up commits update the master-plan evidence only. Not merged. |
 
-PR references:
-- #4: https://github.com/eboxont-code/neighbourhood-guidebook/pull/4
-- #7: https://github.com/eboxont-code/neighbourhood-guidebook/pull/7
-- #8: https://github.com/eboxont-code/neighbourhood-guidebook/pull/8
-- #9 (merged): https://github.com/eboxont-code/neighbourhood-guidebook/pull/9
+- PR #7 is closed unmerged; PR #9 is merged.
+- Main commit ee38ca0e has successful Quality Gate run #345 and earlier run #337. Later run #355 was cancelled. The combined Vercel status for this main commit is successful.
+- PR #12 code/test commit d9293bf195a0c1b987b2a67a6a8aa3a41e13b4a3 passed push run #376 and PR run #377: TypeScript validation, lint, unit/component tests, production build and disposable PostgreSQL migration/security tests. Later commits only refreshed MASTER_TODO.md; production remains on main and was not changed.
+- PRs #4, #8, #10, #11 and #12 remain drafts. No release PR was merged.
 
 ### Current branch inventory
 
-The 13 branches returned by the repository branch search are:
+- main
+- sewa/admin-password-recovery-production-redirect
+- sewa/analytics-listing-views-20261106
+- sewa/analytics-submission-guard-20261106
+- sewa/bundle-01-foundation
+- sewa/bundle-02-data-integrity
+- sewa/bundle-03-security-operations
+- sewa/bundle-04-admin-audit-health
+- sewa/bundle-04-contact-insights-main-20261106
+- sewa/bundle-04-revenue-engine
+- sewa/bundle-04-revenue-lead-attribution
+- sewa/bundle-05-revenue-engine
+- sewa/bundle-06-sponsored-placements
+- sewa/bundle-07-reconciled-main
+- sewa/bundle-07-reconciled-main-20261106
+- sewa/bundle-07-sales-pipeline
+- sewa/bundle-08-inbound-conversion
+- sewa/bundle-08-reconciled-main-20261106
+- sewa/bundle-09-proposal-composer
 
-- `main`
-- `sewa/admin-password-recovery-production-redirect` — PR #9 merged
-- `sewa/bundle-01-foundation` — PR #1 merged
-- `sewa/bundle-02-data-integrity` — PR #2 merged
-- `sewa/bundle-03-security-operations` — PR #3 merged
-- `sewa/bundle-04-admin-audit-health` — no PR found in the current PR search
-- `sewa/bundle-04-revenue-engine` — no PR found in the current PR search
-- `sewa/bundle-04-revenue-lead-attribution` — PR #4 open
-- `sewa/bundle-05-revenue-engine` — PR #5 merged
-- `sewa/bundle-06-sponsored-placements` — PR #6 merged
-- `sewa/bundle-07-sales-pipeline` — PR #7 open
-- `sewa/bundle-08-inbound-conversion` — PR #8 open
-- `sewa/bundle-09-proposal-composer` — no PR found in the current PR search
+The sewa/analytics-listing-views-20261106 branch was inspected: its current TRACK_EVENTS and listing route still do not define or emit a listing_view event. No listing-view migration is present in the current main migration set. Do not assume the branch implements SW-0045.
 
-### Branch audit warning
+### Vercel production deployment
 
-- PR #4 targets `main`, but its diff and current base SHA still need a fresh review before merge.
-- PR #7 and #8 are stacked on older feature branches, not directly on current `main`; do not merge them as-is.
-- The admin-audit-health and revenue-engine branches have no PR in the current search. Compare their unique changes with `main` before deciding whether to salvage or archive them.
-- The Proposal Composer branch exists but no PR was returned. Inspect its current diff and isolate it from the unmerged Bundle 7/8 work.
-- Merged feature branches remain in the branch list; their existence alone does not mean they are unfinished.
-- Full branch diff/ancestry review, cleanup decisions and any archive/delete action remain TODO. No branch has been deleted or rewritten.
+- Vercel project: neighbourhood-guidebook, project ID prj_zdxJhQFdQrH76wYIefxmaOVRLFx8, Hobby plan.
+- Latest verified Production deployment: dpl_Gou24q64tcmGASESDmvqbxzrWpP7, state READY, target production.
+- Git source: main at ee38ca0e978f0149ca10f5b2caadb33282729148.
+- Alias sewa.boxont.com is attached to that deployment.
+- Production URL/alias and deployment state were read only. No deployment was started in this run.
 
-These are 5 November 2026 observations. Refresh refs and compare exact diffs before acting.
+### Supabase read-only snapshot and migration gate
 
-## 4. Last known blocker — production deployment and admin recovery
+The Supabase project named neighbourhood-guidebook has ref zvbavpcsyvibvpkxjzkn, region ap-south-1, and status ACTIVE_HEALTHY. The Vercel project has SUPABASE_URL and VITE_SUPABASE_URL variables configured for Production, but the connector returned encrypted values and they were not decrypted. Therefore the exact Vercel Production database ref is not independently proven by this read.
 
-> **Status note:** The deployment and password-recovery observations below were last recorded on 4 November 2026. They were not re-tested during this document merge. Recheck before treating them as current.
+The local supabase/config.toml points to hbsszybjdyrdbgbvvmht, not the checked neighbourhood-guidebook project ref. The remote migration history for the checked project is:
 
-### Admin password recovery implementation
+- 20261019014611
+- 20261026004848
+- 20261027005142
+- 20261028005902
+- 20261029004600
+- 20261104111910
+- 20261104111922
+- 20261104111936
 
-- [x] [DONE] Forgot Password flow added to admin sign-in.
-- [x] [DONE] Reset emails explicitly redirect to `https://sewa.boxont.com/admin`.
-- [x] [DONE] Supabase `PASSWORD_RECOVERY` event handling added.
-- [x] [DONE] New-password and confirmation screen added.
-- [x] [DONE] English and Nepali recovery copy added.
-- [x] [DONE] Generic response avoids revealing whether an email address has an account.
-- [x] [DONE] Email validation correction included in merged commit.
-- [x] [DONE] Project owner confirmed Supabase Auth URL configuration was updated to include the production redirect.
-- [x] [DONE] Current `main` is deployed to Vercel Production in READY state at commit `c6741670caaf036df1a94935831599fd16a6a3db`; the `sewa.boxont.com` alias is attached. End-to-end password recovery is still untested.
-- [x] [DONE] Rechecked Vercel deployment status and current production alias on 5 November 2026; latest `main` deployment is READY. The previous 4 November quota failure is no longer blocking this latest deployment.
-- [x] [DONE] Current approved `main` commit `c6741670caaf036df1a94935831599fd16a6a3db` is deployed to Production.
-- [x] [DONE] Verified `sewa.boxont.com` is an alias on the READY Production deployment for current `main` commit `c6741670caaf036df1a94935831599fd16a6a3db`.
-- [ ] [TODO] Inspect deployed assets to confirm the recovery code is actually present.
-- [ ] [TODO] Trigger a real recovery email and confirm the link opens the production domain, not localhost.
-- [ ] [TODO] Complete password reset and test a normal admin sign-in.
-- [ ] [TODO] Test expired/invalid recovery links and session handling safely.
+The local migration filenames use the first five matching prefixes, then 20261102130000, 20261103114000 and 20261104100000 for the last three. This is a real history mismatch. Do not run supabase db push, apply a migration, edit migration history or change the project ref until the correct Production target and the three migration mappings are resolved.
 
-**Deployment note (5 November 2026):** The latest `main` deployment is READY in Production and carries the `sewa.boxont.com` alias. A 4 November attempt had failed because of Vercel's free daily deployment quota, but that old failure is superseded by the successful 5 November deployment. Do not upgrade or pay to bypass future limits.
+Read-only table snapshot for the checked project:
 
-**Acceptance criteria:** The production domain serves the latest approved main commit and the admin password reset succeeds end-to-end. Until then, this feature is merged but not live.
+| Table | Rows |
+|---|---:|
+| listings | 52 |
+| analytics_events | 5 |
+| form_rate_log | 3 |
+| contact_messages | 0 |
+| correction_reports | 0 |
+| business_submissions | 0 |
+| business_claims | 0 |
+| listing_promotions | 0 |
+| user_roles | 1 |
 
----
+The five analytics rows are 3 preview_view and 2 search_zero; no other event type has recorded rows. The tables business_sales_prospects and business_sales_activities are absent from this project's public schema.
+
+Supabase advisors report:
+- Security: authenticated_security_definer_function_executable (WARN), auth_leaked_password_protection (WARN), and rls_enabled_no_policy (INFO).
+- Performance: auth_rls_initplan (WARN), multiple_permissive_policies (WARN), and unused_index (INFO).
+
+These are recorded findings only. No production row, schema, migration, policy, auth setting or deployment was changed. Additional spend remains $0.
+
+## 4. Current blockers — 6 November 2026
+
+### Owner-controlled journeys and release approvals
+
+- [ ] [BLOCKED] Production preview/contact form → admin inbox → quote/payment end-to-end test: needs a safe non-production database and an authorised test account/session. Do not write test leads into live customer data.
+- [ ] [BLOCKED] Admin password recovery: implementation and production redirect configuration are already merged, but sending a real reset email and testing sign-in requires the owner's mailbox and account access. No email was sent and no account was changed.
+- [ ] [BLOCKED] Bundle 7 release: PR #10 is a clean current-main draft with passing CI, but merge/release requires owner review and approval. Bundle 8 remains dependent on that gate.
+- [ ] [BLOCKED] Original 20-business prospect CSV: no prospect-list file exists in the main repository tree or was found in the Library search. The Library contains the 1,000-task register CSV and strategy documents, not the 20-business source list. Do not recreate the list or contact businesses.
+- [ ] [BLOCKED] Initial funnel decision window: no owner-approved evaluation window is recorded. Do not invent a business decision.
+
+### Database and analytics gates
+
+- [ ] [BLOCKED] Production migration target: local Supabase project ref differs from the checked Supabase project; Vercel's production URL values remain encrypted; the last three local migration versions differ from remote history.
+- [ ] [BLOCKED] Unique visitor/pageview reporting: current analytics deliberately avoids visitor identifiers and cookies. A privacy/retention decision is required before adding any identifier.
+- [ ] [BLOCKED] Campaign/referrer attribution and listing-page views: current schema lacks the required source fields/listing-view event; adding them needs a reviewed migration against the correct database target.
+- [ ] [BLOCKED] Form-start and claim-start analytics: successful submission events exist, but start events are not in TRACK_EVENTS or the database constraint. Do not add them until the migration gate is resolved.
+
+These blockers do not prevent independent code, test or documentation work that stays within the existing schema and free tooling.
 
 # 5. Execution roadmap
 
@@ -257,8 +277,8 @@ These are 5 November 2026 observations. Refresh refs and compare exact diffs bef
 
 - [x] [DONE] Establish this master plan as the intended single source of truth.
 - [x] [DONE] Save this file in the repository root as `MASTER_TODO.md`; confirmed present on `main`.
-- [ ] [REVIEW] Inventory of all 13 branches and 9 PR records is complete (5 Nov 2026); exact branch diff/ancestry review remains open.
-- [ ] [REVIEW] PR-to-branch relationships for all open PRs are recorded above; identify and compare unique changes on branches without PRs.
+- [ ] [REVIEW] Inventory of 19 branches and 5 open PRs is current as of 6 Nov 2026; full diff/ancestry review and cleanup decisions remain open.
+- [ ] [REVIEW] Current PR-to-branch relationships for #4, #8, #10, #11 and #12 are recorded above; compare unique changes on branches without PRs before any cleanup.
 - [ ] [TODO] Identify obsolete branches and duplicate bundle numbering.
 - [ ] [TODO] Standardise future branch and PR naming.
 - [ ] [TODO] Require a clear scope and acceptance criteria for every new task.
@@ -273,13 +293,13 @@ These are 5 November 2026 observations. Refresh refs and compare exact diffs bef
 
 **Priority: CRITICAL**
 
-- [x] [DONE] Recheck Vercel deployment status, quota and current production alias (5 Nov 2026); current `main` is READY in Production and `sewa.boxont.com` is attached.
-- [x] [DONE] Deploy the latest approved `main` commit `c6741670caaf036df1a94935831599fd16a6a3db` using the existing Vercel allowance.
-- [x] [DONE] Confirm production alias `sewa.boxont.com` and deployed commit SHA `c6741670caaf036df1a94935831599fd16a6a3db`.
+- [x] [DONE] Recheck Vercel deployment status, quota and current production alias (6 Nov 2026); deployment dpl_Gou24q64tcmGASESDmvqbxzrWpP7 is READY on main ee38ca0e and sewa.boxont.com is attached.
+- [x] [DONE] Verify the latest approved main commit ee38ca0e978f0149ca10f5b2caadb33282729148 is already READY in Production; no deployment was performed in this run.
+- [x] [DONE] Confirm production alias sewa.boxont.com and deployed commit SHA ee38ca0e978f0149ca10f5b2caadb33282729148.
 - [ ] [TODO] Verify homepage, neighbourhood pages and business profiles.
 - [ ] [TODO] Verify admin sign-in.
-- [ ] [TODO] Complete admin password recovery end-to-end.
-- [ ] [TODO] Verify production environment variables and Supabase project target.
+- [ ] [BLOCKED] Complete admin password recovery end-to-end — owner-controlled mailbox and admin account/session access are required.
+- [ ] [BLOCKED] Verify production environment variables and Supabase project target — Vercel values are encrypted to this connector; local Supabase ref and remote migration history do not align.
 - [ ] [TODO] Check browser console/network errors on key journeys.
 - [ ] [TODO] Record deployment URL, commit and test evidence here.
 
@@ -326,7 +346,7 @@ The primary funnel is Sewa discovery/prospect → free preview → attributed en
 - [x] [DONE] Admin quote/payment tracking foundation.
 - [x] [DONE] Separate quoted value from cash received.
 - [x] [DONE] Revenue summary foundation.
-- [ ] [IN PROGRESS] Test full public enquiry → admin inbox → quote → payment journey using safe test data; verify persistence, source/business attribution, admin-only commercial fields and cleanup.
+- [ ] [BLOCKED] Test full public enquiry → admin inbox → quote → payment journey — requires a safe non-production database and authorised test account/session; production test writes are prohibited.
 - [ ] [TODO] Confirm visitors can submit enquiries but cannot write commercial fields.
 - [ ] [TODO] Confirm only authorised admins can record quotes and payments.
 - [ ] [TODO] Verify totals against source records, including partial payments/refunds where supported.
@@ -352,7 +372,7 @@ The primary funnel is Sewa discovery/prospect → free preview → attributed en
 
 ### 3.3 Sales pipeline (Bundle 7)
 
-- [ ] [TODO] Reconcile and release Bundle 7 on current main.
+- [ ] [BLOCKED] Reconcile and release Bundle 7 on current main — clean draft PR #10 and CI are ready; owner review/approval is required before merge or release.
 - [ ] [TODO] Verify prospect stages and allowed transitions.
 - [ ] [TODO] Verify follow-up dates, due-soon and overdue queues use Kathmandu time.
 - [ ] [TODO] Verify activity history and contact timestamps.
@@ -366,7 +386,7 @@ The primary funnel is Sewa discovery/prospect → free preview → attributed en
 
 ### 3.4 Incoming enquiries (Bundle 8)
 
-- [ ] [TODO] Reconcile and release Bundle 8 after Bundle 7.
+- [ ] [BLOCKED] Reconcile and release Bundle 8 after Bundle 7 — dependency is awaiting owner-approved Bundle 7 release and migration-history resolution.
 - [ ] [TODO] Verify direct service enquiries can become opportunities.
 - [ ] [TODO] Verify listing-related enquiries can become opportunities.
 - [ ] [TODO] Prevent duplicate conversion.
@@ -376,8 +396,8 @@ The primary funnel is Sewa discovery/prospect → free preview → attributed en
 
 ### 3.5 Proposal Composer (Bundle 9)
 
-- [ ] [TODO] Inspect existing proposal-composer implementation and isolate its unique changes.
-- [ ] [TODO] Create a clean PR after Sales Pipeline and inbound conversion dependencies are released.
+- [ ] [BLOCKED] Inspect existing proposal-composer implementation and isolate its unique changes — release sequence depends on Bundle 7 and Bundle 8 owner review.
+- [ ] [BLOCKED] Create a clean PR after Sales Pipeline and inbound conversion dependencies are released — both dependencies remain unreleased.
 - [ ] [TODO] Generate customer-specific English proposals.
 - [ ] [TODO] Generate customer-specific Nepali proposals.
 - [ ] [TODO] Include scope, deliverables, exclusions and assumptions.
@@ -526,10 +546,10 @@ Historical audit baseline (not a verified current count): 52 businesses, 8 categ
 
 **Priority: HIGH**
 
-- [ ] [TODO] Audit existing analytics events and their data fields.
-- [ ] [TODO] Confirm no unnecessary personal information is collected.
+- [x] [DONE] Audit existing analytics events and their data fields. Checked TRACK_EVENTS, event call sites, the Supabase event constraint and production aggregate counts on 6 Nov 2026.
+- [x] [DONE] Confirm no unnecessary personal information is collected. track.ts records event, optional listing slug/query, language and path only; no names, account IDs, cookies or precise location.
 - [ ] [TODO] Distinguish listing opens from impressions.
-- [ ] [TODO] Distinguish contact button taps from completed calls/messages.
+- [x] [DONE] Distinguish contact button taps from completed calls/messages. click_call and click_whatsapp are tap events, not completed calls or messages.
 - [x] [DONE] Measure search usage and no-result queries safely. Admin Insights tab shows searches, including zero-result ones, and action taps, backed by an analytics table. Shipped by GuideBook bot, 26-31 Oct 2026.
 - [x] [DONE] Measure enquiry submissions. Funnel tracking from listing to preview to enquiry. Shipped by GuideBook bot, 26-31 Oct 2026.
 - [ ] [TODO] Measure qualified opportunities.
@@ -653,44 +673,279 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 
 | Order | Task | Status |
 |---:|---|---|
-| 1 | Test the production preview → quote form → database → admin lead path end to end | REVIEW — live route, prefill, anonymous insert permissions and admin quote/payment writes verified; real browser POST and signed-in admin UI remain unverified |
+| 1 | Test the production preview → quote form → database → admin lead path end to end | BLOCKED — real browser POST and signed-in admin UI require an authorised test account/session and safe non-production database; production test writes are prohibited |
 | 2 | Verify lead source, business, preview URL and campaign attribution across each form | DONE — source and listing attribution audited; UTM/referrer/campaign ID are not retained on lead records |
 | 3 | Revalidate the existing 20-business prospect CSV and each website status | BLOCKED — original 20-business CSV not found in `main` or the Library; do not recreate or guess the list |
-| 4 | Confirm production deployment and complete admin password recovery verification | Deployment + domain mapping DONE 5 Nov; password-reset journey TODO |
+| 4 | Confirm production deployment and complete admin password recovery verification | Deployment/domain READY on 6 Nov; real password-reset email and sign-in are BLOCKED pending owner-controlled mailbox/account access |
 | 5 | Review the 390px preview and quote form; capture real screenshots | DONE 6 Nov 2026: EN/NE at 390×844 first, then 1280×1800; screenshots captured of preview sections, enquiry forms and inline errors. No horizontal overflow; 44px+ effective targets; labeled 16px inputs. Enlarged language controls, linked form hints, removed duplicated optional wording and prevented the hidden quote pill covering the form. 179 tests pass; preview build/typecheck OK. Presentation only; no enquiries sent, schema/attribution/admin changes, outreach, publishing or deployment. |
-| 6 | Reconcile Bundle 7 Sales Pipeline against current `main` | REVIEW — reconciled branch ready; PostgreSQL migration/security tests, TypeScript, lint, unit/component tests and production build passed; previous PR #7 remains closed by owner |
-| 7 | Reconcile Bundle 8 after Bundle 7; preserve original enquiry/payment records | TODO |
-| 8 | Isolate and review Proposal Composer after its dependencies | TODO |
-| 9 | Use the funnel baseline to fix the largest conversion leak | TODO |
-| 10 | Improve directory quality and coverage based on real user demand and lead value | TODO |
+| 6 | Reconcile Bundle 7 Sales Pipeline against current `main` | BLOCKED — current-main draft PR #10 and CI are ready; owner review/approval is required before merge, migration or moving to Bundle 8 |
+| 7 | Reconcile Bundle 8 after Bundle 7; preserve original enquiry/payment records | BLOCKED — depends on owner-approved Bundle 7 release and resolved migration history |
+| 8 | Isolate and review Proposal Composer after its dependencies | BLOCKED — depends on Bundle 7/8 release approval |
+| 9 | Use the funnel baseline to fix the largest conversion leak | BLOCKED — only five analytics events exist (3 preview views, 2 zero-result searches); no qualified-lead sample supports a leak diagnosis |
+| 10 | Improve directory quality and coverage based on real user demand and lead value | BLOCKED — current demand/lead evidence is insufficient to choose expansions safely |
 
 ### Task 1 verification notes — 6 November 2026
 
-- Production `main` is `794b959b9056a9ec147414c39db4b6da6c0b79f1`. Vercel production deployment is READY on that exact commit; domain `sewa.boxont.com` is attached.
+- Production main is ee38ca0e978f0149ca10f5b2caadb33282729148. Vercel deployment dpl_Gou24q64tcmGASESDmvqbxzrWpP7 is READY on that exact commit; domain sewa.boxont.com is attached.
 - GitHub Quality Gate run #310 passed on that exact commit: TypeScript, lint, unit/component tests, production build, and disposable PostgreSQL migration/security tests.
 - Production homepage, `/for-businesses`, the `aavaran-durbar-marg` website preview, and its preview-origin contact URL returned HTTP 200. The preview CTA carried the listing slug and business name; the contact page rendered both prefilled, with a prefilled preview-specific message.
 - A rollback-only SQL test exercised a public `anon` insert and admin quote/payment updates (NPR 25,000 quoted, then paid). The transaction rolled back. Final production checks found zero contact messages, zero QA leads, and zero leftover QA rate-limit keys. Anonymous users cannot read leads or insert/update private quote/payment fields.
-- **Boundary:** this was not a browser-driven JavaScript form submission and did not authenticate to the visible `/admin` UI. Keep Task 1 at REVIEW; do not describe the complete browser journey as passed.
+- **Boundary:** this was not a browser-driven JavaScript form submission and did not authenticate to the visible /admin UI. Task 1 is now BLOCKED until an authorised test account/session and safe non-production database are available; no production write was repeated.
 
 ### Task 2 attribution audit — 6 November 2026
 
 - Preview and For Businesses contact leads retain `page` and `source_listing_slug`; the admin can rebuild the listing and preview links from the slug. Claim requests retain `listing_slug` in `business_claims`; corrections retain `listing_slug` in `correction_reports`; new-business submissions use their own table.
-- `contact_messages` has no UTM, campaign ID, landing/referrer route, or explicit preview URL fields. `analytics_events` records `listing_slug`, event, query, language and path, but no UTM/campaign fields. Sponsored clicks are counted by listing, placement/target key and date window; they are not joined to a specific campaign or later enquiry. No promotions or sponsored-click rows currently exist in production.
+- `contact_messages` has no UTM, campaign ID, landing/referrer route, email field or explicit preview URL fields. `analytics_events` records listing_slug, event, query, language and path, but no UTM/campaign/referrer fields. Sponsored clicks are counted by listing, placement/target key and date window; they are not joined to a specific campaign or later enquiry. The checked database has no promotion rows.
 - Keep SW-0060 and SW-0061 TODO. Mark SW-0062 REVIEW: the preview slug/page mapping is present in code, but the browser submit/validation journey has not been exercised end to end. No schema or application changes were made during this audit.
 
-### Current task
+### Repository and production refresh — 7 November 2026
 
-**Task 6 — Reconcile Bundle 7 Sales Pipeline against current `main`.**  
-**Status: REVIEW — code reconciled on a clean branch; owner review is the remaining gate.**
+- Repository default branch is `main` at `ee38ca0e978f0149ca10f5b2caadb33282729148`. GitHub Quality Gate run #337 completed successfully on that exact SHA; the combined commit status is successful.
+- Production Vercel deployment `dpl_Gou24q64tcmGASESDmvqbxzrWpP7` is READY on that exact `main` SHA. `sewa.boxont.com` is attached to the project. No production deployment was initiated in this session.
+- Five open draft PRs remain: #4 (older Bundle 4), #8 (Bundle 8), #10 (current-main Bundle 7), #11 (current-main contact insights), and #12 (form protection/regression coverage). PR #12 targets `main` at `ee38ca0e`; current head is `66533a47fe8705284ffe2c0d6a3dc98d18d0f03f` (31 commits, six changed files).
+- PR #12 Quality Gate run #429 completed successfully on the current head. The disposable PostgreSQL job applied all 13 repository migrations, passed the Nepali/mixed-language contact and business-submission round-trip assertions, and passed the existing security/concurrency checks. The application job passed TypeScript, ESLint (0 errors; 25 existing warnings), 25 test files / 210 tests, and the production build.
+- Vercel's current commit status for PR #12 head `66533a47` is a build-rate-limit failure (`upgradeToPro=build-rate-limit`). The latest observed READY preview is for the earlier commit `404d5aa2`; no manual preview deployment was attempted. The preview limit does not invalidate the passing GitHub Quality Gate.
+- Supabase project `zvbavpcsyvibvpkxjzkn` (`neighbourhood-guidebook`) is ACTIVE_HEALTHY. Remote migration history contains 8 entries; the last three versions (`20261104111910`, `20261104111922`, `20261104111936`) still differ from local migration filenames (`20261102130000`, `20261103114000`, `20261104100000`). No migration or repair was attempted.
+- Read-only database counts: 52 listings; 0 contact messages; 0 business claims; 0 business submissions; 0 correction reports; 5 analytics events; 0 listing promotions; 3 form-rate rows; 1 user role. `business_sales_prospects` and `business_sales_activities` are absent. No rows were changed.
+- The production project is the ACTIVE_HEALTHY project returned by Supabase. Encrypted Vercel environment values were not decrypted in this run to re-derive the project binding.
+- The current `main` copy of `MASTER_TODO.md` contains 999 task rows and omits `SW-0299`. The original Library CSV confirms `SW-0299` is “Do not promise search rankings, guaranteed leads, or a specific sales result.” This PR branch contains all 1,000 unique IDs, including the restored task. Do not overwrite the restored register with the stale `main` copy.
+- Lovable north-star `.lovable/north-star/north-star.md` has the same blob SHA on `main` and this branch: `9d748d0f22dd60969680c61964f18ea4fe6900df`.
+- Bundle 7 reconciliation remains code-review complete but release/merge is blocked pending owner approval and migration-history resolution. Bundle 8 and Proposal Composer remain dependent on that gate. No production data, settings, migrations, merges, or deployment were changed. Additional spend: $0.
 
-- Created `sewa/bundle-07-reconciled-main` from current `main`. The branch contains the Bundle 7 feature delta only; current `main`'s newer `src/lib/sales-pipeline.ts` was preserved, including inbound-lead mapping and proposal-draft helpers.
-- Integrated the admin Sales Pipeline tab, component, typed Supabase tables, English/Nepali translations, Drizzle and Supabase migrations, migration journal entry, database contract test and disposable PostgreSQL security checks.
-- Preserved the newer proposal and inbound-conversion tests already on `main`; the older Bundle 7 copy no longer replaces them.
-- Drizzle and Supabase migration files are byte-identical. CI migration count and success message both correctly report 14 migrations.
-- GitHub Quality Gate run [#42216569490](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42216569490) passed: disposable PostgreSQL migration/security tests, TypeScript validation, lint, unit/component tests and production build.
-- Original PR #7 was closed unmerged by the repository owner on 6 November 2026. It was not reopened and no replacement PR was opened. The new reconciliation branch is ready for review; wait for owner direction before opening a replacement PR or moving to Bundle 8.
-- No production database migration, production deployment, production setting change or merge was performed. Bundle 8 was left untouched.
+### Previous task — SW-0042
 
+**SW-0042 — Verify that analytics events are not double-fired during route changes or form submissions.**  
+**Status: REVIEW — implementation and plan updates are in draft PR #12; code run #368 and latest-head runs #372 (push) and #373 (PR) passed. PR remains unmerged and undeployed.**
+
+- SW-0041 is DONE: the app already uses anonymous first-party Supabase analytics through src/lib/track.ts; no paid analytics product is needed. The checked database has five events (3 preview_view, 2 search_zero).
+- Route audit: preview views are emitted from an effect keyed to the business slug; same-slug rerenders do not re-fire the effect. The app root/router does not use React StrictMode. Search analytics use a 1.5-second debounce and cancel the prior timer when query/results change.
+- Listing-to-preview clicks and preview CTA clicks already use stable preview_click and preview_enquiry_click events with the business slug. The checked database constraint permits both.
+- The contact form had no synchronous in-flight guard; the claim form relied on React state alone. Added a useRef guard to both. A successful insert emits its success event once; returned/rejected errors release the guard so a retry is possible.
+- Added src/test/analytics-submission.test.tsx: two submit events dispatched in one React batch must produce one insert and one success event for each of the contact and claim forms.
+- CI run #368 passed TypeScript, lint, unit/component tests, production build and disposable PostgreSQL migration/security tests.
+- No new event names, migrations, production writes, production settings, merges or deployments. No paid resources.
+
+### Analytics register follow-through
+
+- SW-0043 BLOCKED: unique visitor/pageview reporting needs an owner-approved privacy/retention policy before any visitor identifier is introduced.
+- SW-0044 BLOCKED: campaign/referrer fields are absent; a source policy and reviewed migration are required.
+- SW-0045 BLOCKED: no listing_view event exists in TRACK_EVENTS, the database constraint or the audited analytics branch; the migration target/history mismatch prevents safe schema work.
+- SW-0046, SW-0047 and SW-0048 DONE: listing preview click, preview view with slug, and preview CTA click are already tracked in code and allowed by the database constraint.
+- SW-0049 and SW-0050 BLOCKED: form-start and claim-start events are not in the event enum/constraint; do not add them before the migration gate is resolved.
+
+### Previous task — SW-0085
+
+**Status: REVIEW — duplicate-write guards and six component regression cases are implemented on draft PR #12.** GitHub Quality Gate runs #386 (push) and #387 (pull request) both passed on branch head `8a3faa1e83522d1b834dad5e2ea43ad862415af9`. The code-level duplicate-write contract is verified; live persistence and the full browser/admin journey remain blocked under Task 1.
+
+- Audited all public form components that write to Supabase. `ContactForm` and `ClaimForm` already had synchronous `useRef` guards; `CorrectionForm` and `BusinessSubmissionForm` did not.
+- Added synchronous in-flight guards to the two missing forms. Returned database errors and rejected requests release the guard for retry; successful inserts keep it locked while the success state replaces the form.
+- Six same-tick duplicate-submit tests cover preview enquiry, For Businesses enquiry, general contact, claim, correction report and new-business submission. Each asserts one insert to the expected table; contact and claim tests also assert one success analytics event.
+- Code commit: `afa24bf885058d3f502a4e8a4dac13b67e2e7544`; test commit: `847446c7ab489e6c3f1f00f066d6b51d3011b615`; CI/documentation head: `8a3faa1e83522d1b834dad5e2ea43ad862415af9`.
+- Runs #382–#385 were cancelled as newer commits superseded them; they are not test failures. Runs #386 and #387 passed both CI jobs: disposable PostgreSQL migration/security tests, TypeScript, lint, unit/component tests and production build.
+- No production writes, migrations, analytics schema changes, settings changes, merge or production deployment. The PR preview is separate from Production.
+- Live persistence remains unverified because there is no authorised safe non-production database/session. No Production rows were created or changed.
+
+### Previous task — SW-0086
+
+**Status: REVIEW — the existing success UI is covered by six component regression tests on draft PR #12.** GitHub Quality Gate runs #390 (push) and #391 (pull request) passed on branch head `bd16672052cc66689032725fa582943e97fa19a7`.
+
+- Audited the existing implementation before changing anything. `ContactForm`, `ClaimForm`, `CorrectionForm` and `BusinessSubmissionForm` already replace their form with the shared accessible `Done` component after a successful Supabase response. The component uses `role="status"`; no new UI or translation copy was needed.
+- Added six component tests covering preview enquiry, For Businesses enquiry, general contact, business claim, correction report and new-business submission. Each test mocks Supabase, verifies one insert to the expected table, checks the accessible success status, and confirms the form is replaced.
+- Test commit: `d29c5c3159275aa5f037f105b405411663f2982f`; documentation commit: `bd16672052cc66689032725fa582943e97fa19a7`.
+- Runs #390 and #391 passed: TypeScript, ESLint, all unit/component tests, production build, and disposable PostgreSQL migration/security checks. The preview deployment for `bd166720` is READY and remains a Preview, not Production.
+- No UI implementation change was needed. The real database/browser journey remains blocked under Task 1; these component tests simulate a successful Supabase response and do not claim live persistence.
+
+### Previous task — SW-0087
+
+**Status: REVIEW — failure and retry feedback is covered by six component regression tests on draft PR #12.** GitHub Quality Gate run #395 (pull request) passed on head `eb37ba7f34369dad535e9aeeb4ecefd27d7d755e`, including the unit/component suite and disposable PostgreSQL migration/security checks. The push run #394 had also passed TypeScript, ESLint and unit/component tests; its production-build step was still running at the time of this update.
+
+- Audited the existing error path first. `SendStatus` renders an accessible `role="alert"` for returned errors and rate limits. Contact, claim, correction and new-business forms retain their controlled field state when status becomes `error`; the current draft branch releases the in-flight guard on returned errors and rejected requests.
+- Added six component tests for preview enquiry, For Businesses enquiry, general contact, claim, correction and new-business submission. Tests cover returned database errors and rejected promises, verify the alert and retained field values, and check that the submit control becomes available again. The preview test also retries successfully after a returned error.
+- Test commit: `8059466101362abf967be648fb3ed21657990603`; documentation commit: `eb37ba7f34369dad535e9aeeb4ecefd27d7d755e`.
+- Pull-request Quality Gate #395 passed TypeScript, lint, unit/component tests, production build and disposable PostgreSQL migration/security tests. The preview for `eb37ba7` is READY and is not Production.
+- All Supabase calls are mocked. No live customer rows or production settings were changed. Full browser/database persistence remains blocked under Task 1.
+
+### Previous task — SW-0088
+
+**Status: REVIEW — five field-validation guidance tests are covered by the passing Quality Gate.** Runs #398 (push) and #399 (pull request) both passed on head `bb8ed71fb655a9c19beffa0af05e0dba80e31bc3`.
+
+- Audited the existing validation path before changing anything. The forms use Zod schemas, map field-level issues through `errorsFrom`, render translated field errors with `role="alert"`, set `aria-invalid` and `aria-describedby`, and focus the first invalid field where the component already implements focus handling.
+- Added five component tests for preview enquiry, For Businesses topic selection, business claim, correction report and new-business submission. They assert the relevant field message and invalid state; where supported, they also assert focus moves to the first invalid control. They verify no Supabase insert occurs for invalid input.
+- Test commit: `e7999adbc85798703a3be4ccec4a9164bd6b15f4`; documentation commit: `bb8ed71fb655a9c19beffa0af05e0dba80e31bc3`.
+- Runs #398 and #399 passed TypeScript, ESLint, all unit/component tests, production build and disposable PostgreSQL migration/security checks. The preview for `bb8ed71` is READY and is not Production.
+- No validation rules or business eligibility rules were changed. Real browser and live persistence checks remain separate.
+
+### Blocked tasks skipped in priority order
+
+- **SW-0089 — BLOCKED:** the task requires real keyboard-only navigation on desktop and a phone-sized/mobile browser. This run has no interactive browser/device session; jsdom component tests cannot prove actual browser tab order, mobile virtual-keyboard behaviour or device-level focus. No owner manual steps requested.
+- **SW-0090 — BLOCKED:** the public code renders business listing phone values from `b.phone` and collects a visitor's own phone in forms; no operator/owner phone field or hard-coded operator number was found in the inspected public components/routes. The owner-private number itself is not identified in an approved source, so it cannot be compared against public listing data without inventing a sensitive fact. No owner manual steps requested.
+
+### Previous task — SW-0091
+
+**Status: REVIEW — preview source attribution is verified at route and component-payload level on draft PR #12.** Quality Gate runs #402 (push) and #403 (pull request) both passed on head `7b86acfb894adf0cbbd5c7bb1dfd84b591845f70`.
+
+- Audited the route chain: the preview CTA passes `from=preview`, listing slug and business name to `/contact`; the contact route validates those search values and passes them to `ContactForm`; `ContactForm` persists `page="preview"` and `source_listing_slug` with the lead.
+- Added a component assertion that the preview enquiry insert payload contains `page="preview"`, the source listing slug, business name and message.
+- Test commit: `6a4e27eea252852589e7b9f601839e9ab6577abf`; documentation commit: `7b86acfb894adf0cbbd5c7bb1dfd84b591845f70`.
+- Runs #402/#403 passed TypeScript, ESLint, unit/component tests, production build and disposable PostgreSQL migration/security checks. The `7b86acfb` preview is READY and is not Production.
+- Live browser-to-database persistence remains blocked under Task 1; tests use mocked Supabase and did not create customer records.
+
+### Previous task — SW-0092
+
+**Status: REVIEW — claim-origin listing context is verified at route and component-payload level on draft PR #12.** Quality Gate runs #410 (push) and #411 (pull request) both passed on branch head `969e383ded9f71008454aa5c0ccaa494ca2729d0`.
+
+- Audited the route chain: the listing page's claim CTA passes `search={{ listing: b.slug }}` to `/claim`; the claim route validates the search value and passes it to `ClaimForm`; `ClaimForm` resolves the business and writes both `listing_slug` and `listing_id` to `business_claims`.
+- Added a component assertion that the claim insert payload retains listing slug `aavaran-durbar-marg` and directory ID `b1`.
+- Test commit: `c302531117106d4e87cb30db80f280a22bc57d2b`. The branch was subsequently rechecked after the scoped cleanup commit `969e383ded9f71008454aa5c0ccaa494ca2729d0`.
+- Runs #410/#411 passed TypeScript, ESLint, unit/component tests, production build and disposable PostgreSQL migration/security checks. The `969e383` preview is READY and is not Production.
+- Live browser-to-database persistence remains blocked under Task 1; tests use mocked Supabase and did not create customer records.
+
+### Previous task — SW-0093
+
+**Status: REVIEW — For Businesses enquiry intent is verified at component-payload level on draft PR #12.**
+
+- Audited the route/component contract. The For Businesses route explicitly supplies `page="for-businesses"` or `page="preview"` and passes the selected service package to `ContactForm`.
+- The component test verifies `page="for-businesses"`, `service_package="growth"`, and nullable topic/budget fields.
+- Test commit `05638e25`; push run #414 and PR run #415 passed the full Quality Gate. Preview for head `8f4b79a2` was READY.
+- Supabase calls are mocked. Live persistence remains blocked under Task 1.
+
+### Previous task — SW-0094
+
+**Status: REVIEW — source fallback is used only when no explicit route or listing source is available.**
+
+- `/contact` accepts only known `claim` and `preview` origins. For Businesses supplies `for-businesses` or `preview`.
+- `ContactForm` preserves explicit sources; without one it uses `listing` when a listing slug exists, otherwise generic `contact`.
+- Component tests cover both fallback cases and preserve explicit route origins.
+- Test commit `57e1c278`; push run #416 and PR run #417 passed the full Quality Gate.
+
+### Previous task — SW-0095
+
+**Status: REVIEW — source metadata is stored in structured columns.**
+
+- Verified separate columns and insert payloads for contact source/topic/package/budget/business name, claim listing identity, correction type/listing identity, and new-business details.
+- Added payload assertions for correction and new-business submissions. Initial runs #420/#421 caught strict TypeScript optional-indexing errors; commit `404d5aa2` added explicit missing-payload guards. Push run #422 and PR run #423 then passed TypeScript, ESLint, unit/component tests, production build and disposable PostgreSQL security tests.
+
+### Previous task — SW-0096
+
+**Status: REVIEW — business name is separate from the person's name.**
+
+- The contact form schema and database store `name` and `business_name` separately. Existing preview test asserts `name="Test Owner"` and `business_name="Aavaran"`.
+- The new-business payload test separately asserts `business_name="Test Cafe"` and `name="Test Submitter"`. No schema change was needed.
+
+### Blocked task — SW-0097
+
+**Status: BLOCKED — no approved reply-method policy.**
+
+- Contact/quote forms collect an optional phone number and no email address; `contact_messages` has no email column.
+- Missing owner decision: require phone, add email, or approve another reply method. No form requirement or schema was changed.
+
+### Blocked task — SW-0098
+
+**Status: BLOCKED — depends on SW-0097.**
+
+- Phone cannot safely remain optional when no alternative reply channel is collected. Needs the same owner-approved reply-method decision.
+
+### Previous task — SW-0099
+
+**Status: REVIEW — sales enquiry forms avoid home address and precise-location collection.**
+
+- Contact/quote and correction forms collect no address or precise coordinates. The separate Add Business form has an optional business address for the directory listing; it is not part of the sales enquiry form.
+- No personal location was added to analytics.
+
+### Previous task — SW-0100
+
+**Status: REVIEW — privacy note added to contact/quote and correction forms.**
+
+- Added English and Nepali copy beside submission controls, linked to the existing privacy page. The wording matches the current policy: details are stored to reply and are not shared.
+- Tests verify the note and `/privacy` link on both form types. Commit `bfcdd27e`; push run #424 and PR run #425 passed the full Quality Gate.
+- Claim and Add Business forms are intentionally not covered by the note because the current privacy policy does not describe those collection flows. Expanding that policy scope remains blocked pending owner approval.
+
+### Previous task — SW-0101
+
+**Status: REVIEW — the quote form explains what happens after submission.**
+
+- The For Businesses route supplies `fb2Thanks`: a person will read the request and reply, usually by phone or the details supplied. No fixed turnaround time is stated.
+
+### Blocked task — SW-0102
+
+**Status: BLOCKED — no owner-approved response service standard.**
+
+- Existing copy says the team will reply but contains no measurable SLA. No response-time promise was invented. A specific expectation requires owner approval.
+
+### Blocked task — SW-0103
+
+**Status: BLOCKED — real mobile-network testing is unavailable.**
+
+- Component tests cannot establish whether the current rate limit blocks ordinary users behind mobile-carrier/shared IPs. Requires an authorised device/network test; no production form submissions were made.
+
+### Previous task — SW-0104
+
+**Status: REVIEW — honeypot is hidden from assistive technology.**
+
+- The honeypot wrapper has `aria-hidden="true"`, is positioned off-screen, and its input has `tabIndex={-1}` and `autoComplete="off"`.
+
+### Previous task — SW-0105
+
+**Status: REVIEW — rapid duplicate submissions are guarded.**
+
+- Same-tick duplicate-submit component tests cover all six public submission journeys and assert one insert. The synchronous `useRef` guards prevent the React state-update gap. Physical mobile double-tap testing remains unverified.
+
+### Blocked task — SW-0106
+
+**Status: BLOCKED — shared-network-safe rate thresholds need an owner decision.**
+
+- Read-only inspection of the actual Production trigger confirms 3 submissions per IP hash and 3 per per-tab-key hash in 10 minutes, plus 100 global submissions per hour. The shared-IP threshold can reject unrelated users behind a carrier, office or household NAT.
+- Changing thresholds requires an approved abuse policy and representative traffic evidence. No production settings or migrations were changed.
+
+### Blocked task — SW-0107
+
+**Status: BLOCKED — privacy-safe rate-log retention needs an approved design.**
+
+- Production stores MD5 hashes of IP and per-tab keys; the raw `client_key` is cleared from lead rows. The trigger deletes expired rate-log rows only when another form insert occurs.
+- Read-only SQL found 3 `form_rate_log` rows dated 2026-10-19, older than the nominal one-day window. With no new submissions, the trigger cleanup does not run, so stale hashes remain.
+- A reliable scheduled cleanup and stronger keyed-hash approach need an approved privacy/retention design and production migration. No live rows were deleted.
+
+### Blocked task — SW-0108
+
+**Status: BLOCKED — admin queue access needs an authorised account session.**
+
+- Static audit confirms the admin dashboard queries contact messages, business submissions, claims and correction reports. Verifying actual sign-in and private inbox access requires owner-controlled credentials/session; none was used.
+
+### Blocked task — SW-0109
+
+**Status: BLOCKED — no approved notification channel or provider credentials.**
+
+- No third-party email/notification service is integrated. Adding failure logging requires an approved delivery channel and account access.
+
+### Blocked task — SW-0110
+
+**Status: BLOCKED — depends on an approved notification service.**
+
+- No delivery state currently exists to retry or reconcile. Do not invent a provider or create a paid resource.
+
+### Previous task — SW-0111
+
+**Status: REVIEW — submissions are not coupled to a third-party email service.**
+
+- Public forms insert directly into Supabase and show an error state when persistence fails. No third-party email provider is present in the form path, so an email-provider outage cannot silently discard an otherwise-saved lead. Actual admin access remains blocked under SW-0108.
+
+### Previous task — SW-0112
+
+**Status: REVIEW — Nepali and mixed-language values are preserved by the component payload and disposable PostgreSQL round-trip tests; the real browser-to-database journey remains unverified.**
+
+- Audited the existing form path before adding tests. Contact fields are controlled React values; the Zod schemas trim only leading/trailing whitespace and retain interior Nepali, Latin, punctuation and mixed-language characters. No lossy ASCII conversion or manual transliteration is applied.
+- Added a component regression test in `src/test/analytics-submission.test.tsx` asserting the submitted `name`, `business_name` and `message` retain `सुमन श्रेष्ठ`, `Himalayan क्याफे` and `नमस्ते — I would like a website for हिमालयन क्याफे.`.
+- Extended `scripts/ci/test-sewa-database.sh` to insert and read back Nepali/mixed-language values in `contact_messages` and `business_submissions` under the disposable `anon` role, verify client keys are cleared, and roll the transaction back.
+- Current PR head `66533a47fe8705284ffe2c0d6a3dc98d18d0f03f`; Quality Gate run #429 passed both jobs. The database job logged “Unicode form round-trip passed” and “All 13 migrations and disposable PostgreSQL security/concurrency checks passed.” The application job passed TypeScript, ESLint (0 errors; 25 warnings), 25 test files / 210 tests and production build.
+- Keep REVIEW rather than DONE: the component payload and database contract are independently verified, but no authorised browser-driven form-to-database session was available. No production writes, migrations, or settings changes were made.
+
+### Current task — SW-0164
+
+**Status: IN PROGRESS — verify the website-preview loader binds the requested slug to the matching business and fails safely for unknown slugs.**
+
+- Audited `src/routes/s.$slug_.website-preview.tsx`: the loader resolves only `getBusiness(params.slug)`, redirects a known legacy/live slug to its replacement, and throws TanStack Router `notFound()` when neither the requested nor redirected business exists. It does not fall back to an unrelated listing.
+- Existing `src/test/preview.test.ts` covers route matching, preview path helpers, eligibility and sitemap exclusion, but does not exercise the route loader's exact-business, legacy-redirect or unknown-slug branches.
+- Add focused loader regression tests only; do not change route behaviour unless a test reveals a defect. Use the existing in-memory directory fixtures. No production data, migrations, settings, or deployment changes are required.
 ---
 
 ## 10. Instruction for every future AI session
@@ -728,14 +983,14 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 **Phase:** 1 - Revenue foundation  
 **Definition of done:** One page defines the revenue goal, what the site sells, what is deliberately deferred, and the rules that prevent trust or outreach mistakes.
 
-- [ ] [TODO] **SW-0001 · P0 · Audit current state** — Write a one-sentence north-star goal: generate qualified website-design opportunities for Boxont from Sewa.
-- [ ] [TODO] **SW-0002 · P0 · Audit current state** — Define a qualified website lead using observable criteria, not assumptions about willingness to pay.
-- [ ] [TODO] **SW-0003 · P0 · Audit current state** — Define the primary conversion as a completed website enquiry with identifiable business context.
-- [ ] [TODO] **SW-0004 · P0 · Audit current state** — Define secondary conversions for preview views, preview CTA clicks, claim requests, contact-form sends, and repeat visits.
-- [ ] [TODO] **SW-0005 · P0 · Audit current state** — Separate website-design revenue metrics from future listing-subscription and booking revenue metrics.
-- [ ] [TODO] **SW-0006 · P0 · Audit current state** — Record that directory traffic alone is not success unless it creates useful customer or business-owner outcomes.
-- [ ] [TODO] **SW-0007 · P0 · Audit current state** — Record that 1,000 listings is a conditional supply milestone, not the north-star KPI.
-- [ ] [TODO] **SW-0008 · P0 · Audit current state** — Set an initial decision window for evaluating the current funnel before redesigning it again.
+- [ ] [REVIEW] **SW-0001 · P0 · Audit current state** — Write a one-sentence north-star goal: generate qualified website-design opportunities for Boxont from Sewa. Evidence: north-star sentence is explicit in Section 0. Evidence: measurement definition is documented in this draft PR; owner review is still required before the plan update is in main.
+- [ ] [REVIEW] **SW-0002 · P0 · Audit current state** — Define a qualified website lead using observable criteria, not assumptions about willingness to pay. Evidence: observable qualification rule is recorded in Section 0; budget/willingness to pay is not inferred. Evidence: measurement definition is documented in this draft PR; owner review is still required before the plan update is in main.
+- [ ] [REVIEW] **SW-0003 · P0 · Audit current state** — Define the primary conversion as a completed website enquiry with identifiable business context. Evidence: primary conversion is explicitly defined in Section 0. Evidence: measurement definition is documented in this draft PR; owner review is still required before the plan update is in main.
+- [ ] [REVIEW] **SW-0004 · P0 · Audit current state** — Define secondary conversions for preview views, preview CTA clicks, claim requests, contact-form sends, and repeat visits. Evidence: secondary conversion definitions are recorded; implementation gaps remain blocked separately. Evidence: measurement definition is documented in this draft PR; owner review is still required before the plan update is in main.
+- [ ] [REVIEW] **SW-0005 · P0 · Audit current state** — Separate website-design revenue metrics from future listing-subscription and booking revenue metrics. Evidence: website-service revenue is explicitly separated from future placements and bookings. Evidence: measurement definition is documented in this draft PR; owner review is still required before the plan update is in main.
+- [ ] [REVIEW] **SW-0006 · P0 · Audit current state** — Record that directory traffic alone is not success unless it creates useful customer or business-owner outcomes. Evidence: Section 0 states traffic and feature count are not success without useful outcomes. Evidence: measurement definition is documented in this draft PR; owner review is still required before the plan update is in main.
+- [ ] [REVIEW] **SW-0007 · P0 · Audit current state** — Record that 1,000 listings is a conditional supply milestone, not the north-star KPI. Evidence: Section 0 states the 1,000-listing target is conditional. Evidence: measurement definition is documented in this draft PR; owner review is still required before the plan update is in main.
+- [ ] [BLOCKED] **SW-0008 · P0 · Audit current state** — Set an initial decision window for evaluating the current funnel before redesigning it again. Evidence: requires an owner-approved evaluation window; no business decision has been invented.
 - [ ] [TODO] **SW-0009 · P1 · Audit current state** — Create a decision log for changes that affect the business model or brand position.
 - [ ] [TODO] **SW-0010 · P1 · Audit current state** — Record the original three phases: trust foundation, lead-generation funnel, then bookings after traction.
 - [ ] [TODO] **SW-0011 · P1 · Audit current state** — Keep the current money-first strategy while using data quality as a conversion enabler.
@@ -774,16 +1029,16 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 **Phase:** 1 - Revenue foundation  
 **Definition of done:** The owner can answer where qualified leads came from, which page generated them, and which funnel step leaks.
 
-- [ ] [TODO] **SW-0041 · P0 · Audit current state** — Check whether production analytics are already installed before adding another analytics product.
-- [ ] [TODO] **SW-0042 · P0 · Audit current state** — Verify that analytics events are not double-fired during route changes or form submissions.
-- [ ] [TODO] **SW-0043 · P0 · Audit current state** — Record weekly unique visitors and pageviews by landing page.
-- [ ] [TODO] **SW-0044 · P0 · Audit current state** — Record organic-search visits separately from direct, referral, and campaign visits where data supports it.
-- [ ] [TODO] **SW-0045 · P0 · Audit current state** — Record visits to listing pages separately from website-preview pages.
-- [ ] [TODO] **SW-0046 · P0 · Audit current state** — Track clicks on each listing's website-preview link with a stable event name.
-- [ ] [TODO] **SW-0047 · P0 · Audit current state** — Track preview-page views with the business slug as a non-personal content identifier.
-- [ ] [TODO] **SW-0048 · P0 · Audit current state** — Track the primary preview CTA click without sending personal form data to analytics.
-- [ ] [TODO] **SW-0049 · P0 · Audit current state** — Track website-enquiry form starts and successful submissions as separate events.
-- [ ] [TODO] **SW-0050 · P0 · Audit current state** — Track claim-flow starts and completed claim submissions separately.
+- [x] [DONE] **SW-0041 · P0 · Audit current state** — Check whether production analytics are already installed before adding another analytics product. Evidence: first-party Supabase analytics already exist; five events were counted read-only in the checked project.
+- [ ] [REVIEW] **SW-0042 · P0 · Audit current state** — Verify that analytics events are not double-fired during route changes or form submissions. Evidence: preview-view effect is keyed by business slug; search tracking is debounced with timer cleanup; the root/router has no React StrictMode wrapper. Same-tick duplicate-submit tests cover preview ContactForm, For Businesses ContactForm and ClaimForm; push run #376 and PR run #377 passed on head d9293bf. Implementation remains in draft PR #12, unmerged and undeployed.
+- [ ] [BLOCKED] **SW-0043 · P0 · Audit current state** — Record weekly unique visitors and pageviews by landing page. Evidence: unique visitor/pageview reporting needs an owner-approved privacy and retention policy before adding identifiers.
+- [ ] [BLOCKED] **SW-0044 · P0 · Audit current state** — Record organic-search visits separately from direct, referral, and campaign visits where data supports it. Evidence: UTM/referrer/campaign fields are absent; source policy and safe migration target are required.
+- [ ] [BLOCKED] **SW-0045 · P0 · Audit current state** — Record visits to listing pages separately from website-preview pages. Evidence: no listing_view event exists in code or DB constraint; migration target/history mismatch remains unresolved.
+- [x] [DONE] **SW-0046 · P0 · Audit current state** — Track clicks on each listing's website-preview link with a stable event name. Evidence: listing preview CTA emits preview_click with the business slug; DB constraint permits the event.
+- [x] [DONE] **SW-0047 · P0 · Audit current state** — Track preview-page views with the business slug as a non-personal content identifier. Evidence: preview route emits preview_view with the business slug; DB constraint permits the event.
+- [x] [DONE] **SW-0048 · P0 · Audit current state** — Track the primary preview CTA click without sending personal form data to analytics. Evidence: preview enquiry CTA emits preview_enquiry_click with the business slug; DB constraint permits the event.
+- [ ] [BLOCKED] **SW-0049 · P0 · Audit current state** — Track website-enquiry form starts and successful submissions as separate events. Evidence: form-start event is absent from TRACK_EVENTS and the DB constraint; migration gate is unresolved.
+- [ ] [BLOCKED] **SW-0050 · P0 · Audit current state** — Track claim-flow starts and completed claim submissions separately. Evidence: claim-start event is absent from TRACK_EVENTS and the DB constraint; migration gate is unresolved.
 - [ ] [TODO] **SW-0051 · P1 · Audit current state** — Track For Businesses page views and CTA clicks.
 - [ ] [TODO] **SW-0052 · P1 · Audit current state** — Track contact-form starts and successful submissions.
 - [ ] [TODO] **SW-0053 · P1 · Audit current state** — Track click-to-call events only where the user clicks a listed business's public number.
@@ -820,38 +1075,38 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 **Phase:** 1 - Revenue foundation  
 **Definition of done:** Every enquiry reaches the database, retains its business/source context, and has a usable next action.
 
-- [ ] [REVIEW] **SW-0081 · P0 · Forms reported saving to database; regression-test** — Submit a production test lead through the website-preview quote form.
-- [ ] [REVIEW] **SW-0082 · P0 · Forms reported saving to database; regression-test** — Submit a production test lead through the For Businesses route.
-- [ ] [REVIEW] **SW-0083 · P0 · Forms reported saving to database; regression-test** — Submit a production test lead through a listing claim action.
-- [ ] [REVIEW] **SW-0084 · P0 · Forms reported saving to database; regression-test** — Submit a production test lead through the general contact form.
-- [ ] [TODO] **SW-0085 · P0 · Audit current state** — Verify each form creates exactly one database lead for one successful submission.
-- [ ] [TODO] **SW-0086 · P0 · Audit current state** — Verify the user receives a clear success state after a saved submission.
-- [ ] [TODO] **SW-0087 · P0 · Audit current state** — Verify a failed submission shows a useful retry message without losing typed values.
-- [ ] [TODO] **SW-0088 · P0 · Audit current state** — Verify form validation explains which required field needs attention.
-- [ ] [TODO] **SW-0089 · P0 · Audit current state** — Verify the form works with keyboard-only interaction on desktop and mobile.
-- [ ] [TODO] **SW-0090 · P0 · Audit current state** — Verify the form does not publish the owner's private phone number.
-- [ ] [TODO] **SW-0091 · P0 · Audit current state** — Retain the source route and business slug when a lead comes from a preview.
-- [ ] [TODO] **SW-0092 · P0 · Audit current state** — Retain the originating listing when a lead comes from a claim button.
-- [ ] [TODO] **SW-0093 · P0 · Audit current state** — Retain the form intent when a lead comes from the For Businesses page.
-- [ ] [TODO] **SW-0094 · P0 · Audit current state** — Set a default source only when the source genuinely cannot be identified.
-- [ ] [TODO] **SW-0095 · P0 · Audit current state** — Store source metadata in structured columns rather than embedding it only in a message string.
-- [ ] [TODO] **SW-0096 · P0 · Audit current state** — Capture business name as a separate field from the person's name.
-- [ ] [TODO] **SW-0097 · P1 · Audit current state** — Capture a reply method that the user can reasonably respond to, without demanding excessive data.
-- [ ] [TODO] **SW-0098 · P1 · Audit current state** — Make phone optional when email or another agreed reply method is sufficient.
-- [ ] [TODO] **SW-0099 · P1 · Audit current state** — Avoid collecting home address, precise location, or unrelated personal information in sales forms.
-- [ ] [TODO] **SW-0100 · P1 · Audit current state** — Add a human-readable privacy note beside form submission.
-- [ ] [TODO] **SW-0101 · P1 · Audit current state** — Make the quote form explain what happens after submission.
-- [ ] [TODO] **SW-0102 · P1 · Audit current state** — Set an honest response expectation only after the owner has approved a service standard.
-- [ ] [TODO] **SW-0103 · P1 · Audit current state** — Check whether spam controls block real submissions on mobile networks.
-- [ ] [TODO] **SW-0104 · P1 · Audit current state** — Check that the honeypot field is not exposed to screen readers as a normal requested field.
-- [ ] [TODO] **SW-0105 · P1 · Audit current state** — Test duplicate-submit protection by tapping submit twice quickly.
-- [ ] [TODO] **SW-0106 · P2 · Audit current state** — Rate-limit abusive form traffic without blocking ordinary users behind shared networks.
-- [ ] [TODO] **SW-0107 · P2 · Audit current state** — Confirm anti-spam logs do not retain unnecessary identifying data.
-- [ ] [TODO] **SW-0108 · P2 · Audit current state** — Check whether form notifications reach the intended private inbox or admin queue.
-- [ ] [TODO] **SW-0109 · P2 · Audit current state** — Record notification failures in a way the operator can diagnose.
-- [ ] [TODO] **SW-0110 · P2 · Audit current state** — Add a safe retry or reconciliation path for a saved lead whose notification failed.
-- [ ] [TODO] **SW-0111 · P2 · Audit current state** — Verify that form submissions are not silently discarded when a third-party email service fails.
-- [ ] [TODO] **SW-0112 · P2 · Audit current state** — Test Nepali characters and mixed-language business names end to end.
+- [ ] [BLOCKED] **SW-0081 · P0 · Forms reported saving to database; regression-test** — Submit a production test lead through the website-preview quote form. Evidence: requires an authorised test account and safe non-production database; production test submissions are prohibited. Blocker: requires a safe non-production database and authorised test session; no test lead may be inserted into live Production.
+- [ ] [BLOCKED] **SW-0082 · P0 · Forms reported saving to database; regression-test** — Submit a production test lead through the For Businesses route. Evidence: requires an authorised test account and safe non-production database; production test submissions are prohibited. Blocker: requires a safe non-production database and authorised test session; no test lead may be inserted into live Production.
+- [ ] [BLOCKED] **SW-0083 · P0 · Forms reported saving to database; regression-test** — Submit a production test lead through a listing claim action. Evidence: requires an authorised test account and safe non-production database; production test submissions are prohibited. Blocker: requires a safe non-production database and authorised test session; no test lead may be inserted into live Production.
+- [ ] [BLOCKED] **SW-0084 · P0 · Forms reported saving to database; regression-test** — Submit a production test lead through the general contact form. Evidence: requires an authorised test account and safe non-production database; production test submissions are prohibited. Blocker: requires a safe non-production database and authorised test session; no test lead may be inserted into live Production.
+- [ ] [REVIEW] **SW-0085 · P0 · Audit current state** — Verify each form creates exactly one database lead for one successful submission. Evidence: six same-tick duplicate-submit component tests pass on draft PR #12; runs #386 (push) and #387 (PR) passed on head `8a3faa1e83522d1b834dad5e2ea43ad862415af9`. Live persistence remains blocked pending an authorised safe test database/session.
+- [ ] [REVIEW] **SW-0086 · P0 · Audit current state** — Verify the user receives a clear success state after a saved submission. Evidence: six mocked-Supabase component tests verify accessible success status and form replacement for preview, For Businesses, general contact, claim, correction and new-business flows; Quality Gate runs #390/#391 passed. Live persistence remains blocked under Task 1.
+- [ ] [REVIEW] **SW-0087 · P0 · Audit current state** — Verify a failed submission shows a useful retry message without losing typed values. Evidence: six mocked-Supabase component tests cover returned errors/rejected requests across all public form flows, accessible alerts, retained fields, enabled retry and a successful second attempt; Quality Gate #395 passed. Live persistence remains blocked under Task 1.
+- [ ] [REVIEW] **SW-0088 · P0 · Audit current state** — Verify form validation explains which required field needs attention. Evidence: five component tests verify field-specific messages, invalid state, first-field focus where supported and no insert; Quality Gate runs #398/#399 passed.
+- [ ] [BLOCKED] **SW-0089 · P0 · Audit current state** — Verify the form works with keyboard-only interaction on desktop and mobile. Blocker: no interactive desktop/mobile browser or device session is available; jsdom cannot establish real tab order or mobile keyboard/focus behaviour.
+- [ ] [BLOCKED] **SW-0090 · P0 · Audit current state** — Verify the form does not publish the owner's private phone number. Blocker: no approved source identifies the owner's private number for comparison; public listing phone values are business data and must not be guessed or treated as the owner's number.
+- [ ] [REVIEW] **SW-0091 · P0 · Audit current state** — Retain the source route and business slug when a lead comes from a preview. Evidence: route chain passes `from=preview`, business name and listing slug to ContactForm; payload assertion verifies `page="preview"` and `source_listing_slug`; Quality Gate runs #402/#403 passed. Live persistence remains blocked under Task 1.
+- [ ] [REVIEW] **SW-0092 · P0 · Audit current state** — Retain the originating listing when a lead comes from a claim button. Evidence: listing CTA passes the slug to `/claim`, ClaimForm writes both `listing_slug` and `listing_id`, and the payload assertion verifies slug `aavaran-durbar-marg` plus directory ID `b1`; Quality Gate runs #410/#411 passed.
+- [ ] [REVIEW] **SW-0093 · P0 · Audit current state** — Retain the form intent when a lead comes from the For Businesses page. Evidence: route supplies `page="for-businesses"` or `page="preview"` and selected service package; payload assertion verifies `page="for-businesses"` and `service_package="growth"`; push/PR Quality Gate runs #414/#415 passed. Live persistence remains blocked under Task 1.
+- [ ] [REVIEW] **SW-0094 · P0 · Audit current state** — Set a default source only when the source genuinely cannot be identified. Evidence: `/contact` accepts only known `claim`/`preview` origins; explicit `for-businesses`/`preview` sources are preserved; tests verify listing fallback and generic-contact fallback only when the origin is otherwise unknown; push/PR runs #416/#417 passed. Live persistence remains blocked under Task 1.
+- [ ] [REVIEW] **SW-0095 · P0 · Audit current state** — Store source metadata in structured columns rather than embedding it only in a message string. Correction and new-business payload assertions added; strict TypeScript issue fixed in `404d5aa2`; push/PR runs #422/#423 passed.
+- [ ] [REVIEW] **SW-0096 · P0 · Audit current state** — Capture business name as a separate field from the person's name. Preview contact and Add Business tests assert distinct `name` and `business_name` values; existing schema already has separate columns.
+- [ ] [BLOCKED] **SW-0097 · P1 · Audit current state** — Capture a reply method that the user can reasonably respond to, without demanding excessive data. Blocker: phone is optional and no email field/column exists; owner must approve the reply-method policy.
+- [ ] [BLOCKED] **SW-0098 · P1 · Audit current state** — Make phone optional when email or another agreed reply method is sufficient. Blocker: no alternative reply method is collected; depends on SW-0097 owner decision.
+- [ ] [REVIEW] **SW-0099 · P1 · Audit current state** — Avoid collecting home address, precise location, or unrelated personal information in sales forms. Contact/quote and correction forms collect no address or coordinates; Add Business has only an optional business-listing address.
+- [ ] [REVIEW] **SW-0100 · P1 · Audit current state** — Add a human-readable privacy note beside form submission. English/Nepali note and `/privacy` link added to contact/quote and correction forms; claim/Add Business coverage remains blocked until policy scope is approved.
+- [ ] [REVIEW] **SW-0101 · P1 · Audit current state** — Make the quote form explain what happens after submission. For Businesses success copy says a person will read and reply, usually by phone or supplied details; no fixed SLA.
+- [ ] [BLOCKED] **SW-0102 · P1 · Audit current state** — Set an honest response expectation only after the owner has approved a service standard. Blocker: no owner-approved response-time standard; no SLA invented.
+- [ ] [BLOCKED] **SW-0103 · P1 · Audit current state** — Check whether spam controls block real submissions on mobile networks. Blocker: no authorised mobile device/network test; live submissions prohibited.
+- [ ] [REVIEW] **SW-0104 · P1 · Audit current state** — Check that the honeypot field is not exposed to screen readers as a normal requested field. Wrapper is `aria-hidden`, off-screen; input is `tabIndex=-1` and autocomplete off.
+- [ ] [REVIEW] **SW-0105 · P1 · Audit current state** — Test duplicate-submit protection by tapping submit twice quickly. Same-tick duplicate-submit tests cover all six form journeys; physical mobile double-tap remains unverified.
+- [ ] [BLOCKED] **SW-0106 · P2 · Audit current state** — Rate-limit abusive form traffic without blocking ordinary users behind shared networks. Production limit is 3 per IP/per-tab key in 10 minutes and 100 global/hour; changing shared-IP thresholds requires owner-approved abuse policy and traffic evidence.
+- [ ] [BLOCKED] **SW-0107 · P2 · Audit current state** — Confirm anti-spam logs do not retain unnecessary identifying data. Production stores MD5 IP/session hashes; cleanup runs only on a later insert; 3 rows from 2026-10-19 remain. Requires approved retention/keying design and production migration.
+- [ ] [BLOCKED] **SW-0108 · P2 · Audit current state** — Check whether form notifications reach the intended private inbox or admin queue. Admin queue code exists; actual sign-in/read verification requires owner-controlled account session.
+- [ ] [BLOCKED] **SW-0109 · P2 · Audit current state** — Record notification failures in a way the operator can diagnose. Blocker: no approved notification channel/provider or credentials.
+- [ ] [BLOCKED] **SW-0110 · P2 · Audit current state** — Add a safe retry or reconciliation path for a saved lead whose notification failed. Blocker: no notification provider/delivery state; depends on SW-0109.
+- [ ] [REVIEW] **SW-0111 · P2 · Audit current state** — Verify that form submissions are not silently discarded when a third-party email service fails. Forms persist directly to Supabase and surface DB errors; no third-party email provider is in the submission path.
+- [ ] [REVIEW] **SW-0112 · P2 · Audit current state** — Test Nepali characters and mixed-language business names end to end. Evidence: component payload test plus disposable PostgreSQL read-back/rollback tests; current head `66533a47`, Quality Gate #429 passed (25 files / 210 tests; all 13 CI migrations and Unicode round-trip passed). Browser-to-database session remains unverified.
 - [ ] [TODO] **SW-0113 · P2 · Audit current state** — Test punctuation, apostrophes, slashes, and long URLs in free-text fields.
 - [ ] [TODO] **SW-0114 · P2 · Audit current state** — Protect against HTML/script injection in stored messages and rendered admin views.
 - [ ] [TODO] **SW-0115 · P2 · Audit current state** — Ensure invalid external URLs are not blindly converted into clickable links in the admin.
@@ -866,13 +1121,13 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 **Phase:** 1 - Revenue foundation  
 **Definition of done:** The existing lead pipeline is reliable enough to run daily sales without losing, duplicating, or forgetting opportunities.
 
-- [ ] [REVIEW] **SW-0121 · P0 · Reported implemented; regression-test** — Verify the existing admin Leads tab is still accessible only to authorised users.
-- [ ] [REVIEW] **SW-0122 · P0 · Reported implemented; regression-test** — Verify New, Contacted, Quote sent, Won, and Lost stages load and save correctly.
-- [ ] [REVIEW] **SW-0123 · P0 · Reported implemented; regression-test** — Verify each stage count updates immediately after a lead changes stage.
-- [ ] [REVIEW] **SW-0124 · P0 · Reported implemented; regression-test** — Verify a lead can be moved backward if an accidental stage change occurs.
-- [ ] [REVIEW] **SW-0125 · P0 · Reported implemented; regression-test** — Verify the current business and preview links attached to a lead open the correct record.
-- [ ] [REVIEW] **SW-0126 · P0 · Reported implemented; regression-test** — Verify Call and WhatsApp actions use only the submitted public/business contact details where appropriate.
-- [ ] [REVIEW] **SW-0127 · P0 · Reported implemented; regression-test** — Verify private sales notes remain private and never appear on public routes.
+- [ ] [BLOCKED] **SW-0121 · P0 · Reported implemented; regression-test** — Verify the existing admin Leads tab is still accessible only to authorised users. Evidence: requires an authorised admin test account/session; no credentials or account access were used.
+- [ ] [BLOCKED] **SW-0122 · P0 · Reported implemented; regression-test** — Verify New, Contacted, Quote sent, Won, and Lost stages load and save correctly. Evidence: requires an authorised admin test account/session; no credentials or account access were used.
+- [ ] [BLOCKED] **SW-0123 · P0 · Reported implemented; regression-test** — Verify each stage count updates immediately after a lead changes stage. Evidence: requires an authorised admin test account/session; no credentials or account access were used.
+- [ ] [BLOCKED] **SW-0124 · P0 · Reported implemented; regression-test** — Verify a lead can be moved backward if an accidental stage change occurs. Evidence: requires an authorised admin test account/session; no credentials or account access were used.
+- [ ] [BLOCKED] **SW-0125 · P0 · Reported implemented; regression-test** — Verify the current business and preview links attached to a lead open the correct record. Evidence: requires an authorised admin test account/session; no credentials or account access were used.
+- [ ] [BLOCKED] **SW-0126 · P0 · Reported implemented; regression-test** — Verify Call and WhatsApp actions use only the submitted public/business contact details where appropriate. Evidence: requires an authorised admin test account/session; no credentials or account access were used.
+- [ ] [BLOCKED] **SW-0127 · P0 · Reported implemented; regression-test** — Verify private sales notes remain private and never appear on public routes. Evidence: requires an authorised admin test account/session; no credentials or account access were used.
 - [ ] [TODO] **SW-0128 · P1 · Audit current state** — Add a lead-created timestamp visible in the admin.
 - [ ] [TODO] **SW-0129 · P1 · Audit current state** — Add a last-updated timestamp to each lead.
 - [ ] [TODO] **SW-0130 · P1 · Audit current state** — Show how long each lead has remained in its current stage.
@@ -915,7 +1170,7 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [REVIEW] **SW-0161 · P0 · Reported preview template exists; regression-test** — Regression-test the existing shared preview template against a business with no website.
 - [ ] [REVIEW] **SW-0162 · P0 · Reported preview template exists; regression-test** — Regression-test the template against a business whose listed website is broken.
 - [ ] [REVIEW] **SW-0163 · P0 · Reported preview template exists; regression-test** — Regression-test the template against a business with a working website to ensure it is not mislabelled.
-- [ ] [TODO] **SW-0164 · P0 · Audit current state** — Verify preview routes use the expected business slug and fail safely for an unknown slug.
+- [ ] [IN PROGRESS] **SW-0164 · P0 · Audit current state** — Verify preview routes use the expected business slug and fail safely for an unknown slug. Auditing the existing route loader and adding exact-slug, legacy-redirect and unknown-slug regression tests; no production changes.
 - [ ] [TODO] **SW-0165 · P0 · Audit current state** — Verify the preview displays the correct business name from the listing record.
 - [ ] [TODO] **SW-0166 · P0 · Audit current state** — Verify the preview displays only hours that exist and are sufficiently trustworthy.
 - [ ] [TODO] **SW-0167 · P0 · Audit current state** — Verify the preview never invents opening hours when the listing lacks them.
@@ -1004,13 +1259,13 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 **Phase:** 1 - Revenue foundation  
 **Definition of done:** Prospects are prioritised for website need, fit, contactability, and realistic value rather than collected as a vanity list.
 
-- [ ] [REVIEW] **SW-0241 · P0 · Existing CSV reported; revalidate** — Revalidate the existing CSV of 20 businesses before using it as a current prospect list.
-- [ ] [REVIEW] **SW-0242 · P0 · Existing CSV reported; revalidate** — Check each existing prospect still exists under the same business name.
-- [ ] [TODO] **SW-0243 · P0 · Audit current state** — Recheck every prospect's website status before describing it as missing or broken.
-- [ ] [TODO] **SW-0244 · P0 · Audit current state** — Record the exact evidence that a site is missing, broken, outdated, or unusable.
-- [ ] [TODO] **SW-0245 · P0 · Audit current state** — Separate businesses with no website from businesses with a working site that merely looks dated.
-- [ ] [TODO] **SW-0246 · P0 · Audit current state** — Prioritise technically broken sites over subjective claims that a design is ugly.
-- [ ] [TODO] **SW-0247 · P0 · Audit current state** — Record a public contact route for each prospect only when it is visible on an appropriate public source.
+- [ ] [BLOCKED] **SW-0241 · P0 · Existing CSV reported; revalidate** — Revalidate the existing CSV of 20 businesses before using it as a current prospect list. Evidence: no prospect-list file was found in the repository tree or Library search; do not reconstruct it.
+- [ ] [BLOCKED] **SW-0242 · P0 · Existing CSV reported; revalidate** — Check each existing prospect still exists under the same business name. Evidence: the source CSV is missing, so there are no source rows to verify.
+- [ ] [BLOCKED] **SW-0243 · P0 · Audit current state** — Recheck every prospect's website status before describing it as missing or broken. Evidence: depends on the missing 20-business prospect source CSV; no businesses have been invented or contacted.
+- [ ] [BLOCKED] **SW-0244 · P0 · Audit current state** — Record the exact evidence that a site is missing, broken, outdated, or unusable. Evidence: depends on the missing 20-business prospect source CSV; no businesses have been invented or contacted.
+- [ ] [BLOCKED] **SW-0245 · P0 · Audit current state** — Separate businesses with no website from businesses with a working site that merely looks dated. Evidence: depends on the missing 20-business prospect source CSV; no businesses have been invented or contacted.
+- [ ] [BLOCKED] **SW-0246 · P0 · Audit current state** — Prioritise technically broken sites over subjective claims that a design is ugly. Evidence: depends on the missing 20-business prospect source CSV; no businesses have been invented or contacted.
+- [ ] [BLOCKED] **SW-0247 · P0 · Audit current state** — Record a public contact route for each prospect only when it is visible on an appropriate public source. Evidence: depends on the missing 20-business prospect source CSV; no businesses have been invented or contacted.
 - [ ] [TODO] **SW-0248 · P1 · Audit current state** — Keep the prospect's official website and social source URLs in separate columns.
 - [ ] [TODO] **SW-0249 · P1 · Audit current state** — Record the date each prospect was reviewed.
 - [ ] [TODO] **SW-0250 · P1 · Audit current state** — Record the reviewer or automated process that made the assessment.
@@ -1067,7 +1322,8 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [TODO] **SW-0295 · P1 · Audit current state** — Prefer permission-based contact routes where available.
 - [ ] [TODO] **SW-0296 · P1 · Audit current state** — Do not scrape private contact details or bypass access controls.
 - [ ] [TODO] **SW-0297 · P1 · Audit current state** — Do not automate WhatsApp messages to businesses without explicit approval and a compliant method.
-- [ ] [TODO] **SW-0298 · P1 · Audit current state** — Do not create fake urgency, fake scarcity, or false claims about customers lost.- [ ] [TODO] **SW-0299 · P1 · Audit current state** — Do not promise search rankings, guaranteed leads, or a specific sales result.
+- [ ] [TODO] **SW-0298 · P1 · Audit current state** — Do not create fake urgency, fake scarcity, or false claims about customers lost.
+- [ ] [TODO] **SW-0299 · P1 · Audit current state** — Do not promise search rankings, guaranteed leads, or a specific sales result.
 - [ ] [TODO] **SW-0300 · P1 · Audit current state** — Prepare a short explanation of why this business was selected, tied to verified evidence.
 - [ ] [TODO] **SW-0301 · P2 · Audit current state** — Prepare a preview-sharing message that separates concept from production website.
 - [ ] [TODO] **SW-0302 · P2 · Audit current state** — Prepare a follow-up draft only for use after the owner approves a follow-up schedule.
