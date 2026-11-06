@@ -88,7 +88,7 @@ describe("website preview hours trust", () => {
   it("does not display hours when the listing has no recorded source", () => {
     const sourceListing = getBusiness("tranquility-spa");
     if (!sourceListing) throw new Error("Missing test business");
-    const business: Business = { ...sourceListing, hoursSource: undefined, hoursVerified: false };
+    const business: Business = { ...sourceListing, hoursSource: "", hoursVerified: false };
     const document = renderPreview(business);
 
     expect(document.querySelector("header h1 + p")?.textContent?.trim()).toBe("");
