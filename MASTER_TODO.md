@@ -699,7 +699,7 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 | 9 | Use the funnel baseline to fix the largest conversion leak | BLOCKED — production has only 8 analytics events across 3 event types and no recorded enquiry submissions; insufficient evidence to identify a conversion leak |
 | 10 | Improve directory quality and coverage based on real user demand and lead value | BLOCKED — only 2 zero-result searches and no saved enquiries are present in the current production snapshot; the prospect CSV is also unavailable, so demand/lead-value prioritisation is not evidence-based yet |
 | 11 | Define secondary conversions for preview views, preview CTA clicks, claim requests, contact-form sends, and repeat visits | DONE 7 Nov 2026 — definitions and measurement limits recorded in Section 0 and verified against current code and the live event constraint |
-| 12 | Separate website-design revenue metrics from future listing-subscription and booking revenue metrics | TODO — SW-0005 is the next independently actionable P0 register item; preserve the paid-placement and booking launch gates |
+| 12 | Separate website-design revenue metrics from future listing-subscription and booking revenue metrics | IN PROGRESS — SW-0005; audit current revenue categorisation and define separate website-service, sponsored-placement, future subscription and deferred booking measures |
 
 ### Task 1 verification notes — 7 November 2026
 
@@ -765,10 +765,21 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 - Repeat visits are explicitly not measurable with the current anonymous event schema. No visitor identifier, cookie, or new tracking was added.
 - Production inspection was read-only; no code, schema, data, settings, or deployment changed. Additional spend was $0.
 
-### Next eligible task
+### Current task — SW-0005
 
-**SW-0005 — Separate website-design revenue metrics from future listing-subscription and booking revenue metrics.**  
-This can be defined from the existing revenue-first plan without publishing prices, activating paid placements, or building deferred booking functionality.
+**Separate website-design revenue metrics from future listing-subscription and booking revenue metrics.**  
+**Status: IN PROGRESS.**
+
+Intended result: make the website-service revenue summary exclude sponsored-placement requests, include explicit website-topic enquiries, and document separate source-of-truth and cash rules for current sponsored campaigns, future listing subscriptions, and deferred bookings.
+
+Acceptance criteria:
+- Website build, redesign and care enquiries are measured from the existing contact-message ledger; sponsored-placement requests are excluded from website-service totals.
+- Quotes remain pipeline value, not cash received; received cash and outstanding balances retain their existing status rules.
+- Sponsored placements remain a separate, time-limited campaign ledger with paid cash less recorded refunds; clicks are not revenue and a promotion enquiry is not a paid campaign.
+- No listing-subscription or booking revenue is claimed while no corresponding ledger/workflow exists.
+- English and Nepali admin labels describe the website-service scope accurately.
+- Unit tests cover website-topic inclusion and promotion exclusion; GitHub Quality Gate verifies the full change.
+- Production database, settings and deployment remain read-only/unchanged; additional spend remains $0.
 
 
 ---
@@ -812,7 +823,7 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [x] [DONE] **SW-0002 · P0 · Audit current state** — Define a qualified website lead using observable criteria, not assumptions about willingness to pay. Definition and current-schema limitations recorded in Section 0 on 7 November 2026.
 - [x] [DONE] **SW-0003 · P0 · Audit current state** — Define the primary conversion as a completed website enquiry with identifiable business context. Definition and source-of-truth rules recorded in Section 0 on 7 November 2026.
 - [x] [DONE] **SW-0004 · P0 · Audit current state** — Define secondary conversions for preview views, preview CTA clicks, claim requests, contact-form sends, and repeat visits. Definitions and measurement limits recorded in Section 0 on 7 November 2026.
-- [ ] [TODO] **SW-0005 · P0 · Audit current state** — Separate website-design revenue metrics from future listing-subscription and booking revenue metrics.
+- [ ] [IN PROGRESS] **SW-0005 · P0 · Audit current state** — Separate website-design revenue metrics from future listing-subscription and booking revenue metrics.
 - [ ] [TODO] **SW-0006 · P0 · Audit current state** — Record that directory traffic alone is not success unless it creates useful customer or business-owner outcomes.
 - [ ] [TODO] **SW-0007 · P0 · Audit current state** — Record that 1,000 listings is a conditional supply milestone, not the north-star KPI.
 - [ ] [TODO] **SW-0008 · P0 · Audit current state** — Set an initial decision window for evaluating the current funnel before redesigning it again.
