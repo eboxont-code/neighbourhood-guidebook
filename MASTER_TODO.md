@@ -19,7 +19,7 @@
 
 SEWA is a free, useful, neighbourhood-first directory for discovering real local businesses. Boxont is the commercial operator.
 
-**North star:** qualified website-design enquiries that can realistically become paid Boxont projects.
+**North star:** Generate qualified website-design enquiries for Boxont through SEWA's useful local discovery and free-preview experience.
 
 **Main funnel:** useful listing or qualified prospect → relevant free website preview → one clear CTA → attributed enquiry → manual qualification → quote/proposal → won or lost → payment and delivery.
 
@@ -76,6 +76,17 @@ The free-preview format is also used by other website-design providers. That sho
 - Production defects and mobile review findings
 
 Establish a baseline before choosing numerical targets. Do not invent targets or public performance claims.
+
+### Measurement definitions — 6 November 2026
+
+- **North star:** Generate qualified website-design enquiries for Boxont through SEWA's useful local discovery and free-preview experience.
+- **Primary conversion:** One successfully saved website enquiry with identifiable business context. A click, preview view, claim request, quote or proposal is not a primary conversion.
+- **Qualified website lead (operational definition):** a saved, non-spam, non-duplicate website-intent enquiry (topic = website or page = preview / for-businesses) with an identifiable business (business_name or source_listing_slug), a non-empty request and a usable reply route. The current contact schema has a phone field but no email field, so a phone must be present and manually checked for usability. Budget and willingness to pay are not qualification criteria; a lead that does not meet these observable conditions remains an enquiry, not a qualified lead.
+- **Secondary conversions:** listing-to-preview click, preview view, preview CTA click, claim-flow start and successful claim, contact-form start and successful enquiry, and privacy-safe repeat visits. Start and repeat-visit events are defined but are not currently collected; do not add identifiers or new event types until privacy and database changes are approved.
+- **Revenue separation:** report Boxont website-service quote value, won work and cash received separately from future paid directory placements. Booking revenue remains deferred and must not be combined with website-service revenue.
+- Directory traffic alone is not success without useful customer or business-owner outcomes. The 1,000-listing figure remains a conditional supply milestone, not the north-star KPI.
+
+These are measurement definitions, not pricing, outreach or paid-product approvals.
 
 ---
 
@@ -141,113 +152,122 @@ Never mark work [DONE] merely because code exists, a PR is merged, or a preview 
 
 ---
 
-## 3. Verified repository snapshot — 5 November 2026
+## 3. Verified repository snapshot — 6 November 2026
 
 ### Repository baseline
 
-- [x] [DONE] Private GitHub repository identified: `eboxont-code/neighbourhood-guidebook`.
-- [x] [DONE] Production domain recorded as `https://sewa.boxont.com`.
-- [x] [DONE] README documents SEWA product principles, architecture, local setup, database rules and deployment checklist.
-- [x] [DONE] Quality scripts and the Supabase/Drizzle migration-parity rule are documented.
-- [x] [DONE] Enumerated all 13 branches and reconciled all 9 repository PR records on 5 November 2026.
-- [x] [DONE] Confirmed the repository issue search returned no GitHub issues; the master plan remains the execution tracker.
-- [x] [DONE] Confirmed the 1,000-point register contains every unique ID from `SW-0001` through `SW-1000`.
+- [x] [DONE] Private GitHub repository: eboxont-code/neighbourhood-guidebook.
+- [x] [DONE] Default branch is main; the live Git ref was verified at ee38ca0e978f0149ca10f5b2caadb33282729148.
+- [x] [DONE] Read the full master plan/register, README.md and AGENTS.md. Repository rules confirm anonymous first-party analytics, no personal data or exact location in analytics, and migration parity requirements.
+- [x] [DONE] The register contains IDs SW-0001 through SW-1000. The main-branch SW-0298 and SW-0299 entries had been concatenated onto one line; this branch restores the missing line break without changing either task description.
+- [x] [DONE] Current branch inventory: 19 branches, listed below. No branch was deleted or rewritten.
+- [x] [DONE] Lovable north-star file .lovable/north-star/north-star.md was not changed; its main-branch blob SHA remains 9d748d0f7e1c09d1e77d6a6f5b0b7a63e22c6d43.
+- [ ] [BLOCKED] Current branch-protection settings could not be read: GitHub returned HTTP 403 (resource not accessible by this integration). Do not assume the previous protection snapshot is current.
 
-Latest verified application-code commit: `c6741670caaf036df1a94935831599fd16a6a3db` (5 November 2026 UTC), message `Verified bilingual targets`.
+### Current open pull requests
 
-The two commits made after that application-code baseline were documentation-only:
-- `7c4983c80318dd97de59e92eb40af8760c69a5ab` — reconciled this master plan.
-- `ee9ff6ba5a8d59907ed6dc073ee52a921aa24617` — made this file the single roadmap source of truth.
-
-Latest verified Vercel Production deployment at the time of this audit:
-- Deployment: `dpl_DBNmQXmsk9P8wTsGKbjsTabpmq3S`
-- State / target: `READY` / `production`
-- Git source: `main` at documentation commit `ee9ff6ba5a8d59907ed6dc073ee52a921aa24617`
-- Alias attached and verified: `sewa.boxont.com`.
-- Vercel project plan: Hobby. No upgrade or paid resource was requested or created.
-
-This verifies that the current application-code baseline and the subsequent documentation-only changes reached a READY Production deployment with the custom domain attached. It does **not** prove that the public enquiry, admin sign-in or password-recovery journeys work end to end; those checks remain open below.
-
-### Known merged work
-
-- [x] [DONE] Bundle 1 — project foundation, repository rules and quality gate — merged to `main`.
-- [x] [DONE] Bundle 2 — data integrity and opening-hours trust — merged to `main`.
-- [x] [DONE] Bundle 3 — security and operations hardening — merge commit `5569ca8254277479fd350ab623afbb786ab31349`.
-- [x] [DONE] Bundle 5 — Boxont quote-to-cash revenue engine — merge commit `d5f104affdb29e7cd4a287b4a36e34cb86c3800b`.
-- [x] [DONE] Bundle 6 — sponsored placement revenue channel — merge commit `74fe507db70a45a538dfec4bd3730a45d51e4ae2`.
-- [x] [DONE] PR #9 — admin password recovery production redirect — merged into `main`; merge commit `a625ff94c48b03aa268bfdf885ff0eb974f5c664`.
-
-### Open pull requests verified on 5 November 2026
-
-| PR | Work | Verified state / branch relationship |
+| PR | Branch → base | State and verification |
 |---|---|---|
-| #4 | Call and WhatsApp contact insights | Open draft; `sewa/bundle-04-revenue-lead-attribution` → `main` |
-| #7 | Boxont prospecting and sales pipeline | Open draft; `sewa/bundle-07-sales-pipeline` is based on `sewa/bundle-06-sponsored-placements` |
-| #8 | Convert inbound enquiries into sales opportunities | Open draft; `sewa/bundle-08-inbound-conversion` is based on `sewa/bundle-07-sales-pipeline` |
+| #4 | sewa/bundle-04-revenue-lead-attribution → main | Open draft; based on stale main SHA dcff9d80. Retained work has a current-main replacement in #11. |
+| #8 | sewa/bundle-08-inbound-conversion → sewa/bundle-07-reconciled-main-20261106 | Open draft; still stacked on the old Bundle 7 branch at a6deac36. Do not merge as-is. |
+| #10 | sewa/bundle-07-reconciled-main-20261106 → main | Open draft; current-main base ee38ca0e, 16 commits, 11 files. Push run #351 and PR run #344 passed. Owner review/approval remains required. |
+| #11 | sewa/bundle-04-contact-insights-main-20261106 → main | Open draft; current-main base ee38ca0e, 7 commits, 5 files. Push run #365 and PR run #366 passed. |
+| #12 | sewa/analytics-submission-guard-20261106 → main | Open draft; current-main base ee38ca0e, commit c447e63cf548a9274c3d21800cef4efc79125c60, 3 files. Quality Gate run #368 passed. Not merged. |
 
-PR references:
-- #4: https://github.com/eboxont-code/neighbourhood-guidebook/pull/4
-- #7: https://github.com/eboxont-code/neighbourhood-guidebook/pull/7
-- #8: https://github.com/eboxont-code/neighbourhood-guidebook/pull/8
-- #9 (merged): https://github.com/eboxont-code/neighbourhood-guidebook/pull/9
+- PR #7 is closed unmerged; PR #9 is merged.
+- Main commit ee38ca0e has successful Quality Gate run #345 and earlier run #337. Later run #355 was cancelled. The combined Vercel status for this main commit is successful.
+- PR #12 run #368 passed TypeScript validation, lint, unit/component tests, production build, and disposable PostgreSQL migration/security tests.
+- PRs #4, #8, #10, #11 and #12 remain drafts. No release PR was merged.
 
 ### Current branch inventory
 
-The 13 branches returned by the repository branch search are:
+- main
+- sewa/admin-password-recovery-production-redirect
+- sewa/analytics-listing-views-20261106
+- sewa/analytics-submission-guard-20261106
+- sewa/bundle-01-foundation
+- sewa/bundle-02-data-integrity
+- sewa/bundle-03-security-operations
+- sewa/bundle-04-admin-audit-health
+- sewa/bundle-04-contact-insights-main-20261106
+- sewa/bundle-04-revenue-engine
+- sewa/bundle-04-revenue-lead-attribution
+- sewa/bundle-05-revenue-engine
+- sewa/bundle-06-sponsored-placements
+- sewa/bundle-07-reconciled-main
+- sewa/bundle-07-reconciled-main-20261106
+- sewa/bundle-07-sales-pipeline
+- sewa/bundle-08-inbound-conversion
+- sewa/bundle-08-reconciled-main-20261106
+- sewa/bundle-09-proposal-composer
 
-- `main`
-- `sewa/admin-password-recovery-production-redirect` — PR #9 merged
-- `sewa/bundle-01-foundation` — PR #1 merged
-- `sewa/bundle-02-data-integrity` — PR #2 merged
-- `sewa/bundle-03-security-operations` — PR #3 merged
-- `sewa/bundle-04-admin-audit-health` — no PR found in the current PR search
-- `sewa/bundle-04-revenue-engine` — no PR found in the current PR search
-- `sewa/bundle-04-revenue-lead-attribution` — PR #4 open
-- `sewa/bundle-05-revenue-engine` — PR #5 merged
-- `sewa/bundle-06-sponsored-placements` — PR #6 merged
-- `sewa/bundle-07-sales-pipeline` — PR #7 open
-- `sewa/bundle-08-inbound-conversion` — PR #8 open
-- `sewa/bundle-09-proposal-composer` — no PR found in the current PR search
+The sewa/analytics-listing-views-20261106 branch was inspected: its current TRACK_EVENTS and listing route still do not define or emit a listing_view event. No listing-view migration is present in the current main migration set. Do not assume the branch implements SW-0045.
 
-### Branch audit warning
+### Vercel production deployment
 
-- PR #4 targets `main`, but its diff and current base SHA still need a fresh review before merge.
-- PR #7 and #8 are stacked on older feature branches, not directly on current `main`; do not merge them as-is.
-- The admin-audit-health and revenue-engine branches have no PR in the current search. Compare their unique changes with `main` before deciding whether to salvage or archive them.
-- The Proposal Composer branch exists but no PR was returned. Inspect its current diff and isolate it from the unmerged Bundle 7/8 work.
-- Merged feature branches remain in the branch list; their existence alone does not mean they are unfinished.
-- Full branch diff/ancestry review, cleanup decisions and any archive/delete action remain TODO. No branch has been deleted or rewritten.
+- Vercel project: neighbourhood-guidebook, project ID prj_zdxJhQFdQrH76wYIefxmaOVRLFx8, Hobby plan.
+- Latest verified Production deployment: dpl_Gou24q64tcmGASESDmvqbxzrWpP7, state READY, target production.
+- Git source: main at ee38ca0e978f0149ca10f5b2caadb33282729148.
+- Alias sewa.boxont.com is attached to that deployment.
+- Production URL/alias and deployment state were read only. No deployment was started in this run.
 
-These are 5 November 2026 observations. Refresh refs and compare exact diffs before acting.
+### Supabase read-only snapshot and migration gate
 
-## 4. Last known blocker — production deployment and admin recovery
+The Supabase project named neighbourhood-guidebook has ref zvbavpcsyvibvpkxjzkn, region ap-south-1, and status ACTIVE_HEALTHY. The Vercel project has SUPABASE_URL and VITE_SUPABASE_URL variables configured for Production, but the connector returned encrypted values and they were not decrypted. Therefore the exact Vercel Production database ref is not independently proven by this read.
 
-> **Status note:** The deployment and password-recovery observations below were last recorded on 4 November 2026. They were not re-tested during this document merge. Recheck before treating them as current.
+The local supabase/config.toml points to hbsszybjdyrdbgbvvmht, not the checked neighbourhood-guidebook project ref. The remote migration history for the checked project is:
 
-### Admin password recovery implementation
+- 20261019014611
+- 20261026004848
+- 20261027005142
+- 20261028005902
+- 20261029004600
+- 20261104111910
+- 20261104111922
+- 20261104111936
 
-- [x] [DONE] Forgot Password flow added to admin sign-in.
-- [x] [DONE] Reset emails explicitly redirect to `https://sewa.boxont.com/admin`.
-- [x] [DONE] Supabase `PASSWORD_RECOVERY` event handling added.
-- [x] [DONE] New-password and confirmation screen added.
-- [x] [DONE] English and Nepali recovery copy added.
-- [x] [DONE] Generic response avoids revealing whether an email address has an account.
-- [x] [DONE] Email validation correction included in merged commit.
-- [x] [DONE] Project owner confirmed Supabase Auth URL configuration was updated to include the production redirect.
-- [x] [DONE] Current `main` is deployed to Vercel Production in READY state at commit `c6741670caaf036df1a94935831599fd16a6a3db`; the `sewa.boxont.com` alias is attached. End-to-end password recovery is still untested.
-- [x] [DONE] Rechecked Vercel deployment status and current production alias on 5 November 2026; latest `main` deployment is READY. The previous 4 November quota failure is no longer blocking this latest deployment.
-- [x] [DONE] Current approved `main` commit `c6741670caaf036df1a94935831599fd16a6a3db` is deployed to Production.
-- [x] [DONE] Verified `sewa.boxont.com` is an alias on the READY Production deployment for current `main` commit `c6741670caaf036df1a94935831599fd16a6a3db`.
-- [ ] [TODO] Inspect deployed assets to confirm the recovery code is actually present.
-- [ ] [TODO] Trigger a real recovery email and confirm the link opens the production domain, not localhost.
-- [ ] [TODO] Complete password reset and test a normal admin sign-in.
-- [ ] [TODO] Test expired/invalid recovery links and session handling safely.
+The local migration filenames use the first five matching prefixes, then 20261102130000, 20261103114000 and 20261104100000 for the last three. This is a real history mismatch. Do not run supabase db push, apply a migration, edit migration history or change the project ref until the correct Production target and the three migration mappings are resolved.
 
-**Deployment note (5 November 2026):** The latest `main` deployment is READY in Production and carries the `sewa.boxont.com` alias. A 4 November attempt had failed because of Vercel's free daily deployment quota, but that old failure is superseded by the successful 5 November deployment. Do not upgrade or pay to bypass future limits.
+Read-only table snapshot for the checked project:
 
-**Acceptance criteria:** The production domain serves the latest approved main commit and the admin password reset succeeds end-to-end. Until then, this feature is merged but not live.
+| Table | Rows |
+|---|---:|
+| listings | 52 |
+| analytics_events | 5 |
+| form_rate_log | 3 |
+| contact_messages | 0 |
+| correction_reports | 0 |
+| business_submissions | 0 |
+| business_claims | 0 |
+| listing_promotions | 0 |
+| user_roles | 1 |
 
----
+The five analytics rows are 3 preview_view and 2 search_zero; no other event type has recorded rows. The tables business_sales_prospects and business_sales_activities are absent from this project's public schema.
+
+Supabase advisors report:
+- Security: authenticated_security_definer_function_executable (WARN), auth_leaked_password_protection (WARN), and rls_enabled_no_policy (INFO).
+- Performance: auth_rls_initplan (WARN), multiple_permissive_policies (WARN), and unused_index (INFO).
+
+These are recorded findings only. No production row, schema, migration, policy, auth setting or deployment was changed. Additional spend remains $0.
+
+## 4. Current blockers — 6 November 2026
+
+### Owner-controlled journeys and release approvals
+
+- [ ] [BLOCKED] Production preview/contact form → admin inbox → quote/payment end-to-end test: needs a safe non-production database and an authorised test account/session. Do not write test leads into live customer data.
+- [ ] [BLOCKED] Admin password recovery: implementation and production redirect configuration are already merged, but sending a real reset email and testing sign-in requires the owner's mailbox and account access. No email was sent and no account was changed.
+- [ ] [BLOCKED] Bundle 7 release: PR #10 is a clean current-main draft with passing CI, but merge/release requires owner review and approval. Bundle 8 remains dependent on that gate.
+- [ ] [BLOCKED] Original 20-business prospect CSV: no prospect-list file exists in the main repository tree or was found in the Library search. The Library contains the 1,000-task register CSV and strategy documents, not the 20-business source list. Do not recreate the list or contact businesses.
+- [ ] [BLOCKED] Initial funnel decision window: no owner-approved evaluation window is recorded. Do not invent a business decision.
+
+### Database and analytics gates
+
+- [ ] [BLOCKED] Production migration target: local Supabase project ref differs from the checked Supabase project; Vercel's production URL values remain encrypted; the last three local migration versions differ from remote history.
+- [ ] [BLOCKED] Unique visitor/pageview reporting: current analytics deliberately avoids visitor identifiers and cookies. A privacy/retention decision is required before adding any identifier.
+- [ ] [BLOCKED] Campaign/referrer attribution and listing-page views: current schema lacks the required source fields/listing-view event; adding them needs a reviewed migration against the correct database target.
+- [ ] [BLOCKED] Form-start and claim-start analytics: successful submission events exist, but start events are not in TRACK_EVENTS or the database constraint. Do not add them until the migration gate is resolved.
+
+These blockers do not prevent independent code, test or documentation work that stays within the existing schema and free tooling.
 
 # 5. Execution roadmap
 
@@ -257,8 +277,8 @@ These are 5 November 2026 observations. Refresh refs and compare exact diffs bef
 
 - [x] [DONE] Establish this master plan as the intended single source of truth.
 - [x] [DONE] Save this file in the repository root as `MASTER_TODO.md`; confirmed present on `main`.
-- [ ] [REVIEW] Inventory of all 13 branches and 9 PR records is complete (5 Nov 2026); exact branch diff/ancestry review remains open.
-- [ ] [REVIEW] PR-to-branch relationships for all open PRs are recorded above; identify and compare unique changes on branches without PRs.
+- [ ] [REVIEW] Inventory of 19 branches and 5 open PRs is current as of 6 Nov 2026; full diff/ancestry review and cleanup decisions remain open.
+- [ ] [REVIEW] Current PR-to-branch relationships for #4, #8, #10, #11 and #12 are recorded above; compare unique changes on branches without PRs before any cleanup.
 - [ ] [TODO] Identify obsolete branches and duplicate bundle numbering.
 - [ ] [TODO] Standardise future branch and PR naming.
 - [ ] [TODO] Require a clear scope and acceptance criteria for every new task.
@@ -273,13 +293,13 @@ These are 5 November 2026 observations. Refresh refs and compare exact diffs bef
 
 **Priority: CRITICAL**
 
-- [x] [DONE] Recheck Vercel deployment status, quota and current production alias (5 Nov 2026); current `main` is READY in Production and `sewa.boxont.com` is attached.
-- [x] [DONE] Deploy the latest approved `main` commit `c6741670caaf036df1a94935831599fd16a6a3db` using the existing Vercel allowance.
-- [x] [DONE] Confirm production alias `sewa.boxont.com` and deployed commit SHA `c6741670caaf036df1a94935831599fd16a6a3db`.
+- [x] [DONE] Recheck Vercel deployment status, quota and current production alias (6 Nov 2026); deployment dpl_Gou24q64tcmGASESDmvqbxzrWpP7 is READY on main ee38ca0e and sewa.boxont.com is attached.
+- [x] [DONE] Verify the latest approved main commit ee38ca0e978f0149ca10f5b2caadb33282729148 is already READY in Production; no deployment was performed in this run.
+- [x] [DONE] Confirm production alias sewa.boxont.com and deployed commit SHA ee38ca0e978f0149ca10f5b2caadb33282729148.
 - [ ] [TODO] Verify homepage, neighbourhood pages and business profiles.
 - [ ] [TODO] Verify admin sign-in.
-- [ ] [TODO] Complete admin password recovery end-to-end.
-- [ ] [TODO] Verify production environment variables and Supabase project target.
+- [ ] [BLOCKED] Complete admin password recovery end-to-end — owner-controlled mailbox and admin account/session access are required.
+- [ ] [BLOCKED] Verify production environment variables and Supabase project target — Vercel values are encrypted to this connector; local Supabase ref and remote migration history do not align.
 - [ ] [TODO] Check browser console/network errors on key journeys.
 - [ ] [TODO] Record deployment URL, commit and test evidence here.
 
@@ -326,7 +346,7 @@ The primary funnel is Sewa discovery/prospect → free preview → attributed en
 - [x] [DONE] Admin quote/payment tracking foundation.
 - [x] [DONE] Separate quoted value from cash received.
 - [x] [DONE] Revenue summary foundation.
-- [ ] [IN PROGRESS] Test full public enquiry → admin inbox → quote → payment journey using safe test data; verify persistence, source/business attribution, admin-only commercial fields and cleanup.
+- [ ] [BLOCKED] Test full public enquiry → admin inbox → quote → payment journey — requires a safe non-production database and authorised test account/session; production test writes are prohibited.
 - [ ] [TODO] Confirm visitors can submit enquiries but cannot write commercial fields.
 - [ ] [TODO] Confirm only authorised admins can record quotes and payments.
 - [ ] [TODO] Verify totals against source records, including partial payments/refunds where supported.
@@ -352,7 +372,7 @@ The primary funnel is Sewa discovery/prospect → free preview → attributed en
 
 ### 3.3 Sales pipeline (Bundle 7)
 
-- [ ] [TODO] Reconcile and release Bundle 7 on current main.
+- [ ] [BLOCKED] Reconcile and release Bundle 7 on current main — clean draft PR #10 and CI are ready; owner review/approval is required before merge or release.
 - [ ] [TODO] Verify prospect stages and allowed transitions.
 - [ ] [TODO] Verify follow-up dates, due-soon and overdue queues use Kathmandu time.
 - [ ] [TODO] Verify activity history and contact timestamps.
@@ -366,7 +386,7 @@ The primary funnel is Sewa discovery/prospect → free preview → attributed en
 
 ### 3.4 Incoming enquiries (Bundle 8)
 
-- [ ] [TODO] Reconcile and release Bundle 8 after Bundle 7.
+- [ ] [BLOCKED] Reconcile and release Bundle 8 after Bundle 7 — dependency is awaiting owner-approved Bundle 7 release and migration-history resolution.
 - [ ] [TODO] Verify direct service enquiries can become opportunities.
 - [ ] [TODO] Verify listing-related enquiries can become opportunities.
 - [ ] [TODO] Prevent duplicate conversion.
@@ -376,8 +396,8 @@ The primary funnel is Sewa discovery/prospect → free preview → attributed en
 
 ### 3.5 Proposal Composer (Bundle 9)
 
-- [ ] [TODO] Inspect existing proposal-composer implementation and isolate its unique changes.
-- [ ] [TODO] Create a clean PR after Sales Pipeline and inbound conversion dependencies are released.
+- [ ] [BLOCKED] Inspect existing proposal-composer implementation and isolate its unique changes — release sequence depends on Bundle 7 and Bundle 8 owner review.
+- [ ] [BLOCKED] Create a clean PR after Sales Pipeline and inbound conversion dependencies are released — both dependencies remain unreleased.
 - [ ] [TODO] Generate customer-specific English proposals.
 - [ ] [TODO] Generate customer-specific Nepali proposals.
 - [ ] [TODO] Include scope, deliverables, exclusions and assumptions.
@@ -526,10 +546,10 @@ Historical audit baseline (not a verified current count): 52 businesses, 8 categ
 
 **Priority: HIGH**
 
-- [ ] [TODO] Audit existing analytics events and their data fields.
-- [ ] [TODO] Confirm no unnecessary personal information is collected.
+- [x] [DONE] Audit existing analytics events and their data fields. Checked TRACK_EVENTS, event call sites, the Supabase event constraint and production aggregate counts on 6 Nov 2026.
+- [x] [DONE] Confirm no unnecessary personal information is collected. track.ts records event, optional listing slug/query, language and path only; no names, account IDs, cookies or precise location.
 - [ ] [TODO] Distinguish listing opens from impressions.
-- [ ] [TODO] Distinguish contact button taps from completed calls/messages.
+- [x] [DONE] Distinguish contact button taps from completed calls/messages. click_call and click_whatsapp are tap events, not completed calls or messages.
 - [x] [DONE] Measure search usage and no-result queries safely. Admin Insights tab shows searches, including zero-result ones, and action taps, backed by an analytics table. Shipped by GuideBook bot, 26-31 Oct 2026.
 - [x] [DONE] Measure enquiry submissions. Funnel tracking from listing to preview to enquiry. Shipped by GuideBook bot, 26-31 Oct 2026.
 - [ ] [TODO] Measure qualified opportunities.
@@ -653,44 +673,53 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 
 | Order | Task | Status |
 |---:|---|---|
-| 1 | Test the production preview → quote form → database → admin lead path end to end | REVIEW — live route, prefill, anonymous insert permissions and admin quote/payment writes verified; real browser POST and signed-in admin UI remain unverified |
+| 1 | Test the production preview → quote form → database → admin lead path end to end | BLOCKED — real browser POST and signed-in admin UI require an authorised test account/session and safe non-production database; production test writes are prohibited |
 | 2 | Verify lead source, business, preview URL and campaign attribution across each form | DONE — source and listing attribution audited; UTM/referrer/campaign ID are not retained on lead records |
 | 3 | Revalidate the existing 20-business prospect CSV and each website status | BLOCKED — original 20-business CSV not found in `main` or the Library; do not recreate or guess the list |
-| 4 | Confirm production deployment and complete admin password recovery verification | Deployment + domain mapping DONE 5 Nov; password-reset journey TODO |
+| 4 | Confirm production deployment and complete admin password recovery verification | Deployment/domain READY on 6 Nov; real password-reset email and sign-in are BLOCKED pending owner-controlled mailbox/account access |
 | 5 | Review the 390px preview and quote form; capture real screenshots | DONE 6 Nov 2026: EN/NE at 390×844 first, then 1280×1800; screenshots captured of preview sections, enquiry forms and inline errors. No horizontal overflow; 44px+ effective targets; labeled 16px inputs. Enlarged language controls, linked form hints, removed duplicated optional wording and prevented the hidden quote pill covering the form. 179 tests pass; preview build/typecheck OK. Presentation only; no enquiries sent, schema/attribution/admin changes, outreach, publishing or deployment. |
-| 6 | Reconcile Bundle 7 Sales Pipeline against current `main` | REVIEW — reconciled branch ready; PostgreSQL migration/security tests, TypeScript, lint, unit/component tests and production build passed; previous PR #7 remains closed by owner |
-| 7 | Reconcile Bundle 8 after Bundle 7; preserve original enquiry/payment records | TODO |
-| 8 | Isolate and review Proposal Composer after its dependencies | TODO |
-| 9 | Use the funnel baseline to fix the largest conversion leak | TODO |
-| 10 | Improve directory quality and coverage based on real user demand and lead value | TODO |
+| 6 | Reconcile Bundle 7 Sales Pipeline against current `main` | BLOCKED — current-main draft PR #10 and CI are ready; owner review/approval is required before merge, migration or moving to Bundle 8 |
+| 7 | Reconcile Bundle 8 after Bundle 7; preserve original enquiry/payment records | BLOCKED — depends on owner-approved Bundle 7 release and resolved migration history |
+| 8 | Isolate and review Proposal Composer after its dependencies | BLOCKED — depends on Bundle 7/8 release approval |
+| 9 | Use the funnel baseline to fix the largest conversion leak | BLOCKED — only five analytics events exist (3 preview views, 2 zero-result searches); no qualified-lead sample supports a leak diagnosis |
+| 10 | Improve directory quality and coverage based on real user demand and lead value | BLOCKED — current demand/lead evidence is insufficient to choose expansions safely |
 
 ### Task 1 verification notes — 6 November 2026
 
-- Production `main` is `794b959b9056a9ec147414c39db4b6da6c0b79f1`. Vercel production deployment is READY on that exact commit; domain `sewa.boxont.com` is attached.
+- Production main is ee38ca0e978f0149ca10f5b2caadb33282729148. Vercel deployment dpl_Gou24q64tcmGASESDmvqbxzrWpP7 is READY on that exact commit; domain sewa.boxont.com is attached.
 - GitHub Quality Gate run #310 passed on that exact commit: TypeScript, lint, unit/component tests, production build, and disposable PostgreSQL migration/security tests.
 - Production homepage, `/for-businesses`, the `aavaran-durbar-marg` website preview, and its preview-origin contact URL returned HTTP 200. The preview CTA carried the listing slug and business name; the contact page rendered both prefilled, with a prefilled preview-specific message.
 - A rollback-only SQL test exercised a public `anon` insert and admin quote/payment updates (NPR 25,000 quoted, then paid). The transaction rolled back. Final production checks found zero contact messages, zero QA leads, and zero leftover QA rate-limit keys. Anonymous users cannot read leads or insert/update private quote/payment fields.
-- **Boundary:** this was not a browser-driven JavaScript form submission and did not authenticate to the visible `/admin` UI. Keep Task 1 at REVIEW; do not describe the complete browser journey as passed.
+- **Boundary:** this was not a browser-driven JavaScript form submission and did not authenticate to the visible /admin UI. Task 1 is now BLOCKED until an authorised test account/session and safe non-production database are available; no production write was repeated.
 
 ### Task 2 attribution audit — 6 November 2026
 
 - Preview and For Businesses contact leads retain `page` and `source_listing_slug`; the admin can rebuild the listing and preview links from the slug. Claim requests retain `listing_slug` in `business_claims`; corrections retain `listing_slug` in `correction_reports`; new-business submissions use their own table.
-- `contact_messages` has no UTM, campaign ID, landing/referrer route, or explicit preview URL fields. `analytics_events` records `listing_slug`, event, query, language and path, but no UTM/campaign fields. Sponsored clicks are counted by listing, placement/target key and date window; they are not joined to a specific campaign or later enquiry. No promotions or sponsored-click rows currently exist in production.
+- `contact_messages` has no UTM, campaign ID, landing/referrer route, email field or explicit preview URL fields. `analytics_events` records listing_slug, event, query, language and path, but no UTM/campaign/referrer fields. Sponsored clicks are counted by listing, placement/target key and date window; they are not joined to a specific campaign or later enquiry. The checked database has no promotion rows.
 - Keep SW-0060 and SW-0061 TODO. Mark SW-0062 REVIEW: the preview slug/page mapping is present in code, but the browser submit/validation journey has not been exercised end to end. No schema or application changes were made during this audit.
 
 ### Current task
 
-**Task 6 — Reconcile Bundle 7 Sales Pipeline against current `main`.**  
-**Status: REVIEW — code reconciled on a clean branch; owner review is the remaining gate.**
+**SW-0042 — Verify that analytics events are not double-fired during route changes or form submissions.**  
+**Status: DONE — PR #12 draft; commit c447e63cf548a9274c3d21800cef4efc79125c60; Quality Gate run #368 passed.**
 
-- Created `sewa/bundle-07-reconciled-main` from current `main`. The branch contains the Bundle 7 feature delta only; current `main`'s newer `src/lib/sales-pipeline.ts` was preserved, including inbound-lead mapping and proposal-draft helpers.
-- Integrated the admin Sales Pipeline tab, component, typed Supabase tables, English/Nepali translations, Drizzle and Supabase migrations, migration journal entry, database contract test and disposable PostgreSQL security checks.
-- Preserved the newer proposal and inbound-conversion tests already on `main`; the older Bundle 7 copy no longer replaces them.
-- Drizzle and Supabase migration files are byte-identical. CI migration count and success message both correctly report 14 migrations.
-- GitHub Quality Gate run [#42216569490](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42216569490) passed: disposable PostgreSQL migration/security tests, TypeScript validation, lint, unit/component tests and production build.
-- Original PR #7 was closed unmerged by the repository owner on 6 November 2026. It was not reopened and no replacement PR was opened. The new reconciliation branch is ready for review; wait for owner direction before opening a replacement PR or moving to Bundle 8.
-- No production database migration, production deployment, production setting change or merge was performed. Bundle 8 was left untouched.
+- SW-0041 is DONE: the app already uses anonymous first-party Supabase analytics through src/lib/track.ts; no paid analytics product is needed. The checked database has five events (3 preview_view, 2 search_zero).
+- Route audit: preview views are emitted from an effect keyed to the business slug; same-slug rerenders do not re-fire the effect. The app root/router does not use React StrictMode. Search analytics use a 1.5-second debounce and cancel the prior timer when query/results change.
+- Listing-to-preview clicks and preview CTA clicks already use stable preview_click and preview_enquiry_click events with the business slug. The checked database constraint permits both.
+- The contact form had no synchronous in-flight guard; the claim form relied on React state alone. Added a useRef guard to both. A successful insert emits its success event once; returned/rejected errors release the guard so a retry is possible.
+- Added src/test/analytics-submission.test.tsx: two submit events dispatched in one React batch must produce one insert and one success event for each of the contact and claim forms.
+- CI run #368 passed TypeScript, lint, unit/component tests, production build and disposable PostgreSQL migration/security tests.
+- No new event names, migrations, production writes, production settings, merges or deployments. No paid resources.
 
+### Analytics register follow-through
+
+- SW-0043 BLOCKED: unique visitor/pageview reporting needs an owner-approved privacy/retention policy before any visitor identifier is introduced.
+- SW-0044 BLOCKED: campaign/referrer fields are absent; a source policy and reviewed migration are required.
+- SW-0045 BLOCKED: no listing_view event exists in TRACK_EVENTS, the database constraint or the audited analytics branch; the migration target/history mismatch prevents safe schema work.
+- SW-0046, SW-0047 and SW-0048 DONE: listing preview click, preview view with slug, and preview CTA click are already tracked in code and allowed by the database constraint.
+- SW-0049 and SW-0050 BLOCKED: form-start and claim-start events are not in the event enum/constraint; do not add them before the migration gate is resolved.
+
+**Next independent P0 task:** SW-0085 — extend single-write regression coverage across the remaining lead-entry paths without writing to Production. Production form/admin tests (SW-0081–SW-0084) remain BLOCKED pending a safe test environment and authorised account.
 ---
 
 ## 10. Instruction for every future AI session
@@ -728,14 +757,14 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 **Phase:** 1 - Revenue foundation  
 **Definition of done:** One page defines the revenue goal, what the site sells, what is deliberately deferred, and the rules that prevent trust or outreach mistakes.
 
-- [ ] [TODO] **SW-0001 · P0 · Audit current state** — Write a one-sentence north-star goal: generate qualified website-design opportunities for Boxont from Sewa.
-- [ ] [TODO] **SW-0002 · P0 · Audit current state** — Define a qualified website lead using observable criteria, not assumptions about willingness to pay.
-- [ ] [TODO] **SW-0003 · P0 · Audit current state** — Define the primary conversion as a completed website enquiry with identifiable business context.
-- [ ] [TODO] **SW-0004 · P0 · Audit current state** — Define secondary conversions for preview views, preview CTA clicks, claim requests, contact-form sends, and repeat visits.
-- [ ] [TODO] **SW-0005 · P0 · Audit current state** — Separate website-design revenue metrics from future listing-subscription and booking revenue metrics.
-- [ ] [TODO] **SW-0006 · P0 · Audit current state** — Record that directory traffic alone is not success unless it creates useful customer or business-owner outcomes.
-- [ ] [TODO] **SW-0007 · P0 · Audit current state** — Record that 1,000 listings is a conditional supply milestone, not the north-star KPI.
-- [ ] [TODO] **SW-0008 · P0 · Audit current state** — Set an initial decision window for evaluating the current funnel before redesigning it again.
+- [x] [DONE] **SW-0001 · P0 · Audit current state** — Write a one-sentence north-star goal: generate qualified website-design opportunities for Boxont from Sewa. Evidence: north-star sentence is explicit in Section 0.
+- [x] [DONE] **SW-0002 · P0 · Audit current state** — Define a qualified website lead using observable criteria, not assumptions about willingness to pay. Evidence: observable qualification rule is recorded in Section 0; budget/willingness to pay is not inferred.
+- [x] [DONE] **SW-0003 · P0 · Audit current state** — Define the primary conversion as a completed website enquiry with identifiable business context. Evidence: primary conversion is explicitly defined in Section 0.
+- [x] [DONE] **SW-0004 · P0 · Audit current state** — Define secondary conversions for preview views, preview CTA clicks, claim requests, contact-form sends, and repeat visits. Evidence: secondary conversion definitions are recorded; implementation gaps remain blocked separately.
+- [x] [DONE] **SW-0005 · P0 · Audit current state** — Separate website-design revenue metrics from future listing-subscription and booking revenue metrics. Evidence: website-service revenue is explicitly separated from future placements and bookings.
+- [x] [DONE] **SW-0006 · P0 · Audit current state** — Record that directory traffic alone is not success unless it creates useful customer or business-owner outcomes. Evidence: Section 0 states traffic and feature count are not success without useful outcomes.
+- [x] [DONE] **SW-0007 · P0 · Audit current state** — Record that 1,000 listings is a conditional supply milestone, not the north-star KPI. Evidence: Section 0 states the 1,000-listing target is conditional.
+- [ ] [BLOCKED] **SW-0008 · P0 · Audit current state** — Set an initial decision window for evaluating the current funnel before redesigning it again. Evidence: requires an owner-approved evaluation window; no business decision has been invented.
 - [ ] [TODO] **SW-0009 · P1 · Audit current state** — Create a decision log for changes that affect the business model or brand position.
 - [ ] [TODO] **SW-0010 · P1 · Audit current state** — Record the original three phases: trust foundation, lead-generation funnel, then bookings after traction.
 - [ ] [TODO] **SW-0011 · P1 · Audit current state** — Keep the current money-first strategy while using data quality as a conversion enabler.
@@ -774,16 +803,16 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 **Phase:** 1 - Revenue foundation  
 **Definition of done:** The owner can answer where qualified leads came from, which page generated them, and which funnel step leaks.
 
-- [ ] [TODO] **SW-0041 · P0 · Audit current state** — Check whether production analytics are already installed before adding another analytics product.
-- [ ] [TODO] **SW-0042 · P0 · Audit current state** — Verify that analytics events are not double-fired during route changes or form submissions.
-- [ ] [TODO] **SW-0043 · P0 · Audit current state** — Record weekly unique visitors and pageviews by landing page.
-- [ ] [TODO] **SW-0044 · P0 · Audit current state** — Record organic-search visits separately from direct, referral, and campaign visits where data supports it.
-- [ ] [TODO] **SW-0045 · P0 · Audit current state** — Record visits to listing pages separately from website-preview pages.
-- [ ] [TODO] **SW-0046 · P0 · Audit current state** — Track clicks on each listing's website-preview link with a stable event name.
-- [ ] [TODO] **SW-0047 · P0 · Audit current state** — Track preview-page views with the business slug as a non-personal content identifier.
-- [ ] [TODO] **SW-0048 · P0 · Audit current state** — Track the primary preview CTA click without sending personal form data to analytics.
-- [ ] [TODO] **SW-0049 · P0 · Audit current state** — Track website-enquiry form starts and successful submissions as separate events.
-- [ ] [TODO] **SW-0050 · P0 · Audit current state** — Track claim-flow starts and completed claim submissions separately.
+- [x] [DONE] **SW-0041 · P0 · Audit current state** — Check whether production analytics are already installed before adding another analytics product. Evidence: first-party Supabase analytics already exist; five events were counted read-only in the checked project.
+- [x] [DONE] **SW-0042 · P0 · Audit current state** — Verify that analytics events are not double-fired during route changes or form submissions. Evidence: same-tick contact/claim duplicate-submit regression tests pass in PR #12 CI run #368.
+- [ ] [BLOCKED] **SW-0043 · P0 · Audit current state** — Record weekly unique visitors and pageviews by landing page. Evidence: unique visitor/pageview reporting needs an owner-approved privacy and retention policy before adding identifiers.
+- [ ] [BLOCKED] **SW-0044 · P0 · Audit current state** — Record organic-search visits separately from direct, referral, and campaign visits where data supports it. Evidence: UTM/referrer/campaign fields are absent; source policy and safe migration target are required.
+- [ ] [BLOCKED] **SW-0045 · P0 · Audit current state** — Record visits to listing pages separately from website-preview pages. Evidence: no listing_view event exists in code or DB constraint; migration target/history mismatch remains unresolved.
+- [x] [DONE] **SW-0046 · P0 · Audit current state** — Track clicks on each listing's website-preview link with a stable event name. Evidence: listing preview CTA emits preview_click with the business slug; DB constraint permits the event.
+- [x] [DONE] **SW-0047 · P0 · Audit current state** — Track preview-page views with the business slug as a non-personal content identifier. Evidence: preview route emits preview_view with the business slug; DB constraint permits the event.
+- [x] [DONE] **SW-0048 · P0 · Audit current state** — Track the primary preview CTA click without sending personal form data to analytics. Evidence: preview enquiry CTA emits preview_enquiry_click with the business slug; DB constraint permits the event.
+- [ ] [BLOCKED] **SW-0049 · P0 · Audit current state** — Track website-enquiry form starts and successful submissions as separate events. Evidence: form-start event is absent from TRACK_EVENTS and the DB constraint; migration gate is unresolved.
+- [ ] [BLOCKED] **SW-0050 · P0 · Audit current state** — Track claim-flow starts and completed claim submissions separately. Evidence: claim-start event is absent from TRACK_EVENTS and the DB constraint; migration gate is unresolved.
 - [ ] [TODO] **SW-0051 · P1 · Audit current state** — Track For Businesses page views and CTA clicks.
 - [ ] [TODO] **SW-0052 · P1 · Audit current state** — Track contact-form starts and successful submissions.
 - [ ] [TODO] **SW-0053 · P1 · Audit current state** — Track click-to-call events only where the user clicks a listed business's public number.
@@ -820,10 +849,10 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 **Phase:** 1 - Revenue foundation  
 **Definition of done:** Every enquiry reaches the database, retains its business/source context, and has a usable next action.
 
-- [ ] [REVIEW] **SW-0081 · P0 · Forms reported saving to database; regression-test** — Submit a production test lead through the website-preview quote form.
-- [ ] [REVIEW] **SW-0082 · P0 · Forms reported saving to database; regression-test** — Submit a production test lead through the For Businesses route.
-- [ ] [REVIEW] **SW-0083 · P0 · Forms reported saving to database; regression-test** — Submit a production test lead through a listing claim action.
-- [ ] [REVIEW] **SW-0084 · P0 · Forms reported saving to database; regression-test** — Submit a production test lead through the general contact form.
+- [ ] [BLOCKED] **SW-0081 · P0 · Forms reported saving to database; regression-test** — Submit a production test lead through the website-preview quote form. Evidence: requires an authorised test account and safe non-production database; production test submissions are prohibited.
+- [ ] [BLOCKED] **SW-0082 · P0 · Forms reported saving to database; regression-test** — Submit a production test lead through the For Businesses route. Evidence: requires an authorised test account and safe non-production database; production test submissions are prohibited.
+- [ ] [BLOCKED] **SW-0083 · P0 · Forms reported saving to database; regression-test** — Submit a production test lead through a listing claim action. Evidence: requires an authorised test account and safe non-production database; production test submissions are prohibited.
+- [ ] [BLOCKED] **SW-0084 · P0 · Forms reported saving to database; regression-test** — Submit a production test lead through the general contact form. Evidence: requires an authorised test account and safe non-production database; production test submissions are prohibited.
 - [ ] [TODO] **SW-0085 · P0 · Audit current state** — Verify each form creates exactly one database lead for one successful submission.
 - [ ] [TODO] **SW-0086 · P0 · Audit current state** — Verify the user receives a clear success state after a saved submission.
 - [ ] [TODO] **SW-0087 · P0 · Audit current state** — Verify a failed submission shows a useful retry message without losing typed values.
@@ -866,13 +895,13 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 **Phase:** 1 - Revenue foundation  
 **Definition of done:** The existing lead pipeline is reliable enough to run daily sales without losing, duplicating, or forgetting opportunities.
 
-- [ ] [REVIEW] **SW-0121 · P0 · Reported implemented; regression-test** — Verify the existing admin Leads tab is still accessible only to authorised users.
-- [ ] [REVIEW] **SW-0122 · P0 · Reported implemented; regression-test** — Verify New, Contacted, Quote sent, Won, and Lost stages load and save correctly.
-- [ ] [REVIEW] **SW-0123 · P0 · Reported implemented; regression-test** — Verify each stage count updates immediately after a lead changes stage.
-- [ ] [REVIEW] **SW-0124 · P0 · Reported implemented; regression-test** — Verify a lead can be moved backward if an accidental stage change occurs.
-- [ ] [REVIEW] **SW-0125 · P0 · Reported implemented; regression-test** — Verify the current business and preview links attached to a lead open the correct record.
-- [ ] [REVIEW] **SW-0126 · P0 · Reported implemented; regression-test** — Verify Call and WhatsApp actions use only the submitted public/business contact details where appropriate.
-- [ ] [REVIEW] **SW-0127 · P0 · Reported implemented; regression-test** — Verify private sales notes remain private and never appear on public routes.
+- [ ] [BLOCKED] **SW-0121 · P0 · Reported implemented; regression-test** — Verify the existing admin Leads tab is still accessible only to authorised users. Evidence: requires an authorised admin test account/session; no credentials or account access were used.
+- [ ] [BLOCKED] **SW-0122 · P0 · Reported implemented; regression-test** — Verify New, Contacted, Quote sent, Won, and Lost stages load and save correctly. Evidence: requires an authorised admin test account/session; no credentials or account access were used.
+- [ ] [BLOCKED] **SW-0123 · P0 · Reported implemented; regression-test** — Verify each stage count updates immediately after a lead changes stage. Evidence: requires an authorised admin test account/session; no credentials or account access were used.
+- [ ] [BLOCKED] **SW-0124 · P0 · Reported implemented; regression-test** — Verify a lead can be moved backward if an accidental stage change occurs. Evidence: requires an authorised admin test account/session; no credentials or account access were used.
+- [ ] [BLOCKED] **SW-0125 · P0 · Reported implemented; regression-test** — Verify the current business and preview links attached to a lead open the correct record. Evidence: requires an authorised admin test account/session; no credentials or account access were used.
+- [ ] [BLOCKED] **SW-0126 · P0 · Reported implemented; regression-test** — Verify Call and WhatsApp actions use only the submitted public/business contact details where appropriate. Evidence: requires an authorised admin test account/session; no credentials or account access were used.
+- [ ] [BLOCKED] **SW-0127 · P0 · Reported implemented; regression-test** — Verify private sales notes remain private and never appear on public routes. Evidence: requires an authorised admin test account/session; no credentials or account access were used.
 - [ ] [TODO] **SW-0128 · P1 · Audit current state** — Add a lead-created timestamp visible in the admin.
 - [ ] [TODO] **SW-0129 · P1 · Audit current state** — Add a last-updated timestamp to each lead.
 - [ ] [TODO] **SW-0130 · P1 · Audit current state** — Show how long each lead has remained in its current stage.
@@ -1004,13 +1033,13 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 **Phase:** 1 - Revenue foundation  
 **Definition of done:** Prospects are prioritised for website need, fit, contactability, and realistic value rather than collected as a vanity list.
 
-- [ ] [REVIEW] **SW-0241 · P0 · Existing CSV reported; revalidate** — Revalidate the existing CSV of 20 businesses before using it as a current prospect list.
-- [ ] [REVIEW] **SW-0242 · P0 · Existing CSV reported; revalidate** — Check each existing prospect still exists under the same business name.
-- [ ] [TODO] **SW-0243 · P0 · Audit current state** — Recheck every prospect's website status before describing it as missing or broken.
-- [ ] [TODO] **SW-0244 · P0 · Audit current state** — Record the exact evidence that a site is missing, broken, outdated, or unusable.
-- [ ] [TODO] **SW-0245 · P0 · Audit current state** — Separate businesses with no website from businesses with a working site that merely looks dated.
-- [ ] [TODO] **SW-0246 · P0 · Audit current state** — Prioritise technically broken sites over subjective claims that a design is ugly.
-- [ ] [TODO] **SW-0247 · P0 · Audit current state** — Record a public contact route for each prospect only when it is visible on an appropriate public source.
+- [ ] [BLOCKED] **SW-0241 · P0 · Existing CSV reported; revalidate** — Revalidate the existing CSV of 20 businesses before using it as a current prospect list. Evidence: no prospect-list file was found in the repository tree or Library search; do not reconstruct it.
+- [ ] [BLOCKED] **SW-0242 · P0 · Existing CSV reported; revalidate** — Check each existing prospect still exists under the same business name. Evidence: the source CSV is missing, so there are no source rows to verify.
+- [ ] [BLOCKED] **SW-0243 · P0 · Audit current state** — Recheck every prospect's website status before describing it as missing or broken. Evidence: depends on the missing 20-business prospect source CSV; no businesses have been invented or contacted.
+- [ ] [BLOCKED] **SW-0244 · P0 · Audit current state** — Record the exact evidence that a site is missing, broken, outdated, or unusable. Evidence: depends on the missing 20-business prospect source CSV; no businesses have been invented or contacted.
+- [ ] [BLOCKED] **SW-0245 · P0 · Audit current state** — Separate businesses with no website from businesses with a working site that merely looks dated. Evidence: depends on the missing 20-business prospect source CSV; no businesses have been invented or contacted.
+- [ ] [BLOCKED] **SW-0246 · P0 · Audit current state** — Prioritise technically broken sites over subjective claims that a design is ugly. Evidence: depends on the missing 20-business prospect source CSV; no businesses have been invented or contacted.
+- [ ] [BLOCKED] **SW-0247 · P0 · Audit current state** — Record a public contact route for each prospect only when it is visible on an appropriate public source. Evidence: depends on the missing 20-business prospect source CSV; no businesses have been invented or contacted.
 - [ ] [TODO] **SW-0248 · P1 · Audit current state** — Keep the prospect's official website and social source URLs in separate columns.
 - [ ] [TODO] **SW-0249 · P1 · Audit current state** — Record the date each prospect was reviewed.
 - [ ] [TODO] **SW-0250 · P1 · Audit current state** — Record the reviewer or automated process that made the assessment.
@@ -1067,7 +1096,8 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [TODO] **SW-0295 · P1 · Audit current state** — Prefer permission-based contact routes where available.
 - [ ] [TODO] **SW-0296 · P1 · Audit current state** — Do not scrape private contact details or bypass access controls.
 - [ ] [TODO] **SW-0297 · P1 · Audit current state** — Do not automate WhatsApp messages to businesses without explicit approval and a compliant method.
-- [ ] [TODO] **SW-0298 · P1 · Audit current state** — Do not create fake urgency, fake scarcity, or false claims about customers lost.- [ ] [TODO] **SW-0299 · P1 · Audit current state** — Do not promise search rankings, guaranteed leads, or a specific sales result.
+- [ ] [TODO] **SW-0298 · P1 · Audit current state** — Do not create fake urgency, fake scarcity, or false claims about customers lost.
+- [ ] [TODO] **SW-0299 · P1 · Audit current state** — Do not promise search rankings, guaranteed leads, or a specific sales result.
 - [ ] [TODO] **SW-0300 · P1 · Audit current state** — Prepare a short explanation of why this business was selected, tied to verified evidence.
 - [ ] [TODO] **SW-0301 · P2 · Audit current state** — Prepare a preview-sharing message that separates concept from production website.
 - [ ] [TODO] **SW-0302 · P2 · Audit current state** — Prepare a follow-up draft only for use after the owner approves a follow-up schedule.
