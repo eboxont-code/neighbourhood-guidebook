@@ -10,8 +10,9 @@ import { dict } from "@/lib/i18n";
 
 function loadPreview(slug: string) {
   const loader = PreviewRoute.options.loader;
-  if (!loader) throw new Error("Missing website-preview route loader");
-  return loader({ params: { slug } } as never);
+  if (typeof loader !== "function") throw new Error("Missing website-preview route loader");
+  const runLoader = loader as unknown as (context: { params: { slug: string } }) => { business: { slug: string } };
+  return runLoader({ params: { slug } });
 }
 
 describe("free website preview", () => {
