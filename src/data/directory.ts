@@ -1057,12 +1057,6 @@ export function intlDigits(p: string): string {
 }
 export const telLink = (p: string) => `tel:+${intlDigits(p)}`;
 
-const GENERIC_ADDRESS_WORDS = new Set([
-  "area", "building", "floor", "gate", "house", "level", "marg", "near", "neighbourhood",
-  "neighborhood", "no", "rd", "road", "st", "street", "ward",
-  "क्षेत्र", "टोल", "नजिक", "मार्ग", "वार्ड", "सडक", "घर", "भवन", "तल्ला",
-]);
-
 function addressWords(value: string) {
   return value.normalize("NFKC").toLowerCase().match(/[\p{L}\p{N}]+/gu) ?? [];
 }
@@ -1087,10 +1081,7 @@ function hasDetailedAddress(b: Business) {
   );
 
   return addressWords(b.address ?? "").some(
-    (word) =>
-      !contextWords.has(word) &&
-      !GENERIC_ADDRESS_WORDS.has(word) &&
-      /[\p{L}]/u.test(word),
+    (word) => !contextWords.has(word) && /[\p{L}]/u.test(word),
   );
 }
 

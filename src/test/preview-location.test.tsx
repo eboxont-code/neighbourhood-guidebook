@@ -97,6 +97,19 @@ describe("website preview location accuracy", () => {
     expect(directionsHref(fallback)).toBe(mapsLink(`${business.name}, ${business.address}`));
   });
 
+  it("keeps a recorded street-level address eligible for directions fallback", () => {
+    const business = getBusiness("filli-cafe-lazimpat");
+    if (!business) throw new Error("Missing street-address test business");
+    expect(business.address).toBe("Lazimpat Road, Kathmandu");
+
+    const withoutExplicitDirections: Business = { ...business };
+    delete withoutExplicitDirections.directions;
+    const document = renderPreview(withoutExplicitDirections);
+
+    expect(visitAddress(document)).toBe("Lazimpat Road, Kathmandu");
+    expect(directionsHref(document)).toBe(mapsLink(business.name + ", " + business.address));
+  });
+
   it("keeps an area-only address at its recorded level without adding street detail", () => {
     const business = getBusiness("the-new-barber-boudha");
     if (!business) throw new Error("Missing area-only address test business");
