@@ -701,7 +701,7 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 ### Repository and production refresh — 7 November 2026
 
 - `main` remains `ee38ca0e978f0149ca10f5b2caadb33282729148`; Quality Gate run #337 passed. The branch is unprotected and required status checks are disabled; this was recorded, not changed.
-- Five open draft PRs: #4 (older Bundle 4), #8 (Bundle 8), #10 (current-main Bundle 7), #11 (current-main Bundle 4 port), and #12 (form duplicate-write guard). PR #12 targets `main` at `ee38ca0e` and now heads `6a4e27eea252852589e7b9f601839e9ab6577abf` after adding SW-0091 preview-attribution coverage; its new CI and preview are pending.
+- Five open draft PRs: #4 (older Bundle 4), #8 (Bundle 8), #10 (current-main Bundle 7), #11 (current-main Bundle 4 port), and #12 (form duplicate-write guard). PR #12 targets `main` at `ee38ca0e` and now heads `c302531117106d4e87cb30db80f280a22bc57d2b` after adding SW-0092 claim-attribution coverage; its new CI and preview are pending.
 - Vercel Production deployment `dpl_Gou24q64tcmGASESDmvqbxzrWpP7` is READY on `main` at `ee38ca0e`; `sewa.boxont.com` is attached. PR #12 preview `dpl_D6apeuQqZfM1mf8HWS7W4sHGc88u` is READY and is not a Production deployment.
 - Supabase project `zvbavpcsyvibvpkxjzkn` (`neighbourhood-guidebook`) is ACTIVE_HEALTHY. Remote migration history has 8 entries; the first five match local filenames, while the last three remote versions (`20261104111910`, `20261104111922`, `20261104111936`) differ from local main filenames (`20261102130000`, `20261103114000`, `20261104100000`). No migration or repair was attempted. The Vercel environment-to-project binding was not re-derived from encrypted environment values in this run.
 - Read-only counts: 52 published listings; 0 contact messages; 0 business claims; 0 business submissions; 0 correction reports; 5 analytics events; 0 listing promotions; 3 form-rate rows; 1 user role. `business_sales_prospects` and `business_sales_activities` do not exist in this database.
@@ -776,15 +776,25 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 - **SW-0089 — BLOCKED:** the task requires real keyboard-only navigation on desktop and a phone-sized/mobile browser. This run has no interactive browser/device session; jsdom component tests cannot prove actual browser tab order, mobile virtual-keyboard behaviour or device-level focus. No owner manual steps requested.
 - **SW-0090 — BLOCKED:** the public code renders business listing phone values from `b.phone` and collects a visitor's own phone in forms; no operator/owner phone field or hard-coded operator number was found in the inspected public components/routes. The owner-private number itself is not identified in an approved source, so it cannot be compared against public listing data without inventing a sensitive fact. No owner manual steps requested.
 
-### Current task — SW-0091
+### Previous task — SW-0091
 
-**Status: IN PROGRESS — retain the source route and business slug when a lead comes from a preview.**
+**Status: REVIEW — preview source attribution is verified at route and component-payload level on draft PR #12.** Quality Gate runs #402 (push) and #403 (pull request) both passed on head `7b86acfb894adf0cbbd5c7bb1dfd84b591845f70`.
 
-- Audited the route chain: the preview CTA passes `from=preview`, the listing slug and business name to `/contact`; the contact route validates those search values and passes them to `ContactForm`; `ContactForm` persists `page="preview"` and `source_listing_slug` with the lead.
-- Added an assertion to the preview enquiry component test that the Supabase insert payload contains the preview source, business name and exact listing slug.
-- Test commit: `6a4e27eea252852589e7b9f601839e9ab6577abf`. CI and the matching preview are pending.
-- Supabase calls remain mocked; no live customer records or Production settings were changed.
-- Acceptance: the attribution assertion and full Quality Gate pass. A browser-to-database live journey remains blocked under Task 1.
+- Audited the route chain: the preview CTA passes `from=preview`, listing slug and business name to `/contact`; the contact route validates those search values and passes them to `ContactForm`; `ContactForm` persists `page="preview"` and `source_listing_slug` with the lead.
+- Added a component assertion that the preview enquiry insert payload contains `page="preview"`, the source listing slug, business name and message.
+- Test commit: `6a4e27eea252852589e7b9f601839e9ab6577abf`; documentation commit: `7b86acfb894adf0cbbd5c7bb1dfd84b591845f70`.
+- Runs #402/#403 passed TypeScript, ESLint, unit/component tests, production build and disposable PostgreSQL migration/security checks. The `7b86acfb` preview is READY and is not Production.
+- Live browser-to-database persistence remains blocked under Task 1; tests use mocked Supabase and did not create customer records.
+
+### Current task — SW-0092
+
+**Status: IN PROGRESS — retain the originating listing when a lead comes from a claim button.**
+
+- Audited the route chain: the listing page's claim CTA passes `search={{ listing: b.slug }}` to `/claim`; the claim route validates the search value and passes it to `ClaimForm`; `ClaimForm` resolves the business and writes both `listing_slug` and `listing_id` to `business_claims`.
+- Added an assertion to the claim component regression test that the insert payload retains listing slug `aavaran-durbar-marg` and directory ID `b1`.
+- Test commit: `c302531117106d4e87cb30db80f280a22bc57d2b`. CI and the matching preview are pending.
+- Supabase calls are mocked; no Production records or settings were changed.
+- Acceptance: the claim-attribution assertion and full Quality Gate pass. Live browser-to-database persistence remains blocked under Task 1.
 ---
 
 ## 10. Instruction for every future AI session
@@ -924,8 +934,8 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [REVIEW] **SW-0088 · P0 · Audit current state** — Verify form validation explains which required field needs attention. Evidence: five component tests verify field-specific messages, invalid state, first-field focus where supported and no insert; Quality Gate runs #398/#399 passed.
 - [ ] [BLOCKED] **SW-0089 · P0 · Audit current state** — Verify the form works with keyboard-only interaction on desktop and mobile. Blocker: no interactive desktop/mobile browser or device session is available; jsdom cannot establish real tab order or mobile keyboard/focus behaviour.
 - [ ] [BLOCKED] **SW-0090 · P0 · Audit current state** — Verify the form does not publish the owner's private phone number. Blocker: no approved source identifies the owner's private number for comparison; public listing phone values are business data and must not be guessed or treated as the owner's number.
-- [ ] [IN PROGRESS] **SW-0091 · P0 · Audit current state** — Retain the source route and business slug when a lead comes from a preview. Evidence pending: route chain passes `from=preview`, business name and listing slug to ContactForm; a payload assertion has been added; CI pending.
-- [ ] [TODO] **SW-0092 · P0 · Audit current state** — Retain the originating listing when a lead comes from a claim button.
+- [ ] [REVIEW] **SW-0091 · P0 · Audit current state** — Retain the source route and business slug when a lead comes from a preview. Evidence: route chain passes `from=preview`, business name and listing slug to ContactForm; payload assertion verifies `page="preview"` and `source_listing_slug`; Quality Gate runs #402/#403 passed. Live persistence remains blocked under Task 1.
+- [ ] [IN PROGRESS] **SW-0092 · P0 · Audit current state** — Retain the originating listing when a lead comes from a claim button. Evidence pending: claim route passes listing slug to ClaimForm; payload assertion verifies listing slug and listing ID; CI pending.
 - [ ] [TODO] **SW-0093 · P0 · Audit current state** — Retain the form intent when a lead comes from the For Businesses page.
 - [ ] [TODO] **SW-0094 · P0 · Audit current state** — Set a default source only when the source genuinely cannot be identified.
 - [ ] [TODO] **SW-0095 · P0 · Audit current state** — Store source metadata in structured columns rather than embedding it only in a message string.
