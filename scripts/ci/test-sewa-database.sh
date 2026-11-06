@@ -55,7 +55,7 @@ if [[ "$migration_count" -ne 13 ]]; then
 fi
 
 echo "Testing Nepali and mixed-language form values in disposable PostgreSQL..."
-docker exec -i "$POSTGRES_CONTAINER_ID" psql -v ON_ERROR_STOP=1 -U postgres -d sewa_ci <<'SQL'
+unicode_results="$(docker exec -i "$POSTGRES_CONTAINER_ID" psql -v ON_ERROR_STOP=1 -Atq -U postgres -d sewa_ci <<'SQL'
 BEGIN;
 SET LOCAL ROLE anon;
 INSERT INTO public.contact_messages (name, business_name, message, page, client_key)
@@ -78,37 +78,29 @@ VALUES (
   'sewa-unicode-business'
 );
 RESET ROLE;
-DO $
-DECLARE
-  contact_row public.contact_messages%ROWTYPE;
-  business_row public.business_submissions%ROWTYPE;
-BEGIN
-  SELECT * INTO contact_row
-  FROM public.contact_messages
-  WHERE name = 'सुमन श्रेष्ठ' AND business_name = 'Himalayan क्याफे';
-  IF NOT FOUND THEN
-    RAISE EXCEPTION 'unicode_contact_row_missing';
-  END IF;
-  IF contact_row.message <> 'नमस्ते — I would like a website for हिमालयन क्याफे.'
-     OR contact_row.client_key IS NOT NULL THEN
-    RAISE EXCEPTION 'unicode_contact_round_trip_failed';
-  END IF;
-
-  SELECT * INTO business_row
-  FROM public.business_submissions
-  WHERE business_name = 'हिमालयन क्याफे / Himalayan Café';
-  IF NOT FOUND THEN
-    RAISE EXCEPTION 'unicode_business_row_missing';
-  END IF;
-  IF business_row.name <> 'सुमन श्रेष्ठ'
-     OR business_row.note <> 'नमस्ते — please add this business.'
-     OR business_row.client_key IS NOT NULL THEN
-    RAISE EXCEPTION 'unicode_business_round_trip_failed';
-  END IF;
-END
-$;
+SELECT CASE WHEN EXISTS (
+  SELECT 1 FROM public.contact_messages
+  WHERE name = 'सुमन श्रेष्ठ'
+    AND business_name = 'Himalayan क्याफे'
+    AND message = 'नमस्ते — I would like a website for हिमालयन क्याफे.'
+    AND client_key IS NULL
+) THEN 'PASS' ELSE 'FAIL' END;
+SELECT CASE WHEN EXISTS (
+  SELECT 1 FROM public.business_submissions
+  WHERE business_name = 'हिमालयन क्याफे / Himalayan Café'
+    AND name = 'सुमन श्रेष्ठ'
+    AND note = 'नमस्ते — please add this business.'
+    AND client_key IS NULL
+) THEN 'PASS' ELSE 'FAIL' END;
 ROLLBACK;
 SQL
+)"
+unicode_passes="$(printf '%s\n' "$unicode_results" | grep -c '^PASS$' || true)"
+if [[ "$unicode_passes" -ne 2 ]] || grep -q '^FAIL$' <<<"$unicode_results"; then
+  echo "Unicode round-trip failed; expected two PASS results." >&2
+  printf '%s\n' "$unicode_results" >&2
+  exit 1
+fi
 
 echo "Unicode form round-trip passed."
 
