@@ -46,6 +46,8 @@ function fill(s: string, v: Record<string, string>) {
 function Status({ b, light = false }: { b: Business; light?: boolean }) {
   const { t } = useI18n();
   const now = useNow();
+  // Only show an "open/closed now" claim when the business's own source verified its hours.
+  if (!b.hoursVerified || !b.hoursSource?.trim()) return null;
   const d = now ? statusDetail(b.hours, now) : null;
   if (!d) return null;
   const open = d.kind === "open" || d.kind === "open24";
@@ -64,23 +66,30 @@ function Status({ b, light = false }: { b: Business; light?: boolean }) {
   );
 }
 
+/** Preview hours need a recorded source; unverified sourced hours are labelled below. */
+function previewHours(b: Business) {
+  return b.hours?.length && b.hoursSource?.trim() ? b.hours : undefined;
+}
+
 function TodayHours({ b }: { b: Business }) {
   const { t, lang } = useI18n();
   const now = useNow();
-  if (!b.hours?.length) return <span className="text-muted-foreground">{t("pvAddThis")}</span>;
-  const week = weekTable(b.hours);
+  const hours = previewHours(b);
+  if (!hours?.length) return <span className="text-muted-foreground">{t("pvAddThis")}</span>;
+  const week = weekTable(hours);
   if (now && week) {
     const w = week[kathmanduNow(now).day];
     return <span className="tabular-nums">{w ? timeLabel(w.time, lang) : t("pvAddThis")}</span>;
   }
-  return <span className="tabular-nums">{b.hours.map((h) => `${dayLabel(h.days, lang)} ${timeLabel(h.time, lang)}`.trim()).join(", ")}</span>;
+  return <span className="tabular-nums">{hours.map((h) => `${dayLabel(h.days, lang)} ${timeLabel(h.time, lang)}`.trim()).join(", ")}</span>;
 }
 
 function Week({ b }: { b: Business }) {
   const { t, lang } = useI18n();
   const now = useNow();
-  if (!b.hours?.length) return <p className="py-3 text-[15px] text-muted-foreground">{t("pvAddThis")}</p>;
-  const week = weekTable(b.hours);
+  const hours = previewHours(b);
+  if (!hours?.length) return <p className="py-3 text-[15px] text-muted-foreground">{t("pvAddThis")}</p>;
+  const week = weekTable(hours);
   const today = now ? kathmanduNow(now).day : -1;
   return (
     <div>
@@ -99,7 +108,7 @@ function Week({ b }: { b: Business }) {
         </ul>
       ) : (
         <ul className="divide-y divide-[var(--pv-line)]">
-          {b.hours.map((h, i) => <li key={i} className="flex min-h-12 items-center justify-between gap-3 px-1 text-[15px]"><span>{dayLabel(h.days, lang)}</span><span className="text-right tabular-nums">{timeLabel(h.time, lang)}</span></li>)}
+          {hours.map((h, i) => <li key={i} className="flex min-h-12 items-center justify-between gap-3 px-1 text-[15px]"><span>{dayLabel(h.days, lang)}</span><span className="text-right tabular-nums">{timeLabel(h.time, lang)}</span></li>)}
         </ul>
       )}
       {b.hoursSource && !b.hoursVerified && <p className="mt-3 text-[13px] text-muted-foreground">{t("hoursUnverified")} {b.hoursSource}</p>}

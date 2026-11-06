@@ -961,13 +961,27 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 - Quality Gate runs #442 (push) and #443 (pull request) both passed on code head `7c5b7869c02769fcada1922195f3f5b9c7bc307d`: TypeScript, ESLint (0 errors; 25 warnings), 26 test files / 215 tests, production build, and disposable PostgreSQL migration/security/concurrency checks.
 - Keep REVIEW rather than DONE because the test is in a draft stacked PR and has not been merged or released. No production data, schema, migrations, settings, or deployment changed.
 
-### Current task — SW-0166
+### Previous task — SW-0166
 
-**Status: IN PROGRESS — verify preview hours are shown only when present and their trust status is made clear.**
+**Status: REVIEW — website previews now display only non-empty hours with a recorded source; unverified sourced hours remain explicitly labelled, and live open/closed status is shown only when hours are verified and sourced.**
 
-- Audit `TodayHours`, `Week` and `Status` in `src/routes/s.$slug_.website-preview.tsx`, plus the directory's `hours`, `hoursSource` and `hoursVerified` fields.
-- Check existing fixtures for missing hours, verified hours, and unverified hours with/without a source. Add focused render tests for the existing intended trust rule; change application code only if the audit proves a false or misleading display.
-- Do not invent or alter business hours. No production data, migrations, settings, or deployment changes are required.
+- Audited `TodayHours`, `Week` and `Status` in `src/routes/s.$slug_.website-preview.tsx`, plus the directory's `hours`, `hoursSource` and `hoursVerified` fields. Existing directory data was preserved; no hours were invented or edited.
+- Added `previewHours` to require a non-empty schedule and a non-blank recorded source. `TodayHours` and `Week` use only that filtered schedule. Unverified sourced hours remain visible with the existing source/unverified note; `Status` suppresses open/closed claims unless `hoursVerified` is true and a source is present.
+- Added three static-render tests using existing fixtures for sourced/unverified and verified hours, plus a synthetic no-source fixture. Tests assert the warning and source note, verified-only live status, and hidden hours when the source is absent.
+- Initial Quality Gate run #449 failed at TypeScript because the synthetic fixture explicitly assigned `undefined` to an exact optional `hoursSource?: string` property. Corrected the fixture to use an empty string, which represents an absent/blank source while respecting `exactOptionalPropertyTypes`; no type rule was weakened.
+- Fix commit: [`e8d7ece9916f70b3828fad140cc41b4fb71fc57c`](https://github.com/eboxont-code/neighbourhood-guidebook/commit/e8d7ece9916f70b3828fad140cc41b4fb71fc57c).
+- Quality Gate run [#451](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42254572845) passed on the exact code head: TypeScript, ESLint (0 errors; 25 existing warnings), 27 test files / 218 tests, production build, and disposable PostgreSQL migration/security/concurrency checks.
+- Vercel reports a build-rate-limit failure for the preview status. No manual preview or production deployment was initiated; the passing GitHub Quality Gate is the code verification evidence.
+- Draft PR [#15](https://github.com/eboxont-code/neighbourhood-guidebook/pull/15) remains stacked on draft PR #14 and unmerged. Keep this task at REVIEW until the stacked work is owner-reviewed and released.
+- No production data, schema, migrations, settings, outreach, pricing or deployment changes. Additional spend: $0.
+
+### Current task — SW-0167
+
+**Status: IN PROGRESS — verify a preview does not invent or display opening hours when the listing has no recorded hours.**
+
+- Audit the existing preview's quick-fact, weekly-hours and live-status rendering with a fixture that has no `hours` schedule.
+- Add a focused render regression test proving that absent hours produce the existing unavailable state and no fabricated times or open/closed claim. Reuse the existing preview test harness and real directory fixtures; do not alter listing data.
+- Do not invent or edit business hours. No production data, migrations, settings, or deployment changes are required.
 ---
 
 ## 10. Instruction for every future AI session
@@ -1194,8 +1208,8 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [REVIEW] **SW-0163 · P0 · Reported preview template exists; regression-test** — Regression-test the template against a business with a working website to ensure it is not mislabelled.
 - [ ] [REVIEW] **SW-0164 · P0 · Audit current state** — Verify preview routes use the expected business slug and fail safely for an unknown slug. Evidence: three route-loader tests cover exact business resolution, legacy 301 redirect mapping and unknown-slug not-found; Quality Gate runs #437/#438 passed (25 files / 213 tests, TypeScript, lint, build and disposable PostgreSQL security tests). Draft PR #13, unmerged.
 - [ ] [REVIEW] **SW-0165 · P0 · Audit current state** — Verify the preview displays the correct business name from the listing record. Evidence: static-render tests use two real directory fixtures and assert the exact name in hero, navigation and footer; Quality Gate runs #442/#443 passed (26 files / 215 tests, TypeScript, lint, build and disposable PostgreSQL security tests). Draft PR #14, unmerged.
-- [ ] [IN PROGRESS] **SW-0166 · P0 · Audit current state** — Verify the preview displays only hours that exist and are sufficiently trustworthy. Auditing the preview hours/status rendering and directory trust metadata; no business hours or production data will be invented or changed.
-- [ ] [TODO] **SW-0167 · P0 · Audit current state** — Verify the preview never invents opening hours when the listing lacks them.
+- [ ] [REVIEW] **SW-0166 · P0 · Audit current state** — Verify the preview displays only hours that exist and are sufficiently trustworthy. Evidence: preview hours require a non-empty schedule and recorded source; unverified sourced hours are labelled and live status requires verified hours. Three render tests; Quality Gate #451 passed (27 files / 218 tests, TypeScript, ESLint, build and disposable PostgreSQL security/concurrency checks). Draft PR #15, unmerged; keep REVIEW until release.
+- [ ] [IN PROGRESS] **SW-0167 · P0 · Audit current state** — Verify the preview never invents opening hours when the listing lacks them. Next independent task after SW-0166; test an hours-absent fixture without changing directory data.
 - [ ] [TODO] **SW-0168 · P0 · Audit current state** — Verify the preview uses the correct area and address fields without upgrading a vague area into an exact address.
 - [ ] [TODO] **SW-0169 · P0 · Audit current state** — Verify the map/directions action appears only when a reliable location exists.
 - [ ] [TODO] **SW-0170 · P0 · Audit current state** — Verify the phone action appears only when a verified public phone exists.
