@@ -1,4 +1,5 @@
 import { createElement, type ReactNode } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { getBusiness, mapsLink, type Business } from "@/data/directory";
 import { dict } from "@/lib/i18n";
@@ -64,9 +65,6 @@ function renderPreview(business: Business) {
   }
 }
 
-function renderToStaticMarkup(element: ReactNode) {
-  return require("react-dom/server").renderToStaticMarkup(element);
-}
 
 function quickFactAddress(document: Document) {
   return document.querySelectorAll("dl dd").item(1)?.textContent?.trim();
