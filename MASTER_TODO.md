@@ -702,11 +702,12 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 
 - Repository default branch is `main` at `ee38ca0e978f0149ca10f5b2caadb33282729148`. GitHub Quality Gate run #337 passed on that exact SHA; the combined commit status is successful.
 - Production Vercel deployment `dpl_Gou24q64tcmGASESDmvqbxzrWpP7` is READY on that exact `main` SHA. `sewa.boxont.com` is attached. No production deployment was initiated in this session.
-- Six open draft PRs are present: #4 (older Bundle 4), #8 (Bundle 8), #10 (current-main Bundle 7), #11 (current-main contact insights), #12 (form protection/regression coverage), and #13 (preview route regression tests).
-- PR #12 targets `main` at `ee38ca0e`; current head is `1f120d7305ca43dea2da0cc7cafa7e493525d2ef`. Its Unicode round-trip Quality Gate #429 passed on code head `66533a47`; documentation refresh runs #430 (push) and #431 (PR) both passed on the current PR #12 head.
-- PR #13 is a draft stacked on PR #12's branch. Current head is `38d79188544ecd2078b992e85c02cdcbf9279e90`; it changes only `src/test/preview.test.ts`. Quality Gate runs #437 (push) and #438 (PR) both passed: TypeScript, ESLint, 25 test files / 213 tests, production build, and disposable PostgreSQL migration/security/concurrency tests.
-- The first PR #13 test attempt (#435/#436) caught an incorrect assertion about TanStack Router's legacy redirect representation. The route throws a standard HTTP `Response` with status 301; the test now asserts that status and separately verifies the legacy slug map points to `plush-lazimpat`. The corrected head passed both Quality Gates.
-- Vercel reports a build-rate-limit failure for current PR #12/#13 heads (`upgradeToPro=build-rate-limit`). The latest observed READY preview is for earlier PR #12 head `404d5aa2`; no manual preview deployment was attempted. This Vercel limit does not invalidate passing GitHub Quality Gates.
+- Seven open draft PRs are present: #4 (older Bundle 4), #8 (Bundle 8), #10 (current-main Bundle 7), #11 (current-main contact insights), #12 (form protection/regression coverage), #13 (preview route regression), and #14 (preview business-name render regression).
+- PR #12 targets `main` at `ee38ca0e`; current head is `1f120d7305ca43dea2da0cc7cafa7e493525d2ef`. Its Unicode round-trip Quality Gate #429 passed on code head `66533a47`; documentation refresh runs #430/#431 passed (push and PR).
+- PR #13 is a draft stacked on PR #12. Current head is `4631b5685a361eac30b0b8d44f3cf31944c4ab08`; route regression code head `38d79188` passed runs #437 (push) and #438 (PR). Its plan update run #440 (PR) passed; push run #439 is still being checked.
+- PR #14 is a draft stacked on PR #13. Current code head is `7c5b7869c02769fcada1922195f3f5b9c7bc307d`; runs #442 (push) and #443 (PR) both passed. The application job passed TypeScript, ESLint (0 errors; 25 warnings), 26 test files / 215 tests, and production build. Disposable PostgreSQL applied all 13 repository migrations and passed existing security/concurrency checks.
+- PR #13's initial test attempt (#435/#436) caught an incorrect assertion about TanStack Router's legacy redirect representation. Runtime evidence showed a standard HTTP `Response` with status 301; the test was corrected to assert that status and the redirect-map target. Corrected runs #437/#438 passed.
+- Vercel reports a build-rate-limit failure for current PR #12–#14 heads (`upgradeToPro=build-rate-limit`). The latest observed READY preview is for earlier PR #12 head `404d5aa2`; no manual preview deployment was attempted. This Vercel limit does not invalidate passing GitHub Quality Gates.
 - Supabase project `zvbavpcsyvibvpkxjzkn` (`neighbourhood-guidebook`) remains ACTIVE_HEALTHY. Remote migration history contains 8 entries; the last three versions (`20261104111910`, `20261104111922`, `20261104111936`) still differ from local migration filenames (`20261102130000`, `20261103114000`, `20261104100000`). No migration or repair was attempted.
 - Read-only database counts remain: 52 listings; 0 contact messages; 0 business claims; 0 business submissions; 0 correction reports; 5 analytics events; 0 listing promotions; 3 form-rate rows; 1 user role. `business_sales_prospects` and `business_sales_activities` are absent. No rows were changed.
 - The current `main` copy of `MASTER_TODO.md` contains 999 task rows and omits `SW-0299`. The original Library CSV confirms `SW-0299` is “Do not promise search rankings, guaranteed leads, or a specific sales result.” This PR branch contains all 1,000 unique IDs, including the restored task. Do not overwrite the restored register with the stale `main` copy.
@@ -950,13 +951,23 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 - Corrected-head Quality Gate runs #437 (push) and #438 (pull request) both passed: TypeScript, ESLint, all 25 test files / 213 tests, production build, and disposable PostgreSQL migration/security/concurrency checks.
 - Keep REVIEW rather than DONE because the tests are in a draft stacked PR and have not been merged or released. No production data, schema, migration history, settings, or deployment was changed.
 
-### Current task — SW-0165
+### Previous task — SW-0165
 
-**Status: IN PROGRESS — verify the preview displays the exact business name from the resolved listing record.**
+**Status: REVIEW — the preview component renders the exact business name from the resolved listing record in all three primary display positions.**
 
-- The route loader returns a `business` object for the requested slug. The preview component uses `b.name` in its title, hero, navigation and footer; audit the render path and existing test patterns before adding coverage.
-- Add a focused component/render regression test using an existing listing fixture. Assert the displayed business name is from that fixture, not a hard-coded or stale name. Do not change business data or public copy.
-- No production data, migrations, settings, or deployment changes are required.
+- Audited the existing component first: `PreviewPage` uses `b.name` for the hero `h1`, navigation label and footer; no hard-coded business name was present.
+- Added `src/test/preview-business-name.test.tsx`, which statically renders the real preview component with two distinct directory fixtures (`nuad-thai-lazimpat` and `deezy-cuts-baluwatar`). It asserts the exact listing name appears in the hero, navigation and footer for both.
+- No production component or directory data change was needed. Router links, clock, analytics and map rendering are isolated in the test; actual directory records remain the fixtures.
+- Quality Gate runs #442 (push) and #443 (pull request) both passed on code head `7c5b7869c02769fcada1922195f3f5b9c7bc307d`: TypeScript, ESLint (0 errors; 25 warnings), 26 test files / 215 tests, production build, and disposable PostgreSQL migration/security/concurrency checks.
+- Keep REVIEW rather than DONE because the test is in a draft stacked PR and has not been merged or released. No production data, schema, migrations, settings, or deployment changed.
+
+### Current task — SW-0166
+
+**Status: IN PROGRESS — verify preview hours are shown only when present and their trust status is made clear.**
+
+- Audit `TodayHours`, `Week` and `Status` in `src/routes/s.$slug_.website-preview.tsx`, plus the directory's `hours`, `hoursSource` and `hoursVerified` fields.
+- Check existing fixtures for missing hours, verified hours, and unverified hours with/without a source. Add focused render tests for the existing intended trust rule; change application code only if the audit proves a false or misleading display.
+- Do not invent or alter business hours. No production data, migrations, settings, or deployment changes are required.
 ---
 
 ## 10. Instruction for every future AI session
@@ -1182,8 +1193,8 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [REVIEW] **SW-0162 · P0 · Reported preview template exists; regression-test** — Regression-test the template against a business whose listed website is broken.
 - [ ] [REVIEW] **SW-0163 · P0 · Reported preview template exists; regression-test** — Regression-test the template against a business with a working website to ensure it is not mislabelled.
 - [ ] [REVIEW] **SW-0164 · P0 · Audit current state** — Verify preview routes use the expected business slug and fail safely for an unknown slug. Evidence: three route-loader tests cover exact business resolution, legacy 301 redirect mapping and unknown-slug not-found; Quality Gate runs #437/#438 passed (25 files / 213 tests, TypeScript, lint, build and disposable PostgreSQL security tests). Draft PR #13, unmerged.
-- [ ] [IN PROGRESS] **SW-0165 · P0 · Audit current state** — Verify the preview displays the correct business name from the listing record. Auditing the existing PreviewPage render path and adding a fixture-backed component/render regression test; no production data changes.
-- [ ] [TODO] **SW-0166 · P0 · Audit current state** — Verify the preview displays only hours that exist and are sufficiently trustworthy.
+- [ ] [REVIEW] **SW-0165 · P0 · Audit current state** — Verify the preview displays the correct business name from the listing record. Evidence: static-render tests use two real directory fixtures and assert the exact name in hero, navigation and footer; Quality Gate runs #442/#443 passed (26 files / 215 tests, TypeScript, lint, build and disposable PostgreSQL security tests). Draft PR #14, unmerged.
+- [ ] [IN PROGRESS] **SW-0166 · P0 · Audit current state** — Verify the preview displays only hours that exist and are sufficiently trustworthy. Auditing the preview hours/status rendering and directory trust metadata; no business hours or production data will be invented or changed.
 - [ ] [TODO] **SW-0167 · P0 · Audit current state** — Verify the preview never invents opening hours when the listing lacks them.
 - [ ] [TODO] **SW-0168 · P0 · Audit current state** — Verify the preview uses the correct area and address fields without upgrading a vague area into an exact address.
 - [ ] [TODO] **SW-0169 · P0 · Audit current state** — Verify the map/directions action appears only when a reliable location exists.
