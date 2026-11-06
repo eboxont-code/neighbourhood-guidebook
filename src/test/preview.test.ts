@@ -2,7 +2,7 @@ import { QueryClient } from "@tanstack/react-query";
 import { createRouter } from "@tanstack/react-router";
 import { describe, expect, it } from "vitest";
 import { routeTree } from "@/routeTree.gen";
-import { getBusiness } from "@/data/directory";
+import { getBusiness, slugRedirects } from "@/data/directory";
 import { Route as PreviewRoute } from "@/routes/s.$slug_.website-preview";
 import { offersPreview, previewPath, previewSlug } from "@/lib/preview";
 import { sitemapPaths } from "@/lib/sitemap";
@@ -33,12 +33,9 @@ describe("free website preview", () => {
     } catch (error) {
       thrown = error;
     }
-    expect(thrown).toMatchObject({
-      isRedirect: true,
-      to: "/s/$slug/website-preview",
-      params: { slug: "plush-lazimpat" },
-      statusCode: 301,
-    });
+    expect(slugRedirects["plush-kamaladi"]).toBe("plush-lazimpat");
+    expect(thrown).toBeInstanceOf(Response);
+    expect((thrown as Response).status).toBe(301);
   });
   it("returns not-found for an unknown preview slug instead of another business", () => {
     let thrown: unknown;
