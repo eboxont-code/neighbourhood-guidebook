@@ -616,3 +616,57 @@ describe("contact source fallback", () => {
     }));
   });
 });
+
+describe("structured source metadata", () => {
+  it("stores correction listing identity and correction type in separate columns", async () => {
+    insertMock.mockResolvedValue({ error: null });
+    const { container } = render(<CorrectionForm listing="aavaran-durbar-marg" />);
+    change(container, "#correction-type", "phone");
+    change(container, "#wrong", "The listed phone number needs correction.");
+    const form = container.querySelector("form");
+    if (!form) throw new Error("Missing correction form");
+
+    fireEvent.submit(form);
+
+    await waitFor(() => expect(container.querySelector('[role="status"]')?.textContent).toContain("thanksCorrection"));
+    expect(fromMock).toHaveBeenCalledWith("correction_reports");
+    expect(insertMock).toHaveBeenCalledTimes(1);
+    const payload = insertMock.mock.calls[0][0];
+    expect(payload).toMatchObject({
+      listing_slug: "aavaran-durbar-marg",
+      correction_type: "phone",
+      whats_wrong: "The listed phone number needs correction.",
+    });
+    expect(payload).not.toHaveProperty("message");
+  });
+
+  it("stores new-business identity and category/area metadata separately from the submitter", async () => {
+    insertMock.mockResolvedValue({ error: null });
+    const { container } = render(<BusinessSubmissionForm initialName="Test Cafe" />);
+    change(container, "#sub-category", "cafes");
+    change(container, "#sub-area", "thamel");
+    change(container, "#sub-is_owner", "yes");
+    change(container, "#sub-name", "Test Submitter");
+    change(container, "#sub-contact", "owner@example.com");
+    change(container, "#sub-note", "Please review this business.");
+    const form = container.querySelector("form");
+    if (!form) throw new Error("Missing new-business submission form");
+
+    fireEvent.submit(form);
+
+    await waitFor(() => expect(container.querySelector('[role="status"]')?.textContent).toContain("addThanks"));
+    expect(fromMock).toHaveBeenCalledWith("business_submissions");
+    expect(insertMock).toHaveBeenCalledTimes(1);
+    const payload = insertMock.mock.calls[0][0];
+    expect(payload).toMatchObject({
+      business_name: "Test Cafe",
+      category: "cafes",
+      area: "thamel",
+      is_owner: true,
+      name: "Test Submitter",
+      contact: "owner@example.com",
+      note: "Please review this business.",
+    });
+    expect(payload).not.toHaveProperty("message");
+  });
+});
