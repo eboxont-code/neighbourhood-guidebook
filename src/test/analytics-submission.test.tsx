@@ -631,7 +631,8 @@ describe("structured source metadata", () => {
     await waitFor(() => expect(container.querySelector('[role="status"]')?.textContent).toContain("thanksCorrection"));
     expect(fromMock).toHaveBeenCalledWith("correction_reports");
     expect(insertMock).toHaveBeenCalledTimes(1);
-    const payload = insertMock.mock.calls[0][0];
+    const payload = insertMock.mock.calls[0]?.[0];
+    if (!payload) throw new Error("Missing correction report payload");
     expect(payload).toMatchObject({
       listing_slug: "aavaran-durbar-marg",
       correction_type: "phone",
@@ -657,7 +658,8 @@ describe("structured source metadata", () => {
     await waitFor(() => expect(container.querySelector('[role="status"]')?.textContent).toContain("addThanks"));
     expect(fromMock).toHaveBeenCalledWith("business_submissions");
     expect(insertMock).toHaveBeenCalledTimes(1);
-    const payload = insertMock.mock.calls[0][0];
+    const payload = insertMock.mock.calls[0]?.[0];
+    if (!payload) throw new Error("Missing business submission payload");
     expect(payload).toMatchObject({
       business_name: "Test Cafe",
       category: "cafes",
