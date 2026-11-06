@@ -311,3 +311,151 @@ describe("public form success feedback", () => {
     expect(fromMock).toHaveBeenCalledWith("business_submissions");
   });
 });
+
+describe("public form failure and retry feedback", () => {
+  async function expectRetryableFailure(
+    container: HTMLElement,
+    values: Record<string, string>,
+  ) {
+    await waitFor(() => {
+      const alert = container.querySelector('[role="alert"]');
+      expect(alert?.textContent).toContain("sendError");
+    });
+    expect(container.querySelector("form")).not.toBeNull();
+    const submit = container.querySelector<HTMLButtonElement>('button[type="submit"]');
+    expect(submit?.disabled).toBe(false);
+    for (const [selector, value] of Object.entries(values)) {
+      const field = container.querySelector<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>(selector);
+      expect(field?.value).toBe(value);
+    }
+  }
+
+  it("keeps preview enquiry values and allows a retry after a returned database error", async () => {
+    insertMock.mockResolvedValueOnce({ error: { message: "database unavailable" } });
+    const { container } = render(
+      <ContactForm business="Aavaran" listing="aavaran-durbar-marg" page="preview" />,
+    );
+    change(container, "#name", "Test Owner");
+    change(container, "#message", "Please contact me about a website.");
+    const form = container.querySelector("form");
+    if (!form) throw new Error("Missing preview enquiry form");
+
+    fireEvent.submit(form);
+
+    await expectRetryableFailure(container, {
+      "#name": "Test Owner",
+      "#business": "Aavaran",
+      "#message": "Please contact me about a website.",
+    });
+    expect(insertMock).toHaveBeenCalledTimes(1);
+
+    insertMock.mockResolvedValueOnce({ error: null });
+    fireEvent.submit(form);
+    await waitFor(() => expect(container.querySelector('[role="status"]')?.textContent).toContain("thanksContact"));
+    expect(insertMock).toHaveBeenCalledTimes(2);
+  });
+
+  it("keeps For Businesses enquiry values after a rejected request", async () => {
+    insertMock.mockRejectedValueOnce(new Error("network unavailable"));
+    const { container } = render(
+      <ContactForm
+        business=""
+        listing=""
+        page="for-businesses"
+        topicPicker
+        initialTopic="website"
+        serviceOptions
+      />,
+    );
+    change(container, "#name", "Test Owner");
+    change(container, "#message", "I need a website for my business.");
+    const form = container.querySelector("form");
+    if (!form) throw new Error("Missing For Businesses enquiry form");
+
+    fireEvent.submit(form);
+
+    await expectRetryableFailure(container, {
+      "#topic": "website",
+      "#name": "Test Owner",
+      "#message": "I need a website for my business.",
+    });
+  });
+
+  it("keeps general contact values after a returned database error", async () => {
+    insertMock.mockResolvedValueOnce({ error: { message: "database unavailable" } });
+    const { container } = render(<ContactForm business="" listing="" page="contact" />);
+    change(container, "#name", "Test Visitor");
+    change(container, "#message", "I have a question about the directory.");
+    const form = container.querySelector("form");
+    if (!form) throw new Error("Missing general contact form");
+
+    fireEvent.submit(form);
+
+    await expectRetryableFailure(container, {
+      "#name": "Test Visitor",
+      "#message": "I have a question about the directory.",
+    });
+  });
+
+  it("keeps business claim values after a returned database error", async () => {
+    insertMock.mockResolvedValueOnce({ error: { message: "database unavailable" } });
+    const { container } = render(<ClaimForm listing="aavaran-durbar-marg" />);
+    change(container, "#claim-name", "Test Owner");
+    change(container, "#claim-role", "owner");
+    change(container, "#claim-contact", "owner@example.com");
+    change(container, "#claim-proof_url", "https://example.com/proof");
+    const form = container.querySelector("form");
+    if (!form) throw new Error("Missing business claim form");
+
+    fireEvent.submit(form);
+
+    await expectRetryableFailure(container, {
+      "#claim-name": "Test Owner",
+      "#claim-role": "owner",
+      "#claim-contact": "owner@example.com",
+      "#claim-proof_url": "https://example.com/proof",
+    });
+  });
+
+  it("keeps correction report values after a rejected request", async () => {
+    insertMock.mockRejectedValueOnce(new Error("network unavailable"));
+    const { container } = render(<CorrectionForm listing="aavaran-durbar-marg" />);
+    change(container, "#correction-type", "phone");
+    change(container, "#wrong", "The listed phone number needs correction.");
+    change(container, "#contact", "owner@example.com");
+    const form = container.querySelector("form");
+    if (!form) throw new Error("Missing correction form");
+
+    fireEvent.submit(form);
+
+    await expectRetryableFailure(container, {
+      "#listing": "aavaran-durbar-marg",
+      "#correction-type": "phone",
+      "#wrong": "The listed phone number needs correction.",
+      "#contact": "owner@example.com",
+    });
+  });
+
+  it("keeps new-business submission values after a returned database error", async () => {
+    insertMock.mockResolvedValueOnce({ error: { message: "database unavailable" } });
+    const { container } = render(<BusinessSubmissionForm initialName="Test Cafe" />);
+    change(container, "#sub-category", "cafes");
+    change(container, "#sub-area", "thamel");
+    change(container, "#sub-is_owner", "yes");
+    change(container, "#sub-contact", "owner@example.com");
+    change(container, "#sub-note", "Please review this listing.");
+    const form = container.querySelector("form");
+    if (!form) throw new Error("Missing new-business submission form");
+
+    fireEvent.submit(form);
+
+    await expectRetryableFailure(container, {
+      "#sub-business_name": "Test Cafe",
+      "#sub-category": "cafes",
+      "#sub-area": "thamel",
+      "#sub-is_owner": "yes",
+      "#sub-contact": "owner@example.com",
+      "#sub-note": "Please review this listing.",
+    });
+  });
+});
