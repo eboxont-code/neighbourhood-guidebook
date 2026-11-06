@@ -658,7 +658,7 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 | 3 | Revalidate the existing 20-business prospect CSV and each website status | BLOCKED — original 20-business CSV not found in `main` or the Library; do not recreate or guess the list |
 | 4 | Confirm production deployment and complete admin password recovery verification | Deployment + domain mapping DONE 5 Nov; password-reset journey TODO |
 | 5 | Review the 390px preview and quote form; capture real screenshots | DONE 6 Nov 2026: EN/NE at 390×844 first, then 1280×1800; screenshots captured of preview sections, enquiry forms and inline errors. No horizontal overflow; 44px+ effective targets; labeled 16px inputs. Enlarged language controls, linked form hints, removed duplicated optional wording and prevented the hidden quote pill covering the form. 179 tests pass; preview build/typecheck OK. Presentation only; no enquiries sent, schema/attribution/admin changes, outreach, publishing or deployment. |
-| 6 | Reconcile Bundle 7 Sales Pipeline against current `main` | TODO |
+| 6 | Reconcile Bundle 7 Sales Pipeline against current `main` | IN PROGRESS — scoped reconciliation started; PR #7 is 24 commits ahead and 28 behind `main`; preserve newer `main` sales/proposal helpers before integrating |
 | 7 | Reconcile Bundle 8 after Bundle 7; preserve original enquiry/payment records | TODO |
 | 8 | Isolate and review Proposal Composer after its dependencies | TODO |
 | 9 | Use the funnel baseline to fix the largest conversion leak | TODO |
@@ -680,10 +680,10 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 
 ### Current task
 
-**Task 3 — Revalidate the existing 20-business prospect CSV and each website status.**  
-**Status: BLOCKED.**
+**Task 6 — Reconcile Bundle 7 Sales Pipeline against current `main`.**  
+**Status: IN PROGRESS — one task only.**
 
-The referenced 20-business source CSV was not found in the current GitHub `main` tree or the searchable Library files. Do not infer which 20 businesses were intended, substitute an invented list, or reuse an unrelated task-register CSV. Continue other independent work only where its inputs and acceptance criteria are available; keep this task blocked until its original source artifact is accessible.
+Initial reconciliation check (6 November 2026): PR #7 remains a draft targeting the old `sewa/bundle-06-sponsored-placements` branch. Its head is 24 commits ahead and 28 commits behind current `main` (merge base `5c2b65b`; current `main` `6f89bfa`). The branch's `src/lib/sales-pipeline.ts` is an older, shorter version than `main`: current `main` already contains inbound-lead mapping and proposal-draft helpers that must not be overwritten. The PR also adds the Sales Pipeline admin component, migration, types, translations and CI coverage. Do not retarget, merge or deploy the stacked PR until the feature is reconciled against current `main` and its checks pass. Next bounded step: integrate only the missing Bundle 7 pieces while preserving all current `main` code; keep later bundles untouched.
 
 ---
 
