@@ -160,7 +160,7 @@ Never mark work [DONE] merely because code exists, a PR is merged, or a preview 
 - [x] [DONE] Default branch is main; the live Git ref was verified at ee38ca0e978f0149ca10f5b2caadb33282729148.
 - [x] [DONE] Read the full master plan/register, README.md and AGENTS.md. Repository rules confirm anonymous first-party analytics, no personal data or exact location in analytics, and migration parity requirements.
 - [x] [DONE] The register contains IDs SW-0001 through SW-1000. The main-branch SW-0298 and SW-0299 entries had been concatenated onto one line; this branch restores the missing line break without changing either task description.
-- [x] [DONE] Current branch inventory: 19 branches, listed below. No branch was deleted or rewritten.
+- [x] [DONE] Current branch inventory: 26 branches, listed below. No branch was deleted or rewritten.
 - [x] [DONE] Lovable north-star file .lovable/north-star/north-star.md was not changed; its main-branch blob SHA remains 9d748d0f22dd60969680c61964f18ea4fe6900df.
 - [ ] [BLOCKED] Current branch-protection settings could not be read: GitHub returned HTTP 403 (resource not accessible by this integration). Do not assume the previous protection snapshot is current.
 
@@ -173,11 +173,18 @@ Never mark work [DONE] merely because code exists, a PR is merged, or a preview 
 | #10 | sewa/bundle-07-reconciled-main-20261106 → main | Open draft; current-main base ee38ca0e, 16 commits, 11 files. Push run #351 and PR run #344 passed. Owner review/approval remains required. |
 | #11 | sewa/bundle-04-contact-insights-main-20261106 → main | Open draft; current-main base ee38ca0e, 7 commits, 5 files. Push run #365 and PR run #366 passed. |
 | #12 | sewa/analytics-submission-guard-20261106 → main | Open draft on current-main base ee38ca0e. Code/test commit d9293bf195a0c1b987b2a67a6a8aa3a41e13b4a3 passed push run #376 and PR run #377, including TypeScript, lint, unit/component tests, production build and disposable PostgreSQL migration/security tests. Follow-up commits update the master-plan evidence only. Not merged. |
+| #13 | sewa/preview-route-regression-20261107 → sewa/analytics-submission-guard-20261106 | Open draft; code Quality Gate runs #437/#438 passed. Stacked on PR #12. |
+| #14 | sewa/preview-business-name-20261107 → sewa/preview-route-regression-20261107 | Open draft; code Quality Gate runs #442/#443 passed. Stacked on PR #13. |
+| #15 | sewa/preview-hours-trust-20261107 → sewa/preview-business-name-20261107 | Open draft; code Quality Gate run #451 passed; hours/source render tests added. Stacked on PR #14. |
+| #16 | sewa/preview-no-hours-20261107 → sewa/preview-hours-trust-20261107 | Open draft; Quality Gate runs #455/#456 passed. Stacked on PR #15. |
+| #17 | sewa/preview-location-fields-20261107 → sewa/preview-no-hours-20261107 | Open draft; Quality Gate runs #461/#462 passed. Stacked on PR #16. |
+| #18 | sewa/preview-location-reliability-20261107 → sewa/preview-location-fields-20261107 | Open draft; code Quality Gate runs #469/#470 and plan runs #471/#472 passed. Preview deployment READY on code head 83880c7; documentation head ce9d4a6 has a Vercel build-rate-limit failure. Stacked on PR #17. |
+| #19 | sewa/preview-phone-verification-20261107 → sewa/preview-location-reliability-20261107 | Open draft; Quality Gate runs #475 (push) and #476 (PR) passed on head 11a80dd. 29 test files / 245 tests, TypeScript, lint, build and disposable PostgreSQL security/concurrency checks passed. Vercel preview status is blocked by the free build-rate limit. Stacked on PR #18.
 
 - PR #7 is closed unmerged; PR #9 is merged.
-- Main commit ee38ca0e has successful Quality Gate run #345 and earlier run #337. Later run #355 was cancelled. The combined Vercel status for this main commit is successful.
+- Main commit ee38ca0e has successful Quality Gate run #345 and earlier run #337; later runs #355 and #367 were cancelled. The combined Vercel status is successful. The production homepage returned HTTP 200 on 7 November 2026.
 - PR #12 code/test commit d9293bf195a0c1b987b2a67a6a8aa3a41e13b4a3 passed push run #376 and PR run #377: TypeScript validation, lint, unit/component tests, production build and disposable PostgreSQL migration/security tests. Later commits only refreshed MASTER_TODO.md; production remains on main and was not changed.
-- PRs #4, #8, #10, #11 and #12 remain drafts. No release PR was merged.
+- All 12 open PRs (#4, #8 and #10–#19) remain drafts. No release PR was merged. The preview regression chain #13–#19 is intentionally stacked; do not merge a child PR independently.
 
 ### Current branch inventory
 
@@ -200,6 +207,13 @@ Never mark work [DONE] merely because code exists, a PR is merged, or a preview 
 - sewa/bundle-08-inbound-conversion
 - sewa/bundle-08-reconciled-main-20261106
 - sewa/bundle-09-proposal-composer
+- sewa/preview-business-name-20261107
+- sewa/preview-hours-trust-20261107
+- sewa/preview-location-fields-20261107
+- sewa/preview-location-reliability-20261107
+- sewa/preview-no-hours-20261107
+- sewa/preview-phone-verification-20261107
+- sewa/preview-route-regression-20261107
 
 The sewa/analytics-listing-views-20261106 branch was inspected: its current TRACK_EVENTS and listing route still do not define or emit a listing_view event. No listing-view migration is present in the current main migration set. Do not assume the branch implements SW-0045.
 
@@ -209,6 +223,7 @@ The sewa/analytics-listing-views-20261106 branch was inspected: its current TRAC
 - Latest verified Production deployment: dpl_Gou24q64tcmGASESDmvqbxzrWpP7, state READY, target production.
 - Git source: main at ee38ca0e978f0149ca10f5b2caadb33282729148.
 - Alias sewa.boxont.com is attached to that deployment.
+- Read-only public homepage check on 7 November 2026 returned HTTP 200. The live Aavaran website preview still rendered a tel: action without a recorded phone source; PR #19 corrects the preview code but is not deployed.
 - Production URL/alias and deployment state were read only. No deployment was started in this run.
 
 ### Supabase read-only snapshot and migration gate
@@ -243,6 +258,8 @@ Read-only table snapshot for the checked project:
 | user_roles | 1 |
 
 The five analytics rows are 3 preview_view and 2 search_zero; no other event type has recorded rows. The tables business_sales_prospects and business_sales_activities are absent from this project's public schema.
+
+Read-only phone provenance aggregate (7 November 2026): all 52 published listings contain a phone value; 0 have an explicit fieldSources.phone record or explicit trusted phone tier. Of the 52, 32 have a generic sourceUrl, 34 have a lastChecked date, and 29 have both. Among those 29, 26 source URLs match the recorded official website host and 3 classify as third-party; none classify as official social. This is an aggregate only; no phone values or listing rows were changed.
 
 Supabase advisors report:
 - Security: authenticated_security_definer_function_executable (WARN), auth_leaked_password_protection (WARN), and rls_enabled_no_policy (INFO).
@@ -684,7 +701,9 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 | 9 | Use the funnel baseline to fix the largest conversion leak | BLOCKED — only five analytics events exist (3 preview views, 2 zero-result searches); no qualified-lead sample supports a leak diagnosis |
 | 10 | Improve directory quality and coverage based on real user demand and lead value | BLOCKED — current demand/lead evidence is insufficient to choose expansions safely |
 | 11 | SW-0168 — Verify website-preview area/address accuracy | REVIEW — draft PR #17 stacked preview-location regression; 4 focused tests and Quality Gate runs #461/#462 passed. |
-| 12 | SW-0169 — Verify map/directions reliability | REVIEW — draft PR #18 stacked on PR #17; 8 invalid-coordinate cases and area-only/street-address directions fallbacks tested; Quality Gate runs #469/#470 passed. Next eligible task: SW-0170 verified phone action. |
+| 12 | SW-0169 — Verify map/directions reliability | REVIEW — draft PR #18 stacked on PR #17; 8 invalid-coordinate cases and area-only/street-address directions fallbacks tested; Quality Gate runs #469/#470 passed. |
+| 13 | SW-0170 — Verify website-preview phone action and phone fact | REVIEW — draft PR #19 stacked on PR #18; checked official-source gating and 12 regression cases; Quality Gate runs #475/#476 passed. |
+| 14 | SW-0171 — Verify website action availability | TODO — next eligible task; inspect only the preview's official website action and recorded website status. |
 
 ### Task 1 verification notes — 6 November 2026
 
@@ -1003,12 +1022,25 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 - Draft PR [#18](https://github.com/eboxont-code/neighbourhood-guidebook/pull/18) is stacked on draft PR #17 and remains unmerged. Vercel preview `dpl_UkCR3NHfM2QdeY6rrsp7QmSH2GMY` is READY for this head; production remains on the existing `main` deployment.
 - No business addresses, coordinates, source records, production data, schema, migrations, settings, outreach or pricing changed. No production deployment was initiated. Additional spend: $0.
 
-### Next eligible task — SW-0170
+### Previous task — SW-0170
 
-**Status: TODO — verify the phone action appears only when a verified public phone exists.**
+**Status: REVIEW — website-preview phone facts and the Call action now require a checked, linked source classified as the business's own website or official social profile.**
 
-- Audit the existing preview contact actions, phone provenance and current directory fixtures; preserve recorded phone values and do not invent or upgrade unverified numbers.
-- Add focused render tests for missing, unverified and verified public phone cases. Do not contact businesses or perform live calls.
+- Audited the preview route, fieldSource provenance helper and live read-only listing aggregate. The existing preview rendered a tel: action for Aavaran even though its production row had a phone value but no sourceUrl or explicit fieldSources.phone evidence. A free-text source note and listing-wide source_checked status are not field-specific proof.
+- Added verifiedPublicPhone in src/lib/provenance.ts. It accepts only website or official_social evidence with a valid HTTP(S) source URL and valid, non-future check date. It rejects missing/blank phone values, source-note-only records, map/third-party sources, user submissions, missing URLs, missing/invalid/future dates.
+- The preview now uses that helper for both the phone quick fact and Call tel: action; unsupported phone values are replaced by the existing "Add this" state. WhatsApp actions, phone data, and all other listing fields remain unchanged.
+- Added 12 static-render regression cases in src/test/preview-phone.test.tsx: no source URL, official website fallback, official social evidence, third-party/map sources, missing URL/date, invalid/future dates, user-submitted evidence and missing phone.
+- Quality Gate runs [#475 (push)](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42279290809) and [#476 (pull request)](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42279316680) both passed on code head 11a80dd25df3419f33484122442e0f399ebcd574: TypeScript, ESLint (0 errors; 25 existing warnings), 29 test files / 245 tests, production build, all 13 repository migrations and disposable PostgreSQL security/concurrency checks.
+- Read-only production aggregate: 52 published listings; 52 have phone values; 0 have explicit fieldSources.phone or explicit trusted phone-tier evidence; 32 have generic source URLs, 34 have check dates, and 29 have both. Of those 29, 26 source URLs match the recorded official website host and 3 classify as third-party. The live Aavaran preview still shows a Call action because PR #19 has not been deployed.
+- Draft PR [#19](https://github.com/eboxont-code/neighbourhood-guidebook/pull/19) is stacked on draft PR #18 and remains unmerged. Vercel reports a free build-rate-limit failure for this preview; no paid upgrade or manual deployment was attempted. Production deployment dpl_Gou24q64tcmGASESDmvqbxzrWpP7 remains READY on main; the production homepage returned HTTP 200. No production deployment or database write was initiated.
+- No business phone values, source records, production data, schema, migrations, settings, outreach or pricing changed. No live calls or business contacts were made. Additional spend: $0. Keep REVIEW until the stacked preview chain is owner-reviewed and released.
+
+### Next eligible task — SW-0171
+
+**Status: TODO — verify the website action is omitted or clearly unavailable when no working official website exists.**
+
+- Audit the existing preview website action and recorded website / websiteStatus fields; do not infer a working official site from social or third-party URLs.
+- Add focused render tests for missing, failed, not-checked and working official website cases. Preserve recorded URLs and do not contact businesses.
 ---
 
 ## 10. Instruction for every future AI session
@@ -1239,7 +1271,7 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [REVIEW] **SW-0167 · P0 · Audit current state** — Verify the preview never invents opening hours when the listing lacks them. Evidence: real no-hours fixture `kathmandu-spa-thamel` renders the existing fallback, no status, no schedule rows and no time values; Quality Gate runs #455/#456 passed (27 files / 219 tests, TypeScript, lint, build and disposable PostgreSQL security tests). Draft PR #16, unmerged.
 - [ ] [REVIEW] **SW-0168 · P0 · Audit current state** — Verify the preview uses the correct area and address fields without upgrading a vague area into an exact address. Evidence: four render tests verify exact address preservation, area-only address preservation, no area-to-address/directions invention, and coordinate-gated map rendering; Quality Gate runs #461/#462 passed (28 files / 223 tests, TypeScript, lint, build and disposable PostgreSQL migration/security checks). Draft PR #17, unmerged.
 - [ ] [REVIEW] **SW-0169 · P0 · Audit current state** — Verify the map/directions action appears only when a reliable location exists. Evidence: `hasPin` rejects missing/partial/non-finite/out-of-range coordinate pairs; directions fallback requires detail beyond area/city labels while preserving explicit URLs and street-level addresses. Eight invalid-coordinate render cases plus area-only and street-level fallback tests; Quality Gate runs #469/#470 passed (28 files / 233 tests, TypeScript, lint, build and disposable PostgreSQL migration/security checks). Draft PR #18 stacked on #17, unmerged.
-- [ ] [TODO] **SW-0170 · P0 · Audit current state** — Verify the phone action appears only when a verified public phone exists.
+- [ ] [REVIEW] **SW-0170 · P0 · Audit current state** — Verify the phone action appears only when a verified public phone exists. Evidence: preview call and phone fact now require checked website/official-social provenance; 12 focused cases; Quality Gate runs #475/#476 passed (29 files / 245 tests). Draft PR #19 is stacked on #18; retain REVIEW until owner-approved release.
 - [ ] [TODO] **SW-0171 · P0 · Audit current state** — Verify the website action is omitted or clearly unavailable when no working official website exists.
 - [ ] [TODO] **SW-0172 · P0 · Audit current state** — Verify social links come from the correct business record and open safely.
 - [ ] [TODO] **SW-0173 · P0 · Audit current state** — Verify service details appear only when provided or separately verified.
