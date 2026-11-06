@@ -196,3 +196,118 @@ describe("analytics submission de-duplication", () => {
   });
 
 });
+
+describe("public form success feedback", () => {
+  async function expectSavedConfirmation(container: HTMLElement, messageKey: string) {
+    await waitFor(() => {
+      const status = container.querySelector('[role="status"]');
+      expect(status?.textContent).toContain(messageKey);
+    });
+    expect(container.querySelector("form")).toBeNull();
+  }
+
+  it("shows an accessible saved confirmation after a preview enquiry", async () => {
+    insertMock.mockResolvedValue({ error: null });
+    const { container } = render(
+      <ContactForm business="Aavaran" listing="aavaran-durbar-marg" page="preview" />,
+    );
+    change(container, "#name", "Test Owner");
+    change(container, "#message", "I would like a website for my business.");
+    const form = container.querySelector("form");
+    if (!form) throw new Error("Missing preview enquiry form");
+
+    fireEvent.submit(form);
+
+    await expectSavedConfirmation(container, "thanksContact");
+    expect(insertMock).toHaveBeenCalledTimes(1);
+    expect(fromMock).toHaveBeenCalledWith("contact_messages");
+  });
+
+  it("shows an accessible saved confirmation after a For Businesses enquiry", async () => {
+    insertMock.mockResolvedValue({ error: null });
+    const { container } = render(
+      <ContactForm
+        business=""
+        listing=""
+        page="for-businesses"
+        topicPicker
+        initialTopic="website"
+        serviceOptions
+      />,
+    );
+    change(container, "#name", "Test Owner");
+    change(container, "#message", "I need a website for my business.");
+    const form = container.querySelector("form");
+    if (!form) throw new Error("Missing For Businesses enquiry form");
+
+    fireEvent.submit(form);
+
+    await expectSavedConfirmation(container, "thanksContact");
+    expect(insertMock).toHaveBeenCalledTimes(1);
+    expect(fromMock).toHaveBeenCalledWith("contact_messages");
+  });
+
+  it("shows an accessible saved confirmation after a general contact message", async () => {
+    insertMock.mockResolvedValue({ error: null });
+    const { container } = render(<ContactForm business="" listing="" page="contact" />);
+    change(container, "#name", "Test Visitor");
+    change(container, "#message", "I have a question about the directory.");
+    const form = container.querySelector("form");
+    if (!form) throw new Error("Missing general contact form");
+
+    fireEvent.submit(form);
+
+    await expectSavedConfirmation(container, "thanksContact");
+    expect(insertMock).toHaveBeenCalledTimes(1);
+    expect(fromMock).toHaveBeenCalledWith("contact_messages");
+  });
+
+  it("shows an accessible saved confirmation after a business claim", async () => {
+    insertMock.mockResolvedValue({ error: null });
+    const { container } = render(<ClaimForm listing="aavaran-durbar-marg" />);
+    change(container, "#claim-name", "Test Owner");
+    change(container, "#claim-role", "owner");
+    change(container, "#claim-contact", "owner@example.com");
+    change(container, "#claim-proof_url", "https://example.com/proof");
+    const form = container.querySelector("form");
+    if (!form) throw new Error("Missing business claim form");
+
+    fireEvent.submit(form);
+
+    await expectSavedConfirmation(container, "claimThanks");
+    expect(insertMock).toHaveBeenCalledTimes(1);
+    expect(fromMock).toHaveBeenCalledWith("business_claims");
+  });
+
+  it("shows an accessible saved confirmation after a correction report", async () => {
+    insertMock.mockResolvedValue({ error: null });
+    const { container } = render(<CorrectionForm listing="aavaran-durbar-marg" />);
+    change(container, "#correction-type", "phone");
+    change(container, "#wrong", "The listed phone number needs correction.");
+    const form = container.querySelector("form");
+    if (!form) throw new Error("Missing correction form");
+
+    fireEvent.submit(form);
+
+    await expectSavedConfirmation(container, "thanksCorrection");
+    expect(insertMock).toHaveBeenCalledTimes(1);
+    expect(fromMock).toHaveBeenCalledWith("correction_reports");
+  });
+
+  it("shows an accessible saved confirmation after a new-business submission", async () => {
+    insertMock.mockResolvedValue({ error: null });
+    const { container } = render(<BusinessSubmissionForm initialName="Test Cafe" />);
+    change(container, "#sub-category", "cafes");
+    change(container, "#sub-area", "thamel");
+    change(container, "#sub-is_owner", "yes");
+    change(container, "#sub-contact", "owner@example.com");
+    const form = container.querySelector("form");
+    if (!form) throw new Error("Missing new-business submission form");
+
+    fireEvent.submit(form);
+
+    await expectSavedConfirmation(container, "addThanks");
+    expect(insertMock).toHaveBeenCalledTimes(1);
+    expect(fromMock).toHaveBeenCalledWith("business_submissions");
+  });
+});
