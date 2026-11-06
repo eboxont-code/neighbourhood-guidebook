@@ -2,16 +2,49 @@ import { QueryClient } from "@tanstack/react-query";
 import { createRouter } from "@tanstack/react-router";
 import { describe, expect, it } from "vitest";
 import { routeTree } from "@/routeTree.gen";
-import { getBusiness } from "@/data/directory";
+import { getBusiness, slugRedirects } from "@/data/directory";
+import { Route as PreviewRoute } from "@/routes/s.$slug_.website-preview";
 import { offersPreview, previewPath, previewSlug } from "@/lib/preview";
 import { sitemapPaths } from "@/lib/sitemap";
 import { dict } from "@/lib/i18n";
+
+function loadPreview(slug: string) {
+  const loader = PreviewRoute.options.loader;
+  if (typeof loader !== "function") throw new Error("Missing website-preview route loader");
+  const runLoader = loader as unknown as (context: { params: { slug: string } }) => { business: { slug: string } };
+  return runLoader({ params: { slug } });
+}
 
 describe("free website preview", () => {
   it("matches /s/<slug>/website-preview as its own route, not the listing", () => {
     const router = createRouter({ routeTree, context: { queryClient: new QueryClient() } });
     expect(router.matchRoutes("/s/nuad-thai-lazimpat/website-preview").at(-1)?.routeId).toBe("/s/$slug_/website-preview");
     expect(router.matchRoutes("/s/nuad-thai-lazimpat").at(-1)?.routeId).toBe("/s/$slug");
+  });
+
+  it("loads the business matching the requested preview slug", () => {
+    const result = loadPreview("nuad-thai-lazimpat") as { business: { slug: string } };
+    expect(result.business.slug).toBe("nuad-thai-lazimpat");
+  });
+  it("redirects a known legacy slug to the current business preview", () => {
+    let thrown: unknown;
+    try {
+      loadPreview("plush-kamaladi");
+    } catch (error) {
+      thrown = error;
+    }
+    expect(slugRedirects["plush-kamaladi"]).toBe("plush-lazimpat");
+    expect(thrown).toBeInstanceOf(Response);
+    expect((thrown as Response).status).toBe(301);
+  });
+  it("returns not-found for an unknown preview slug instead of another business", () => {
+    let thrown: unknown;
+    try {
+      loadPreview("not-a-real-sewa-business");
+    } catch (error) {
+      thrown = error;
+    }
+    expect(thrown).toMatchObject({ isNotFound: true });
   });
   it("builds and reads the preview path", () => {
     expect(previewPath("deezy-cuts-baluwatar")).toBe("/s/deezy-cuts-baluwatar/website-preview");
