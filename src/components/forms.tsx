@@ -89,6 +89,16 @@ export function Done({ text }: { text: string }) {
   );
 }
 
+export function FormPrivacyNote() {
+  const { t } = useI18n();
+  return (
+    <p className="text-xs leading-relaxed text-muted-foreground">
+      {t("formPrivacyNote")}{" "}
+      <a href="/privacy" className="underline underline-offset-2">{t("formPrivacyLink")}</a>
+    </p>
+  );
+}
+
 export function errorsFrom(issues: z.ZodIssue[], t: (k: Key) => string) {
   const out: Record<string, string> = {};
   for (const i of issues) {
@@ -187,6 +197,7 @@ export function ContactForm({ business, listing, page, message = "", doneText, s
       </Field>
       <Honeypot value={hp} onChange={setHp} />
       <SendStatus status={status} />
+      <FormPrivacyNote />
       <Button type="submit" disabled={status === "sending"} aria-busy={status === "sending"} className="action-btn action-primary h-auto min-h-12 w-full gap-2 rounded-full whitespace-normal px-6 py-3 text-center leading-relaxed disabled:opacity-70 sm:w-auto">
         {status === "sending" && <Loader2 aria-hidden className="h-4 w-4 animate-spin" />}
         {status === "sending" ? t("sending") : submitLabel ?? t("send")}
@@ -243,6 +254,7 @@ export function CorrectionForm({ listing }: { listing: string }) {
       </Field>
       <Honeypot value={hp} onChange={setHp} />
       <SendStatus status={status} />
+      <FormPrivacyNote />
       <button type="submit" disabled={status === "sending"} className="action-btn action-primary w-full px-6 disabled:opacity-60 sm:w-auto">
         {t(status === "sending" ? "sending" : "send")}
       </button>

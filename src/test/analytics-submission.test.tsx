@@ -672,3 +672,18 @@ describe("structured source metadata", () => {
     expect(payload).not.toHaveProperty("message");
   });
 });
+
+
+describe("public form privacy note", () => {
+  it("shows the privacy explanation and policy link beside contact enquiries", () => {
+    const { container } = render(<ContactForm business="" listing="" />);
+    expect(container.textContent).toContain("formPrivacyNote");
+    expect(container.querySelector('a[href="/privacy"]')?.textContent).toBe("formPrivacyLink");
+  });
+
+  it("shows the privacy explanation and policy link beside correction reports", () => {
+    const { container } = render(<CorrectionForm listing="aavaran-durbar-marg" />);
+    expect(container.textContent).toContain("formPrivacyNote");
+    expect(container.querySelector('a[href="/privacy"]')?.textContent).toBe("formPrivacyLink");
+  });
+});
