@@ -701,7 +701,7 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 ### Repository and production refresh — 7 November 2026
 
 - `main` remains `ee38ca0e978f0149ca10f5b2caadb33282729148`; Quality Gate run #337 passed. The branch is unprotected and required status checks are disabled; this was recorded, not changed.
-- Five open draft PRs: #4 (older Bundle 4), #8 (Bundle 8), #10 (current-main Bundle 7), #11 (current-main Bundle 4 port), and #12 (form duplicate-write guard). PR #12 targets `main` at `ee38ca0e` and now heads `05638e25e0b7e5c0e466e90d136273901124d9e7` after adding SW-0093 For Businesses intent coverage; its new CI and preview are pending.
+- Five open draft PRs remain: #4 (older Bundle 4), #8 (stacked Bundle 8), #10 (current-main Bundle 7), #11 (current-main Bundle 4 port), and #12 (form guard and regression coverage). PR #12 targets `main` at `ee38ca0e` and now heads `57e1c278a376f0b06c9e37a70449705d9db2c95d` after SW-0094 source-fallback tests; push run #416 and PR run #417 passed both quality jobs, and the matching Vercel Preview is READY.
 - Vercel Production deployment `dpl_Gou24q64tcmGASESDmvqbxzrWpP7` is READY on `main` at `ee38ca0e`; `sewa.boxont.com` is attached. PR #12 preview `dpl_D6apeuQqZfM1mf8HWS7W4sHGc88u` is READY and is not a Production deployment.
 - Supabase project `zvbavpcsyvibvpkxjzkn` (`neighbourhood-guidebook`) is ACTIVE_HEALTHY. Remote migration history has 8 entries; the first five match local filenames, while the last three remote versions (`20261104111910`, `20261104111922`, `20261104111936`) differ from local main filenames (`20261102130000`, `20261103114000`, `20261104100000`). No migration or repair was attempted. The Vercel environment-to-project binding was not re-derived from encrypted environment values in this run.
 - Read-only counts: 52 published listings; 0 contact messages; 0 business claims; 0 business submissions; 0 correction reports; 5 analytics events; 0 listing promotions; 3 form-rate rows; 1 user role. `business_sales_prospects` and `business_sales_activities` do not exist in this database.
@@ -796,15 +796,33 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 - Runs #410/#411 passed TypeScript, ESLint, unit/component tests, production build and disposable PostgreSQL migration/security checks. The `969e383` preview is READY and is not Production.
 - Live browser-to-database persistence remains blocked under Task 1; tests use mocked Supabase and did not create customer records.
 
-### Current task — SW-0093
+### Previous task — SW-0093
 
-**Status: IN PROGRESS — retain the form intent when a lead comes from the For Businesses page.**
+**Status: REVIEW — For Businesses enquiry intent is verified at component-payload level on draft PR #12.**
 
-- Audited the route/component contract. The For Businesses route passes `page="for-businesses"`, enables service options and forwards the selected service package to `ContactForm`. The form persists the page, topic and service-package fields in the contact lead.
-- Added a component test using the route's equivalent props with the `growth` package selected. It asserts the saved payload retains `page="for-businesses"`, `service_package="growth"`, and the expected nullable topic/budget fields.
-- Test commit: `05638e25e0b7e5c0e466e90d136273901124d9e7`. CI and the matching preview are pending.
-- Supabase calls are mocked; no Production records or settings were changed.
-- Acceptance: the intent-payload assertion and full Quality Gate pass. Live browser-to-database persistence remains blocked under Task 1.
+- Audited the route/component contract. The For Businesses route explicitly supplies `page="for-businesses"` when opened normally and `page="preview"` when entered from an eligible preview; it passes the selected service package to `ContactForm`.
+- Added a component test using the route-equivalent props with the `growth` package selected. It verifies the persisted payload keeps `page="for-businesses"`, `service_package="growth"`, and nullable topic/budget fields.
+- Test commit: `05638e25e0b7e5c0e466e90d136273901124d9e7`. Push run #414 and PR run #415 both passed TypeScript, ESLint, unit/component tests, production build and disposable PostgreSQL migration/security tests. The preview for head `8f4b79a2` was READY.
+- Supabase calls are mocked. No Production records, settings, migrations or deployment were changed.
+- Live browser-to-database persistence remains blocked under Task 1; this REVIEW status does not claim real persistence.
+
+### Previous task — SW-0094
+
+**Status: REVIEW — source fallback is used only when no explicit route or listing source is available.**
+
+- Audited `/contact` search validation: only the known `claim` and `preview` origins are accepted; unknown `from` values are discarded rather than persisted as arbitrary source labels.
+- Audited the For Businesses route: it always supplies `for-businesses` or `preview`. `ContactForm` preserves an explicit page; if no page is supplied it falls back to `listing` when a listing slug exists, otherwise to generic `contact`.
+- Added two component tests for the two fallback cases: known listing with no page → `page="listing"`; no page and no listing → `page="contact"`. Existing preview and For Businesses payload tests prove explicit origins are preserved.
+- Test commit: `57e1c278a376f0b06c9e37a70449705d9db2c95d`. Push run #416 and PR run #417 both passed TypeScript, ESLint, unit/component tests, production build and disposable PostgreSQL migration/security tests. The matching preview deployment is READY.
+- No source schema or runtime behavior change was necessary; no production writes, migrations or deployment occurred. Live persistence remains blocked under Task 1.
+
+### Current task — SW-0095
+
+**Status: IN PROGRESS — store source metadata in structured columns rather than embedding it only in a message string.**
+
+- Initial audit confirms the live schema already has structured columns: `contact_messages.page`, `source_listing_slug`, `topic`, `service_package`, `budget_band`, and `business_name`; `business_claims.listing_slug/listing_id`; `correction_reports.listing_slug/correction_type`; and structured `business_submissions` fields.
+- Existing components write these values as separate columns. No schema change appears necessary.
+- Next: add/extend component assertions for correction and new-business payloads, then run the full Quality Gate. Supabase calls remain mocked; production is read-only.
 ---
 
 ## 10. Instruction for every future AI session
@@ -946,9 +964,9 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [BLOCKED] **SW-0090 · P0 · Audit current state** — Verify the form does not publish the owner's private phone number. Blocker: no approved source identifies the owner's private number for comparison; public listing phone values are business data and must not be guessed or treated as the owner's number.
 - [ ] [REVIEW] **SW-0091 · P0 · Audit current state** — Retain the source route and business slug when a lead comes from a preview. Evidence: route chain passes `from=preview`, business name and listing slug to ContactForm; payload assertion verifies `page="preview"` and `source_listing_slug`; Quality Gate runs #402/#403 passed. Live persistence remains blocked under Task 1.
 - [ ] [REVIEW] **SW-0092 · P0 · Audit current state** — Retain the originating listing when a lead comes from a claim button. Evidence: listing CTA passes the slug to `/claim`, ClaimForm writes both `listing_slug` and `listing_id`, and the payload assertion verifies slug `aavaran-durbar-marg` plus directory ID `b1`; Quality Gate runs #410/#411 passed.
-- [ ] [IN PROGRESS] **SW-0093 · P0 · Audit current state** — Retain the form intent when a lead comes from the For Businesses page. Evidence pending: route passes `page="for-businesses"` and selected service package to ContactForm; a payload assertion has been added; CI pending.
-- [ ] [TODO] **SW-0094 · P0 · Audit current state** — Set a default source only when the source genuinely cannot be identified.
-- [ ] [TODO] **SW-0095 · P0 · Audit current state** — Store source metadata in structured columns rather than embedding it only in a message string.
+- [ ] [REVIEW] **SW-0093 · P0 · Audit current state** — Retain the form intent when a lead comes from the For Businesses page. Evidence: route supplies `page="for-businesses"` or `page="preview"` and selected service package; payload assertion verifies `page="for-businesses"` and `service_package="growth"`; push/PR Quality Gate runs #414/#415 passed. Live persistence remains blocked under Task 1.
+- [ ] [REVIEW] **SW-0094 · P0 · Audit current state** — Set a default source only when the source genuinely cannot be identified. Evidence: `/contact` accepts only known `claim`/`preview` origins; explicit `for-businesses`/`preview` sources are preserved; tests verify listing fallback and generic-contact fallback only when the origin is otherwise unknown; push/PR runs #416/#417 passed. Live persistence remains blocked under Task 1.
+- [ ] [IN PROGRESS] **SW-0095 · P0 · Audit current state** — Store source metadata in structured columns rather than embedding it only in a message string. Initial audit found the required columns and separate insert payloads; correction and new-business payload assertions are pending.
 - [ ] [TODO] **SW-0096 · P0 · Audit current state** — Capture business name as a separate field from the person's name.
 - [ ] [TODO] **SW-0097 · P1 · Audit current state** — Capture a reply method that the user can reasonably respond to, without demanding excessive data.
 - [ ] [TODO] **SW-0098 · P1 · Audit current state** — Make phone optional when email or another agreed reply method is sufficient.
