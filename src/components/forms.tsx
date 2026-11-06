@@ -202,17 +202,27 @@ export function CorrectionForm({ listing }: { listing: string }) {
   const [errors, setErrors] = useState<{ [k: string]: string | undefined }>({});
   const [status, setStatus] = useState<Status>("idle");
   const [hp, setHp] = useState("");
+  const submitting = useRef(false);
   if (status === "done") return <Done text={t("thanksCorrection")} />;
 
   async function submit(e: FormEvent) {
     e.preventDefault();
+    if (submitting.current || status === "sending") return;
     const parsed = correctionSchema.safeParse(v);
     if (!parsed.success) return setErrors(errorsFrom(parsed.error.issues, t));
     setErrors({});
     if (isBot(hp)) return setStatus("done");
+    submitting.current = true;
     setStatus("sending");
-    const { error } = await supabase.from("correction_reports").insert({ ...parsed.data, client_key: clientKey() });
-    setStatus(statusFromError(error));
+    try {
+      const { error } = await supabase.from("correction_reports").insert({ ...parsed.data, client_key: clientKey() });
+      const st = statusFromError(error);
+      if (st !== "done") submitting.current = false;
+      setStatus(st);
+    } catch {
+      submitting.current = false;
+      setStatus("error");
+    }
   }
 
   const sorted = [...businesses].sort((a, b) => a.name.localeCompare(b.name));
@@ -255,14 +265,25 @@ export function BusinessSubmissionForm({ initialName = '' }: { initialName?: str
  const [v,setV] = useState({business_name:initialName,category:'',area:'',address:'',phone:'',website:'',opening_hours:'',is_owner:'',name:'',contact:'',note:''});
  const [errors,setErrors] = useState<Record<string,string>>({});
  const [status,setStatus] = useState<Status>('idle'); const [hp,setHp] = useState('');
+ const submitting = useRef(false);
  if (status === 'done') return <Done text={t('addThanks')} />;
  const change = (key: keyof typeof v, value: string) => setV((old) => ({...old,[key]:value}));
  async function submit(e: FormEvent) {
-  e.preventDefault(); if (status === 'sending') return;
+  e.preventDefault(); if (submitting.current || status === 'sending') return;
   const parsed = submissionSchema.safeParse(v);
   if (!parsed.success) { const errs = errorsFrom(parsed.error.issues,t); setErrors(errs); const first = Object.keys(errs)[0]; if (first) document.getElementById(`sub-${first}`)?.focus(); return; }
-  setErrors({}); if (isBot(hp)) { setStatus('done'); return; } setStatus('sending');
-  try { const {error} = await supabase.from('business_submissions').insert({...parsed.data,client_key:clientKey()}); setStatus(statusFromError(error)); } catch { setStatus('error'); }
+  setErrors({}); if (isBot(hp)) { setStatus('done'); return; }
+  submitting.current = true;
+  setStatus('sending');
+  try {
+   const {error} = await supabase.from('business_submissions').insert({...parsed.data,client_key:clientKey()});
+   const st = statusFromError(error);
+   if (st !== 'done') submitting.current = false;
+   setStatus(st);
+  } catch {
+   submitting.current = false;
+   setStatus('error');
+  }
  }
  const input = (key: keyof typeof v, label: Key, max: number, required=false, type='text', autocomplete?: string) => <Field id={`sub-${key}`} label={t(label)} required={required} error={errors[key]}><input id={`sub-${key}`} className="field min-h-11 text-base" type={type} autoComplete={autocomplete} inputMode={type === 'tel' ? 'tel' : undefined} enterKeyHint="next" maxLength={max} required={required} aria-invalid={!!errors[key]} aria-describedby={errors[key] ? `sub-${key}-error` : undefined} value={v[key]} onChange={(e) => change(key,e.target.value)} /></Field>;
  const select = (key: 'category'|'area'|'is_owner', label: Key, options: {value:string;label:string}[]) => <Field id={`sub-${key}`} label={t(label)} required error={errors[key]}><select id={`sub-${key}`} className="field min-h-11 text-base" required aria-invalid={!!errors[key]} aria-describedby={errors[key] ? `sub-${key}-error` : undefined} value={v[key]} onChange={(e) => change(key,e.target.value)}><option value="">{t('chooseOption')}</option>{options.map((x) => <option key={x.value} value={x.value}>{x.label}</option>)}</select></Field>;
