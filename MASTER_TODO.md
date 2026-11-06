@@ -172,11 +172,11 @@ Never mark work [DONE] merely because code exists, a PR is merged, or a preview 
 | #8 | sewa/bundle-08-inbound-conversion → sewa/bundle-07-reconciled-main-20261106 | Open draft; still stacked on the old Bundle 7 branch at a6deac36. Do not merge as-is. |
 | #10 | sewa/bundle-07-reconciled-main-20261106 → main | Open draft; current-main base ee38ca0e, 16 commits, 11 files. Push run #351 and PR run #344 passed. Owner review/approval remains required. |
 | #11 | sewa/bundle-04-contact-insights-main-20261106 → main | Open draft; current-main base ee38ca0e, 7 commits, 5 files. Push run #365 and PR run #366 passed. |
-| #12 | sewa/analytics-submission-guard-20261106 → main | Open draft; current-main base ee38ca0e, commit c447e63cf548a9274c3d21800cef4efc79125c60, 3 files. Quality Gate run #368 passed. Not merged. |
+| #12 | sewa/analytics-submission-guard-20261106 → main | Open draft; current-main base ee38ca0e, 3 commits and 4 files; code commit c447e63cf548a9274c3d21800cef4efc79125c60; latest head 3df0d155fa735b80b09f39b5aab40512f3bb2639. Code run #368 and latest-head push/PR runs #372/#373 passed. Not merged. |
 
 - PR #7 is closed unmerged; PR #9 is merged.
 - Main commit ee38ca0e has successful Quality Gate run #345 and earlier run #337. Later run #355 was cancelled. The combined Vercel status for this main commit is successful.
-- PR #12 run #368 passed TypeScript validation, lint, unit/component tests, production build, and disposable PostgreSQL migration/security tests.
+- PR #12 code run #368 and latest-head push/PR runs #372/#373 passed TypeScript validation, lint, unit/component tests, production build, and disposable PostgreSQL migration/security tests.
 - PRs #4, #8, #10, #11 and #12 remain drafts. No release PR was merged.
 
 ### Current branch inventory
@@ -701,7 +701,7 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 ### Current task
 
 **SW-0042 — Verify that analytics events are not double-fired during route changes or form submissions.**  
-**Status: DONE — PR #12 draft; commit c447e63cf548a9274c3d21800cef4efc79125c60; Quality Gate run #368 passed.**
+**Status: REVIEW — implementation and plan updates are in draft PR #12; code run #368 and latest-head runs #372 (push) and #373 (PR) passed. PR remains unmerged and undeployed.**
 
 - SW-0041 is DONE: the app already uses anonymous first-party Supabase analytics through src/lib/track.ts; no paid analytics product is needed. The checked database has five events (3 preview_view, 2 search_zero).
 - Route audit: preview views are emitted from an effect keyed to the business slug; same-slug rerenders do not re-fire the effect. The app root/router does not use React StrictMode. Search analytics use a 1.5-second debounce and cancel the prior timer when query/results change.
@@ -757,13 +757,13 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 **Phase:** 1 - Revenue foundation  
 **Definition of done:** One page defines the revenue goal, what the site sells, what is deliberately deferred, and the rules that prevent trust or outreach mistakes.
 
-- [x] [DONE] **SW-0001 · P0 · Audit current state** — Write a one-sentence north-star goal: generate qualified website-design opportunities for Boxont from Sewa. Evidence: north-star sentence is explicit in Section 0.
-- [x] [DONE] **SW-0002 · P0 · Audit current state** — Define a qualified website lead using observable criteria, not assumptions about willingness to pay. Evidence: observable qualification rule is recorded in Section 0; budget/willingness to pay is not inferred.
-- [x] [DONE] **SW-0003 · P0 · Audit current state** — Define the primary conversion as a completed website enquiry with identifiable business context. Evidence: primary conversion is explicitly defined in Section 0.
-- [x] [DONE] **SW-0004 · P0 · Audit current state** — Define secondary conversions for preview views, preview CTA clicks, claim requests, contact-form sends, and repeat visits. Evidence: secondary conversion definitions are recorded; implementation gaps remain blocked separately.
-- [x] [DONE] **SW-0005 · P0 · Audit current state** — Separate website-design revenue metrics from future listing-subscription and booking revenue metrics. Evidence: website-service revenue is explicitly separated from future placements and bookings.
-- [x] [DONE] **SW-0006 · P0 · Audit current state** — Record that directory traffic alone is not success unless it creates useful customer or business-owner outcomes. Evidence: Section 0 states traffic and feature count are not success without useful outcomes.
-- [x] [DONE] **SW-0007 · P0 · Audit current state** — Record that 1,000 listings is a conditional supply milestone, not the north-star KPI. Evidence: Section 0 states the 1,000-listing target is conditional.
+- [ ] [REVIEW] **SW-0001 · P0 · Audit current state** — Write a one-sentence north-star goal: generate qualified website-design opportunities for Boxont from Sewa. Evidence: north-star sentence is explicit in Section 0. Evidence: measurement definition is documented in this draft PR; owner review is still required before the plan update is in main.
+- [ ] [REVIEW] **SW-0002 · P0 · Audit current state** — Define a qualified website lead using observable criteria, not assumptions about willingness to pay. Evidence: observable qualification rule is recorded in Section 0; budget/willingness to pay is not inferred. Evidence: measurement definition is documented in this draft PR; owner review is still required before the plan update is in main.
+- [ ] [REVIEW] **SW-0003 · P0 · Audit current state** — Define the primary conversion as a completed website enquiry with identifiable business context. Evidence: primary conversion is explicitly defined in Section 0. Evidence: measurement definition is documented in this draft PR; owner review is still required before the plan update is in main.
+- [ ] [REVIEW] **SW-0004 · P0 · Audit current state** — Define secondary conversions for preview views, preview CTA clicks, claim requests, contact-form sends, and repeat visits. Evidence: secondary conversion definitions are recorded; implementation gaps remain blocked separately. Evidence: measurement definition is documented in this draft PR; owner review is still required before the plan update is in main.
+- [ ] [REVIEW] **SW-0005 · P0 · Audit current state** — Separate website-design revenue metrics from future listing-subscription and booking revenue metrics. Evidence: website-service revenue is explicitly separated from future placements and bookings. Evidence: measurement definition is documented in this draft PR; owner review is still required before the plan update is in main.
+- [ ] [REVIEW] **SW-0006 · P0 · Audit current state** — Record that directory traffic alone is not success unless it creates useful customer or business-owner outcomes. Evidence: Section 0 states traffic and feature count are not success without useful outcomes. Evidence: measurement definition is documented in this draft PR; owner review is still required before the plan update is in main.
+- [ ] [REVIEW] **SW-0007 · P0 · Audit current state** — Record that 1,000 listings is a conditional supply milestone, not the north-star KPI. Evidence: Section 0 states the 1,000-listing target is conditional. Evidence: measurement definition is documented in this draft PR; owner review is still required before the plan update is in main.
 - [ ] [BLOCKED] **SW-0008 · P0 · Audit current state** — Set an initial decision window for evaluating the current funnel before redesigning it again. Evidence: requires an owner-approved evaluation window; no business decision has been invented.
 - [ ] [TODO] **SW-0009 · P1 · Audit current state** — Create a decision log for changes that affect the business model or brand position.
 - [ ] [TODO] **SW-0010 · P1 · Audit current state** — Record the original three phases: trust foundation, lead-generation funnel, then bookings after traction.
@@ -804,7 +804,7 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 **Definition of done:** The owner can answer where qualified leads came from, which page generated them, and which funnel step leaks.
 
 - [x] [DONE] **SW-0041 · P0 · Audit current state** — Check whether production analytics are already installed before adding another analytics product. Evidence: first-party Supabase analytics already exist; five events were counted read-only in the checked project.
-- [x] [DONE] **SW-0042 · P0 · Audit current state** — Verify that analytics events are not double-fired during route changes or form submissions. Evidence: same-tick contact/claim duplicate-submit regression tests pass in PR #12 CI run #368.
+- [ ] [REVIEW] **SW-0042 · P0 · Audit current state** — Verify that analytics events are not double-fired during route changes or form submissions. Evidence: same-tick contact/claim duplicate-submit regression tests pass in PR #12 CI run #368. Evidence: same-tick contact/claim duplicate-submit regression tests pass in PR #12 CI; implementation remains unmerged and undeployed.
 - [ ] [BLOCKED] **SW-0043 · P0 · Audit current state** — Record weekly unique visitors and pageviews by landing page. Evidence: unique visitor/pageview reporting needs an owner-approved privacy and retention policy before adding identifiers.
 - [ ] [BLOCKED] **SW-0044 · P0 · Audit current state** — Record organic-search visits separately from direct, referral, and campaign visits where data supports it. Evidence: UTM/referrer/campaign fields are absent; source policy and safe migration target are required.
 - [ ] [BLOCKED] **SW-0045 · P0 · Audit current state** — Record visits to listing pages separately from website-preview pages. Evidence: no listing_view event exists in code or DB constraint; migration target/history mismatch remains unresolved.
