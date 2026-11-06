@@ -8,6 +8,7 @@ import { MapView } from "@/components/map-view";
 import { SITE_NAME } from "@/config";
 import { dayLabel, directionsLink, getArea, getBusiness, getCategory, getCity, hasPin, kathmanduNow, liveSlugRedirects, placeName, slugRedirects, socialLinks, telLink, timeLabel, whatsappLink, type Business } from "@/data/directory";
 import { useI18n, type Key } from "@/lib/i18n";
+import { verifiedPublicPhone } from "@/lib/provenance";
 import { pageMeta } from "@/lib/seo";
 import { statusDetail, weekTable } from "@/lib/venue";
 
@@ -137,6 +138,7 @@ function PreviewPage() {
   const catOne = cat ? t(`pvCat_${cat.slug}` as Key) || cat.name : "";
   const vars = { name: b.name, area: placeName(area, lang), city: placeName(city, lang), cat: catOne };
   const dir = directionsLink(b);
+  const phone = verifiedPublicPhone(b);
   const socials = socialLinks(b);
   const style = { "--pv-h": HUE[b.category] ?? 262 } as CSSProperties;
   const nav: [string, Key][] = [["about", "tabAbout"], ["hours", "tabHours"], ["visit", "pvNavVisit"], ["contact", "pvNavContact"]];
@@ -210,7 +212,7 @@ function PreviewPage() {
         <dl className="pv-card grid divide-y divide-[var(--pv-line)] sm:grid-cols-3 sm:divide-x sm:divide-y-0">
           <Fact icon={Clock} label={t("pvFactToday")}><TodayHours b={b} /></Fact>
           <Fact icon={MapPin} label={t("pvFactWhere")}>{b.address ?? <span className="text-muted-foreground">{t("pvAddThis")}</span>}</Fact>
-          <Fact icon={Phone} label={t("pvFactPhone")}>{b.phone ? <span className="tabular-nums">{b.phone}</span> : <span className="text-muted-foreground">{t("pvAddThis")}</span>}</Fact>
+          <Fact icon={Phone} label={t("pvFactPhone")}>{phone ? <span className="tabular-nums">{phone}</span> : <span className="text-muted-foreground">{t("pvAddThis")}</span>}</Fact>
         </dl>
       </div>
 
@@ -266,7 +268,7 @@ function PreviewPage() {
           <p className="pv-kicker !text-[var(--pv-glow)]">{t("pvNavContact")}</p>
           <h2 className="mt-3 text-[1.75rem] leading-[1.15] font-bold tracking-tight sm:text-[2.25rem]">{t("pvContactTitle")}</h2>
           <div className="mt-7 grid gap-3 sm:flex sm:flex-wrap">
-            {b.phone ? <a href={telLink(b.phone)} className="action-btn pv-btn-ghost min-h-12 px-6"><Phone aria-hidden className="h-[18px] w-[18px]" />{t("call")} {b.phone}</a> : <p>{t("pvFactPhone")}: {t("pvAddThis")}</p>}
+            {phone ? <a href={telLink(phone)} className="action-btn pv-btn-ghost min-h-12 px-6"><Phone aria-hidden className="h-[18px] w-[18px]" />{t("call")} {phone}</a> : <p>{t("pvFactPhone")}: {t("pvAddThis")}</p>}
             {b.whatsapp && <a href={whatsappLink(b.whatsapp)} target="_blank" rel="noopener noreferrer" className="action-btn pv-btn-ghost min-h-12 px-6"><MessageCircle aria-hidden className="h-[18px] w-[18px]" />{t("whatsapp")}</a>}
           </div>
           {socials.length > 0 && (

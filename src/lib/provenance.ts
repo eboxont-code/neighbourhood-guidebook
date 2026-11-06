@@ -31,3 +31,20 @@ export function fieldSource(b: Business, field: SourceField): FieldSource | null
   if (field === 'location' && hasPin(b) && directions && tierFromUrl(b, directions) === 'maps') return { tier: 'maps', url: directions };
   return null;
 }
+
+/**
+ * A public call action needs traceable, checked evidence from the business's own
+ * website or official social profile. A listing-wide "source checked" flag,
+ * free-text source note, map listing, or third-party directory is not enough.
+ */
+export function verifiedPublicPhone(b: Business): string | undefined {
+  const phone = b.phone?.trim();
+  if (!phone) return undefined;
+
+  const source = fieldSource(b, 'phone');
+  if (!source || (source.tier !== 'website' && source.tier !== 'official_social')) return undefined;
+  if (!sourceUrl(source.url) || !source.checked) return undefined;
+  if (!checkedDate({ ...b, lastChecked: source.checked })) return undefined;
+
+  return phone;
+}
