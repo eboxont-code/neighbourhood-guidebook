@@ -459,3 +459,75 @@ describe("public form failure and retry feedback", () => {
     });
   });
 });
+
+describe("public form validation guidance", () => {
+  it("identifies and focuses the first missing preview enquiry field", async () => {
+    const { container } = render(
+      <ContactForm business="Aavaran" listing="aavaran-durbar-marg" page="preview" />,
+    );
+    const form = container.querySelector("form");
+    if (!form) throw new Error("Missing preview enquiry form");
+
+    fireEvent.submit(form);
+
+    await waitFor(() => expect(container.querySelector("#name-error")?.textContent).toContain("errName"));
+    expect(container.querySelector("#name")?.getAttribute("aria-invalid")).toBe("true");
+    expect(document.activeElement).toBe(container.querySelector("#name"));
+    expect(fromMock).not.toHaveBeenCalled();
+  });
+
+  it("explains that the For Businesses enquiry topic must be selected", async () => {
+    const { container } = render(
+      <ContactForm business="" listing="" page="for-businesses" topicPicker />,
+    );
+    const form = container.querySelector("form");
+    if (!form) throw new Error("Missing For Businesses enquiry form");
+
+    fireEvent.submit(form);
+
+    await waitFor(() => expect(container.querySelector("#topic-error")?.textContent).toContain("errChoice"));
+    expect(container.querySelector("#topic")?.getAttribute("aria-invalid")).toBe("true");
+    expect(document.activeElement).toBe(container.querySelector("#topic"));
+    expect(fromMock).not.toHaveBeenCalled();
+  });
+
+  it("identifies and focuses the missing business-claim name", async () => {
+    const { container } = render(<ClaimForm listing="aavaran-durbar-marg" />);
+    const form = container.querySelector("form");
+    if (!form) throw new Error("Missing business claim form");
+
+    fireEvent.submit(form);
+
+    await waitFor(() => expect(container.querySelector("#claim-name-error")?.textContent).toContain("errName"));
+    expect(container.querySelector("#claim-name")?.getAttribute("aria-invalid")).toBe("true");
+    expect(document.activeElement).toBe(container.querySelector("#claim-name"));
+    expect(fromMock).not.toHaveBeenCalled();
+  });
+
+  it("explains which correction details and type are required", async () => {
+    const { container } = render(<CorrectionForm listing="aavaran-durbar-marg" />);
+    const form = container.querySelector("form");
+    if (!form) throw new Error("Missing correction form");
+
+    fireEvent.submit(form);
+
+    await waitFor(() => expect(container.querySelector("#wrong-error")?.textContent).toContain("errWrong"));
+    expect(container.querySelector("#wrong")?.getAttribute("aria-invalid")).toBe("true");
+    expect(container.querySelector("#correction-type-error")?.textContent).toContain("errChoice");
+    expect(container.querySelector("#correction-type")?.getAttribute("aria-invalid")).toBe("true");
+    expect(fromMock).not.toHaveBeenCalled();
+  });
+
+  it("identifies and focuses the missing category on a new-business submission", async () => {
+    const { container } = render(<BusinessSubmissionForm initialName="Test Cafe" />);
+    const form = container.querySelector("form");
+    if (!form) throw new Error("Missing new-business submission form");
+
+    fireEvent.submit(form);
+
+    await waitFor(() => expect(container.querySelector("#sub-category-error")?.textContent).toContain("errChoice"));
+    expect(container.querySelector("#sub-category")?.getAttribute("aria-invalid")).toBe("true");
+    expect(document.activeElement).toBe(container.querySelector("#sub-category"));
+    expect(fromMock).not.toHaveBeenCalled();
+  });
+});
