@@ -705,6 +705,8 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 - The form inserts a `contact_messages` row with `business_name`, `source_listing_slug`, `page`, and `topic`; the required name and message are validated before insert. `enquiry_submit` is emitted only after a successful insert for website-intent forms. The honeypot success path does not insert a row.
 - Analytics insertion is asynchronous and intentionally ignores failures; Do Not Track also suppresses it. The saved contact row is therefore the canonical conversion record. The service quote event is not an additional conversion for the same row.
 - Read-only production snapshot: 52 published listings; 0 contact messages; 8 analytics events (5 `preview_view`, 1 `claim_click`, 2 `search_zero`). The definition does not imply that any production conversion has occurred.
+- Task commit `3a276d7986dd09087f7a5c2eaa2313745b7bd3ab`; draft PR #21: https://github.com/eboxont-code/neighbourhood-guidebook/pull/21, stacked on PR #20. GitHub Quality Gate push run #42295950727 and PR run #42295971021 both passed on the exact task commit, including TypeScript, ESLint, unit/component tests, production build, and disposable PostgreSQL migration/security tests.
+- Vercel preview status is blocked by the Hobby daily deployment limit (`api-deployments-free-per-day`); no manual deployment or upgrade was attempted.
 - No application code, schema, production data, Auth settings, pricing, outreach, or deployment was changed. Additional spend: $0.
 
 ### Bundle 7 current state — 7 November 2026
