@@ -2,7 +2,7 @@
 
 > **Single source of truth for SEWA/Boxont execution. Read the whole file before each work session and update it before ending. This file combines the repository plan, revenue-first strategy and the 1,000-task register.**
 >
-> **Last reviewed:** 5 November 2026  
+> **Last reviewed:** 6 November 2026  
 >
 > **Merged inputs:** existing repository `MASTER_TODO.md`, the revenue-first strategy and 1,000-point checklist, and the matching 1,000-row CSV task register. The CSV and checklist IDs, priorities and task descriptions were reconciled. This file is now the only project execution plan.
 >
@@ -653,9 +653,9 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 
 | Order | Task | Status |
 |---:|---|---|
-| 1 | Test the production preview → quote form → database → admin lead path end to end | IN PROGRESS |
-| 2 | Verify lead source, business, preview URL and campaign attribution across each form | TODO |
-| 3 | Revalidate the existing 20-business prospect CSV and each website status | TODO |
+| 1 | Test the production preview → quote form → database → admin lead path end to end | REVIEW — live route, prefill, anonymous insert permissions and admin quote/payment writes verified; real browser POST and signed-in admin UI remain unverified |
+| 2 | Verify lead source, business, preview URL and campaign attribution across each form | DONE — source and listing attribution audited; UTM/referrer/campaign ID are not retained on lead records |
+| 3 | Revalidate the existing 20-business prospect CSV and each website status | BLOCKED — original 20-business CSV not found in `main` or the Library; do not recreate or guess the list |
 | 4 | Confirm production deployment and complete admin password recovery verification | Deployment + domain mapping DONE 5 Nov; password-reset journey TODO |
 | 5 | Review the 390px preview and quote form; capture real screenshots | DONE 6 Nov 2026: EN/NE at 390×844 first, then 1280×1800; screenshots captured of preview sections, enquiry forms and inline errors. No horizontal overflow; 44px+ effective targets; labeled 16px inputs. Enlarged language controls, linked form hints, removed duplicated optional wording and prevented the hidden quote pill covering the form. 179 tests pass; preview build/typecheck OK. Presentation only; no enquiries sent, schema/attribution/admin changes, outreach, publishing or deployment. |
 | 6 | Reconcile Bundle 7 Sales Pipeline against current `main` | TODO |
@@ -664,12 +664,26 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 | 9 | Use the funnel baseline to fix the largest conversion leak | TODO |
 | 10 | Improve directory quality and coverage based on real user demand and lead value | TODO |
 
-### Current active task
+### Task 1 verification notes — 6 November 2026
 
-**Task 1 — Validate the existing production revenue loop.**  
-**Status: IN PROGRESS.**
+- Production `main` is `794b959b9056a9ec147414c39db4b6da6c0b79f1`. Vercel production deployment is READY on that exact commit; domain `sewa.boxont.com` is attached.
+- GitHub Quality Gate run #310 passed on that exact commit: TypeScript, lint, unit/component tests, production build, and disposable PostgreSQL migration/security tests.
+- Production homepage, `/for-businesses`, the `aavaran-durbar-marg` website preview, and its preview-origin contact URL returned HTTP 200. The preview CTA carried the listing slug and business name; the contact page rendered both prefilled, with a prefilled preview-specific message.
+- A rollback-only SQL test exercised a public `anon` insert and admin quote/payment updates (NPR 25,000 quoted, then paid). The transaction rolled back. Final production checks found zero contact messages, zero QA leads, and zero leftover QA rate-limit keys. Anonymous users cannot read leads or insert/update private quote/payment fields.
+- **Boundary:** this was not a browser-driven JavaScript form submission and did not authenticate to the visible `/admin` UI. Keep Task 1 at REVIEW; do not describe the complete browser journey as passed.
 
-Test a real safe enquiry from an existing website preview through database persistence and the private admin lead pipeline. Verify the business, preview URL and source survive the full flow. Use approved test data and clean it up safely. Do not send outreach or publish prices. If production is still serving an old release or the form is broken, record the exact blocker and handle the release path using existing free allowances only.
+### Task 2 attribution audit — 6 November 2026
+
+- Preview and For Businesses contact leads retain `page` and `source_listing_slug`; the admin can rebuild the listing and preview links from the slug. Claim requests retain `listing_slug` in `business_claims`; corrections retain `listing_slug` in `correction_reports`; new-business submissions use their own table.
+- `contact_messages` has no UTM, campaign ID, landing/referrer route, or explicit preview URL fields. `analytics_events` records `listing_slug`, event, query, language and path, but no UTM/campaign fields. Sponsored clicks are counted by listing, placement/target key and date window; they are not joined to a specific campaign or later enquiry. No promotions or sponsored-click rows currently exist in production.
+- Keep SW-0060 and SW-0061 TODO. Mark SW-0062 REVIEW: the preview slug/page mapping is present in code, but the browser submit/validation journey has not been exercised end to end. No schema or application changes were made during this audit.
+
+### Current task
+
+**Task 3 — Revalidate the existing 20-business prospect CSV and each website status.**  
+**Status: BLOCKED.**
+
+The referenced 20-business source CSV was not found in the current GitHub `main` tree or the searchable Library files. Do not infer which 20 businesses were intended, substitute an invented list, or reuse an unrelated task-register CSV. Continue other independent work only where its inputs and acceptance criteria are available; keep this task blocked until its original source artifact is accessible.
 
 ---
 
@@ -692,8 +706,6 @@ Before doing SEWA/Boxont work:
 **Start with this file. Work from it. End by updating it.**
 
 ---
-
-
 
 ### Register reconciliation
 
@@ -777,7 +789,7 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [TODO] **SW-0059 · P1 · Audit current state** — Track language-switch usage to see whether Nepali content is being used.
 - [ ] [TODO] **SW-0060 · P1 · Audit current state** — Track visits from each unique campaign link using UTMs.
 - [ ] [TODO] **SW-0061 · P1 · Audit current state** — Track each lead's landing route and referring page in the lead record.
-- [ ] [TODO] **SW-0062 · P1 · Audit current state** — Preserve the preview-to-lead source mapping through redirects and form validation errors.
+- [ ] [REVIEW] **SW-0062 · P1 · Audit current state** — Preserve the preview-to-lead source mapping through redirects and form validation errors. Current code retains `page=preview` and the listing slug from the preview CTA; browser submission and validation-error continuity still need an end-to-end check.
 - [ ] [TODO] **SW-0063 · P2 · Audit current state** — Create a funnel report from preview viewed to CTA clicked to enquiry submitted.
 - [ ] [TODO] **SW-0064 · P2 · Audit current state** — Create a separate report from listing viewed to preview clicked to enquiry submitted.
 - [ ] [TODO] **SW-0065 · P2 · Audit current state** — Report lead counts by source: preview, claim, For Businesses, listing, and contact.
