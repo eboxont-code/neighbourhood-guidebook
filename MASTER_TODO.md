@@ -683,7 +683,8 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 | 8 | Isolate and review Proposal Composer after its dependencies | BLOCKED — depends on Bundle 7/8 release approval |
 | 9 | Use the funnel baseline to fix the largest conversion leak | BLOCKED — only five analytics events exist (3 preview views, 2 zero-result searches); no qualified-lead sample supports a leak diagnosis |
 | 10 | Improve directory quality and coverage based on real user demand and lead value | BLOCKED — current demand/lead evidence is insufficient to choose expansions safely |
-| 11 | SW-0168 — Verify website-preview area/address accuracy | REVIEW — draft PR #17; 4 focused regression tests and both Quality Gate runs passed. Next eligible task: SW-0169 map/directions reliability. |
+| 11 | SW-0168 — Verify website-preview area/address accuracy | REVIEW — draft PR #17 stacked preview-location regression; 4 focused tests and Quality Gate runs #461/#462 passed. |
+| 12 | SW-0169 — Verify map/directions reliability | REVIEW — draft PR #18 stacked on PR #17; 8 invalid-coordinate cases and area-only/street-address directions fallbacks tested; Quality Gate runs #469/#470 passed. Next eligible task: SW-0170 verified phone action. |
 
 ### Task 1 verification notes — 6 November 2026
 
@@ -703,7 +704,7 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 
 - Repository default branch is `main` at `ee38ca0e978f0149ca10f5b2caadb33282729148`. GitHub Quality Gate run #337 passed on that exact SHA; the combined commit status is successful.
 - Production Vercel deployment `dpl_Gou24q64tcmGASESDmvqbxzrWpP7` is READY on that exact `main` SHA. `sewa.boxont.com` is attached. No production deployment was initiated in this session.
-- Ten open draft PRs are present: #4 (older Bundle 4), #8 (Bundle 8), #10 (current-main Bundle 7), #11 (current-main contact insights), #12 (form protection/regression coverage), #13 (preview route regression), #14 (preview business-name render regression), #15 (preview hours trust), #16 (no-hours preview regression), and #17 (preview location accuracy).
+- Eleven open draft PRs are present: #4 (older Bundle 4), #8 (Bundle 8), #10 (current-main Bundle 7), #11 (current-main contact insights), #12 (form protection/regression coverage), #13 (preview route regression), #14 (preview business-name render regression), #15 (preview hours trust), #16 (no-hours preview regression), #17 (preview location accuracy), and #18 (map/directions reliability). No open GitHub issues.
 - PR #12 targets `main` at `ee38ca0e`; current head is `1f120d7305ca43dea2da0cc7cafa7e493525d2ef`. Its Unicode round-trip Quality Gate #429 passed on code head `66533a47`; documentation refresh runs #430/#431 passed.
 - PR #13 is a draft stacked on PR #12. Current head is `4631b5685a361eac30b0b8d44f3cf31944c4ab08`; route regression code head `38d79188` passed runs #437/#438, and plan refresh runs #439/#440 passed.
 - PR #14 is a draft stacked on PR #13. Current head is `668405a23016e8c28bee77249f0ad0fab0072f91`; business-name render code head `7c5b7869` passed runs #442/#443, and plan refresh runs #444/#445 passed.
@@ -711,7 +712,7 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 - PR #16 is a draft stacked on PR #15. Current head is `b0b867fd0dc5cb235ea3bd5d21c1dc73ede92058`; runs #455 (push) and #456 (PR) both passed. The application job passed TypeScript, ESLint (0 errors; 25 warnings), 27 test files / 219 tests, and production build. Disposable PostgreSQL applied all 13 repository migrations and passed the existing security/concurrency checks.
 - PR #17 is a draft stacked on PR #16. Code head `e57f75278d73c5af0ebaea4c8425fe9fa62b057c`; Quality Gate runs #461 (push) and #462 (PR) both passed: TypeScript, ESLint (0 errors; 25 existing warnings), 28 test files / 223 tests, production build, and disposable PostgreSQL migration/security/concurrency checks. The change is test-only and remains unmerged.
 - Earlier CI failures were corrected and are not current failures: PR #13's redirect assertion was updated to match the actual HTTP 301 Response; PR #15's synthetic no-source fixture was updated to respect `exactOptionalPropertyTypes`. The corrected heads passed.
-- Vercel reports a free daily deployment limit failure for current PR #12–#17 heads (`api-deployments-free-per-day`, more than 100 deployments). PR #17 has no preview deployment; the latest observed READY preview remains an earlier PR #13 head. No manual preview deployment or paid upgrade was attempted. This Vercel limit does not invalidate passing GitHub Quality Gates.
+- Vercel previously rejected PR #12–#17 preview builds because the free daily deployment allowance was exceeded. PR #18 now has an automatically created READY preview, deployment `dpl_UkCR3NHfM2QdeY6rrsp7QmSH2GMY`, on head `83880c7bb1ece4f05b458944494f1698d67e3b70`. This is preview-only; production remains on `main` at `ee38ca0e`. No production deployment or paid upgrade was initiated.
 - Supabase project `zvbavpcsyvibvpkxjzkn` (`neighbourhood-guidebook`) remains ACTIVE_HEALTHY. Remote migration history contains 8 entries; the last three versions (`20261104111910`, `20261104111922`, `20261104111936`) still differ from local migration filenames (`20261102130000`, `20261103114000`, `20261104100000`). No migration or repair was attempted.
 - Read-only database counts remain: 52 listings; 0 contact messages; 0 business claims; 0 business submissions; 0 correction reports; 5 analytics events; 0 listing promotions; 3 form-rate rows; 1 user role. `business_sales_prospects` and `business_sales_activities` are absent. No rows were changed.
 - The current `main` copy of `MASTER_TODO.md` contains 999 task rows and omits `SW-0299`. The original Library CSV confirms `SW-0299` is “Do not promise search rankings, guaranteed leads, or a specific sales result.” This PR branch contains all 1,000 unique IDs, including the restored task. Do not overwrite the restored register with the stale `main` copy.
@@ -990,13 +991,24 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 - Draft PR [#17](https://github.com/eboxont-code/neighbourhood-guidebook/pull/17) is stacked on PR #16 and remains unmerged. Keep REVIEW rather than DONE until owner review and release.
 - Vercel could not create the preview because the free daily deployment limit was exceeded (>100 deployments). No paid upgrade or manual deployment was attempted. No business data, addresses, coordinates, production data, schema, migrations, settings, or production deployment changed. Additional spend: $0.
 
-### Current task — SW-0169
+### Previous task — SW-0169
 
-**Status: IN PROGRESS — verify the map and directions actions appear only when reliable location data exists.**
+**Status: REVIEW — map and directions controls now require complete, usable coordinates or an independently recorded directions destination.**
 
-- Audit coordinate completeness, coordinate validity, explicit directions URLs, and the address-based fallback across existing fixtures.
-- Add focused tests for missing/partial/unusable location data and ensure no map or directions control is presented from an area label alone.
-- Reuse the SW-0168 fixtures and helpers where possible; do not invent, enrich, or edit business addresses or coordinates. No production data, migrations, settings, or deployment changes are required.
+- Tightened `hasPin` to require both latitude and longitude to be finite numbers within the geographic ranges [-90, 90] and [-180, 180]. Missing, partial, non-finite and out-of-range pairs no longer render a map or enter nearby-pin filtering.
+- Kept explicitly recorded directions URLs. The address fallback now requires at least one address detail beyond the listing's area, city and country labels; it handles English and Nepali location labels. Exact street-address fallback remains available, while `Boudha, Kathmandu` alone no longer creates a directions search.
+- Added focused render tests using existing fixtures: eight missing/partial/non-finite/out-of-range coordinate cases with `kathmandu-spa-thamel`; area-only fallback suppression with `the-new-barber-boudha`; and preservation of the street-level `Lazimpat Road, Kathmandu` fallback with `filli-cafe-lazimpat`. Existing tests continue to cover exact addresses and explicit recorded directions URLs.
+- Quality Gate runs [#469 (push)](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42270213445) and [#470 (pull request)](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42270222221) both passed on head `83880c7bb1ece4f05b458944494f1698d67e3b70`: TypeScript, ESLint (0 errors; 25 existing warnings), 28 test files / 233 tests, production build, and all 13 repository migrations plus disposable PostgreSQL security/concurrency checks.
+- Read-only production location aggregate: 52 published listings; 21 complete numeric coordinate pairs; 0 partial pairs; 0 non-numeric/partial locations; 0 out-of-range pairs. No coordinates or rows were read individually or changed.
+- Draft PR [#18](https://github.com/eboxont-code/neighbourhood-guidebook/pull/18) is stacked on draft PR #17 and remains unmerged. Vercel preview `dpl_UkCR3NHfM2QdeY6rrsp7QmSH2GMY` is READY for this head; production remains on the existing `main` deployment.
+- No business addresses, coordinates, source records, production data, schema, migrations, settings, outreach or pricing changed. No production deployment was initiated. Additional spend: $0.
+
+### Next eligible task — SW-0170
+
+**Status: TODO — verify the phone action appears only when a verified public phone exists.**
+
+- Audit the existing preview contact actions, phone provenance and current directory fixtures; preserve recorded phone values and do not invent or upgrade unverified numbers.
+- Add focused render tests for missing, unverified and verified public phone cases. Do not contact businesses or perform live calls.
 ---
 
 ## 10. Instruction for every future AI session
@@ -1226,7 +1238,7 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [REVIEW] **SW-0166 · P0 · Audit current state** — Verify the preview displays only hours that exist and are sufficiently trustworthy. Evidence: preview hours require a non-empty schedule and recorded source; unverified sourced hours are labelled and live status requires verified hours. Three render tests; Quality Gate #451 passed (27 files / 218 tests, TypeScript, ESLint, build and disposable PostgreSQL security/concurrency checks). Draft PR #15, unmerged; keep REVIEW until release.
 - [ ] [REVIEW] **SW-0167 · P0 · Audit current state** — Verify the preview never invents opening hours when the listing lacks them. Evidence: real no-hours fixture `kathmandu-spa-thamel` renders the existing fallback, no status, no schedule rows and no time values; Quality Gate runs #455/#456 passed (27 files / 219 tests, TypeScript, lint, build and disposable PostgreSQL security tests). Draft PR #16, unmerged.
 - [ ] [REVIEW] **SW-0168 · P0 · Audit current state** — Verify the preview uses the correct area and address fields without upgrading a vague area into an exact address. Evidence: four render tests verify exact address preservation, area-only address preservation, no area-to-address/directions invention, and coordinate-gated map rendering; Quality Gate runs #461/#462 passed (28 files / 223 tests, TypeScript, lint, build and disposable PostgreSQL migration/security checks). Draft PR #17, unmerged.
-- [ ] [IN PROGRESS] **SW-0169 · P0 · Audit current state** — Verify the map/directions action appears only when a reliable location exists. Next eligible task; build on SW-0168 without repeating its already-covered assertions.
+- [ ] [REVIEW] **SW-0169 · P0 · Audit current state** — Verify the map/directions action appears only when a reliable location exists. Evidence: `hasPin` rejects missing/partial/non-finite/out-of-range coordinate pairs; directions fallback requires detail beyond area/city labels while preserving explicit URLs and street-level addresses. Eight invalid-coordinate render cases plus area-only and street-level fallback tests; Quality Gate runs #469/#470 passed (28 files / 233 tests, TypeScript, lint, build and disposable PostgreSQL migration/security checks). Draft PR #18 stacked on #17, unmerged.
 - [ ] [TODO] **SW-0170 · P0 · Audit current state** — Verify the phone action appears only when a verified public phone exists.
 - [ ] [TODO] **SW-0171 · P0 · Audit current state** — Verify the website action is omitted or clearly unavailable when no working official website exists.
 - [ ] [TODO] **SW-0172 · P0 · Audit current state** — Verify social links come from the correct business record and open safely.

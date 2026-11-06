@@ -843,7 +843,15 @@ export const categoriesIn = (items: Business[]) =>
   categories.filter((c) => items.some((b) => b.category === c.slug));
 export const areasIn = (items: Business[]) =>
   areas.filter((a) => items.some((b) => b.area === a.slug));
-export const hasPin = (b: Business) => typeof b.lat === "number" && typeof b.lng === "number";
+export const hasPin = (b: Business) =>
+  typeof b.lat === "number" &&
+  Number.isFinite(b.lat) &&
+  b.lat >= -90 &&
+  b.lat <= 90 &&
+  typeof b.lng === "number" &&
+  Number.isFinite(b.lng) &&
+  b.lng >= -180 &&
+  b.lng <= 180;
 
 /** Where a city section slug points: an area or a category in that city, or nothing. */
 export function resolveSection(
@@ -1049,8 +1057,42 @@ export function intlDigits(p: string): string {
 }
 export const telLink = (p: string) => `tel:+${intlDigits(p)}`;
 
-export const directionsLink = (b: Business) =>
-  b.directions ?? (b.address ? mapsLink(`${b.name}, ${b.address}`) : undefined);
+function addressWords(value: string) {
+  return value.normalize("NFKC").toLowerCase().match(/[\p{L}\p{N}]+/gu) ?? [];
+}
+
+/** An area/city label alone is not a street-level destination for directions. */
+function hasDetailedAddress(b: Business) {
+  const area = getArea(b.area);
+  const city = getCity(area?.city ?? "");
+  const contextWords = new Set(
+    [
+      area?.name,
+      area?.nameNe,
+      area?.slug.replace(/-/g, " "),
+      city?.name,
+      city?.nameNe,
+      city?.slug.replace(/-/g, " "),
+      "Nepal",
+      "नेपाल",
+    ]
+      .filter((value): value is string => Boolean(value))
+      .flatMap(addressWords),
+  );
+
+  return addressWords(b.address ?? "").some(
+    (word) => !contextWords.has(word) && /[\p{L}]/u.test(word),
+  );
+}
+
+export const directionsLink = (b: Business) => {
+  const explicit = b.directions?.trim();
+  if (explicit) return explicit;
+
+  const address = b.address?.trim();
+  if (!address || !hasDetailedAddress(b)) return undefined;
+  return mapsLink(`${b.name}, ${address}`);
+};
 
 const SOCIAL_BASE: Record<string, (h: string) => string> = {
   Instagram: (h) => `https://www.instagram.com/${h}/`,
