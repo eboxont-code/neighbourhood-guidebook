@@ -63,6 +63,13 @@ describe("analytics submission de-duplication", () => {
     expect(fromMock).toHaveBeenCalledTimes(1);
     expect(fromMock).toHaveBeenCalledWith("contact_messages");
     expect(insertMock).toHaveBeenCalledTimes(1);
+    expect(insertMock).toHaveBeenCalledWith(expect.objectContaining({
+      name: "Test Owner",
+      business_name: "Aavaran",
+      message: "I would like a website for my business.",
+      source_listing_slug: "aavaran-durbar-marg",
+      page: "preview",
+    }));
 
     await act(async () => {
       pending.resolve({ error: null });
