@@ -177,23 +177,25 @@ This verifies that the current application-code baseline and the subsequent docu
 - [x] [DONE] Bundle 6 — sponsored placement revenue channel — merge commit `74fe507db70a45a538dfec4bd3730a45d51e4ae2`.
 - [x] [DONE] PR #9 — admin password recovery production redirect — merged into `main`; merge commit `a625ff94c48b03aa268bfdf885ff0eb974f5c664`.
 
-### Open pull requests verified on 5 November 2026
+### Pull requests — last checked 6 November 2026
 
 | PR | Work | Verified state / branch relationship |
 |---|---|---|
 | #4 | Call and WhatsApp contact insights | Open draft; `sewa/bundle-04-revenue-lead-attribution` → `main` |
-| #7 | Boxont prospecting and sales pipeline | Open draft; `sewa/bundle-07-sales-pipeline` is based on `sewa/bundle-06-sponsored-placements` |
-| #8 | Convert inbound enquiries into sales opportunities | Open draft; `sewa/bundle-08-inbound-conversion` is based on `sewa/bundle-07-sales-pipeline` |
+| #7 | Boxont prospecting and sales pipeline | Older stacked draft; superseded by clean current-main PR #10. Do not merge. |
+| #8 | Convert inbound enquiries into sales opportunities | Open draft; still stacked on the older Bundle 7 branch and requires reconciliation onto the new dependency chain. |
+| #10 | Boxont prospecting and sales pipeline — reconciled | Open draft; `sewa/bundle-07-reconciled-main-20261106` is based directly on current `main`; CI passed. |
 
 PR references:
 - #4: https://github.com/eboxont-code/neighbourhood-guidebook/pull/4
 - #7: https://github.com/eboxont-code/neighbourhood-guidebook/pull/7
 - #8: https://github.com/eboxont-code/neighbourhood-guidebook/pull/8
 - #9 (merged): https://github.com/eboxont-code/neighbourhood-guidebook/pull/9
+- #10 (clean Bundle 7 replacement, draft): https://github.com/eboxont-code/neighbourhood-guidebook/pull/10
 
 ### Current branch inventory
 
-The 13 branches returned by the repository branch search are:
+The original 13-branch inventory was extended by the clean Bundle 7 reconciliation branch on 6 November 2026:
 
 - `main`
 - `sewa/admin-password-recovery-production-redirect` — PR #9 merged
@@ -205,14 +207,17 @@ The 13 branches returned by the repository branch search are:
 - `sewa/bundle-04-revenue-lead-attribution` — PR #4 open
 - `sewa/bundle-05-revenue-engine` — PR #5 merged
 - `sewa/bundle-06-sponsored-placements` — PR #6 merged
-- `sewa/bundle-07-sales-pipeline` — PR #7 open
-- `sewa/bundle-08-inbound-conversion` — PR #8 open
+- `sewa/bundle-07-sales-pipeline` — older PR #7 draft; superseded, retained for PR #8 ancestry until reconciliation
+- `sewa/bundle-07-reconciled-main-20261106` — clean current-main-based Bundle 7 PR #10; CI passed
+- `sewa/bundle-08-inbound-conversion` — PR #8 open, still based on old Bundle 7
 - `sewa/bundle-09-proposal-composer` — no PR found in the current PR search
 
 ### Branch audit warning
 
 - PR #4 targets `main`, but its diff and current base SHA still need a fresh review before merge.
-- PR #7 and #8 are stacked on older feature branches, not directly on current `main`; do not merge them as-is.
+- PR #7 is an older stacked draft and is superseded by clean PR #10; do not merge PR #7.
+- PR #8 is still based on the old Bundle 7 branch and must be reconciled onto the new Bundle 7 dependency chain before review or merge.
+- PR #10 is the clean current-main-based Bundle 7 replacement; its application and disposable PostgreSQL CI jobs passed on head `3fa170958aec02925718588b7322df36e31fc120` (run #323). It remains a draft and is not merged or deployed.
 - The admin-audit-health and revenue-engine branches have no PR in the current search. Compare their unique changes with `main` before deciding whether to salvage or archive them.
 - The Proposal Composer branch exists but no PR was returned. Inspect its current diff and isolate it from the unmerged Bundle 7/8 work.
 - Merged feature branches remain in the branch list; their existence alone does not mean they are unfinished.
@@ -293,12 +298,12 @@ These are 5 November 2026 observations. Refresh refs and compare exact diffs bef
 
 - [ ] [TODO] Inspect PR #4 and decide whether call/WhatsApp insights are still valuable.
 - [ ] [TODO] If retained, port/rebase only the required changes onto a fresh branch from current main.
-- [ ] [TODO] Inspect PR #7 Sales Pipeline changes and compare them with current main.
-- [ ] [TODO] Preserve unique changes but remove duplicated/outdated inherited work.
-- [ ] [TODO] Create a clean current-main-based Sales Pipeline PR.
-- [ ] [TODO] Run all quality and database-contract tests on the clean branch.
-- [ ] [TODO] Merge Sales Pipeline only after review and checks pass.
-- [ ] [TODO] Inspect PR #8 inbound conversion and confirm it depends on the released Sales Pipeline.
+- [x] [DONE] Inspect PR #7 Sales Pipeline changes and compare them with current `main`; found 24 commits ahead / 28 behind, with stale helper/type/UI integrations.
+- [x] [DONE] Preserve unique changes and remove duplicated/outdated inherited work; retained newer inbound/proposal helpers from `main`.
+- [x] [DONE] Create clean current-main-based Sales Pipeline PR #10: https://github.com/eboxont-code/neighbourhood-guidebook/pull/10.
+- [x] [DONE] Run all quality and database-contract tests on the clean branch; TypeScript, lint, unit/component tests, production build and disposable PostgreSQL security/migration checks all passed on head `3fa170958aec02925718588b7322df36e31fc120` (run #323).
+- [ ] [TODO] Merge Sales Pipeline only after owner review/approval; keep PR #10 draft and do not migrate production or deploy beforehand.
+- [ ] [TODO] Inspect PR #8 inbound conversion and confirm it depends on the reconciled Bundle 7 PR #10.
 - [ ] [TODO] Rebuild inbound conversion on the updated main branch, preserving only its unique changes.
 - [ ] [TODO] Test duplicate prevention and canonical enquiry/payment record integrity.
 - [ ] [TODO] Merge inbound conversion only after review and checks pass.
@@ -352,16 +357,16 @@ The primary funnel is Sewa discovery/prospect → free preview → attributed en
 
 ### 3.3 Sales pipeline (Bundle 7)
 
-- [ ] [TODO] Reconcile and release Bundle 7 on current main.
+- [x] [DONE] Reconcile Bundle 7 into a clean current-main-based draft PR #10; code and disposable-database CI passed. It is not merged, migrated to production or deployed.
 - [ ] [TODO] Verify prospect stages and allowed transitions.
 - [ ] [TODO] Verify follow-up dates, due-soon and overdue queues use Kathmandu time.
 - [ ] [TODO] Verify activity history and contact timestamps.
 - [ ] [TODO] Verify service interest and preferred contact channel.
-- [ ] [TODO] Verify English/Nepali outreach drafts.
+- [x] [DONE] Unit-test English and Nepali outreach drafts; CI passed on PR #10.
 - [ ] [TODO] Verify copy-to-clipboard and user-initiated phone/WhatsApp actions.
-- [ ] [TODO] Verify do-not-contact, lost and won records cannot be casually re-contacted through drafts.
-- [ ] [TODO] Verify private notes and CRM data are admin-only.
-- [ ] [TODO] Verify cash/payment integrity and that quotes are not counted as received money.
+- [x] [DONE] Unit-test that won, lost and do-not-contact stages suppress outreach drafts; CI passed on PR #10.
+- [x] [DONE] Verify the new prospect/activity tables enforce admin-only RLS in disposable PostgreSQL CI; CI passed on PR #10.
+- [x] [DONE] Verify quote/cash bounds and the no-decrease cash trigger in disposable PostgreSQL CI; CI passed on PR #10. Production is unchanged.
 - [ ] [TODO] Create a simple daily sales operating routine.
 
 ### 3.4 Incoming enquiries (Bundle 8)
@@ -656,10 +661,10 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 | 1 | Test the production preview → quote form → database → admin lead path end to end | REVIEW — live route, prefill, anonymous insert permissions and admin quote/payment writes verified; real browser POST and signed-in admin UI remain unverified |
 | 2 | Verify lead source, business, preview URL and campaign attribution across each form | DONE — source and listing attribution audited; UTM/referrer/campaign ID are not retained on lead records |
 | 3 | Revalidate the existing 20-business prospect CSV and each website status | BLOCKED — original 20-business CSV not found in `main` or the Library; do not recreate or guess the list |
-| 4 | Confirm production deployment and complete admin password recovery verification | Deployment + domain mapping DONE 5 Nov; password-reset journey TODO |
+| 4 | Confirm production deployment and complete admin password recovery verification | BLOCKED — code is merged; hosted Auth redirect allowlist and real account/email journey cannot be verified or changed with current access. No manual owner step requested. |
 | 5 | Review the 390px preview and quote form; capture real screenshots | DONE 6 Nov 2026: EN/NE at 390×844 first, then 1280×1800; screenshots captured of preview sections, enquiry forms and inline errors. No horizontal overflow; 44px+ effective targets; labeled 16px inputs. Enlarged language controls, linked form hints, removed duplicated optional wording and prevented the hidden quote pill covering the form. 179 tests pass; preview build/typecheck OK. Presentation only; no enquiries sent, schema/attribution/admin changes, outreach, publishing or deployment. |
-| 6 | Reconcile Bundle 7 Sales Pipeline against current `main` | TODO |
-| 7 | Reconcile Bundle 8 after Bundle 7; preserve original enquiry/payment records | TODO |
+| 6 | Reconcile Bundle 7 Sales Pipeline against current `main` | DONE — clean draft PR #10 is current-main-based; all application and disposable PostgreSQL CI checks passed. Awaiting owner review/approval before merge or release. |
+| 7 | Reconcile Bundle 8 after Bundle 7; preserve original enquiry/payment records | NEXT — must be based on the clean Bundle 7 dependency branch, not the old stacked branch. |
 | 8 | Isolate and review Proposal Composer after its dependencies | TODO |
 | 9 | Use the funnel baseline to fix the largest conversion leak | TODO |
 | 10 | Improve directory quality and coverage based on real user demand and lead value | TODO |
@@ -678,7 +683,26 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 - `contact_messages` has no UTM, campaign ID, landing/referrer route, or explicit preview URL fields. `analytics_events` records `listing_slug`, event, query, language and path, but no UTM/campaign fields. Sponsored clicks are counted by listing, placement/target key and date window; they are not joined to a specific campaign or later enquiry. No promotions or sponsored-click rows currently exist in production.
 - Keep SW-0060 and SW-0061 TODO. Mark SW-0062 REVIEW: the preview slug/page mapping is present in code, but the browser submit/validation journey has not been exercised end to end. No schema or application changes were made during this audit.
 
-### Current task
+### Completed task — 6 November 2026
+
+**Task 6 — Reconcile Bundle 7 Sales Pipeline against current `main`.**  
+**Status: DONE for code reconciliation and CI; REVIEW required for release.**
+
+- Clean branch: `sewa/bundle-07-reconciled-main-20261106`, based on `main` at `6f89bfa487ae36ed1ff97a2a8f1795123dae8716`.
+- Draft PR #10: https://github.com/eboxont-code/neighbourhood-guidebook/pull/10.
+- Ten files changed; the branch is 11 commits ahead of `main` and zero behind after the bilingual tab-label correction.
+- The Supabase and Drizzle migration files are byte-identical. The journal and CI register 14 migrations.
+- All GitHub Quality Gate jobs passed on code head `3fa170958aec02925718588b7322df36e31fc120`: TypeScript, lint, unit/component tests, production build and disposable PostgreSQL migration/security verification.
+- The Save action remains busy through activity-history logging to avoid duplicate submissions. Newer inbound conversion and proposal helpers from `main` were preserved.
+- No merge, production migration, production data change, production setting change or deployment was made. Keep PR #10 draft until owner review/approval.
+
+### Next independent task
+
+**Task 7 — Reconcile Bundle 8 after Bundle 7; preserve original enquiry/payment records.**
+
+Rebase/port only Bundle 8's unique work onto the clean Bundle 7 dependency branch and create a separate draft PR. Preserve the original contact message as the canonical customer, quote and payment record. Keep all production changes blocked pending owner approval.
+
+### Existing blocked task
 
 **Task 3 — Revalidate the existing 20-business prospect CSV and each website status.**  
 **Status: BLOCKED.**
