@@ -158,6 +158,7 @@ Latest verified application-code commit: `c6741670caaf036df1a94935831599fd16a6a3
 The two commits made after that application-code baseline were documentation-only:
 - `7c4983c80318dd97de59e92eb40af8760c69a5ab` — reconciled this master plan.
 - `ee9ff6ba5a8d59907ed6dc073ee52a921aa24617` — made this file the single roadmap source of truth.
+- `56c8a3f5798c98228c1fd8c8d1e436a816728101` — a documentation-only update set Bundle 7 as the active SEWA task; no application code or production deployment changed.
 
 Latest verified Vercel Production deployment at the time of this audit:
 - Deployment: `dpl_DBNmQXmsk9P8wTsGKbjsTabpmq3S`
@@ -184,7 +185,7 @@ This verifies that the current application-code baseline and the subsequent docu
 | #4 | Call and WhatsApp contact insights | Open draft; `sewa/bundle-04-revenue-lead-attribution` → `main` |
 | #7 | Boxont prospecting and sales pipeline | Older stacked draft; superseded by clean current-main PR #10. Do not merge. |
 | #8 | Convert inbound enquiries into sales opportunities | Open draft; still stacked on the older Bundle 7 branch and requires reconciliation onto the new dependency chain. |
-| #10 | Boxont prospecting and sales pipeline — reconciled | Open draft; `sewa/bundle-07-reconciled-main-20261106` is based directly on current `main`; CI passed. |
+| #10 | Boxont prospecting and sales pipeline — reconciled | Open draft; `sewa/bundle-07-reconciled-main-20261106` is based directly on current `main`; code CI passed. |
 
 PR references:
 - #4: https://github.com/eboxont-code/neighbourhood-guidebook/pull/4
@@ -195,7 +196,7 @@ PR references:
 
 ### Current branch inventory
 
-The original 13-branch inventory was extended by the clean Bundle 7 reconciliation branch on 6 November 2026:
+The original 13-branch inventory has one additional current-main-based reconciliation branch as of 6 November 2026:
 
 - `main`
 - `sewa/admin-password-recovery-production-redirect` — PR #9 merged
@@ -207,8 +208,8 @@ The original 13-branch inventory was extended by the clean Bundle 7 reconciliati
 - `sewa/bundle-04-revenue-lead-attribution` — PR #4 open
 - `sewa/bundle-05-revenue-engine` — PR #5 merged
 - `sewa/bundle-06-sponsored-placements` — PR #6 merged
-- `sewa/bundle-07-sales-pipeline` — older PR #7 draft; superseded, retained for PR #8 ancestry until reconciliation
-- `sewa/bundle-07-reconciled-main-20261106` — clean current-main-based Bundle 7 PR #10; CI passed
+- `sewa/bundle-07-sales-pipeline` — older PR #7 draft; superseded by #10, retained until dependent PR #8 is reconciled
+- `sewa/bundle-07-reconciled-main-20261106` — clean current-main-based Bundle 7 PR #10; code CI passed
 - `sewa/bundle-08-inbound-conversion` — PR #8 open, still based on old Bundle 7
 - `sewa/bundle-09-proposal-composer` — no PR found in the current PR search
 
@@ -216,8 +217,8 @@ The original 13-branch inventory was extended by the clean Bundle 7 reconciliati
 
 - PR #4 targets `main`, but its diff and current base SHA still need a fresh review before merge.
 - PR #7 is an older stacked draft and is superseded by clean PR #10; do not merge PR #7.
-- PR #8 is still based on the old Bundle 7 branch and must be reconciled onto the new Bundle 7 dependency chain before review or merge.
-- PR #10 is the clean current-main-based Bundle 7 replacement; its application and disposable PostgreSQL CI jobs passed on head `3fa170958aec02925718588b7322df36e31fc120` (run #323). It remains a draft and is not merged or deployed.
+- PR #8 is still based on the old Bundle 7 branch and must be reconciled onto the clean Bundle 7 dependency chain before review or merge.
+- PR #10 is the clean current-main-based Bundle 7 replacement; its TypeScript, lint, unit/component, production-build and disposable PostgreSQL migration/security CI jobs passed on code head `3fa170958aec02925718588b7322df36e31fc120` (run #323). It remains a draft and is not merged or deployed.
 - The admin-audit-health and revenue-engine branches have no PR in the current search. Compare their unique changes with `main` before deciding whether to salvage or archive them.
 - The Proposal Composer branch exists but no PR was returned. Inspect its current diff and isolate it from the unmerged Bundle 7/8 work.
 - Merged feature branches remain in the branch list; their existence alone does not mean they are unfinished.
@@ -299,11 +300,11 @@ These are 5 November 2026 observations. Refresh refs and compare exact diffs bef
 - [ ] [TODO] Inspect PR #4 and decide whether call/WhatsApp insights are still valuable.
 - [ ] [TODO] If retained, port/rebase only the required changes onto a fresh branch from current main.
 - [x] [DONE] Inspect PR #7 Sales Pipeline changes and compare them with current `main`; found 24 commits ahead / 28 behind, with stale helper/type/UI integrations.
-- [x] [DONE] Preserve unique changes and remove duplicated/outdated inherited work; retained newer inbound/proposal helpers from `main`.
+- [x] [DONE] Preserve unique changes and remove duplicated/outdated inherited work; retain newer inbound/proposal helpers already on `main`.
 - [x] [DONE] Create clean current-main-based Sales Pipeline PR #10: https://github.com/eboxont-code/neighbourhood-guidebook/pull/10.
-- [x] [DONE] Run all quality and database-contract tests on the clean branch; TypeScript, lint, unit/component tests, production build and disposable PostgreSQL security/migration checks all passed on head `3fa170958aec02925718588b7322df36e31fc120` (run #323).
+- [x] [DONE] Run all quality and database-contract tests on the clean branch; TypeScript, lint, unit/component tests, production build and disposable PostgreSQL security/migration checks all passed on code head `3fa170958aec02925718588b7322df36e31fc120` (run #323).
 - [ ] [TODO] Merge Sales Pipeline only after owner review/approval; keep PR #10 draft and do not migrate production or deploy beforehand.
-- [ ] [TODO] Inspect PR #8 inbound conversion and confirm it depends on the reconciled Bundle 7 PR #10.
+- [ ] [TODO] Inspect PR #8 inbound conversion and confirm it depends on reconciled Bundle 7 PR #10.
 - [ ] [TODO] Rebuild inbound conversion on the updated main branch, preserving only its unique changes.
 - [ ] [TODO] Test duplicate prevention and canonical enquiry/payment record integrity.
 - [ ] [TODO] Merge inbound conversion only after review and checks pass.
@@ -664,7 +665,7 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 | 4 | Confirm production deployment and complete admin password recovery verification | BLOCKED — code is merged; hosted Auth redirect allowlist and real account/email journey cannot be verified or changed with current access. No manual owner step requested. |
 | 5 | Review the 390px preview and quote form; capture real screenshots | DONE 6 Nov 2026: EN/NE at 390×844 first, then 1280×1800; screenshots captured of preview sections, enquiry forms and inline errors. No horizontal overflow; 44px+ effective targets; labeled 16px inputs. Enlarged language controls, linked form hints, removed duplicated optional wording and prevented the hidden quote pill covering the form. 179 tests pass; preview build/typecheck OK. Presentation only; no enquiries sent, schema/attribution/admin changes, outreach, publishing or deployment. |
 | 6 | Reconcile Bundle 7 Sales Pipeline against current `main` | DONE — clean draft PR #10 is current-main-based; all application and disposable PostgreSQL CI checks passed. Awaiting owner review/approval before merge or release. |
-| 7 | Reconcile Bundle 8 after Bundle 7; preserve original enquiry/payment records | NEXT — must be based on the clean Bundle 7 dependency branch, not the old stacked branch. |
+| 7 | Reconcile Bundle 8 after Bundle 7; preserve original enquiry/payment records | NEXT — base its clean draft on the reconciled Bundle 7 dependency branch, not the old stacked branch. |
 | 8 | Isolate and review Proposal Composer after its dependencies | TODO |
 | 9 | Use the funnel baseline to fix the largest conversion leak | TODO |
 | 10 | Improve directory quality and coverage based on real user demand and lead value | TODO |
@@ -688,19 +689,18 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 **Task 6 — Reconcile Bundle 7 Sales Pipeline against current `main`.**  
 **Status: DONE for code reconciliation and CI; REVIEW required for release.**
 
-- Clean branch: `sewa/bundle-07-reconciled-main-20261106`, based on `main` at `6f89bfa487ae36ed1ff97a2a8f1795123dae8716`.
+- Clean branch: `sewa/bundle-07-reconciled-main-20261106`, based on `main` at `56c8a3f5798c98228c1fd8c8d1e436a816728101` after incorporating the latest documentation-only main commit.
 - Draft PR #10: https://github.com/eboxont-code/neighbourhood-guidebook/pull/10.
-- Ten files changed; the branch is 11 commits ahead of `main` and zero behind after the bilingual tab-label correction.
-- The Supabase and Drizzle migration files are byte-identical. The journal and CI register 14 migrations.
-- All GitHub Quality Gate jobs passed on code head `3fa170958aec02925718588b7322df36e31fc120`: TypeScript, lint, unit/component tests, production build and disposable PostgreSQL migration/security verification.
-- The Save action remains busy through activity-history logging to avoid duplicate submissions. Newer inbound conversion and proposal helpers from `main` were preserved.
+- The code portion includes 10 files and passed all CI on code head `3fa170958aec02925718588b7322df36e31fc120`: TypeScript, lint, unit/component tests, production build and disposable PostgreSQL migration/security checks.
+- The Supabase and Drizzle migration files are byte-identical. The journal and CI register 14 migrations. Admin-only RLS, payment bounds and the cash-decrease guard passed disposable PostgreSQL checks.
+- The Save action remains busy through activity-history logging to avoid duplicate submissions. Newer inbound-conversion and proposal-draft helpers from `main` were preserved.
 - No merge, production migration, production data change, production setting change or deployment was made. Keep PR #10 draft until owner review/approval.
 
 ### Next independent task
 
 **Task 7 — Reconcile Bundle 8 after Bundle 7; preserve original enquiry/payment records.**
 
-Rebase/port only Bundle 8's unique work onto the clean Bundle 7 dependency branch and create a separate draft PR. Preserve the original contact message as the canonical customer, quote and payment record. Keep all production changes blocked pending owner approval.
+Port only Bundle 8's unique work onto a clean branch based on the reconciled Bundle 7 dependency branch and create a separate draft PR. Preserve the original contact message as the canonical customer, quote and payment record. Keep all production changes blocked pending owner approval.
 
 ### Existing blocked task
 
