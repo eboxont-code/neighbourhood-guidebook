@@ -294,7 +294,7 @@ These are 5 November 2026 observations. Refresh refs and compare exact diffs bef
 **Priority: HIGH**
 
 - [x] [DONE] Inspect PR #4 and decide whether call/WhatsApp insights are still valuable. Listing pages already record `click_call` and `click_whatsapp`; a dedicated admin summary is useful and clearly labels taps as intent, not completed conversations.
-- [ ] [REVIEW] If retained, port/rebase only the required changes onto a fresh branch from current main. Ported to `sewa/bundle-04-contact-insights-main-20261106` and draft PR #11; await Quality Gate before marking verified.
+- [x] [DONE] If retained, port/rebase only the required changes onto a fresh branch from current main. Ported to `sewa/bundle-04-contact-insights-main-20261106`; draft PR #11 passed Quality Gate runs #361 and #362 on head `7b1abcc5c3a37ce029d4f5d4ee11b08736db39e7`.
 - [ ] [TODO] Inspect PR #7 Sales Pipeline changes and compare them with current main.
 - [ ] [TODO] Preserve unique changes but remove duplicated/outdated inherited work.
 - [ ] [TODO] Create a clean current-main-based Sales Pipeline PR.
@@ -660,7 +660,7 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 | 3 | Revalidate the existing 20-business prospect CSV and each website status | BLOCKED — original 20-business prospect CSV not found in `main` or Library; only the 1,000-point planning CSV was found. Do not recreate or guess the list |
 | 4 | Confirm production deployment and complete admin password recovery verification | BLOCKED — production deployment/domain verified READY, but real recovery email, password reset and normal admin sign-in require owner-controlled account access; no credentials supplied |
 | 5 | Review the 390px preview and quote form; capture real screenshots | DONE 6 Nov 2026: EN/NE at 390×844 first, then 1280×1800; screenshots captured of preview sections, enquiry forms and inline errors. No horizontal overflow; 44px+ effective targets; labeled 16px inputs. Enlarged language controls, linked form hints, removed duplicated optional wording and prevented the hidden quote pill covering the form. 179 tests pass; preview build/typecheck OK. Presentation only; no enquiries sent, schema/attribution/admin changes, outreach, publishing or deployment |
-| 6 | Reconcile Bundle 7 Sales Pipeline against current `main` | REVIEW — clean current-main-based PR #10 is open as draft; Quality Gate #344 passed on its head. Owner review and the production migration-history gate remain before release |
+| 6 | Reconcile Bundle 7 Sales Pipeline against current `main` | BLOCKED — current-main reconciliation is complete in draft PR #10 and Quality Gate #344/#351 passed; owner review/approval and production migration-history drift prevent release. No merge or migration |
 | 7 | Reconcile Bundle 8 after Bundle 7; preserve original enquiry/payment records | BLOCKED — depends on owner review/release of Bundle 7 PR #10; production migration-history drift also remains unresolved. Do not merge or migrate |
 | 8 | Isolate and review Proposal Composer after its dependencies | BLOCKED — depends on Bundle 7 and Bundle 8 release; no independent proposal release is safe yet |
 | 9 | Use the funnel baseline to fix the largest conversion leak | BLOCKED — production has only 5 analytics events (3 `preview_view`, 2 `search_zero`), 0 contact messages and no preview CTA/enquiry-submit events; this is insufficient to identify a largest conversion leak |
@@ -696,8 +696,8 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 ### Live-state verification — 6 November 2026
 
 - **GitHub:** private repository `eboxont-code/neighbourhood-guidebook`; `main` is `ee38ca0e978f0149ca10f5b2caadb33282729148` (commit message: `docs: record Bundle 7 reconciliation and passing quality gate`). Main is not branch-protected and required status checks are disabled; no repository settings were changed.
-- **CI:** main Quality Gate run #337 passed on that exact commit. Bundle 7 PR #10 Quality Gate run #344 passed on head `49367a038f2ae53a727fdc18cb07a040d98e8a44`; a later push run #351 was still in progress at this snapshot. PR #8 has successful run #350 on its current head, but remains stacked on an old Bundle 7 base.
-- **Pull requests:** #4 remains an open draft based on `dcff9d80`, 10 commits ahead and 155 behind current main; its feature is being ported to current main in PR #11. #7 is closed unmerged. #8 is open draft and must not be merged before Bundle 7. #9 is merged. #10 is the clean current-main-based Bundle 7 draft, awaiting owner review. #11 is the current-main-based Bundle 4 contact-insights draft.
+- **CI:** main Quality Gate run #337 passed on that exact commit. Bundle 7 PR #10 runs #344 and #351 passed on head `49367a038f2ae53a727fdc18cb07a040d98e8a44`. PR #8 runs #350 and #354 passed, but it remains stacked on an old Bundle 7 base. Current-main Bundle 4 PR #11 runs #361 (push) and #362 (pull request) both passed; the disposable PostgreSQL migration/security job and TypeScript/lint/tests/build job succeeded. Vercel preview status is success.
+- **Pull requests:** #4 remains an open stale draft based on `dcff9d80`, 10 commits ahead and 155 behind current main; do not merge it. Its four-file feature is now ported to current main in PR #11, which passed CI and remains draft pending owner review. #7 is closed unmerged. #8 is open draft and must not be merged before Bundle 7. #9 is merged. #10 is the clean current-main-based Bundle 7 draft, awaiting owner review.
 - **Vercel Production:** deployment `dpl_Gou24q64tcmGASESDmvqbxzrWpP7` is READY for `main` at `ee38ca0e978f0149ca10f5b2caadb33282729148`; `sewa.boxont.com` is attached as an alias. No deployment was initiated by this run.
 - **Supabase Production:** project `zvbavpcsyvibvpkxjzkn` reports ACTIVE_HEALTHY. Remote migration history contains 8 entries. The last three remote versions (`20261104111910`, `20261104111922`, `20261104111936`) do not match the local filenames for atomic rate limits, service revenue pipeline and listing promotions (`20261102130000`, `20261103114000`, `20261104100000`). Production has no `business_sales_prospects` or `business_sales_activities` tables. Do not repair migration history or apply Bundle 7/8 migrations until the target/history mismatch is resolved and approved.
 - **Production data:** 52 listings, 0 contact messages, 5 analytics events, 0 business claims, 0 business submissions and 0 listing promotions. All database checks were read-only.
@@ -705,17 +705,16 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 
 ### Current task
 
-**PR #4 — Port call and WhatsApp contact insights onto current `main`.**  
-**Status: REVIEW — current-main implementation is in draft PR #11; Quality Gate is pending.**
+**SW-0042 — Verify that analytics events are not double-fired during route changes or form submissions.**  
+**Status: IN PROGRESS — static audit is complete; a focused runtime/component regression test is the next step.**
 
-- Audited current `main`: listing actions already record `click_call` and `click_whatsapp`; the existing analytics migration permits both events. No tracking schema change is required.
-- Ported only the four-file feature delta to `sewa/bundle-04-contact-insights-main-20261106`: dedicated call/WhatsApp counts, top listings, EN/NE labels and unit coverage for unrelated, unlinked, invalid and out-of-window events.
-- Draft PR #11: https://github.com/eboxont-code/neighbourhood-guidebook/pull/11. Head: `87214f7d732875099935abadd9ee5d38d844a439`; base: current `main` `ee38ca0e978f0149ca10f5b2caadb33282729148`.
-- The PR's Quality Gate runs #359/#360 were pending/queued at the time of this update. Do not mark the port verified until the PR run completes successfully.
-- Original PR #4 remains open as a stale draft; do not merge it. PR #11 is the current-main replacement.
-- No migration, production database change, merge, production setting change or production deployment was performed.
+- Audited current event call sites: listing call/WhatsApp actions each call `track` once from the click handler; search uses a 1.5-second debounced effect; preview views are tracked in an effect keyed to the listing slug; service quote/enquiry events are emitted from the form submit handler; claim submission is tracked only after a successful insert.
+- No obvious duplicate call path was found. This is not yet a runtime proof: add a component-level test with mocked tracking for preview route mount/change and one form submission, without inserting production records.
+- Production analytics currently has no call/WhatsApp or enquiry-submit events, so the live dataset cannot validate duplicate behavior. Do not create test leads or write test events to Production.
 
-**Next task after PR #11 validation:** continue the P0 analytics audit at SW-0042. Static inspection is complete; runtime duplicate-event verification remains open. Keep production browser/admin checks blocked until an owner-authorized test account and safe test environment are available.
+**Last completed task:** PR #4 contact-insights port. Current-main branch `sewa/bundle-04-contact-insights-main-20261106`, draft PR #11. Quality Gate runs #361 and #362 passed on `7b1abcc5c3a37ce029d4f5d4ee11b08736db39e7`; Vercel preview status passed. The PR remains draft; no merge or production deployment.
+
+**Blocked release gates remain:** Bundle 7 PR #10 owner review and Supabase migration-history reconciliation; Bundle 8 and Proposal Composer depend on Bundle 7/8. Do not merge or run production migrations.
 
 ---
 
@@ -801,7 +800,7 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 **Definition of done:** The owner can answer where qualified leads came from, which page generated them, and which funnel step leaks.
 
 - [x] [DONE] **SW-0041 · P0 · Audit current state** — Production already uses the first-party `analytics_events` table and `src/lib/track.ts`; no additional analytics product is needed.
-- [ ] [REVIEW] **SW-0042 · P0 · Audit current state** — Static audit found user-action handlers and debounced search tracking; `preview_view` uses a slug-keyed effect. No obvious duplicate path found, but runtime duplicate-event behavior has not been verified.
+- [ ] [IN PROGRESS] **SW-0042 · P0 · Audit current state** — Static audit found user-action handlers and debounced search tracking; `preview_view` uses a slug-keyed effect. No obvious duplicate path found; add component-level regression coverage for one preview view per listing mount/change and one form submit event without writing to Production.
 - [ ] [TODO] **SW-0043 · P0 · Audit current state** — Record weekly unique visitors and pageviews by landing page.
 - [ ] [TODO] **SW-0044 · P0 · Audit current state** — Record organic-search visits separately from direct, referral, and campaign visits where data supports it.
 - [ ] [TODO] **SW-0045 · P0 · Audit current state** — Record visits to listing pages separately from website-preview pages.
