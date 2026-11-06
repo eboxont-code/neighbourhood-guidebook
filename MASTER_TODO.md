@@ -700,13 +700,17 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 
 ### Repository and production refresh — 7 November 2026
 
-- `main` remains `ee38ca0e978f0149ca10f5b2caadb33282729148`; Quality Gate run #337 passed. The branch is unprotected and required status checks are disabled; this was recorded, not changed.
-- Five open draft PRs remain: #4 (older Bundle 4), #8 (stacked Bundle 8), #10 (current-main Bundle 7), #11 (current-main Bundle 4 port), and #12 (form guard and regression coverage). PR #12 targets `main` at `ee38ca0e` and now heads `bfcdd27ec44a80fa2f440fd25c50646332d701a4`; push run #424 and PR run #425 passed the full Quality Gate. The latest observed Vercel preview is READY for prior head `404d5aa2`; no manual preview or production deployment was initiated for `bfcdd27e`.
-- Vercel Production deployment `dpl_Gou24q64tcmGASESDmvqbxzrWpP7` is READY on `main` at `ee38ca0e`; `sewa.boxont.com` is attached. PR #12 preview `dpl_D6apeuQqZfM1mf8HWS7W4sHGc88u` is READY and is not a Production deployment.
-- Supabase project `zvbavpcsyvibvpkxjzkn` (`neighbourhood-guidebook`) is ACTIVE_HEALTHY. Remote migration history has 8 entries; the first five match local filenames, while the last three remote versions (`20261104111910`, `20261104111922`, `20261104111936`) differ from local main filenames (`20261102130000`, `20261103114000`, `20261104100000`). No migration or repair was attempted. The Vercel environment-to-project binding was not re-derived from encrypted environment values in this run.
-- Read-only counts: 52 published listings; 0 contact messages; 0 business claims; 0 business submissions; 0 correction reports; 5 analytics events; 0 listing promotions; 3 form-rate rows; 1 user role. `business_sales_prospects` and `business_sales_activities` do not exist in this database.
-- The Lovable north-star file `.lovable/north-star/north-star.md` remains at blob SHA `9d748d0f22dd60969680c61964f18ea4fe6900df`.
-- The 1,000-task register was read in full: IDs `SW-0001`–`SW-1000`, all unique. No production data, settings, migrations, or deployment were changed.
+- Repository default branch is `main` at `ee38ca0e978f0149ca10f5b2caadb33282729148`. GitHub Quality Gate run #337 completed successfully on that exact SHA; the combined commit status is successful.
+- Production Vercel deployment `dpl_Gou24q64tcmGASESDmvqbxzrWpP7` is READY on that exact `main` SHA. `sewa.boxont.com` is attached to the project. No production deployment was initiated in this session.
+- Five open draft PRs remain: #4 (older Bundle 4), #8 (Bundle 8), #10 (current-main Bundle 7), #11 (current-main contact insights), and #12 (form protection/regression coverage). PR #12 targets `main` at `ee38ca0e`; current head is `66533a47fe8705284ffe2c0d6a3dc98d18d0f03f` (31 commits, six changed files).
+- PR #12 Quality Gate run #429 completed successfully on the current head. The disposable PostgreSQL job applied all 13 repository migrations, passed the Nepali/mixed-language contact and business-submission round-trip assertions, and passed the existing security/concurrency checks. The application job passed TypeScript, ESLint (0 errors; 25 existing warnings), 25 test files / 210 tests, and the production build.
+- Vercel's current commit status for PR #12 head `66533a47` is a build-rate-limit failure (`upgradeToPro=build-rate-limit`). The latest observed READY preview is for the earlier commit `404d5aa2`; no manual preview deployment was attempted. The preview limit does not invalidate the passing GitHub Quality Gate.
+- Supabase project `zvbavpcsyvibvpkxjzkn` (`neighbourhood-guidebook`) is ACTIVE_HEALTHY. Remote migration history contains 8 entries; the last three versions (`20261104111910`, `20261104111922`, `20261104111936`) still differ from local migration filenames (`20261102130000`, `20261103114000`, `20261104100000`). No migration or repair was attempted.
+- Read-only database counts: 52 listings; 0 contact messages; 0 business claims; 0 business submissions; 0 correction reports; 5 analytics events; 0 listing promotions; 3 form-rate rows; 1 user role. `business_sales_prospects` and `business_sales_activities` are absent. No rows were changed.
+- The production project is the ACTIVE_HEALTHY project returned by Supabase. Encrypted Vercel environment values were not decrypted in this run to re-derive the project binding.
+- The current `main` copy of `MASTER_TODO.md` contains 999 task rows and omits `SW-0299`. The original Library CSV confirms `SW-0299` is “Do not promise search rankings, guaranteed leads, or a specific sales result.” This PR branch contains all 1,000 unique IDs, including the restored task. Do not overwrite the restored register with the stale `main` copy.
+- Lovable north-star `.lovable/north-star/north-star.md` has the same blob SHA on `main` and this branch: `9d748d0f22dd60969680c61964f18ea4fe6900df`.
+- Bundle 7 reconciliation remains code-review complete but release/merge is blocked pending owner approval and migration-history resolution. Bundle 8 and Proposal Composer remain dependent on that gate. No production data, settings, migrations, merges, or deployment were changed. Additional spend: $0.
 
 ### Previous task — SW-0042
 
@@ -925,13 +929,23 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 
 - Public forms insert directly into Supabase and show an error state when persistence fails. No third-party email provider is present in the form path, so an email-provider outage cannot silently discard an otherwise-saved lead. Actual admin access remains blocked under SW-0108.
 
-### Current task — SW-0112
+### Previous task — SW-0112
 
-**Status: IN PROGRESS — test Nepali characters and mixed-language business names end to end using disposable infrastructure.**
+**Status: REVIEW — Nepali and mixed-language values are preserved by the component payload and disposable PostgreSQL round-trip tests; the real browser-to-database journey remains unverified.**
 
-- Added a component regression test preserving Nepali contact names, mixed-language business names and message text in the structured payload.
-- Extending the disposable PostgreSQL CI script to insert and read back Unicode contact and business-submission rows inside a transaction, verify client keys are cleared, then roll the transaction back.
-- No production data, schema, migration history or settings are touched.
+- Audited the existing form path before adding tests. Contact fields are controlled React values; the Zod schemas trim only leading/trailing whitespace and retain interior Nepali, Latin, punctuation and mixed-language characters. No lossy ASCII conversion or manual transliteration is applied.
+- Added a component regression test in `src/test/analytics-submission.test.tsx` asserting the submitted `name`, `business_name` and `message` retain `सुमन श्रेष्ठ`, `Himalayan क्याफे` and `नमस्ते — I would like a website for हिमालयन क्याफे.`.
+- Extended `scripts/ci/test-sewa-database.sh` to insert and read back Nepali/mixed-language values in `contact_messages` and `business_submissions` under the disposable `anon` role, verify client keys are cleared, and roll the transaction back.
+- Current PR head `66533a47fe8705284ffe2c0d6a3dc98d18d0f03f`; Quality Gate run #429 passed both jobs. The database job logged “Unicode form round-trip passed” and “All 13 migrations and disposable PostgreSQL security/concurrency checks passed.” The application job passed TypeScript, ESLint (0 errors; 25 warnings), 25 test files / 210 tests and production build.
+- Keep REVIEW rather than DONE: the component payload and database contract are independently verified, but no authorised browser-driven form-to-database session was available. No production writes, migrations, or settings changes were made.
+
+### Current task — SW-0164
+
+**Status: IN PROGRESS — verify the website-preview loader binds the requested slug to the matching business and fails safely for unknown slugs.**
+
+- Audited `src/routes/s.$slug_.website-preview.tsx`: the loader resolves only `getBusiness(params.slug)`, redirects a known legacy/live slug to its replacement, and throws TanStack Router `notFound()` when neither the requested nor redirected business exists. It does not fall back to an unrelated listing.
+- Existing `src/test/preview.test.ts` covers route matching, preview path helpers, eligibility and sitemap exclusion, but does not exercise the route loader's exact-business, legacy-redirect or unknown-slug branches.
+- Add focused loader regression tests only; do not change route behaviour unless a test reveals a defect. Use the existing in-memory directory fixtures. No production data, migrations, settings, or deployment changes are required.
 ---
 
 ## 10. Instruction for every future AI session
@@ -1092,7 +1106,7 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [BLOCKED] **SW-0109 · P2 · Audit current state** — Record notification failures in a way the operator can diagnose. Blocker: no approved notification channel/provider or credentials.
 - [ ] [BLOCKED] **SW-0110 · P2 · Audit current state** — Add a safe retry or reconciliation path for a saved lead whose notification failed. Blocker: no notification provider/delivery state; depends on SW-0109.
 - [ ] [REVIEW] **SW-0111 · P2 · Audit current state** — Verify that form submissions are not silently discarded when a third-party email service fails. Forms persist directly to Supabase and surface DB errors; no third-party email provider is in the submission path.
-- [ ] [IN PROGRESS] **SW-0112 · P2 · Audit current state** — Test Nepali characters and mixed-language business names end to end. Component and disposable PostgreSQL round-trip tests are being added; production data remains untouched.
+- [ ] [REVIEW] **SW-0112 · P2 · Audit current state** — Test Nepali characters and mixed-language business names end to end. Evidence: component payload test plus disposable PostgreSQL read-back/rollback tests; current head `66533a47`, Quality Gate #429 passed (25 files / 210 tests; all 13 CI migrations and Unicode round-trip passed). Browser-to-database session remains unverified.
 - [ ] [TODO] **SW-0113 · P2 · Audit current state** — Test punctuation, apostrophes, slashes, and long URLs in free-text fields.
 - [ ] [TODO] **SW-0114 · P2 · Audit current state** — Protect against HTML/script injection in stored messages and rendered admin views.
 - [ ] [TODO] **SW-0115 · P2 · Audit current state** — Ensure invalid external URLs are not blindly converted into clickable links in the admin.
@@ -1156,7 +1170,7 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [REVIEW] **SW-0161 · P0 · Reported preview template exists; regression-test** — Regression-test the existing shared preview template against a business with no website.
 - [ ] [REVIEW] **SW-0162 · P0 · Reported preview template exists; regression-test** — Regression-test the template against a business whose listed website is broken.
 - [ ] [REVIEW] **SW-0163 · P0 · Reported preview template exists; regression-test** — Regression-test the template against a business with a working website to ensure it is not mislabelled.
-- [ ] [TODO] **SW-0164 · P0 · Audit current state** — Verify preview routes use the expected business slug and fail safely for an unknown slug.
+- [ ] [IN PROGRESS] **SW-0164 · P0 · Audit current state** — Verify preview routes use the expected business slug and fail safely for an unknown slug. Auditing the existing route loader and adding exact-slug, legacy-redirect and unknown-slug regression tests; no production changes.
 - [ ] [TODO] **SW-0165 · P0 · Audit current state** — Verify the preview displays the correct business name from the listing record.
 - [ ] [TODO] **SW-0166 · P0 · Audit current state** — Verify the preview displays only hours that exist and are sufficiently trustworthy.
 - [ ] [TODO] **SW-0167 · P0 · Audit current state** — Verify the preview never invents opening hours when the listing lacks them.
