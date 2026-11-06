@@ -657,7 +657,7 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 | 2 | Verify lead source, business, preview URL and campaign attribution across each form | TODO |
 | 3 | Revalidate the existing 20-business prospect CSV and each website status | TODO |
 | 4 | Confirm production deployment and complete admin password recovery verification | Deployment + domain mapping DONE 5 Nov; password-reset journey TODO |
-| 5 | Review the 390px preview and quote form; capture real screenshots | TODO |
+| 5 | Review the 390px preview and quote form; capture real screenshots | DONE 6 Nov 2026: EN/NE at 390×844 first, then 1280×1800; screenshots captured of preview sections, enquiry forms and inline errors. No horizontal overflow; 44px+ effective targets; labeled 16px inputs. Enlarged language controls, linked form hints, removed duplicated optional wording and prevented the hidden quote pill covering the form. 179 tests pass; preview build/typecheck OK. Presentation only; no enquiries sent, schema/attribution/admin changes, outreach, publishing or deployment. |
 | 6 | Reconcile Bundle 7 Sales Pipeline against current `main` | TODO |
 | 7 | Reconcile Bundle 8 after Bundle 7; preserve original enquiry/payment records | TODO |
 | 8 | Isolate and review Proposal Composer after its dependencies | TODO |

@@ -219,7 +219,7 @@ function ForBusinesses() {
       </Page>
 
       {/* Sticky quote bar, phones only, centred above the bottom nav with a clear gap */}
-      <div aria-hidden={pillHidden} className={`fixed inset-x-4 mx-auto max-w-md z-[970] transition-all duration-200 lg:hidden ${pillHidden ? "pointer-events-none translate-y-3 opacity-0" : "opacity-100"}`} style={{ bottom: "calc(var(--bottom-nav-h) + env(safe-area-inset-bottom) + var(--pill-gap))" }}>
+      <div hidden={pillHidden} aria-hidden={pillHidden} className={`fixed inset-x-4 mx-auto max-w-md z-[970] transition-all duration-200 lg:hidden ${pillHidden ? "pointer-events-none translate-y-3 opacity-0" : "opacity-100"}`} style={{ bottom: "calc(var(--bottom-nav-h) + env(safe-area-inset-bottom) + var(--pill-gap))" }}>
         <button type="button" tabIndex={pillHidden ? -1 : 0} onClick={toLead} className="flex min-h-[var(--pill-h)] w-full items-center justify-center gap-3 rounded-full bg-primary px-5 text-primary-foreground shadow-[var(--shadow-lift)]">
           <span className="text-[15px] font-semibold">{t("fb2Sticky")}</span>
         </button>
