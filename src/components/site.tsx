@@ -4,17 +4,18 @@ import { CatIcon } from "@/components/cover";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { VerificationBadge } from "@/components/verification-badge";
 import { SITE_NAME } from "@/config";
+import { Button } from "@/components/ui/button";
 import { openState, weeklySchedule } from "@/lib/hours";
 import { useI18n, type Key } from "@/lib/i18n";
 import { citiesInUse, telLink, dayLabel, getArea, getCategory, hoursStatus, kathmanduNow, placeName, timeLabel, websiteShortLabel, type Business } from "@/data/directory";
 
 function LangToggle() {
-  const { lang, setLang } = useI18n();
+  const { lang, setLang, t } = useI18n();
   return (
-    <div className="seg w-[5.75rem] shrink-0 py-0.5" role="group" aria-label="Language">
+    <div className="seg w-24 shrink-0 py-0.5" role="group" aria-label={t("languageLabel")}>
       <span aria-hidden className="seg-thumb" style={{ transform: lang === "ne" ? "translateX(100%)" : "none" }} />
-      <button onClick={() => setLang("en")} aria-pressed={lang === "en"} className={`relative min-h-10 rounded-full text-sm font-semibold transition-colors ${lang === "en" ? "text-primary" : "text-muted-foreground"}`}>EN</button>
-      <button onClick={() => setLang("ne")} aria-pressed={lang === "ne"} className={`relative min-h-10 rounded-full text-sm font-semibold transition-colors ${lang === "ne" ? "text-primary" : "text-muted-foreground"}`}>ने</button>
+      <Button variant="ghost" onClick={() => setLang("en")} aria-pressed={lang === "en"} className={`relative h-11 min-w-11 rounded-full p-0 text-sm font-semibold transition-colors ${lang === "en" ? "text-primary" : "text-muted-foreground"}`}>EN</Button>
+      <Button variant="ghost" onClick={() => setLang("ne")} aria-pressed={lang === "ne"} className={`relative h-11 min-w-11 rounded-full p-0 text-sm font-semibold transition-colors ${lang === "ne" ? "text-primary" : "text-muted-foreground"}`}>ने</Button>
     </div>
   );
 }

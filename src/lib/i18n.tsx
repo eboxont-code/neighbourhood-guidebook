@@ -5,6 +5,7 @@ const KEY = "dir-lang";
 
 export const dict = {
   en: {
+    languageLabel: "Language",
     localCategoryLinks: "Explore by type in {area}",
     localAreaLinks: "Explore {cat} by area",
     localSummary: "{listings} listings · {mapped} mapped · {saturday} with Saturday hours · {verified} verified against official sources",
@@ -544,6 +545,7 @@ export const dict = {
     pvCat_salons: "Salon", pvCat_barbers: "Barber", pvCat_spas: "Spa", pvCat_clinics: "Clinic", pvCat_cafes: "Café", pvCat_restaurants: "Restaurant", pvCat_gyms: "Gym", pvCat_hotels: "Hotel",
   },
   ne: {
+    languageLabel: "भाषा",
     localCategoryLinks: "{area}मा प्रकारअनुसार हेर्नुहोस्",
     localAreaLinks: "क्षेत्रअनुसार {cat} हेर्नुहोस्",
     localSummary: "{listings} सूची · {mapped} नक्सामा · {saturday} को शनिबारको समय उपलब्ध · {verified} आधिकारिक स्रोतबाट जाँचिएका",
