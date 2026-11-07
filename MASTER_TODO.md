@@ -715,9 +715,13 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 - Push Quality Gate [#42323784366](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42323784366) and PR Quality Gate [#42323803294](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42323803294) both passed TypeScript, ESLint, unit/component tests, production build, and disposable PostgreSQL migration/security tests.
 - Vercel's check is still rate-limited by the free daily deployment allowance. No preview or production deployment was attempted; no paid upgrade was made.
 
-### Next eligible task
+### Current task — SW-0007
 
-**SW-0002 — Define a qualified website lead using observable criteria, not assumptions about willingness to pay.** This is the next P0 register item and can be documented from existing form fields and manual review rules without owner-only credentials or a production write.
+**Status: IN PROGRESS.** Section 0 already makes the 1,000-listing target conditional and explicitly subordinates inventory growth to qualified website-design opportunities. The task is to record that existing, verified rule in the register without inventing a listing quota, deadline, or growth target.
+
+### Next eligible task after SW-0007
+
+**SW-0041 — Check whether production analytics are already installed before adding another analytics product.** The immediate owner-dependent queue is blocked; SW-0002–SW-0006 are already implemented on unreviewed draft PRs #20–#24 and are not to be repeated. SW-0008 is blocked pending the owner's decision window.
 
 ---
 
@@ -757,13 +761,13 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 **Definition of done:** One page defines the revenue goal, what the site sells, what is deliberately deferred, and the rules that prevent trust or outreach mistakes.
 
 - [x] [DONE] **SW-0001 · P0 · Audit current state** — Write a one-sentence north-star goal: generate qualified website-design opportunities for Boxont from Sewa. Explicit SEWA-to-Boxont north-star recorded in Section 0 and verified 7 November 2026.
-- [ ] [TODO] **SW-0002 · P0 · Audit current state** — Define a qualified website lead using observable criteria, not assumptions about willingness to pay.
-- [ ] [TODO] **SW-0003 · P0 · Audit current state** — Define the primary conversion as a completed website enquiry with identifiable business context.
-- [ ] [TODO] **SW-0004 · P0 · Audit current state** — Define secondary conversions for preview views, preview CTA clicks, claim requests, contact-form sends, and repeat visits.
-- [ ] [TODO] **SW-0005 · P0 · Audit current state** — Separate website-design revenue metrics from future listing-subscription and booking revenue metrics.
-- [ ] [TODO] **SW-0006 · P0 · Audit current state** — Record that directory traffic alone is not success unless it creates useful customer or business-owner outcomes.
-- [ ] [TODO] **SW-0007 · P0 · Audit current state** — Record that 1,000 listings is a conditional supply milestone, not the north-star KPI.
-- [ ] [TODO] **SW-0008 · P0 · Audit current state** — Set an initial decision window for evaluating the current funnel before redesigning it again.
+- [ ] [BLOCKED] **SW-0002 · P0 · Audit current state** — Definition is present on open draft PR #20 (head `c3f6103f55f895055eb6d65ad80ead36b0f0fa07`), but the PR has no owner review and is not merged; unlock after owner review/approval and reconciliation with current `main`. Do not repeat the existing branch work.
+- [ ] [BLOCKED] **SW-0003 · P0 · Audit current state** — Definition is present on open draft PR #21 (head `a849536aa56ad5947b055c07b7d4c3eb2fd8b04f`), stacked on PR #20; neither PR has owner review. Unlock after PR #20 is reviewed and the dependent PR is reconciled with current `main`. Do not duplicate the existing work.
+- [ ] [BLOCKED] **SW-0004 · P0 · Audit current state** — Definitions are present on open draft PR #22 (head `4adad05003e601ed9b39182d5f4b8e8bbd4b1973`), stacked on PR #21; no owner review has been submitted. Unlock after the parent PRs are reviewed and this branch is reconciled with current `main`. Do not repeat the existing audit.
+- [ ] [BLOCKED] **SW-0005 · P0 · Audit current state** — Revenue definitions and code changes are present on open draft PR #23 (head `93d9d1d08ae71d755dadac989e21fee66db7709d`), stacked on PR #22; no owner review has been submitted. Unlock after the parent PRs are reviewed and this branch is reconciled with current `main`. Do not repeat the existing work.
+- [ ] [BLOCKED] **SW-0006 · P0 · Audit current state** — Outcome definitions are present on open draft PR #24 (head `b5df3734ca2e895ea39beb8023191f302333854e`), stacked on PR #23; no owner review has been submitted. Unlock after the parent PRs are reviewed and this branch is reconciled with current `main`. Do not duplicate the existing work.
+- [ ] [IN PROGRESS] **SW-0007 · P0 · Audit current state** — Record that 1,000 listings is a conditional supply milestone, not the north-star KPI. Section 0 already states that 1,000 listings is conditional and must not be pursued as a vanity target; the north star remains qualified website-design opportunities. This run is reconciling the register status against that existing policy.
+- [ ] [BLOCKED] **SW-0008 · P0 · Audit current state** — Selecting the initial funnel-evaluation window and its start date is an owner business decision; no approved measurement window or stable post-release baseline exists. Unlock when the owner approves the decision window/start date. Do not invent a target or deadline.
 - [ ] [TODO] **SW-0009 · P1 · Audit current state** — Create a decision log for changes that affect the business model or brand position.
 - [ ] [TODO] **SW-0010 · P1 · Audit current state** — Record the original three phases: trust foundation, lead-generation funnel, then bookings after traction.
 - [ ] [TODO] **SW-0011 · P1 · Audit current state** — Keep the current money-first strategy while using data quality as a conversion enabler.
