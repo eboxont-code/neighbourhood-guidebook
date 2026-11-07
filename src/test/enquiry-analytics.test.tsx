@@ -18,9 +18,7 @@ vi.mock("@tanstack/react-router", async (importOriginal) => {
   const actual = await importOriginal<typeof import("@tanstack/react-router")>();
   return {
     ...actual,
-    Link: ({ to, children, ...props }: { to: string; children?: ReactNode; [key: string]: unknown }) => (
-      <a href={to} {...props}>{children}</a>
-    ),
+    Link: ({ to, children }: { to: string; children?: ReactNode }) => <a href={to}>{children}</a>,
   };
 });
 
@@ -77,7 +75,7 @@ describe("website enquiry analytics", () => {
 
   it("records enquiry_submit only after the database insert succeeds and sends no form data to analytics", async () => {
     let resolveInsert: ((value: { error: null }) => void) | undefined;
-    insertMock.mockReturnValueOnce(new Promise((resolve) => { resolveInsert = resolve; }));
+    insertMock.mockReturnValueOnce(new Promise<{ error: null }>((resolve) => { resolveInsert = resolve; }));
     const { container } = render(<ContactForm business="Aavaran" listing="aavaran-durbar-marg" page="preview" />);
     requiredFields(container);
     const form = container.querySelector("form");
