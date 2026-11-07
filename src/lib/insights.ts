@@ -12,7 +12,7 @@ export function summarise(rows: EventRow[], days: number, now = new Date()) {
     if (new Date(r.created_at).getTime() < since) continue;
     if (r.event === "search" && r.query) bump(searches, r.query);
     else if (r.event === "search_zero" && r.query) { bump(zero, r.query); bump(searches, r.query); }
-    else if (r.event !== "search" && r.event !== "search_zero" && r.event !== "listing_view" && r.event !== "preview_view") {
+    else if (!["search", "search_zero", "listing_view", "preview_view", "enquiry_start"].includes(r.event)) {
       bump(clicks, r.event);
       if (r.listing_slug) bump(listings, r.listing_slug);
     }
@@ -38,4 +38,18 @@ export function funnel(rows: EventRow[], days: number, now = new Date()) {
     return { event, count, rate: i && prev ? Math.round((count / prev) * 100) : null };
   });
   return { steps, topPreviews: top(views, 10) };
+}
+
+
+/** Raw anonymous counts only. Without a visitor/session identifier, starts and submissions are not joined into a conversion rate. */
+export function websiteEnquirySummary(rows: EventRow[], days: number, now = new Date()) {
+  const since = now.getTime() - days * 86400000;
+  let starts = 0;
+  let submissions = 0;
+  for (const row of rows) {
+    if (new Date(row.created_at).getTime() < since) continue;
+    if (row.event === "enquiry_start") starts++;
+    else if (row.event === "enquiry_submit") submissions++;
+  }
+  return { starts, submissions };
 }
