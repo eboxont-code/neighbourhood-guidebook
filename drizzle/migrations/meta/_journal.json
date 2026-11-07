@@ -106,6 +106,13 @@
       "when": 1794046500000,
       "tag": "0014_website_enquiry_start_event",
       "breakpoints": true
+    },
+    {
+      "idx": 15,
+      "version": "7",
+      "when": 1794049200000,
+      "tag": "0015_claim_start_event",
+      "breakpoints": true
     }
   ]
 }
