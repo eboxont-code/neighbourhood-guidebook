@@ -741,7 +741,8 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 | 10 | Improve directory quality and coverage based on real user demand and lead value | BLOCKED — only 2 zero-result searches and no saved enquiries are present in the current production snapshot; the prospect CSV is also unavailable, so demand/lead-value prioritisation is not evidence-based yet |
 | 11 | Define secondary conversions for preview views, preview CTA clicks, claim requests, contact-form sends, and repeat visits | DONE 7 Nov 2026 — definitions and measurement limits recorded in Section 0 and verified against current code and the live event constraint |
 | 12 | Separate website-design revenue metrics from future listing-subscription and booking revenue metrics | DONE 7 Nov 2026 — website-service totals now exclude promotion requests; current and future revenue streams and refund limits are defined and tested in PR #23 |
-| 13 | Record that directory traffic alone is not success unless it creates useful customer or business-owner outcomes | IN PROGRESS — SW-0006; outcome stages drafted against current analytics, forms, admin review and read-only production evidence |
+| 13 | Record that directory traffic alone is not success unless it creates useful customer or business-owner outcomes | DONE 7 Nov 2026 — outcome ladder and measurement limits documented; PR #24 Quality Gates passed |
+| 14 | Record that 1,000 listings is a conditional supply milestone, not the north-star KPI | TODO — SW-0007 is the next independently actionable P0 register item; keep inventory subordinate to useful outcomes |
 
 ### Task 1 verification notes — 7 November 2026
 
@@ -823,10 +824,25 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 - GitHub snapshot after opening PR #23: 30 branches, 16 open draft PRs, 0 open issues. Main remains `ee38ca0e978f0149ca10f5b2caadb33282729148`; its Quality Gate run [#42217060656](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42217060656) passed. The runtime has no local repository checkout, so no local working-tree status is claimed.
 - No production rows, migrations, settings, secrets, DNS, billing, pricing, or deployment were changed. No outreach was sent. Additional spend: $0.
 
-### Current task
+### Completed task — SW-0006
 
-**SW-0006 — Record that directory traffic alone is not success unless it creates useful customer or business-owner outcomes.**  
-**Status: IN PROGRESS — outcome definitions drafted against current analytics, persisted submission paths, admin review controls, and read-only production evidence; final verification pending.**
+**Record that directory traffic alone is not success unless it creates useful customer or business-owner outcomes.**  
+**Status: DONE 7 November 2026 — the outcome ladder and measurement limits are documented in Section 0 and the 1,000-task register.**
+
+- Audited `src/lib/track.ts`, `src/lib/insights.ts`, `src/components/admin-insights.tsx`, `src/components/admin-claims.tsx`, `src/routes/admin.tsx`, the contact/claim/submission forms, and the relevant production table schemas.
+- Separated exposure/activity, intent, persisted requests, reviewed directory/owner outcomes, and commercial outcomes. Clicks and raw analytics rows are not completed customer outcomes; saved database rows are the source of truth for submitted requests.
+- Recorded the specific workflow limits: `click_call` is a button tap, not proof of a connected call; a claim is owner-verified only at `business_claims.status = 'verified'`; changing a business-submission status does not publish a listing and there is no `listing_id`; correction reports have no resolution-status field.
+- Preserved the Lovable north-star file unchanged. No new targets, events, cookies, visitor IDs, personal data, schema, or application code were added.
+- Read-only production snapshot on 7 November 2026: 52 published listings; 8 analytics rows (5 `preview_view`, 1 `claim_click`, 2 `search_zero`); 0 contact messages, business claims, business submissions, correction reports, and listing promotions. Missing rows are not evidence that no off-platform customer value exists.
+- Task-content commit `be434c2f0afdc9b846144b9c48de80e26fc5d7af`; draft PR [#24](https://github.com/eboxont-code/neighbourhood-guidebook/pull/24), stacked on PR #23. GitHub Quality Gate push run [#42317706190](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42317706190) and PR run [#42317748766](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42317748766) both passed TypeScript, ESLint, unit/component tests, production build, and disposable PostgreSQL migration/security tests.
+- The Vercel preview status is blocked by the Hobby build-rate limit; no upgrade or manual deployment was attempted. Production remains READY on main `ee38ca0e978f0149ca10f5b2caadb33282729148`, deployment `dpl_Gou24q64tcmGASESDmvqbxzrWpP7`, with `sewa.boxont.com` attached.
+- After opening PR #24: 31 branches, 17 open draft PRs, and 0 open issues. Main remains unchanged. The runtime has no local repository checkout, so no local working-tree status is claimed.
+- No production database writes, migrations, Auth/settings changes, deployment, outreach, pricing changes, or paid resources. Additional spend: $0.
+
+### Next eligible task
+
+**SW-0007 — Record that 1,000 listings is a conditional supply milestone, not the north-star KPI.**  
+This is an independently actionable P0 definition task. It can clarify that inventory is a supply constraint or milestone, not a measure of user/business value, without changing the Lovable north-star file or inventing a target.
 
 
 ---
@@ -871,7 +887,7 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [x] [DONE] **SW-0003 · P0 · Audit current state** — Define the primary conversion as a completed website enquiry with identifiable business context. Definition and source-of-truth rules recorded in Section 0 on 7 November 2026.
 - [x] [DONE] **SW-0004 · P0 · Audit current state** — Define secondary conversions for preview views, preview CTA clicks, claim requests, contact-form sends, and repeat visits. Definitions and measurement limits recorded in Section 0 on 7 November 2026.
 - [x] [DONE] **SW-0005 · P0 · Audit current state** — Separate website-design revenue metrics from future listing-subscription and booking revenue metrics. Website-service categorisation, sponsored-placement separation, and future subscription/booking boundaries implemented and verified on 7 November 2026 in draft PR #23.
-- [ ] [IN PROGRESS] **SW-0006 · P0 · Audit current state** — Record that directory traffic alone is not success unless it creates useful customer or business-owner outcomes. Outcome definitions drafted; final verification pending.
+- [x] [DONE] **SW-0006 · P0 · Audit current state** — Record that directory traffic alone is not success unless it creates useful customer or business-owner outcomes. Outcome ladder and measurement limits documented and verified 7 November 2026 in draft PR #24.
 - [ ] [TODO] **SW-0007 · P0 · Audit current state** — Record that 1,000 listings is a conditional supply milestone, not the north-star KPI.
 - [ ] [TODO] **SW-0008 · P0 · Audit current state** — Set an initial decision window for evaluating the current funnel before redesigning it again.
 - [ ] [TODO] **SW-0009 · P1 · Audit current state** — Create a decision log for changes that affect the business model or brand position.
