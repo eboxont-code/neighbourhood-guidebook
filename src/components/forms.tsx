@@ -1,5 +1,5 @@
 import { track } from "@/lib/track";
-import { useState, type FormEvent, type ReactNode } from "react";
+import { useRef, useState, type FormEvent, type ReactNode } from "react";
 import { z } from "zod";
 import { CheckCircle2, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -107,12 +107,22 @@ export function ContactForm({ business, listing, page, message = "", doneText, s
   const [errors, setErrors] = useState<{ [k: string]: string | undefined }>({});
   const [status, setStatus] = useState<Status>("idle");
   const [hp, setHp] = useState("");
+  const enquiryStarted = useRef(false);
+
+  function trackWebsiteEnquiryStart(force = false) {
+    const websiteIntent = page === "preview" || page === "for-businesses" || topic === "website";
+    if ((!force && !websiteIntent) || enquiryStarted.current) return;
+    enquiryStarted.current = true;
+    track("enquiry_start", listing ? { slug: listing } : {});
+  }
+
   if (status === "done") return <Done text={doneText ?? t("thanksContact")} />;
 
   async function submit(e: FormEvent) {
     e.preventDefault();
     if (topicPicker && !topic) { setErrors({ topic: t("errChoice") }); document.getElementById("topic")?.focus(); return; }
     if (topic === "add") return;
+    if (!isBot(hp)) trackWebsiteEnquiryStart();
     const parsed = contactSchema.safeParse({ ...v, source_listing_slug: listing, topic: topic || null, service_package: servicePackage || null, budget_band: budgetBand || null });
     if (!parsed.success) {
       const errs = errorsFrom(parsed.error.issues, t);
@@ -141,8 +151,8 @@ export function ContactForm({ business, listing, page, message = "", doneText, s
   }
 
   return (
-    <form onSubmit={submit} noValidate className="relative min-w-0 space-y-5">
-      {topicPicker && <Field id="topic" label={t("contactTopic")} required error={errors["topic"]}><select id="topic" className="field min-h-11 text-base" required aria-invalid={!!errors["topic"]} aria-describedby={errors["topic"] ? "topic-error" : undefined} value={topic} onChange={(e) => { setTopic(e.target.value as ContactTopic | ""); setErrors({}); }}><option value="">{t("chooseOption")}</option>{contactTopics.map((x) => <option key={x} value={x}>{t(`topic_${x}`)}</option>)}</select></Field>}
+    <form onSubmit={submit} onFocusCapture={() => trackWebsiteEnquiryStart()} noValidate className="relative min-w-0 space-y-5">
+      {topicPicker && <Field id="topic" label={t("contactTopic")} required error={errors["topic"]}><select id="topic" className="field min-h-11 text-base" required aria-invalid={!!errors["topic"]} aria-describedby={errors["topic"] ? "topic-error" : undefined} value={topic} onChange={(e) => { const value = e.target.value as ContactTopic | ""; setTopic(value); setErrors({}); if (value === "website") trackWebsiteEnquiryStart(true); }}><option value="">{t("chooseOption")}</option>{contactTopics.map((x) => <option key={x} value={x}>{t(`topic_${x}`)}</option>)}</select></Field>}
       {topic === "add" ? <div><p className="text-muted-foreground">{t("contactAddHint")}</p><Link to="/add-a-business" className="inline-flex min-h-11 items-center text-primary underline">{t("footAdd")}</Link></div> : <>
       <Field id="name" label={t("fName")} required error={errors["name"]}>
         <input id="name" aria-invalid={!!errors["name"]} aria-describedby={errors["name"] ? "name-error" : undefined} className="field" type="text" autoComplete="name" autoCapitalize="words" enterKeyHint="next" required maxLength={100} value={v.name} onChange={(e) => setV({ ...v, name: e.target.value })} />

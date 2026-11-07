@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { funnel, summarise } from "@/lib/insights";
+import { funnel, summarise, websiteEnquirySummary } from "@/lib/insights";
 import { trackPayload, TRACK_EVENTS } from "@/lib/track";
 import { readFileSync } from "node:fs";
 
@@ -36,6 +36,22 @@ describe("admin insights", () => {
     expect(p.query).toBe("hair salon");
     expect(TRACK_EVENTS).toContain("search_zero");
   });
+  it("counts website enquiry starts separately from successful submissions", () => {
+    expect(TRACK_EVENTS).toContain("enquiry_start");
+    const rows = [
+      { event: "enquiry_start", query: null, listing_slug: "a", created_at: at(1) },
+      { event: "enquiry_start", query: null, listing_slug: null, created_at: at(2) },
+      { event: "enquiry_submit", query: null, listing_slug: "a", created_at: at(2) },
+      { event: "enquiry_submit", query: null, listing_slug: "a", created_at: at(20) },
+      { event: "click_call", query: null, listing_slug: "a", created_at: at(1) },
+    ];
+    expect(websiteEnquirySummary(rows, 7, now)).toEqual({ starts: 2, submissions: 1 });
+    expect(summarise(rows, 7, now).clicks).toEqual([["click_call", 1]]);
+    const payload = trackPayload("enquiry_start", { slug: "listing-a" });
+    expect(payload.listing_slug).toBe("listing-a");
+    expect(Object.keys(payload).sort()).toEqual(["event", "lang", "listing_slug", "path", "query"]);
+  });
+
   it("keeps listing-page and website-preview views separate from clicks", () => {
     const rows = [
       { event: "listing_view", query: null, listing_slug: "a", created_at: at(1) },
