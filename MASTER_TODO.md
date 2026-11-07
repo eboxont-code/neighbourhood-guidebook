@@ -689,9 +689,9 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 - GitHub Quality Gate run [#42216569490](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42216569490) passed: disposable PostgreSQL migration/security tests, TypeScript validation, lint, unit/component tests and production build.
 - Original PR #7 was closed unmerged by the repository owner on 6 November 2026. It was not reopened and no replacement PR was opened. The new reconciliation branch is ready for review; wait for owner direction before opening a replacement PR or moving to Bundle 8.
 - No production database migration, production deployment, production setting change or merge was performed. Bundle 8 was left untouched.
-### Current task — SW-0173: Service details in website previews
+### Completed task — SW-0173: Service details in website previews
 
-**Status: IN PROGRESS.**
+**Status: DONE — rendered-preview and live-listing-normalizer regression tests passed in both final GitHub Quality Gates.**
 
 Acceptance criteria:
 - The preview displays only service names explicitly present in the current business record; it must not infer services from category, search synonyms or another listing.
@@ -702,14 +702,26 @@ Acceptance criteria:
 ### Latest verified repository, deployment and database snapshot — 7 November 2026
 
 - Current main: 7d7b75b3be48724d86c47519b469e51828f8f3b4. Main Quality Gate run [#42323594019](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42323594019) passed both application and disposable PostgreSQL jobs.
-- Remote inventory: 46 branches, 31 open PRs, 0 open issues. Main is reported protected:false; the separate branch-protection endpoint returned HTTP 403, so detailed rules could not be read. This runtime has no local repository checkout, so local working-tree cleanliness is unavailable; remote refs, commits and diffs were inspected.
-- Open review stack includes PRs #12, #20–#28, #30–#39. PR #12 is an open draft with no reviews and contains form duplicate-submit/success/retry regression coverage; PR #38 is an open draft with no reviews; PR #39 is stacked on #38 and is currently not mergeable. No PR was merged.
+- Remote inventory after opening PR #40: 47 branches, 32 open PRs, 0 open issues. Main is reported protected:false; the separate branch-protection endpoint returned HTTP 403, so detailed rules could not be read. This runtime has no local repository checkout, so local working-tree cleanliness is unavailable; remote refs, commits and diffs were inspected.
+- Open review stack includes PR #12, #20–#28 and #30–#40, plus the existing Bundle 4/7/8 drafts. PR #12 is an open draft with no reviews and contains form duplicate-submit/success/retry regression coverage; PR #38 is an open draft with no reviews; PR #39 is stacked on #38 and is not mergeable; PR #40 is an open draft, mergeable, 3 commits/2 files, with no review yet. No PR was merged.
 - Vercel Production deployment [dpl_5tkK3TvBeyRtV4Sjsve5PbYZDKBB](https://vercel.com/boxont/neighbourhood-guidebook/5tkK3TvBeyRtV4Sjsve5PbYZDKBB) is READY and has the sewa.boxont.com alias, but serves commit 41065104ea2bb6906f060d05fc6b2d4abbe5c6bc; current main is 5 commits ahead. Main's Vercel status is failing because the Hobby build-rate limit is reached. No paid upgrade or deployment was attempted.
 - Production Supabase project zvbavpcsyvibvpkxjzkn is ACTIVE_HEALTHY with 8 applied migrations. Read-only counts: 52 published listings, 8 analytics events, 0 contact messages, 0 business claims, 0 business submissions, 0 correction reports and 0 listing promotions.
 - Production service-data query: 52 published listings, 0 listings with non-empty data.services, 0 service entries. No service details are currently sourced from production listing JSON.
 - supabase/config.toml still points to hbsszybjdyrdbgbvvmht, not the checked production project. The last three remote migration versions differ from the corresponding local filenames. Do not run or repair production migrations until the correct target and history are approved.
 - Security Advisor: one RLS-enabled table without policies, one authenticated SECURITY DEFINER function warning, and leaked-password protection disabled. Performance Advisor: 17 RLS initialization-plan findings, 3 unused indexes and 2 multiple-permissive-policy findings. Health Advisor: no findings. These are observations only.
 - No production rows, policies, migrations, auth settings, secrets, DNS, billing or deployment were changed. Additional spend: $0.
+
+
+### SW-0173 verification evidence — 7 November 2026
+
+- Existing implementation audited: the preview route renders only `b.services` names and uses `pvAddThis` when the list is empty. `rowToBusiness` accepts explicit service objects with trimmed, bounded names and optional bounded prices, strips unknown fields, and falls back to an empty array for absent/invalid service data.
+- Added `src/test/preview-services.test.tsx`: 4 tests cover rendered preview output for explicit/empty service lists and live-listing JSON normalization for trimming, unknown-field stripping, and invalid/absent data.
+- Production read-only query found 52 published listings, 0 listings with non-empty `data.services`, and 0 service entries. No service claims are currently sourced from production listing JSON.
+- Final push Quality Gate [#42376964257](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42376964257) and final PR Quality Gate [#42376967319](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42376967319) both completed successfully. The PR run observed TypeScript PASS, ESLint PASS (0 errors, 25 existing warnings), 25/25 test files and 183/183 tests PASS, production build PASS, and disposable PostgreSQL migration/security job PASS.
+- The first CI attempt caught one TypeScript literal-union mismatch in the test helper; it was corrected in commit `66b011edb2dd9f49001576a12163caa8f6592635`, and both final workflows passed. No production application code was changed.
+- PR [#40](https://github.com/eboxont-code/neighbourhood-guidebook/pull/40) remains open/draft and unmerged. Its Vercel check is limited by the Hobby build-rate quota; GitHub Quality Gates are green. No paid upgrade or deployment was attempted.
+
+Register integrity after reconciliation: 1,000 unique task IDs across 999 task rows (SW-0298/SW-0299 share one existing row); 7 DONE, 61 REVIEW, 9 BLOCKED, 922 TODO, 0 IN PROGRESS.
 
 The next eligible task after SW-0173 is SW-0174, subject to the same release and owner-approval gates.
 
@@ -946,7 +958,7 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [REVIEW] **SW-0170 · P0 · Audit current state** — Verify the phone action appears only when a verified public phone exists. Evidence: verified public-phone gating is in open draft PR #19; owner review/release pending.
 - [ ] [REVIEW] **SW-0171 · P0 · Audit current state** — Verify the website action is omitted or clearly unavailable when no working official website exists. Evidence: working-official-website action gating is in open draft PR #28; owner review/release pending.
 - [ ] [REVIEW] **SW-0172 · P0 · Audit current state** — Verify social links come from the correct business record and open safely. Evidence: business-scoped social-link validation is in open draft PR #37; owner review/release pending.
-- [ ] [IN PROGRESS] **SW-0173 · P0 · Audit current state** — Verify service details appear only when provided or separately verified. Active task: test that previews render only explicit service records and use the existing add-details fallback when none are present; production currently has no service entries.
+- [x] [DONE] **SW-0173 · P0 · Audit current state** — Verify service details appear only when provided or separately verified. Active task: test that previews render only explicit service records and use the existing add-details fallback when none are present; production currently has no service entries. Evidence: PR #40; final commit 66b011edb2dd9f49001576a12163caa8f6592635; push Quality Gate #704 and PR Quality Gate #705 passed (25 test files, 183 tests, typecheck, lint, build, disposable PostgreSQL migration/security tests).
 - [ ] [TODO] **SW-0174 · P0 · Audit current state** — Verify the shared template does not leak data between two business slugs.
 - [ ] [TODO] **SW-0175 · P1 · Audit current state** — Verify category colour choices remain readable for every current category.
 - [ ] [TODO] **SW-0176 · P1 · Audit current state** — Verify English and Nepali preview variants use the same underlying business facts.
