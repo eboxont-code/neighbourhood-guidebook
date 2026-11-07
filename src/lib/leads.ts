@@ -1,4 +1,5 @@
-import { intlDigits } from "@/data/directory";
+import { businesses, intlDigits, liveSlugRedirects, slugRedirects, type Business } from "@/data/directory";
+import { offersPreview, previewPath as buildPreviewPath } from "@/lib/preview";
 
 /** Where a lead is in the sales pipeline. Mirrors the contact_messages status CHECK. */
 export const leadStatuses = ["new", "contacted", "quoted", "won", "lost"] as const;
@@ -14,6 +15,33 @@ export const leadSource = (page: string | null | undefined): LeadSource =>
 /** Sales leads first: owners who came from a preview or a claim are the warmest. */
 const warmth: Record<LeadSource, number> = { preview: 0, claim: 1, "for-businesses": 2, listing: 3, contact: 4, other: 5 };
 export const leadWarmth = (page: string | null | undefined) => warmth[leadSource(page)];
+
+/** Resolve a lead's recorded source slug to the current published listing. */
+type LeadListing = Pick<Business, "slug" | "name" | "websiteStatus" | "website">;
+
+export function leadListingLinks(
+  sourceSlug: string | null | undefined,
+  items: readonly LeadListing[] = businesses,
+  redirects: Readonly<Record<string, string>> = { ...slugRedirects, ...liveSlugRedirects },
+): { business: LeadListing; slug: string; previewPath: string | null } | null {
+  let currentSlug = sourceSlug?.trim();
+  if (!currentSlug) return null;
+
+  const visited = new Set<string>();
+  while (currentSlug && !visited.has(currentSlug)) {
+    visited.add(currentSlug);
+    const business = items.find((item) => item.slug === currentSlug);
+    if (business) {
+      return {
+        business,
+        slug: business.slug,
+        previewPath: offersPreview(business) ? buildPreviewPath(business.slug) : null,
+      };
+    }
+    currentSlug = redirects[currentSlug]?.trim() ?? "";
+  }
+  return null;
+}
 
 /** Count of leads per status, plus "all". */
 export function countByStatus(rows: { status: string }[]): Record<LeadStatus | "all", number> {

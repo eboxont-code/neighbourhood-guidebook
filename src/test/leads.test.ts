@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { countByStatus, leadSource, leadTel, leadWarmth, leadWhatsapp } from "@/lib/leads";
+import { countByStatus, leadListingLinks, leadSource, leadTel, leadWarmth, leadWhatsapp } from "@/lib/leads";
 import { dict } from "@/lib/i18n";
 
 describe("sales leads", () => {
@@ -30,5 +30,66 @@ describe("sales leads", () => {
       expect((dict.en as Record<string, string>)[k]).not.toMatch(/\u2014/);
       expect(ne).not.toMatch(/\u2014/);
     }
+  });
+});
+
+
+describe("lead listing destinations", () => {
+  const currentListing = {
+    slug: "current-business",
+    name: "Current Business",
+    websiteStatus: "none_found" as const,
+  };
+
+  it("uses the current slug for a direct listing and its eligible preview", () => {
+    expect(leadListingLinks("current-business", [currentListing], {})).toEqual({
+      business: currentListing,
+      slug: "current-business",
+      previewPath: "/s/current-business/website-preview",
+    });
+  });
+
+  it("follows one or more recorded redirects to the current published listing", () => {
+    const result = leadListingLinks("old-business", [currentListing], {
+      "old-business": "middle-business",
+      "middle-business": "current-business",
+    });
+    expect(result).toEqual({
+      business: currentListing,
+      slug: "current-business",
+      previewPath: "/s/current-business/website-preview",
+    });
+  });
+
+  it("uses the existing legacy redirect map when no live redirect is supplied", () => {
+    const plush = { ...currentListing, slug: "plush-lazimpat", name: "Plush" };
+    expect(leadListingLinks("plush-kamaladi", [plush])).toEqual({
+      business: plush,
+      slug: "plush-lazimpat",
+      previewPath: "/s/plush-lazimpat/website-preview",
+    });
+  });
+
+  it("offers a preview only when the current listing remains eligible", () => {
+    const working = {
+      slug: "current-business",
+      name: "Current Business",
+      websiteStatus: "working" as const,
+      website: "https://example.com",
+    };
+    expect(leadListingLinks("old-business", [working], { "old-business": "current-business" })).toEqual({
+      business: working,
+      slug: "current-business",
+      previewPath: null,
+    });
+  });
+
+  it("returns no destinations for missing targets, empty slugs, or redirect cycles", () => {
+    expect(leadListingLinks(" ", [currentListing], {})).toBeNull();
+    expect(leadListingLinks("deleted-business", [currentListing], { "deleted-business": "missing-business" })).toBeNull();
+    expect(leadListingLinks("old-business", [currentListing], {
+      "old-business": "middle-business",
+      "middle-business": "old-business",
+    })).toBeNull();
   });
 });
