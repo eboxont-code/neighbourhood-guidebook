@@ -235,6 +235,31 @@ BEGIN
   IF NOT cash_lock THEN
     RAISE EXCEPTION 'recorded sales cash could be silently decreased';
   END IF;
+
+  -- Correct an accidental Won stage without erasing the recorded quote or receipt.
+  UPDATE public.business_sales_prospects
+    SET stage = 'qualified'
+    WHERE listing_id = 'b1' AND stage = 'won';
+  IF NOT FOUND THEN
+    RAISE EXCEPTION 'a prospect could not be moved back to an earlier stage';
+  END IF;
+
+  INSERT INTO public.business_sales_activities (prospect_id, activity_type, summary)
+  SELECT id, 'stage_change', 'Stage changed from won to qualified after correcting an accidental stage change.'
+  FROM public.business_sales_prospects
+  WHERE listing_id = 'b1';
+
+  IF (SELECT count(*) FROM public.business_sales_prospects
+      WHERE listing_id = 'b1' AND stage = 'qualified'
+        AND quote_amount_npr = 15000 AND paid_amount_npr = 5000) <> 1 THEN
+    RAISE EXCEPTION 'stage correction changed the recorded quote or cash';
+  END IF;
+  IF (SELECT count(*) FROM public.business_sales_activities a
+      JOIN public.business_sales_prospects p ON p.id = a.prospect_id
+      WHERE p.listing_id = 'b1' AND a.activity_type = 'stage_change'
+        AND a.summary = 'Stage changed from won to qualified after correcting an accidental stage change.') <> 1 THEN
+    RAISE EXCEPTION 'backward stage correction history was not recorded';
+  END IF;
 END
 $sales$;
 RESET ROLE;
@@ -408,7 +433,7 @@ BEGIN
   IF (SELECT count(*) FROM public.business_sales_prospects WHERE listing_id = 'b1') <> 1
      OR (SELECT count(*) FROM public.business_sales_activities a
          JOIN public.business_sales_prospects p ON p.id = a.prospect_id
-         WHERE p.listing_id = 'b1') <> 2 THEN
+         WHERE p.listing_id = 'b1') <> 3 THEN
     RAISE EXCEPTION 'the administrator could not read private prospect history';
   END IF;
   UPDATE public.contact_messages
