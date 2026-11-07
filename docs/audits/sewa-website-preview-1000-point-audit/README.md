@@ -1,23 +1,21 @@
 # SEWA Shared Website Preview — 1,000-Point Audit
 
-This folder contains the source-reviewed audit dataset exported from the audit workbook prepared on 7 November 2026.
+**Audit checkpoint:** 7 November 2026.
 
-## Audit status at export
+This folder contains the complete Markdown checklist and the audit-results summary for the shared `/s/:slug/website-preview` template and current production listing data.
 
-- 1,000 unique criteria; exactly 1 point per criterion.
-- 54 reviewed: 41 PASS, 13 FAIL, 946 NOT TESTED.
-- Evidence coverage: 5.4% (54/1,000).
-- Points earned: 41/1,000. This is an in-progress evidence score, not a final grade.
-- PASS results include source/code/unit-test evidence; they are not all live browser/device checks.
+## Current status
 
-## Files
+- **1,000** unique criteria; exactly 1 point per criterion.
+- **54 reviewed:** 41 PASS, 13 FAIL, 946 NOT TESTED.
+- **Evidence coverage:** 5.4% (54/1,000).
+- **Points earned:** 41/1,000. This is an in-progress evidence score, not a final grade.
+- PASS evidence can include source-code, automated-test and live-data evidence; not all checks were live browser/device tests.
+- NOT TESTED means evidence has not yet been recorded. It is not a confirmed failure.
 
-- `1000-checks.csv` — all 1,000 criteria, statuses, evidence and scoring fields.
-- `audit-dashboard.csv` — dashboard data.
-- `live-data.csv` — live listing data quality snapshot.
-- `preview-examples.csv` — preview examples.
-- `sources-and-method.csv` — methodology and source register.
-- `preview-candidates.csv` — all 18 currently preview-eligible businesses and research notes.
-- `preview-analytics.csv` — preview views, CTA clicks and enquiry counts for the 18 candidates.
+## Git-tracked documents
 
-The workbook is maintained as a downloadable local artifact in the originating ChatGPT conversation; these CSVs are the Git-tracked, reviewable data exports. No production application code or production data was changed by this audit export.
+- [`1000-POINT-CHECKLIST.md`](./1000-POINT-CHECKLIST.md) — all 1,000 individually numbered criteria, status, one-point scoring and row-level evidence for all 54 reviewed checks.
+- [`AUDIT-RESULTS.md`](./AUDIT-RESULTS.md) — scope, current listing-data snapshot, key findings, analytics, verification limits and recommended next work.
+
+No production application code, production data, migrations or deployments were changed as part of this audit.
