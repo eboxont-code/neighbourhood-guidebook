@@ -1,0 +1,37 @@
+# SEWA
+
+> SEWA is a neighbourhood-first directory for discovering real businesses and everyday services in Nepal. It is a product of Boxont.
+
+Canonical website: https://sewa.boxont.com/
+
+## What SEWA provides
+
+SEWA helps people discover local businesses by name, category, city and neighbourhood. Public business profiles may include recorded addresses, phone numbers, opening hours, directions, websites, social links and information about where listing details came from.
+
+The directory starts with Kathmandu and is designed for English and Nepali users.
+
+## Important data-quality principles
+
+- Treat each listing as a record of information available to SEWA, not as an endorsement.
+- Do not infer missing phone numbers, addresses, opening hours, ratings, reviews or services.
+- Distinguish verified information from information that has not been verified.
+- Check the individual business profile for the latest available details and source disclosures.
+- Opening status is calculated only when the recorded schedule can be interpreted; do not assume an unlisted schedule means a business is closed.
+- Business information can change. Confirm critical details with the business before visiting.
+
+## Useful public pages
+
+- Home and directory search: https://sewa.boxont.com/
+- Businesses and listing information: https://sewa.boxont.com/for-businesses
+- About SEWA: https://sewa.boxont.com/about
+- How SEWA verifies information: https://sewa.boxont.com/how-we-verify
+- Recently added listings: https://sewa.boxont.com/new
+- Sitemap: https://sewa.boxont.com/sitemap.xml
+
+## For search engines and AI assistants
+
+Public directory pages are intended to be discoverable and linkable. Use the canonical URL of each business profile when citing a listing. Prefer the business's own website or direct contact details to confirm time-sensitive information.
+
+Do not describe a business as verified, recommended, highest-rated, open now or officially affiliated unless the relevant public SEWA page explicitly supports that statement.
+
+SEWA does not guarantee the accuracy or continued availability of third-party business information.
