@@ -212,6 +212,18 @@ PR references:
 - No branch has been deleted, force-pushed, rebased or rewritten.
 
 
+### Latest read-only verification — 8 November 2026
+
+- Current `main`: `7d7b75b3be48724d86c47519b469e51828f8f3b4`; GitHub Quality Gate run [#42323594019](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42323594019) passed on this exact SHA.
+- Repository inventory: 52 branches, 36 open PRs, 0 open issues. GitHub branch metadata reports `main` protected=false. No local checkout is mounted in this run, so remote refs/diffs were inspected but no clean local working-tree claim is made.
+- Bundle 7 PR #10 remains open/draft with no submitted reviews. Its branch compares 16 commits ahead and 8 behind current `main`; do not merge, rebase or force-push it. PR #46 is stacked on that branch and verifies SW-0123. PR #45 remains open/draft; SW-0201 is REVIEW, not released.
+- Production Vercel deployment `dpl_5tkK3TvBeyRtV4Sjsve5PbYZDKBB` is READY on commit `41065104ea2bb6906f060d05fc6b2d4abbe5c6bc`; alias `sewa.boxont.com` is attached. Current `main` is 5 commits ahead of the production commit. No deployment was initiated.
+- Production Supabase project `zvbavpcsyvibvpkxjzkn` is ACTIVE_HEALTHY on PostgreSQL 17.11 with 8 recorded migrations. Read-only aggregates: 52 published listings, 10 analytics events, 0 contact messages, 0 business claims, 0 business submissions, 0 correction reports, 0 listing promotions and 3 form-rate log rows. Bundle 7 tables `business_sales_prospects` and `business_sales_activities` are absent.
+- The repository's local Supabase project reference still differs from the active production project. The last three remote migration version IDs differ from repository filenames; do not run `db push`, repair migration history or apply Bundle 7 migrations without an approved reconciliation plan.
+- Security Advisor: RLS-enabled `form_rate_log` has no policy; authenticated execution of SECURITY DEFINER `has_role`; leaked-password protection disabled. Performance Advisor: 17 RLS init-plan findings, 3 unused indexes and 2 multiple-permissive-policy findings. Health Advisor: no findings.
+- PR #46 code head `89f49e5760387b1454fd38a0900e89e61d93753a` passed push Quality Gate [#42396300677](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42396300677) and PR Quality Gate [#42396312544](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42396312544): TypeScript, ESLint (0 errors / 25 existing warnings), 24 test files / 181 tests, production build and disposable PostgreSQL migration/security checks. Vercel preview is rate-limited by the free Hobby daily build allowance; no paid upgrade was attempted.
+- All production/database inspection was read-only. No production rows, schema, migrations, secrets, settings, DNS or deployment were changed; additional spend $0.
+
 ## 4. Last known blocker — production deployment and admin recovery
 
 > **Status note:** The deployment and password-recovery observations below were last recorded on 4 November 2026. They were not re-tested during this document merge. Recheck before treating them as current.
@@ -645,16 +657,16 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 
 | Order | Task | Status |
 |---:|---|---|
-| 1 | Test the production preview → quote form → database → admin lead path end to end | REVIEW — previous safe checks verified the route, prefill, attribution and rollback-only database permissions; browser-driven JavaScript submission and signed-in admin UI remain unverified |
+| 1 | Test the production preview → quote form → database → admin lead path end to end | BLOCKED — route, prefill, attribution and rollback-only database permissions were verified; final browser-driven JavaScript submission and signed-in admin UI require an owner-authorised browser/admin session and approved disposable test account |
 | 2 | Verify lead source, business, preview URL and campaign attribution across each form | DONE — source and listing attribution audited; UTM/referrer/campaign ID are not retained on lead records |
 | 3 | Revalidate the existing 20-business prospect CSV and each website status | BLOCKED — original 20-business source CSV not found in the repository or Library; the separate 1,000-task CSV is not a substitute |
-| 4 | Confirm production deployment and complete admin password recovery verification | BLOCKED — current deployment is READY, but the real recovery-email and signed-in admin journey require account/email access that is not available in this run |
+| 4 | Confirm production deployment and complete admin password recovery verification | BLOCKED — deployment/domain are READY; real recovery-email and signed-in admin verification require the owner-controlled inbox and an authorised recovery session |
 | 5 | Review the 390px preview and quote form; capture real screenshots | DONE 6 Nov 2026 — EN/NE at 390×844 and 1280×1800 reviewed; screenshots captured; no horizontal overflow; 44px+ effective targets; labeled 16px inputs; 179 tests and preview build/typecheck passed. Presentation-only changes; no enquiries, schema changes, outreach, publishing or deployment. |
-| 6 | Reconcile Bundle 7 Sales Pipeline against current `main` | REVIEW — clean draft PR #10 is synchronized with current `main`; prior exact code head passed CI; current sync CI must finish; owner review/approval is required before merge or release |
-| 7 | Reconcile Bundle 8 after Bundle 7; preserve original enquiry/payment records | BLOCKED — PR #10 is still a draft and cannot be merged or released without owner approval; PR #8 remains based on the closed legacy PR #7 branch |
+| 6 | Reconcile Bundle 7 Sales Pipeline against current `main` | BLOCKED — PR #10 remains draft with no owner review; its branch is 16 commits ahead and 8 behind current `main`. Owner review plus an approved non-rewriting sync/release decision and migration-history reconciliation are required before merge or production migration. SW-0123 regression work is separately verified in stacked PR #46. |
+| 7 | Reconcile Bundle 8 after Bundle 7; preserve original enquiry/payment records | BLOCKED — Bundle 7 PR #10 requires owner review/approval and PR #8 still targets the legacy Bundle 7 branch; reconcile only after the approved Bundle 7 release |
 | 8 | Isolate and review Proposal Composer after its dependencies | BLOCKED — depends on approved/released Bundle 7 and reconciled Bundle 8; do not merge or release the dependent feature chain |
-| 9 | Use the funnel baseline to fix the largest conversion leak | BLOCKED — production currently has only 5 analytics events and 0 contact messages; there is not enough evidence to identify a reliable largest leak |
-| 10 | Improve directory quality and coverage based on real user demand and lead value | BLOCKED — current demand/lead evidence is insufficient; do not expand or alter listing data without verified sources and a demonstrated gap |
+| 9 | Use the funnel baseline to fix the largest conversion leak | BLOCKED — read-only production snapshot has 10 analytics events and 0 contact messages; this is insufficient to identify a reliable largest conversion leak or set targets |
+| 10 | Improve directory quality and coverage based on real user demand and lead value | BLOCKED — current demand/lead evidence is insufficient and the original prospect CSV is missing; do not expand or alter listing data without verified sources and a demonstrated gap |
 
 ### Task 1 verification notes — 6 November 2026
 
@@ -672,7 +684,7 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 
 ### Task 6 reconciliation review — 6 November 2026
 
-**Status: REVIEW — code reconciliation is complete; release approval remains outstanding.**
+**Status: BLOCKED — implementation is available for review, but owner approval and current-main synchronization are outstanding.**
 
 - Draft PR #10: https://github.com/eboxont-code/neighbourhood-guidebook/pull/10.
 - Branch: `sewa/bundle-07-reconciled-main-20261106`. It now includes current `main` at `ee38ca0e978f0149ca10f5b2caadb33282729148` as a merge parent; no rebase or force-push was used.
@@ -710,17 +722,15 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 
 ### Current task
 
-**Task SW-0045 — Record visits to listing pages separately from website-preview pages.**  
-**Status: IN PROGRESS — one task only.**
+**Task SW-0123 — Verify each stage count updates immediately after a lead changes stage.**
+**Status: DONE — implementation and regression verification passed; release remains stacked behind Bundle 7 owner review.**
 
-Audit is complete: `src/lib/track.ts` already provides first-party anonymous event insertion, and `src/routes/s.$slug_.website-preview.tsx` tracks `preview_view`. The listing route `src/routes/s.$slug.tsx` tracks clicks but not listing views.
-
-Acceptance criteria:
-1. Add `listing_view` to the existing event allowlist and track one listing-page entry with the listing slug only.
-2. Do not collect names, contact details, precise location, cookies or persistent visitor IDs.
-3. Add or update focused tests for the event name and payload.
-4. Run the relevant test suite, TypeScript, lint and production build through CI.
-5. Keep the change on a separate feature branch; do not merge or deploy Production without owner approval.
+- Added counts for all nine sales stages to the admin stage filter, calculated from the complete prospect collection.
+- After a successful prospect update, replace the saved row in local state immediately so the old stage decrements and the new stage increments before activity-history logging and the full refresh complete.
+- Added immutable `upsertSalesProspect` and `salesStageCounts` helpers with regression coverage for all nine stages, zero counts, old/new stage totals and non-mutation.
+- Branch: `sewa/sw-0123-stage-counts-20261108`; PR #46 is intentionally stacked on PR #10. Code head: `89f49e5760387b1454fd38a0900e89e61d93753a`.
+- Push Quality Gate #42396300677 and PR Quality Gate #42396312544 both passed. No production migration, data change, merge or deployment.
+- **Next eligible task: SW-0203 — Explain the difference between the free directory listing and a paid website project.** SW-0202 is BLOCKED pending an owner-approved customer-segment decision and verified prospect/source evidence.
 
 ---
 
@@ -899,7 +909,7 @@ The CSV is retained as the source for the original task descriptions. This Markd
 
 - [ ] [REVIEW] **SW-0121 · P0 · Reported implemented; regression-test** — Verify the existing admin Leads tab is still accessible only to authorised users.
 - [ ] [REVIEW] **SW-0122 · P0 · Reported implemented; regression-test** — Verify New, Contacted, Quote sent, Won, and Lost stages load and save correctly.
-- [ ] [REVIEW] **SW-0123 · P0 · Reported implemented; regression-test** — Verify each stage count updates immediately after a lead changes stage.
+- [x] [DONE] **SW-0123 · P0 · Reported implemented; regression-test** — Verify each stage count updates immediately after a lead changes stage. Verified all nine stage counts and immediate immutable local-state replacement after a successful save; push and PR Quality Gates #42396300677 / #42396312544 passed on `89f49e5760387b1454fd38a0900e89e61d93753a` (24 test files / 181 tests, TypeScript, lint, build and disposable PostgreSQL security/migration checks). Implementation is in stacked draft PR #46; no release.
 - [ ] [REVIEW] **SW-0124 · P0 · Reported implemented; regression-test** — Verify a lead can be moved backward if an accidental stage change occurs.
 - [ ] [REVIEW] **SW-0125 · P0 · Reported implemented; regression-test** — Verify the current business and preview links attached to a lead open the correct record.
 - [ ] [REVIEW] **SW-0126 · P0 · Reported implemented; regression-test** — Verify Call and WhatsApp actions use only the submitted public/business contact details where appropriate.
@@ -989,8 +999,8 @@ The CSV is retained as the source for the original task descriptions. This Markd
 **Phase:** 1 - Revenue foundation  
 **Definition of done:** The offer is understandable and deliverable, with prices and promises published only after the owner approves them.
 
-- [ ] [TODO] **SW-0201 · P0 · Audit current state** — Write the single clearest sentence describing the website-design service for Kathmandu businesses.
-- [ ] [TODO] **SW-0202 · P0 · Audit current state** — Define the ideal first customer segment based on need and deliverability rather than assumed budget.
+- [ ] [REVIEW] **SW-0201 · P0 · Audit current state** — Write the single clearest sentence describing the website-design service for Kathmandu businesses. Canonical EN/NE copy, metadata and Service JSON-LD are implemented and CI-verified in open draft PR #45; not merged or deployed.
+- [ ] [BLOCKED] **SW-0202 · P0 · Audit current state** — Define the ideal first customer segment based on need and deliverability rather than assumed budget. Requires an owner-approved segment decision plus current prospect/website evidence; the original 20-business CSV is unavailable and the 52-listing directory snapshot alone is insufficient to select a commercially deliverable segment without assumptions. Unlock when the owner supplies/approves the source prospect evidence and segment criteria.
 - [ ] [TODO] **SW-0203 · P0 · Audit current state** — Explain the difference between the free directory listing and a paid website project.
 - [ ] [TODO] **SW-0204 · P0 · Audit current state** — Explain the difference between a preview concept and a launched website.
 - [ ] [TODO] **SW-0205 · P1 · Audit current state** — List the website deliverables that can reliably be provided today.
