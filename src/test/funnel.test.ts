@@ -14,8 +14,8 @@ describe("funnel", () => {
   it("computes step-to-step percentages and a dash when the earlier step is 0", () => {
     const rows = [ev("preview_click"), ev("preview_click"), ev("preview_click"), ev("preview_click"), ev("preview_view", 1, "a"), ev("preview_view", 2, "a"), ev("preview_view", 2, "b"), ev("preview_enquiry_click"), ev("claim_submit"), ev("preview_view", 20, "c")];
     const f = funnel(rows, 7, now);
-    expect(f.steps.map((s) => s.count)).toEqual([4, 3, 1, 0, 1, 0]);
-    expect(f.steps.map((s) => s.rate)).toEqual([null, 75, 33, 0, null, 0]);
+    expect(f.steps.map((s) => s.count)).toEqual([0, 4, 3, 1, 0, 1, 0]);
+    expect(f.steps.map((s) => s.rate)).toEqual([null, null, 75, 33, 0, null, 0]);
     expect(f.topPreviews).toEqual([["a", 2], ["b", 1]]);
     expect(funnel(rows, 30, now).topPreviews).toContainEqual(["c", 1]);
   });
