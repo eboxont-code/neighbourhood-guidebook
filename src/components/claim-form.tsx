@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react';
+import { useRef, useState, type FormEvent } from 'react';
 import { Loader2 } from 'lucide-react';
 import { businesses, getBusiness, searchBusinesses } from '@/data/directory';
 import { supabase } from '@/integrations/supabase/client';
@@ -18,9 +18,16 @@ export function ClaimForm({ listing }: { listing: string }) {
   const [status, setStatus] = useState<'idle' | 'sending' | 'done' | 'error' | 'limited'>('idle');
   const b = getBusiness(slug);
   const items = query.trim() ? searchBusinesses(query) : businesses;
+  const claimStarted = useRef(false);
+  function trackClaimStart(selectedSlug = slug) {
+    if (claimStarted.current || !selectedSlug || isBot(hp)) return;
+    claimStarted.current = true;
+    track('claim_start', { slug: selectedSlug });
+  }
   async function submit(e: FormEvent) {
     e.preventDefault();
     if (status === 'sending') return;
+    trackClaimStart();
     const parsed = claimSchema.safeParse({ ...v, listing_slug: b?.slug ?? '', listing_id: b?.id ?? null });
     if (!parsed.success) {
       const errs = errorsFrom(parsed.error.issues, t); setErrors(errs);
@@ -34,9 +41,9 @@ export function ClaimForm({ listing }: { listing: string }) {
   }
   if (status === 'done') return <Done text={t('claimThanks')} />;
   const input = (key: 'name' | 'contact' | 'proof_url', label: string, max: number, type: string, autoComplete?: string) => <Field id={`claim-${key}`} label={label} required error={errors[key]} hint={key === 'proof_url' ? t('claimProofHint') : undefined}><input id={`claim-${key}`} className="field min-h-11 text-base" type={type} autoComplete={autoComplete} maxLength={max} required enterKeyHint="next" aria-invalid={!!errors[key]} aria-describedby={errors[key] ? `claim-${key}-error` : undefined} value={v[key]} onChange={(e) => setV({ ...v, [key]: e.target.value })} /></Field>;
-  return <form onSubmit={submit} noValidate className="relative space-y-5">
+  return <form onSubmit={submit} onFocusCapture={() => trackClaimStart()} noValidate className="relative space-y-5">
     {b && <h2 className="text-xl font-semibold break-words">{b.name}</h2>}
-    {!getBusiness(listing) && <div className="space-y-3"><Field id="claim-search" label={t('claimSearch')}><input id="claim-search" type="search" className="field min-h-11 text-base" maxLength={100} value={query} onChange={(e) => setQuery(e.target.value)} /></Field><Field id="claim-listing_slug" label={t('fListing')} required error={errors["listing_slug"]}><select id="claim-listing_slug" className="field min-h-11 text-base" value={slug} onChange={(e) => setSlug(e.target.value)}><option value="">{t('fChoose')}</option>{items.map((x) => <option key={x.slug} value={x.slug}>{x.name}</option>)}</select></Field>{items.length === 0 && <p className="text-sm text-muted-foreground">{t('claimEmpty')}</p>}</div>}
+    {!getBusiness(listing) && <div className="space-y-3"><Field id="claim-search" label={t('claimSearch')}><input id="claim-search" type="search" className="field min-h-11 text-base" maxLength={100} value={query} onChange={(e) => setQuery(e.target.value)} /></Field><Field id="claim-listing_slug" label={t('fListing')} required error={errors["listing_slug"]}><select id="claim-listing_slug" className="field min-h-11 text-base" value={slug} onChange={(e) => { const value = e.target.value; setSlug(value); trackClaimStart(value); }}><option value="">{t('fChoose')}</option>{items.map((x) => <option key={x.slug} value={x.slug}>{x.name}</option>)}</select></Field>{items.length === 0 && <p className="text-sm text-muted-foreground">{t('claimEmpty')}</p>}</div>}
     {input('name', t('fName'), 100, 'text', 'name')}
     <Field id="claim-role" label={t('claimRole')} required error={errors["role"]}><select id="claim-role" className="field min-h-11 text-base" value={v.role} required aria-invalid={!!errors["role"]} onChange={(e) => setV({ ...v, role: e.target.value })}><option value="">{t('chooseOption')}</option>{claimRoles.map((r) => <option key={r} value={r}>{t(`claimRole_${r}`)}</option>)}</select></Field>
     {input('contact', t('subContact'), 150, 'text')}{input('proof_url', t('claimProof'), 500, 'url', 'url')}
