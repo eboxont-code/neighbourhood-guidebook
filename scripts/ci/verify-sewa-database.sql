@@ -230,7 +230,7 @@ RESET ROLE;
 -- are accepted; a fourth request through a different form must be rejected.
 SET ROLE anon;
 SELECT set_config('request.headers', '{"cf-connecting-ip":"198.51.100.77"}', false);
-DO $
+DO $$
 DECLARE
   note_insert_blocked boolean := false;
 BEGIN
@@ -244,9 +244,9 @@ BEGIN
     RAISE EXCEPTION 'anonymous caller inserted a private contact-message sales note';
   END IF;
 END
-$;
+$$;
 
-DO $
+DO $$
 DECLARE
   note_insert_blocked boolean := false;
 BEGIN
@@ -260,20 +260,20 @@ BEGIN
     RAISE EXCEPTION 'anonymous caller inserted a private business-submission admin note';
   END IF;
 END
-$;
+$$;
 RESET ROLE;
 
-DO $
+DO $$
 BEGIN
   IF EXISTS (SELECT 1 FROM public.business_submissions WHERE business_name = 'SEWA CI Private Note Test') THEN
     RAISE EXCEPTION 'rejected private-note submission was stored';
   END IF;
 END
-$;
+$$;
 
 SET ROLE anon;
 SELECT set_config('request.headers', '{"cf-connecting-ip":"198.51.100.77"}', false);
-DO $
+DO $$
 DECLARE
   attempt integer;
   blocked boolean := false;

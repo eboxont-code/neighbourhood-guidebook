@@ -36,6 +36,7 @@ describe("private sales-note boundaries", () => {
       "src/components/forms.tsx",
       "src/components/claim-form.tsx",
       "src/routes/contact.tsx",
+      "src/routes/index.tsx",
       "src/routes/for-businesses.tsx",
       "src/routes/s.$slug.tsx",
       "src/routes/s.$slug_.website-preview.tsx",
