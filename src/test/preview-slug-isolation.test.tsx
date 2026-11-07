@@ -119,8 +119,9 @@ describe("shared website-preview slug isolation", () => {
       expect(container.querySelector(`a[href="${alpha.directions}"]`)).not.toBeInTheDocument();
 
       const ownerCta = screen.getByRole("link", { name: dict.en.pvBarCta });
-      expect(ownerCta.getAttribute("href")).toContain(`listing=${beta.slug}`);
-      expect(ownerCta.getAttribute("href")).toContain(`business=${encodeURIComponent(beta.name)}`);
+      const ownerUrl = new URL(ownerCta.getAttribute("href") ?? "", "https://sewa.test");
+      expect(ownerUrl.searchParams.get("listing")).toBe(beta.slug);
+      expect(ownerUrl.searchParams.get("business")).toBe(beta.name);
       expect(screen.getByRole("link", { name: dict.en.pvBackListing })).toHaveAttribute("href", `/s/${beta.slug}`);
       expect(track).toHaveBeenLastCalledWith("preview_view", { slug: beta.slug });
     } finally {
