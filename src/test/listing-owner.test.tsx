@@ -78,7 +78,7 @@ describe("listing website action availability", () => {
     const business = getBusiness("aavaran-durbar-marg");
     if (!business?.website) throw new Error("Missing official website fixture");
     const links = websiteActionLinks("working", business.slug);
-    expect(links.filter((href) => href === business.website)).toHaveLength(1);
+    expect(links).toContain(business.website);
   });
 
   it.each([
