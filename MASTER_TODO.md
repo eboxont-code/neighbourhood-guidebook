@@ -706,18 +706,38 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 
 ### Current task - SW-0049 website-enquiry starts (7 November 2026)
 
-**Status: REVIEW - implementation and automated verification passed in draft PR #35; release is pending owner review of parent PR #34 and the production migration gate.**
+**Status: BLOCKED — implementation and automated verification passed in draft PR #35; release requires owner review of parent PR #34 and the ordered production migration gate.**
 
 - Added anonymous `enquiry_start` to `TRACK_EVENTS`. Preview enquiries, the For Businesses form and the general contact form after the website topic is selected record one start per mounted form on first interaction. Invalid attempts can count as starts; honeypot submissions are excluded.
 - Existing `enquiry_submit` remains emitted only after the `contact_messages` insert succeeds. Validation failures and database errors do not count as successful submissions.
-- Analytics receives only the optional listing slug plus the existing anonymous language/path context. Names, business names, phone numbers, email addresses, messages and form contents are not sent.
-- Admin Insights displays separate raw form-start and successful-submission counts. It does not calculate a conversion rate because anonymous events are not linked to individual visitors. Form starts and successful enquiry submissions are excluded from the click-only summary.
-- Added matching forward-only migrations `supabase/migrations/20261107101500_website_enquiry_start_event.sql` and `drizzle/migrations/0014_website_enquiry_start_event.sql`; verified byte-identical. Drizzle journal now has 15 entries and the disposable database runner expects 15 migrations.
-- Added five rendered form tests plus analytics summary and migration-contract coverage. Final push Quality Gate [#629](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42364374097) and PR Quality Gate [#630](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42364378361) passed: 26/26 test files, 188/188 tests, TypeScript, ESLint (0 errors; 25 existing warnings), production build, and all 15 disposable PostgreSQL migrations plus security/concurrency checks.
-- Draft PR [#35](https://github.com/eboxont-code/neighbourhood-guidebook/pull/35), branch `sewa/sw-0049-website-enquiry-starts-20261107`, head `0a749c77a47c568242365311376ce9b31923ac8a`, 16 commits ahead of PR #34 and zero behind. PR #35 is open/draft, unmerged and has no submitted reviews. Its Vercel status is blocked by the free Hobby build-rate limit.
-- The new migration has **not** been applied to production. Production still has 8 applied migrations and does not yet allow `enquiry_start`. No production rows, migrations, settings, policies, secrets, DNS, billing or deployment were changed.
+- Analytics receives only the optional listing slug plus existing anonymous language/path context. Names, business names, phone numbers, email addresses, messages and form contents are not sent.
+- Admin Insights displays separate raw form-start and successful-submission counts. It does not calculate a visitor conversion rate because anonymous events are not linked to individual visitors. Form starts and successful enquiry submissions are excluded from the click-only summary.
+- Added matching forward-only migrations `supabase/migrations/20261107101500_website_enquiry_start_event.sql` and `drizzle/migrations/0014_website_enquiry_start_event.sql`; verified byte-identical. Drizzle journal has 15 entries and the disposable database runner expects 15 migrations.
+- Draft PR [#35](https://github.com/eboxont-code/neighbourhood-guidebook/pull/35), branch `sewa/sw-0049-website-enquiry-starts-20261107`, current head `1e65cd38f7377bb4c0c49b1a1c8c7044d1479d90`, 17 commits ahead of parent PR #34 and zero behind. PR #35 remains open/draft, mergeable and unmerged, with no submitted reviews.
+- Current-head PR Quality Gate [#632](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42364633550) passed. The PR Vercel status is successful and its preview deployment reached READY; this is not production.
+- The `enquiry_start` migration has not been applied to production. Production still has eight applied migrations and its analytics constraint does not yet allow `listing_view` or `enquiry_start`. No production rows, migrations, settings, policies, secrets, DNS, billing or deployment were changed.
 
-**Next eligible register task: SW-0050** - track claim-flow starts and completed claim submissions separately. Stack it on PR #35 to preserve migration order. SW-0041/#27, SW-0042/#33, SW-0045/#34 and SW-0046-SW-0048/#30-#32 remain BLOCKED pending owner review/release; SW-0043 and SW-0044 remain BLOCKED by privacy/source-data decisions. The immediate queue blockers and unlock conditions are listed above.
+### Current task - SW-0050 claim-flow starts (7 November 2026)
+
+**Status: BLOCKED — implementation and automated verification passed in draft PR #36; release requires owner review of parent PRs #34/#35 and the ordered production migration gate.**
+
+- Audited `src/components/claim-form.tsx`: `claim_submit` already fires only after a successful `business_claims` insert; there was no claim-form start event.
+- Added anonymous `claim_start` once per mounted claim form on the first meaningful interaction when a business slug is available. On the generic claim route, the start is recorded when a business is selected. Honeypot submissions are excluded; invalid attempts may count as starts, but never as successful claims.
+- Existing `claim_submit` remains tied to a successful database insert. Failed inserts and validation failures do not emit it. Analytics receives only the optional listing slug plus the existing anonymous language/path context; names, contact details, proof URLs, notes, role selections and requested changes are not sent.
+- Admin Insights now displays separate raw claim-start and successful-claim counts. It does not calculate a visitor conversion rate because anonymous events are not linked to individual visitors. Both claim starts and saved claims are excluded from the click-only summary.
+- Added matching forward-only migrations `supabase/migrations/20261107110000_claim_start_event.sql` and `drizzle/migrations/0015_claim_start_event.sql`; they are byte-identical. Drizzle journal now has 16 entries and the disposable PostgreSQL runner expects 16 migrations.
+- Added five rendered ClaimForm tests covering first interaction, once-only tracking, generic listing selection, successful insert, failed insert and invalid submission; added claim summary and database event-contract coverage.
+- Draft PR [#36](https://github.com/eboxont-code/neighbourhood-guidebook/pull/36), branch `sewa/sw-0050-claim-start-analytics-20261107`, with implementation commit `db46bc33700c6a307fc7814230ab6292017661f3`, stacked on PR #35's head `1e65cd38f7377bb4c0c49b1a1c8c7044d1479d90`; subsequent commits update the master plan and verification evidence. PR #36 remains open/draft, mergeable and unmerged, with no submitted reviews.
+- Final PR Quality Gate [#647](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42365408174) passed: TypeScript, ESLint (0 errors; 25 existing warnings), 27/27 test files, 194/194 tests, production build, and all 16 disposable PostgreSQL migrations plus security/concurrency checks.
+- The code-complete PR #36 preview for commit `92dc435ca2f3f18575a61e6bbf344493a10d68eb` reached READY at https://neighbourhood-guidebook-3yhr1vlru-boxont.vercel.app (deployment `dpl_HSnDgDAKR7SzAR2knCGGfsT2Dzmm`). Subsequent documentation-only PR commits have Vercel status failures because the Hobby build-rate limit was reached. This is a preview, not production; no paid upgrade or production deployment was attempted.
+- The migration has **not** been applied to production. Production remains ACTIVE_HEALTHY with eight applied migrations; its live analytics constraint currently allows 18 event names and excludes `listing_view`, `enquiry_start` and `claim_start`. Read-only counts: 52 published listings; eight analytics events (five `preview_view`, two `search_zero`, one `claim_click`); zero contact messages, claims, business submissions, correction reports or listing promotions. No production rows or schema were changed.
+- Supabase Security Advisor still reports `form_rate_log` RLS without a policy, authenticated execution of `has_role` as SECURITY DEFINER, and leaked-password protection disabled. Performance Advisor reports 17 RLS init-plan findings, three unused indexes and two multiple-permissive-policy findings; Health Advisor has no findings. These were inspected only.
+- Current main is `7d7b75b3be48724d86c47519b469e51828f8f3b4`; its GitHub Quality Gate [#516](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42323594019) passed. Its Vercel status remains failed by the free Hobby build-rate limit. Production deployment [`dpl_5tkK3TvBeyRtV4Sjsve5PbYZDKBB`](https://vercel.com/boxont/neighbourhood-guidebook/5tkK3TvBeyRtV4Sjsve5PbYZDKBB) is READY on `41065104ea2bb6906f060d05fc6b2d4abbe5c6bc`; main is five commits ahead, and `sewa.boxont.com` remains attached. No deployment was attempted.
+- Current repository inventory: 28 open PRs, zero open issues and 43 remote branches. PR #10 remains open/draft with no owner review; its head is 16 commits ahead and eight behind current main. The local runtime has no repository checkout, so no local working-tree status could be observed; remote branches, ancestry and diffs were inspected.
+- The four production test-lead tasks SW-0081–SW-0084 are now BLOCKED: they require an owner-authorised browser session, a labelled disposable production test account and explicit approval to create and clean up test leads. The original prospect CSV tasks SW-0241/0242 are BLOCKED because the original 20-business CSV is unavailable in current main and the Library. Bundle 7/8 and Proposal Composer remain behind their existing owner/release dependencies.
+- Register reconciliation: 1,000 unique task IDs are preserved; 999 task rows remain because SW-0298 and SW-0299 share one Markdown row. Statuses: 7 DONE, 23 BLOCKED, 20 REVIEW and 949 TODO.
+
+**Next eligible register task: SW-0085** — verify that each public form creates exactly one database lead for one successful submission. Use disposable/local fixtures and the existing submission-guard tests; do not create production test leads.
 ---
 
 ## 10. Instruction for every future AI session
@@ -809,8 +829,8 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [BLOCKED] **SW-0046 · P0 · Audit current state** — Regression test is in open draft PR #30; no owner review or merge has occurred.
 - [ ] [BLOCKED] **SW-0047 · P0 · Audit current state** — Regression test is in open draft PR #31; no owner review or merge has occurred.
 - [ ] [BLOCKED] **SW-0048 · P0 · Audit current state** — Regression test is in open draft PR #32; no owner review or merge has occurred.
-- [ ] [REVIEW] **SW-0049 · P0 · Audit current state** — Implemented and CI-verified in draft PR #35 (16 commits ahead of parent PR #34, zero behind); owner review and production migration release remain pending.
-- [ ] [TODO] **SW-0050 · P0 · Audit current state** — Track claim-flow starts and completed claim submissions separately.
+- [ ] [BLOCKED] **SW-0049 · P0 · Audit current state** — Implementation and CI are verified in draft PR #35; blocked pending owner review/release of parent PR #34 and the ordered production migration gate.
+- [ ] [BLOCKED] **SW-0050 · P0 · Audit current state** — Implementation and CI are verified in draft PR #36; blocked pending owner review of parent PRs #34/#35 and the ordered production migration gate.
 - [ ] [TODO] **SW-0051 · P1 · Audit current state** — Track For Businesses page views and CTA clicks.
 - [ ] [TODO] **SW-0052 · P1 · Audit current state** — Track contact-form starts and successful submissions.
 - [ ] [TODO] **SW-0053 · P1 · Audit current state** — Track click-to-call events only where the user clicks a listed business's public number.
@@ -847,10 +867,10 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 **Phase:** 1 - Revenue foundation  
 **Definition of done:** Every enquiry reaches the database, retains its business/source context, and has a usable next action.
 
-- [ ] [REVIEW] **SW-0081 · P0 · Forms reported saving to database; regression-test** — Submit a production test lead through the website-preview quote form.
-- [ ] [REVIEW] **SW-0082 · P0 · Forms reported saving to database; regression-test** — Submit a production test lead through the For Businesses route.
-- [ ] [REVIEW] **SW-0083 · P0 · Forms reported saving to database; regression-test** — Submit a production test lead through a listing claim action.
-- [ ] [REVIEW] **SW-0084 · P0 · Forms reported saving to database; regression-test** — Submit a production test lead through the general contact form.
+- [ ] [BLOCKED] **SW-0081 · P0 · Forms reported saving to database; regression-test** — Requires an owner-authorised browser session, a labelled disposable production test account, and explicit approval to create and clean up a test lead. Do not submit a production test lead without these.
+- [ ] [BLOCKED] **SW-0082 · P0 · Forms reported saving to database; regression-test** — Requires an owner-authorised browser session, a labelled disposable production test account, and explicit approval to create and clean up a test lead. Do not submit a production test lead without these.
+- [ ] [BLOCKED] **SW-0083 · P0 · Forms reported saving to database; regression-test** — Requires an owner-authorised browser session, a labelled disposable production test account, and explicit approval to create and clean up a test claim. Do not submit a production claim without these.
+- [ ] [BLOCKED] **SW-0084 · P0 · Forms reported saving to database; regression-test** — Requires an owner-authorised browser session, a labelled disposable production test account, and explicit approval to create and clean up a test lead. Do not submit a production test lead without these.
 - [ ] [TODO] **SW-0085 · P0 · Audit current state** — Verify each form creates exactly one database lead for one successful submission.
 - [ ] [TODO] **SW-0086 · P0 · Audit current state** — Verify the user receives a clear success state after a saved submission.
 - [ ] [TODO] **SW-0087 · P0 · Audit current state** — Verify a failed submission shows a useful retry message without losing typed values.
@@ -1031,8 +1051,8 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 **Phase:** 1 - Revenue foundation  
 **Definition of done:** Prospects are prioritised for website need, fit, contactability, and realistic value rather than collected as a vanity list.
 
-- [ ] [REVIEW] **SW-0241 · P0 · Existing CSV reported; revalidate** — Revalidate the existing CSV of 20 businesses before using it as a current prospect list.
-- [ ] [REVIEW] **SW-0242 · P0 · Existing CSV reported; revalidate** — Check each existing prospect still exists under the same business name.
+- [ ] [BLOCKED] **SW-0241 · P0 · Existing CSV reported; revalidate** — Original 20-business CSV is unavailable in current `main` and the Library; provide the original source file before revalidation.
+- [ ] [BLOCKED] **SW-0242 · P0 · Existing CSV reported; revalidate** — Original 20-business CSV is unavailable in current `main` and the Library; provide the original source file before checking prospect identities.
 - [ ] [TODO] **SW-0243 · P0 · Audit current state** — Recheck every prospect's website status before describing it as missing or broken.
 - [ ] [TODO] **SW-0244 · P0 · Audit current state** — Record the exact evidence that a site is missing, broken, outdated, or unusable.
 - [ ] [TODO] **SW-0245 · P0 · Audit current state** — Separate businesses with no website from businesses with a working site that merely looks dated.

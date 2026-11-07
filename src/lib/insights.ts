@@ -12,7 +12,7 @@ export function summarise(rows: EventRow[], days: number, now = new Date()) {
     if (new Date(r.created_at).getTime() < since) continue;
     if (r.event === "search" && r.query) bump(searches, r.query);
     else if (r.event === "search_zero" && r.query) { bump(zero, r.query); bump(searches, r.query); }
-    else if (!["search", "search_zero", "listing_view", "preview_view", "enquiry_start", "enquiry_submit"].includes(r.event)) {
+    else if (!["search", "search_zero", "listing_view", "preview_view", "claim_start", "claim_submit", "enquiry_start", "enquiry_submit"].includes(r.event)) {
       bump(clicks, r.event);
       if (r.listing_slug) bump(listings, r.listing_slug);
     }
@@ -50,6 +50,19 @@ export function websiteEnquirySummary(rows: EventRow[], days: number, now = new 
     if (new Date(row.created_at).getTime() < since) continue;
     if (row.event === "enquiry_start") starts++;
     else if (row.event === "enquiry_submit") submissions++;
+  }
+  return { starts, submissions };
+}
+
+/** Raw anonymous claim counts only; starts and saved claims are not linked to individual visitors. */
+export function claimFlowSummary(rows: EventRow[], days: number, now = new Date()) {
+  const since = now.getTime() - days * 86400000;
+  let starts = 0;
+  let submissions = 0;
+  for (const row of rows) {
+    if (new Date(row.created_at).getTime() < since) continue;
+    if (row.event === "claim_start") starts++;
+    else if (row.event === "claim_submit") submissions++;
   }
   return { starts, submissions };
 }

@@ -17,13 +17,13 @@ function extractAllowedEvents(sql: string): string[] {
 describe("SEWA database contracts", () => {
   it("keeps frontend analytics events aligned with the deployed SQL migration", () => {
     const sql = readProjectFile(
-      "supabase/migrations/20261107101500_website_enquiry_start_event.sql",
+      "supabase/migrations/20261107110000_claim_start_event.sql",
     );
     const allowed = extractAllowedEvents(sql);
 
     expect(new Set(allowed).size).toBe(allowed.length);
     expect([...allowed].sort()).toEqual([...TRACK_EVENTS].sort());
-    expect(readProjectFile("drizzle/migrations/0014_website_enquiry_start_event.sql")).toBe(sql);
+    expect(readProjectFile("drizzle/migrations/0015_claim_start_event.sql")).toBe(sql);
   });
 
   it("keeps sponsored placement migrations byte-identical", () => {
