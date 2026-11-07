@@ -145,13 +145,15 @@ Never mark work [DONE] merely because code exists, a PR is merged, or a preview 
 
 ### Current refresh — 8 November 2026
 
-- **Remote Git:** `main` is `7d7b75b3be48724d86c47519b469e51828f8f3b4`. Main Quality Gate [#42323594019](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42323594019) passed on that exact SHA. The combined commit status has a separate Vercel failure: “Deployment rate limited — retry in 24 hours.” The repository API reports 51 remote branches, 35 open PRs (34 draft, one non-draft: #43), 0 open issues, and `main` is not protected. No local checkout is mounted in this runtime; remote refs and diffs were inspected, so no local working-tree cleanliness is claimed.
-- **Current PR gates:** PR #44 (SW-0009) is open/draft and unmerged. PRs #12–#42 remain open as listed by GitHub; draft implementations are not merged work. PR #43 is the only non-draft open PR. The SW-0001–SW-0007 and preview/analytics/form PR stacks require owner review in their documented parent order.
+- **Remote Git:** `main` is `7d7b75b3be48724d86c47519b469e51828f8f3b4`. Main Quality Gate [#42323594019](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42323594019) passed on that exact SHA. The combined commit status has a separate Vercel failure: “Deployment rate limited — retry in 24 hours.” The repository API reports 52 remote branches, 36 open PRs (35 draft, one non-draft: #43), 0 open issues, and `main` is not protected. No local checkout is mounted in this runtime; remote refs and diffs were inspected, so no local working-tree cleanliness is claimed.
+- **Current PR gates:** PR #45 (SW-0201) is open/draft, mergeable and unmerged; its push and PR Quality Gates #42391460213 and #42391528360 passed on head `12bb4052ede2315948731eb7f3766d0553ff69ea`. PR #44 (SW-0009) remains open/draft and unmerged. PR #43 is the only non-draft open PR; PR #41 is closed. Earlier stacked P0 PRs remain owner-review gates and must not be merged out of sequence.
 - **Production deployment:** Vercel deployment `dpl_5tkK3TvBeyRtV4Sjsve5PbYZDKBB` is `READY` on `41065104ea2bb6906f060d05fc6b2d4abbe5c6bc`, target `production`, with `sewa.boxont.com` attached. Current `main` is 5 commits ahead. The Boxont Vercel team remains on Hobby; do not spend money or attempt a paid-limit bypass.
-- **Production route:** read-only GET of `https://sewa.boxont.com/for-businesses` returned HTTP 200. The deployed hero currently describes website features and the free preview in several sentences; SW-0201 will clarify the actual service in one sentence on a review branch only.
+- **Preview limitation:** Vercel's free Hobby daily build limit prevented a PR #45 preview; the Vercel status check returned “Deployment rate limited — retry in 24 hours.” No upgrade or manual deployment was attempted.
+- **Production route:** read-only GET of `https://sewa.boxont.com/for-businesses` returned HTTP 200. SW-0201 now clarifies the service in one sentence on PR #45 only; production copy remains unchanged until an approved release.
 - **Production Supabase:** project `zvbavpcsyvibvpkxjzkn` is `ACTIVE_HEALTHY`, PostgreSQL 17.11. Read-only counts: 52 published listings, 10 analytics events, 0 contact messages, 0 business claims, 0 business submissions, 0 correction reports, and 0 listing promotions. Event counts: 6 `preview_view`, 2 `search_zero`, 1 `claim_click`, 1 `preview_enquiry_click`. Eight migrations are applied.
 - **Database release blockers:** `supabase/config.toml` still points to `hbsszybjdyrdbgbvvmht`, not the active project ref above. The final three remote migration version labels still differ from repository filenames. Do not migrate production or repair history without explicit owner approval.
 - **Advisors:** Security reports `form_rate_log` RLS enabled without policies, authenticated execution of SECURITY DEFINER `has_role`, and leaked-password protection disabled. Performance reports 17 RLS initialization-plan findings, 3 unused indexes, and 2 multiple-permissive-policy findings. Health reports no findings.
+- **Task register:** 1,000 unique task IDs remain intact (999 task rows because SW-0298/SW-0299 share one existing row). Current statuses: 7 DONE, 26 REVIEW, 42 BLOCKED, 925 TODO, 0 IN PROGRESS.
 - **Safety:** all production and database inspection in this refresh was read-only. No production rows, migrations, Auth settings, secrets, DNS, billing, or deployment settings were changed.
 
 ### Historical repository baseline — 5 November 2026
@@ -736,10 +738,23 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 
 These are not being retried. Recheck only when a parent PR is reviewed/merged, new owner input arrives, an authorised test session is available, or new source evidence is supplied.
 
-### Current task
+### Completed task — SW-0201
 
-**SW-0201 — Write the single clearest sentence describing the website-design service for Kathmandu businesses.**  
-**Status: IN PROGRESS — implementation will use one factual English sentence and its Nepali equivalent, reuse the English sentence in page metadata and Service JSON-LD, and avoid unapproved prices, timelines, guarantees or scope commitments.**
+**Status: DONE — the English and Nepali service sentences, page metadata, Service JSON-LD and regression coverage all passed the final push and PR Quality Gates.**
+
+- Canonical English sentence: “Boxont designs simple, mobile-friendly websites that help Kathmandu businesses present their services and make it easy for customers to get in touch.”
+- Nepali equivalent: “Boxont ले काठमाडौंका व्यवसायहरूका लागि आफ्ना सेवाहरू प्रस्तुत गर्न र ग्राहकलाई सजिलै सम्पर्क गर्न सकिने सरल, मोबाइलमैत्री वेबसाइटहरू डिजाइन गर्छ।”
+- Updated `src/lib/i18n.tsx` so the For Businesses hero uses one service sentence in both languages.
+- Updated `src/routes/for-businesses.tsx` so the English meta description and Service JSON-LD use the same canonical sentence. The existing free-directory statement remains elsewhere on the page.
+- Added `src/test/website-service-offer.test.ts` with 3 tests for the English sentence, Nepali equivalent, and metadata/JSON-LD parity.
+- Branch: `sewa/sw-0201-website-service-summary-20261108`; implementation head before this plan commit: `12bb4052ede2315948731eb7f3766d0553ff69ea`.
+- Draft PR #45: https://github.com/eboxont-code/neighbourhood-guidebook/pull/45. It remains open, mergeable and unmerged.
+- Push Quality Gate [#42391460213](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42391460213) PASS; PR Quality Gate [#42391528360](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42391528360) PASS on the same head.
+- Actual CI: TypeScript PASS; ESLint 0 errors / 25 warnings; 25 test files and 182 tests PASS (including the 3 new tests); production build PASS; all 13 disposable PostgreSQL migrations and database security/concurrency checks PASS.
+- Vercel did not create a preview because the Hobby daily deployment limit was reached. No paid upgrade or deployment was attempted.
+- No production database writes, migrations, deployment, settings, DNS or secrets changes.
+
+**Next eligible task: SW-0202 — Define the ideal first customer segment based on need and deliverability rather than assumed budget.**
 
 
 ---
@@ -1009,7 +1024,7 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 **Phase:** 1 - Revenue foundation  
 **Definition of done:** The offer is understandable and deliverable, with prices and promises published only after the owner approves them.
 
-- [ ] [IN PROGRESS] **SW-0201 · P0 · Audit current state** — Write the single clearest sentence describing the website-design service for Kathmandu businesses.
+- [x] [DONE] **SW-0201 · P0 · Audit current state** — Write the single clearest sentence describing the website-design service for Kathmandu businesses.
 - [ ] [TODO] **SW-0202 · P0 · Audit current state** — Define the ideal first customer segment based on need and deliverability rather than assumed budget.
 - [ ] [TODO] **SW-0203 · P0 · Audit current state** — Explain the difference between the free directory listing and a paid website project.
 - [ ] [TODO] **SW-0204 · P0 · Audit current state** — Explain the difference between a preview concept and a launched website.
