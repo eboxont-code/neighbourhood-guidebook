@@ -69,12 +69,15 @@ describe("shared website preview for a business with no website", () => {
 
     expect(business.websiteStatus).toBe("none_found");
     expect(business.website).toBeUndefined();
+    expect(business.phone).toBeTruthy();
+    expect(business.address).toBeTruthy();
+    expect(business.whatsapp).toBeUndefined();
 
     const document = renderPreview(business.slug);
     expect(document.querySelector("header h1")?.textContent).toBe(business.name);
     expect(document.querySelector("header nav .truncate")?.textContent).toBe(business.name);
     expect(document.querySelector("footer p.font-semibold")?.textContent).toBe(business.name);
-    expect(document.body.textContent).toContain(business.address);
+    expect(document.body.textContent).toContain(business.address!);
     expect(document.body.textContent).toContain(business.phone);
 
     const ownerCta = document.querySelector<HTMLAnchorElement>('a[href^="/contact?from=preview"]');
@@ -91,7 +94,8 @@ describe("shared website preview for a business with no website", () => {
       ...socialLinks(business).map((link) => link.url),
     ].filter((url): url is string => Boolean(url)).sort();
     expect(externalHrefs).toEqual(recordedExternalHrefs);
-    expect(document.querySelector('a[href^="https://"][aria-label*="website" i]')).toBeNull();
-    expect(document.querySelector('a[href^="tel:"]')?.getAttribute("href")).toBe(telLink(business.phone));
+    const contactHrefs = Array.from(document.querySelectorAll<HTMLAnchorElement>("#contact a"))
+      .map((link) => link.getAttribute("href"));
+    expect(contactHrefs).toEqual([telLink(business.phone!), ...socialLinks(business).map((link) => link.url)]);
   });
 });
