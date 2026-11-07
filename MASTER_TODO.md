@@ -339,7 +339,7 @@ The primary funnel is Sewa discovery/prospect → free preview → attributed en
 - [x] [DONE] Admin quote/payment tracking foundation.
 - [x] [DONE] Separate quoted value from cash received.
 - [x] [DONE] Revenue summary foundation.
-- [ ] [IN PROGRESS] Test full public enquiry → admin inbox → quote → payment journey using safe test data; verify persistence, source/business attribution, admin-only commercial fields and cleanup.
+- [ ] [BLOCKED] Test full public enquiry → admin inbox → quote → payment journey using safe test data; verify persistence, source/business attribution, admin-only commercial fields and cleanup. Blocked until an owner-authorised browser/admin session and approved disposable test account are available; production currently has no contact-message rows, and no live test leads may be created.
 - [ ] [TODO] Confirm visitors can submit enquiries but cannot write commercial fields.
 - [ ] [TODO] Confirm only authorised admins can record quotes and payments.
 - [ ] [TODO] Verify totals against source records, including partial payments/refunds where supported.
@@ -683,7 +683,7 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 - GitHub Quality Gate run #310 passed on that exact commit: TypeScript, lint, unit/component tests, production build, and disposable PostgreSQL migration/security tests.
 - Production homepage, `/for-businesses`, the `aavaran-durbar-marg` website preview, and its preview-origin contact URL returned HTTP 200. The preview CTA carried the listing slug and business name; the contact page rendered both prefilled, with a prefilled preview-specific message.
 - A rollback-only SQL test exercised a public `anon` insert and admin quote/payment updates (NPR 25,000 quoted, then paid). The transaction rolled back. Final production checks found zero contact messages, zero QA leads, and zero leftover QA rate-limit keys. Anonymous users cannot read leads or insert/update private quote/payment fields.
-- **Boundary:** this was not a browser-driven JavaScript form submission and did not authenticate to the visible `/admin` UI. Keep Task 1 at REVIEW; do not describe the complete browser journey as passed.
+- **Boundary:** this was not a browser-driven JavaScript form submission and did not authenticate to the visible `/admin` UI. Keep Task 1 BLOCKED until an owner-authorised browser/admin session and approved disposable test account are available; do not describe the complete browser journey as passed.
 
 ### Task 2 attribution audit — 6 November 2026
 
