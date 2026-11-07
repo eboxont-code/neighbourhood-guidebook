@@ -37,6 +37,7 @@
 
 ## Application rules
 
+- Development-mode preview builds place Nitro public assets in `dist`; production keeps Nitro defaults to preserve the existing hosting output.
 - Interface strings go through `src/lib/i18n.tsx`. Business names and business-supplied data are not translated.
 - Kathmandu opening status uses `Asia/Kathmandu` time. Do not guess opening status when the recorded schedule is missing or cannot be parsed.
 - Field provenance is derived by `src/lib/provenance.ts`. Verification and freshness rules belong in `src/lib/verification.ts`.
