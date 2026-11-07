@@ -215,7 +215,7 @@ PR references:
 ### Latest read-only verification — 8 November 2026
 
 - Current `main`: `7d7b75b3be48724d86c47519b469e51828f8f3b4`; GitHub Quality Gate run [#42323594019](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42323594019) passed on this exact SHA.
-- Repository inventory: 52 branches, 36 open PRs, 0 open issues. GitHub branch metadata reports `main` protected=false. No local checkout is mounted in this run, so remote refs/diffs were inspected but no clean local working-tree claim is made.
+- Repository inventory: 52 branches, 36 open PRs, 0 open issues. Task-register status after this run: 16 DONE, 28 REVIEW, 3 BLOCKED, 953 TODO, 0 IN PROGRESS (1,000 unique task IDs). GitHub branch metadata reports `main` protected=false. No local checkout is mounted in this run, so remote refs/diffs were inspected but no clean local working-tree claim is made.
 - Bundle 7 PR #10 remains open/draft with no submitted reviews. Its branch compares 16 commits ahead and 8 behind current `main`; do not merge, rebase or force-push it. PR #46 is stacked on that branch and verifies SW-0123. PR #45 remains open/draft; SW-0201 is REVIEW, not released.
 - Production Vercel deployment `dpl_5tkK3TvBeyRtV4Sjsve5PbYZDKBB` is READY on commit `41065104ea2bb6906f060d05fc6b2d4abbe5c6bc`; alias `sewa.boxont.com` is attached. Current `main` is 5 commits ahead of the production commit. No deployment was initiated.
 - Production Supabase project `zvbavpcsyvibvpkxjzkn` is ACTIVE_HEALTHY on PostgreSQL 17.11 with 8 recorded migrations. Read-only aggregates: 52 published listings, 10 analytics events, 0 contact messages, 0 business claims, 0 business submissions, 0 correction reports, 0 listing promotions and 3 form-rate log rows. Bundle 7 tables `business_sales_prospects` and `business_sales_activities` are absent.
@@ -819,7 +819,7 @@ The CSV is retained as the source for the original task descriptions. This Markd
 - [ ] [REVIEW] **SW-0042 · P0 · Audit current state** — Verify that analytics events are not double-fired during route changes or form submissions.
 - [ ] [BLOCKED] **SW-0043 · P0 · Audit current state** — Record weekly unique visitors and pageviews by landing page.
 - [ ] [BLOCKED] **SW-0044 · P0 · Audit current state** — Record organic-search visits separately from direct, referral, and campaign visits where data supports it.
-- [ ] [IN PROGRESS] **SW-0045 · P0 · Audit current state** — Record visits to listing pages separately from website-preview pages.
+- [ ] [REVIEW] **SW-0045 · P0 · Audit current state** — Record visits to listing pages separately from website-preview pages. Implementation, migration parity and regression tests are in open draft PR #34; final Quality Gate passed, but owner review and approved production migration/release remain outstanding.
 - [ ] [TODO] **SW-0046 · P0 · Audit current state** — Track clicks on each listing's website-preview link with a stable event name.
 - [ ] [TODO] **SW-0047 · P0 · Audit current state** — Track preview-page views with the business slug as a non-personal content identifier.
 - [ ] [TODO] **SW-0048 · P0 · Audit current state** — Track the primary preview CTA click without sending personal form data to analytics.
