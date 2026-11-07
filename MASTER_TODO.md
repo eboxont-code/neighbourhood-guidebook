@@ -730,7 +730,7 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 - Added immutable `upsertSalesProspect` and `salesStageCounts` helpers with regression coverage for all nine stages, zero counts, old/new stage totals and non-mutation.
 - Branch: `sewa/sw-0123-stage-counts-20261108`; PR #46 is intentionally stacked on PR #10. Code head: `89f49e5760387b1454fd38a0900e89e61d93753a`.
 - Push Quality Gate #42396300677 and PR Quality Gate #42396312544 both passed. No production migration, data change, merge or deployment.
-- **Next eligible task: SW-0203 — Explain the difference between the free directory listing and a paid website project.** SW-0202 is BLOCKED pending an owner-approved customer-segment decision and verified prospect/source evidence.
+- **Next eligible task: SW-0124 — Explain the difference between the free directory listing and a paid website project.** SW-0202 is BLOCKED pending an owner-approved customer-segment decision and verified prospect/source evidence.
 
 ---
 
