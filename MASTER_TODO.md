@@ -148,7 +148,7 @@ Never mark work [DONE] merely because code exists, a PR is merged, or a preview 
 The 5 November baseline below is historical. This is the latest independently checked state:
 
 - GitHub `main`: `7d7b75b3be48724d86c47519b469e51828f8f3b4`. Open pull requests: 42. Open issues: 0.
-- Combined status on current `main` reports only Vercel failure `build-rate-limit`. The GitHub Actions connector returned no workflow runs for the current main SHA or PR #52 head; no CI success is claimed for this run.
+- Combined status on current `main` reports only Vercel failure `build-rate-limit`. No workflow run was returned for the current main SHA or the closed PR #52 head at initial inspection. New evidence: PR #53's GitHub Actions Quality Gate runs #42425607843, #42425801173 and #42425942179 all completed successfully; GitHub Actions is therefore available for revalidating the retained SW-0161 branch. The current-main Vercel rate-limit status remains.
 - No local repository checkout is mounted in this runtime, and outbound Git access is unavailable. The local working tree therefore cannot be inspected or tested here; remote refs, commits, PRs and file contents were inspected.
 - PR #10 (Bundle 7) is open/draft, 16 commits ahead and 0 behind current main; it has no submitted reviews. PR #45 and PR #51 are also open drafts with no submitted reviews. Do not merge or bypass owner review.
 - PR #52 (SW-0161 test attempt) was closed unmerged because its test could not be executed: no local checkout/network, no GitHub Actions workflow run, and Vercel's free Hobby build-rate limit blocks a preview. Its branch is retained for later revalidation.
@@ -707,11 +707,11 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 - Final plan commit `ef350402a85e743ee37a2703b046dfb7b3d525f8` also passed Quality Gate run [#42425801173](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42425801173). Its Vercel check was rate-limited by the free Hobby build allowance; the earlier PR preview above remains READY. No production deployment was attempted.
 - These passing checks do not validate SW-0161: its separate test branch was not included in PR #53 and remains blocked/unverified.
 
-**Next eligible task: SW-0001 — reconcile the one-sentence north-star goal against the exact register wording and the existing open strategy PR.**
+**Next eligible task: SW-0161 — re-open/revalidate the retained no-website preview regression test now that GitHub Actions is operational.**
 
 - Current main already contains: “qualified website-design enquiries that can realistically become paid Boxont projects.”
 - Existing PRs #20–#26 contain the related strategy/measurement work; do not duplicate their changes or merge without owner review.
-- SW-0161–0163 are blocked by the unavailable executable test environment; SW-0201 is blocked by owner review of PR #45; SW-0202 is blocked by owner-approved customer criteria and missing prospect evidence.
+- SW-0161 was initially blocked while no workflow run was available; PR #53 has since produced three successful GitHub Actions Quality Gates, so SW-0161 is now REVIEW and SW-0162/0163 return to TODO. SW-0201 remains blocked by owner review of PR #45; SW-0202 remains blocked by owner-approved customer criteria and missing prospect evidence.
 - No production database write, migration, deployment, outreach or additional spend occurred.
 
 ---
@@ -935,9 +935,9 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 **Phase:** 1 - Revenue foundation  
 **Definition of done:** The current shared preview template gives each suitable business a credible concept, remains clearly a preview, and produces attributable enquiries.
 
-- [ ] [BLOCKED] **SW-0161 · P0 · Reported preview template exists; regression-test** — Regression-test the existing shared preview template against a business with no website. — Test authored on `sewa/sw-0161-preview-no-website-20261108` but not executed; PR #52 closed unmerged. Resume only when a runnable local checkout or functioning CI/test runner is available.
-- [ ] [BLOCKED] **SW-0162 · P0 · Reported preview template exists; regression-test** — Regression-test the template against a business whose listed website is broken. — Requires the same unavailable preview regression-test environment; do not retry until a runnable local checkout or functioning CI/test runner is available.
-- [ ] [BLOCKED] **SW-0163 · P0 · Reported preview template exists; regression-test** — Regression-test the template against a business with a working website to ensure it is not mislabelled. — Requires the same unavailable preview regression-test environment; do not retry until a runnable local checkout or functioning CI/test runner is available.
+- [ ] [REVIEW] **SW-0161 · P0 · Reported preview template exists; regression-test** — Regression-test the existing shared preview template against a business with no website. — Test authored on retained branch `sewa/sw-0161-preview-no-website-20261108`; PR #52 is closed unmerged. GitHub Actions is now demonstrably operational on PR #53 (Quality Gate runs #42425607843, #42425801173 and #42425942179 passed); re-open/revalidate this test in the next run.
+- [ ] [TODO] **SW-0162 · P0 · Reported preview template exists; regression-test** — Regression-test the template against a business whose listed website is broken.
+- [ ] [TODO] **SW-0163 · P0 · Reported preview template exists; regression-test** — Regression-test the template against a business with a working website to ensure it is not mislabelled.
 - [ ] [TODO] **SW-0164 · P0 · Audit current state** — Verify preview routes use the expected business slug and fail safely for an unknown slug.
 - [ ] [TODO] **SW-0165 · P0 · Audit current state** — Verify the preview displays the correct business name from the listing record.
 - [ ] [TODO] **SW-0166 · P0 · Audit current state** — Verify the preview displays only hours that exist and are sufficiently trustworthy.
