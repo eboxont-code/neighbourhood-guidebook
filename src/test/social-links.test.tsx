@@ -54,13 +54,11 @@ const SOCIAL_HOSTS = new Set([
 function businessWithSocial(slug: string, social: string[]): Business {
   const original = getBusiness(slug);
   if (!original) throw new Error("Missing directory fixture: " + slug);
-  return {
-    ...original,
-    website: undefined,
-    sourceUrl: undefined,
-    fieldSources: undefined,
-    social,
-  };
+  const fixture = { ...original, social };
+  delete fixture.website;
+  delete fixture.sourceUrl;
+  delete fixture.fieldSources;
+  return fixture;
 }
 
 function renderListing(business: Business) {
