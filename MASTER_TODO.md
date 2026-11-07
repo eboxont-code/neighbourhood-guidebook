@@ -2,7 +2,7 @@
 
 > **Single source of truth for SEWA/Boxont execution. Read the whole file before each work session and update it before ending. This file combines the repository plan, revenue-first strategy and the 1,000-task register.**
 >
-> **Last reviewed:** 6 November 2026  
+> **Last reviewed:** 8 November 2026  
 >
 > **Merged inputs:** existing repository `MASTER_TODO.md`, the revenue-first strategy and 1,000-point checklist, and the matching 1,000-row CSV task register. The CSV and checklist IDs, priorities and task descriptions were reconciled. This file is now the only project execution plan.
 >
@@ -32,6 +32,28 @@ The directory supports this funnel by earning trust and helping people find loca
 - Paid listings/sponsored placements are a later product. Research value first. Do not publish prices, promises or payment flows, or actively sell/activate new paid placements, without explicit owner approval and a clear decision gate. Existing Bundle 6 code must be audited, not assumed ready for commercial launch.
 - Bookings remain deferred until there is proven demand, participating businesses and support capacity.
 - A target of 1,000 listings is conditional. Do not pursue it as a vanity target. Expand where real search demand, user value and website-sales opportunities justify it.
+
+### Decision log — business model and brand position (recorded 8 November 2026)
+
+This log records rules already present in the repository plan and project instructions. It does not create new commercial approvals or change the business model. Original approval dates were not present in the source records; 8 November 2026 is the documentation date, not an asserted decision date.
+
+| ID | Recorded decision or constraint | Current position | State / source |
+|---|---|---|---|
+| D-01 | Product and brand hierarchy | SEWA is the consumer discovery product; Boxont is the owner and commercial operator. | Current identity. README.md and AGENTS.md. |
+| D-02 | Primary commercial focus | Generate qualified website-design enquiries through SEWA's useful directory and free-preview path. | Current strategy, not a revenue guarantee. MASTER_TODO.md §0. |
+| D-03 | Public directory access | Browsing and standard directory listings remain free. | Current policy. README.md and MASTER_TODO.md §0. |
+| D-04 | Paid placements | Paid listings and sponsored placements remain a later product. Evidence, offer, value, pricing, terms and explicit owner approval are required before selling or activating them. | Deferred and owner-gated. MASTER_TODO.md §§0–1. |
+| D-05 | Bookings | Bookings remain deferred until proven demand, participating businesses and support capacity exist. | Deferred launch gate. MASTER_TODO.md §0 and Workstream 24. |
+| D-06 | Listing milestone | 1,000 listings is a conditional supply milestone, not the north-star KPI or a deadline. | Conditional; no quota is approved. MASTER_TODO.md §0. |
+| D-07 | Outreach | Prepared outreach remains manual and requires explicit owner approval before anything is sent. | Owner approval gate. MASTER_TODO.md §§1 and 10. |
+| D-08 | Pricing and payment promises | Do not publish prices, promises or payment flows, or actively sell a gated product, before explicit owner approval and a clear decision gate. | Owner approval gate. MASTER_TODO.md §§0–1. |
+| D-09 | Additional spend | Additional expenditure remains $0. Do not upgrade, subscribe, buy APIs or create billable infrastructure without explicit approval. | Hard constraint. MASTER_TODO.md §1 and AGENTS.md. |
+| D-10 | Revenue recognition | A lead, enquiry, quote or proposal is not revenue. Record revenue only when payment is received and account for refunds. | Operating rule. MASTER_TODO.md §1. |
+| D-11 | Factual trust | Do not invent business details, hours, reviews, ratings, prices, verification or performance claims; distinguish sourced, unknown and unverified facts. | Product rule. README.md, AGENTS.md and MASTER_TODO.md §1. |
+
+**Open decisions, not approvals:** final website-package scope and price; domain and hosting responsibility; revision and support commitments; payment, refund and cancellation terms; paid-placement value and launch terms; and booking launch criteria. These remain subject to owner input. This log does not resolve them.
+
+No business-model, pricing, outreach, payment or brand decision was made or changed during SW-0009.
 
 ### Priority order
 
@@ -141,7 +163,19 @@ Never mark work [DONE] merely because code exists, a PR is merged, or a preview 
 
 ---
 
-## 3. Verified repository snapshot — 5 November 2026
+## 3. Verified repository snapshot
+
+### Current refresh — 8 November 2026
+
+- **GitHub main:** `7d7b75b3be48724d86c47519b469e51828f8f3b4`. Main Quality Gate [#516](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42323594019) passed on this exact commit. The combined status has a Vercel failure because the Hobby project's daily build allowance is exhausted; no upgrade or deployment was attempted.
+- **Repository inventory:** 50 remote branches, 34 open PRs and 0 open issues. PR #43 is the only non-draft open PR; the other 33 are drafts. PR #43 targets current main and its Quality Gate [#726](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42381690492) passed, but it remains open and unmerged. GitHub reports `main` as not protected (`protected=false`). No local repository checkout is mounted in this runtime, so local working-tree cleanliness cannot be asserted; remote refs, commits and PR diffs were inspected.
+- **Production deployment:** Vercel deployment `dpl_5tkK3TvBeyRtV4Sjsve5PbYZDKBB` is `READY` on commit `41065104ea2bb6906f060d05fc6b2d4abbe5c6bc`; aliases include `sewa.boxont.com`. Current main is 5 commits ahead and 0 behind that deployment. The project remains on the Hobby plan. No production deployment, alias, DNS or billing change was made.
+- **Production database:** Supabase project `zvbavpcsyvibvpkxjzkn` is `ACTIVE_HEALTHY`, PostgreSQL 17.11. Read-only counts: 52 published listings; 10 analytics events (6 `preview_view`, 2 `search_zero`, 1 `claim_click`, 1 `preview_enquiry_click`); 0 contact messages; 0 business claims; 0 business submissions; 0 correction reports; 0 listing promotions.
+- **Migration gate:** Production has 8 applied migrations. Remote versions `20261104111910`, `20261104111922` and `20261104111936` do not match repository migration filenames `20261102130000`, `20261103114000` and `20261104100000`. `supabase/config.toml` still references `hbsszybjdyrdbgbvvmht`, while the active production project is `zvbavpcsyvibvpkxjzkn`. Confirm the intended target and reconcile migration history before any production migration.
+- **Supabase advisories:** Security Advisor reports one RLS-enabled table without policies (`form_rate_log`), one SECURITY DEFINER function callable by `authenticated` (`public.has_role`) and leaked-password protection disabled. Performance Advisor reports 17 RLS initialization-plan findings, 3 unused indexes and 2 multiple-permissive-policy findings. Health Advisor returned no findings. All advisor and database inspection was read-only.
+- **Safety:** No production rows, migrations, Auth settings, secrets, DNS, billing, pricing, outreach or deployments were changed. Additional spend: $0.
+
+### Historical baseline — 5 November 2026
 
 ### Repository baseline
 
@@ -653,16 +687,16 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 
 | Order | Task | Status |
 |---:|---|---|
-| 1 | Test the production preview → quote form → database → admin lead path end to end | REVIEW — live route, prefill, anonymous insert permissions and admin quote/payment writes verified; real browser POST and signed-in admin UI remain unverified |
+| 1 | Test the production preview → quote form → database → admin lead path end to end | BLOCKED — the remaining browser-driven POST and signed-in /admin UI checks require an owner-authorised browser/admin session or approved staging account; do not create test leads in production |
 | 2 | Verify lead source, business, preview URL and campaign attribution across each form | DONE — source and listing attribution audited; UTM/referrer/campaign ID are not retained on lead records |
 | 3 | Revalidate the existing 20-business prospect CSV and each website status | BLOCKED — original 20-business CSV not found in `main` or the Library; do not recreate or guess the list |
-| 4 | Confirm production deployment and complete admin password recovery verification | Deployment + domain mapping DONE 5 Nov; password-reset journey TODO |
+| 4 | Confirm production deployment and complete admin password recovery verification | BLOCKED — deployment/domain mapping is verified; the password-reset email and final reset require the owner-controlled inbox and an authorised reset session |
 | 5 | Review the 390px preview and quote form; capture real screenshots | DONE 6 Nov 2026: EN/NE at 390×844 first, then 1280×1800; screenshots captured of preview sections, enquiry forms and inline errors. No horizontal overflow; 44px+ effective targets; labeled 16px inputs. Enlarged language controls, linked form hints, removed duplicated optional wording and prevented the hidden quote pill covering the form. 179 tests pass; preview build/typecheck OK. Presentation only; no enquiries sent, schema/attribution/admin changes, outreach, publishing or deployment. |
-| 6 | Reconcile Bundle 7 Sales Pipeline against current `main` | REVIEW — reconciled branch ready; PostgreSQL migration/security tests, TypeScript, lint, unit/component tests and production build passed; previous PR #7 remains closed by owner |
-| 7 | Reconcile Bundle 8 after Bundle 7; preserve original enquiry/payment records | TODO |
-| 8 | Isolate and review Proposal Composer after its dependencies | TODO |
-| 9 | Use the funnel baseline to fix the largest conversion leak | TODO |
-| 10 | Improve directory quality and coverage based on real user demand and lead value | TODO |
+| 6 | Reconcile Bundle 7 Sales Pipeline against current `main` | BLOCKED — PR #10 remains open/draft with no owner review submissions; its base is 5 commits behind current main. Owner review/approval and direction to reconcile are required before release or Bundle 8 |
+| 7 | Reconcile Bundle 8 after Bundle 7; preserve original enquiry/payment records | BLOCKED — depends on owner-approved/released Bundle 7 and reconciliation of the production migration target/history |
+| 8 | Isolate and review Proposal Composer after its dependencies | BLOCKED — depends on Bundle 7 and Bundle 8 being reviewed and released in sequence |
+| 9 | Use the funnel baseline to fix the largest conversion leak | BLOCKED — production has 10 anonymous events, 0 saved enquiries and only 2 zero-result searches; there is no reliable conversion baseline or meaningful sample to identify a largest leak |
+| 10 | Improve directory quality and coverage based on real user demand and lead value | BLOCKED — only 2 zero-result searches, 0 saved enquiries and no original 20-business CSV; demand-based expansion cannot yet be prioritised |
 
 ### Task 1 verification notes — 6 November 2026
 
@@ -678,18 +712,28 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 - `contact_messages` has no UTM, campaign ID, landing/referrer route, or explicit preview URL fields. `analytics_events` records `listing_slug`, event, query, language and path, but no UTM/campaign fields. Sponsored clicks are counted by listing, placement/target key and date window; they are not joined to a specific campaign or later enquiry. No promotions or sponsored-click rows currently exist in production.
 - Keep SW-0060 and SW-0061 TODO. Mark SW-0062 REVIEW: the preview slug/page mapping is present in code, but the browser submit/validation journey has not been exercised end to end. No schema or application changes were made during this audit.
 
-### Current task
+### Completed task — SW-0009
 
-**Task 6 — Reconcile Bundle 7 Sales Pipeline against current `main`.**  
-**Status: REVIEW — code reconciled on a clean branch; owner review is the remaining gate.**
+**Status: DONE on branch `sewa/sw-0009-business-model-decision-log-20261108` — 8 November 2026.** Added the decision log above using only policies and constraints already present in the repository plan, README and AGENTS instructions.
 
-- Created `sewa/bundle-07-reconciled-main` from current `main`. The branch contains the Bundle 7 feature delta only; current `main`'s newer `src/lib/sales-pipeline.ts` was preserved, including inbound-lead mapping and proposal-draft helpers.
-- Integrated the admin Sales Pipeline tab, component, typed Supabase tables, English/Nepali translations, Drizzle and Supabase migrations, migration journal entry, database contract test and disposable PostgreSQL security checks.
-- Preserved the newer proposal and inbound-conversion tests already on `main`; the older Bundle 7 copy no longer replaces them.
-- Drizzle and Supabase migration files are byte-identical. CI migration count and success message both correctly report 14 migrations.
-- GitHub Quality Gate run [#42216569490](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42216569490) passed: disposable PostgreSQL migration/security tests, TypeScript validation, lint, unit/component tests and production build.
-- Original PR #7 was closed unmerged by the repository owner on 6 November 2026. It was not reopened and no replacement PR was opened. The new reconciliation branch is ready for review; wait for owner direction before opening a replacement PR or moving to Bundle 8.
-- No production database migration, production deployment, production setting change or merge was performed. Bundle 8 was left untouched.
+- The log records the SEWA / Boxont brand hierarchy, website-enquiry commercial focus, free directory policy, paid-placement and booking gates, conditional listing milestone, owner approval requirements, $0 spend rule, revenue-recognition rule and factual-trust constraints.
+- It distinguishes current policy from deferred products and unresolved owner decisions. No price, scope, support promise, outreach permission, payment term or new commercial approval was invented.
+- Source dates for the underlying decisions were not available. The log explicitly treats 8 November as its documentation date, not an asserted approval date.
+- This is a documentation-only task. No application code, database schema, customer data, production setting or deployment was changed.
+
+### Task 6 release gate — current verification 8 November 2026
+
+**Status: BLOCKED — owner review and direction are required before release or Bundle 8.**
+
+- PR [#10](https://github.com/eboxont-code/neighbourhood-guidebook/pull/10) remains open and draft, with no review submissions. Head: `49367a038f2ae53a727fdc18cb07a040d98e8a44`; base branch: `main` at `ee38ca0e978f0149ca10f5b2caadb33282729148`, which is 5 commits behind current main.
+- The existing Bundle 7 implementation and its earlier Quality Gate evidence do not constitute owner approval. Do not merge, rebase the published branch, open a replacement PR, or proceed to Bundle 8 without owner review/direction.
+- The production migration labels and repository filenames still differ, and the repository Supabase project reference differs from the active project. No production migration or repair was attempted.
+- **Unlock condition:** owner review/approval of PR #10 and explicit direction for reconciliation against current main, followed by a separately verified migration target/history. Bundle 8 remains blocked until then.
+
+### Next eligible task
+
+**SW-0010 — Record the original three phases: trust foundation, lead-generation funnel, then bookings after traction.** This is the first remaining P1 task after SW-0009 and can be documented from the existing approved strategy without choosing prices, setting a funnel measurement window or bypassing the Bundle 7 release gate.
+
 
 ---
 
@@ -736,7 +780,7 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [TODO] **SW-0006 · P0 · Audit current state** — Record that directory traffic alone is not success unless it creates useful customer or business-owner outcomes.
 - [ ] [TODO] **SW-0007 · P0 · Audit current state** — Record that 1,000 listings is a conditional supply milestone, not the north-star KPI.
 - [ ] [TODO] **SW-0008 · P0 · Audit current state** — Set an initial decision window for evaluating the current funnel before redesigning it again.
-- [ ] [TODO] **SW-0009 · P1 · Audit current state** — Create a decision log for changes that affect the business model or brand position.
+- [x] [DONE] **SW-0009 · P1 · Audit current state** — Create a decision log for changes that affect the business model or brand position. Recorded existing commercial and brand rules, deferred products, owner approval gates and unresolved decisions in Section 0 on 8 November 2026; no new commercial decision or approval was invented.
 - [ ] [TODO] **SW-0010 · P1 · Audit current state** — Record the original three phases: trust foundation, lead-generation funnel, then bookings after traction.
 - [ ] [TODO] **SW-0011 · P1 · Audit current state** — Keep the current money-first strategy while using data quality as a conversion enabler.
 - [ ] [TODO] **SW-0012 · P1 · Audit current state** — Define what qualifies as a high-value listing for the sales funnel: no site, broken site, or clearly weak site.
