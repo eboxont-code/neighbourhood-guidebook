@@ -1,4 +1,4 @@
-import { createElement, type ReactNode } from "react";
+import { createElement, type MouseEventHandler, type ReactNode } from "react";
 import { cleanup, fireEvent, render, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
@@ -8,12 +8,13 @@ vi.mock("@tanstack/react-router", async (importOriginal) => {
   const actual = await importOriginal<typeof import("@tanstack/react-router")>();
   return {
     ...actual,
-    Link: ({ to, children, params: _params, search: _search, ...props }: {
+    Link: ({ to, children, params: _params, search: _search, onClick, ...props }: {
       to: string;
       children?: ReactNode;
       params?: Record<string, string>;
       search?: Record<string, string>;
-    }) => <a href={to} {...props}>{children}</a>,
+      onClick?: MouseEventHandler<HTMLAnchorElement>;
+    }) => <a href={to} {...props} onClick={(event) => { event.preventDefault(); onClick?.(event); }}>{children}</a>,
   };
 });
 vi.mock("@/components/site", () => ({ NotFoundView: () => null, useNow: () => null }));
