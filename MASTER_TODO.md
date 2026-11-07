@@ -810,7 +810,7 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [BLOCKED] **SW-0047 · P0 · Audit current state** — Regression test is in open draft PR #31; no owner review or merge has occurred.
 - [ ] [BLOCKED] **SW-0048 · P0 · Audit current state** — Regression test is in open draft PR #32; no owner review or merge has occurred.
 - [ ] [REVIEW] **SW-0049 · P0 · Audit current state** — Implemented and CI-verified in draft PR #35 (16 commits ahead of parent PR #34, zero behind); owner review and production migration release remain pending.
-- [ ] [TODO] **SW-0050 · P0 · Audit current state** — Track claim-flow starts and completed claim submissions separately.
+- [ ] [IN PROGRESS] **SW-0050 · P0 · Audit current state** — Track claim-flow starts and completed claim submissions separately.
 - [ ] [TODO] **SW-0051 · P1 · Audit current state** — Track For Businesses page views and CTA clicks.
 - [ ] [TODO] **SW-0052 · P1 · Audit current state** — Track contact-form starts and successful submissions.
 - [ ] [TODO] **SW-0053 · P1 · Audit current state** — Track click-to-call events only where the user clicks a listed business's public number.
