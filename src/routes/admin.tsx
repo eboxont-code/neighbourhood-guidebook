@@ -37,8 +37,7 @@ import {
   isLeadStatus,
   leadSource,
   leadStatuses,
-  leadTel,
-  leadWhatsapp,
+  leadContactActions,
   type LeadStatus,
 } from "@/lib/leads";
 import { AdminClaims } from "@/components/admin-claims";
@@ -1145,11 +1144,10 @@ function LeadCard({
   const slug = m.source_listing_slug;
   const listing = slug ? businesses.find((b) => b.slug === slug) : undefined;
   const who = m.business_name || listing?.name || m.name;
-  const tel = leadTel(m.phone);
   const waText = (m.business_name ? t("adLeadWaText") : t("adLeadWaTextShort"))
     .replace("{n}", m.name)
     .replace("{b}", m.business_name ?? "");
-  const wa = leadWhatsapp(m.phone, waText);
+  const { tel, whatsapp: wa } = leadContactActions(m, waText);
   async function save() {
     setState("saving");
     const admin_note = note.trim() ? note.trim().slice(0, 2000) : null;
@@ -1515,7 +1513,7 @@ function SubmissionCard({ m, onSaved }: { m: Submission; onSaved: (row: Submissi
   const dirty = status !== m.status || note.trim() !== (m.admin_note ?? "");
   const cat = categories.find((c) => c.slug === m.category);
   const area = areas.find((a) => a.slug === m.area);
-  const tel = leadTel(m.phone);
+  const { tel } = leadContactActions(m, "");
   async function save() {
     setState("saving");
     const admin_note = note.trim() ? note.trim().slice(0, 2000) : null;

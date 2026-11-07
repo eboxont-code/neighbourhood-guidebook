@@ -1,4 +1,5 @@
 import { intlDigits } from "@/data/directory";
+import { normalizePhone } from "@/lib/admin-listing";
 
 /** Where a lead is in the sales pipeline. Mirrors the contact_messages status CHECK. */
 export const leadStatuses = ["new", "contacted", "quoted", "won", "lost"] as const;
@@ -22,14 +23,26 @@ export function countByStatus(rows: { status: string }[]): Record<LeadStatus | "
   return out;
 }
 
-/** A tel: link for a Nepali number, or null when it isn't one we can dial. */
+/** A tel: link for a valid Nepali mobile or Kathmandu landline number. */
 export function leadTel(phone: string | null | undefined): string | null {
-  const d = (phone ?? "").replace(/\D/g, "");
-  return d.length >= 7 ? `tel:+${intlDigits(phone!)}` : null;
+  const normalized = normalizePhone(phone ?? "");
+  return normalized ? `tel:+${intlDigits(normalized)}` : null;
 }
 
-/** WhatsApp only works for mobiles (98/97...). */
+/** WhatsApp is offered only for a valid Nepali mobile (97/98...). */
 export function leadWhatsapp(phone: string | null | undefined, text: string): string | null {
-  const intl = phone ? intlDigits(phone) : "";
+  const normalized = normalizePhone(phone ?? "");
+  const intl = normalized ? intlDigits(normalized) : "";
   return /^9779[78]\d{8}$/.test(intl) ? `https://wa.me/${intl}?text=${encodeURIComponent(text)}` : null;
+}
+
+/** Build admin contact actions only from the phone submitted on this specific lead/submission row. */
+export function leadContactActions(
+  submitted: { phone: string | null | undefined },
+  whatsappText: string,
+): { tel: string | null; whatsapp: string | null } {
+  return {
+    tel: leadTel(submitted.phone),
+    whatsapp: leadWhatsapp(submitted.phone, whatsappText),
+  };
 }
