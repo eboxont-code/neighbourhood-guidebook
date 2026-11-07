@@ -155,10 +155,10 @@ Never mark work [DONE] merely because code exists, a PR is merged, or a preview 
 
 ### Current verification — 8 November 2026
 
-- **GitHub main:** `7d7b75b3be48724d86c47519b469e51828f8f3b4` (latest commit message: `Expanded About section EN/NE`). The repository is private and the linked account has admin/push access. GitHub search shows **41 open PRs and 0 open issues**. The repository API reports `main.protected=false`.
+- **GitHub main:** `7d7b75b3be48724d86c47519b469e51828f8f3b4` (latest commit message: `Expanded About section EN/NE`). The repository is private and the linked account has admin/push access. GitHub search shows **42 open PRs and 0 open issues**. The repository API reports `main.protected=false`.
 - **Working tree:** no local repository checkout is mounted in this automation runtime. Remote refs, commit ancestry, PR diffs and CI were inspected; a clean local working-tree status cannot be claimed.
 - **Current main CI/status:** the combined status endpoint returns a Vercel failure for the free Hobby deployment-rate limit; no GitHub Actions workflow run was returned for this exact main SHA. Do not describe main's latest status as fully green.
-- **Current review gates:** PRs #20–#26 are open drafts with no submitted reviews; #21–#24 are stacked in sequence and #26 is stacked on #25. PR #44 is open/draft with no reviews. PR #50 is open/draft with no reviews; its head `6bb8896a2e8287a0cba8d4671f34713925584ace` passed SEWA Quality Gate run [#803](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42416621317). Its Vercel preview was rate-limited. PR #10 (Bundle 7) is open/draft, 16 commits ahead of its recorded base and 8 commits behind current main; it has no submitted reviews. PR #8 remains dependent on Bundle 7.
+- **Current review gates:** PRs #20–#26 are open drafts with no submitted reviews; #21–#24 are stacked in sequence and #26 is stacked on #25. PR #44 is open/draft with no reviews. PR #50 is open/draft with no reviews; its head `6bb8896a2e8287a0cba8d4671f34713925584ace` passed SEWA Quality Gate run [#803](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42416621317). Its Vercel preview was rate-limited. PR #51 (SW-0010) is open/draft, mergeable, one file changed and no owner review; push Quality Gate [#805](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42420443924) and PR Quality Gate [#806](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42420453007) both passed. The PR preview deployment `dpl_AaaLz9Jx2RGUq5h2XtwkKzUKkk8p` is READY at `https://neighbourhood-guidebook-ivpdkgg54-boxont.vercel.app`. PR #10 (Bundle 7) is open/draft, 16 commits ahead of its recorded base and 8 commits behind current main; it has no submitted reviews. PR #8 remains dependent on Bundle 7.
 - **Production deployment:** Vercel deployment `dpl_5tkK3TvBeyRtV4Sjsve5PbYZDKBB` is READY for production with `sewa.boxont.com` attached. It runs commit `41065104ea2bb6906f060d05fc6b2d4abbe5c6bc`; current main is 5 commits ahead. No deployment was initiated. The Hobby build-rate limit is not bypassed with paid spend.
 - **Production Supabase:** project `zvbavpcsyvibvpkxjzkn` is ACTIVE_HEALTHY on PostgreSQL 17.11. Eight production migrations are recorded. Read-only row counts: listings 52; analytics_events 10; form_rate_log 3; contact_messages 0; business_submissions 0; business_claims 0; correction_reports 0; slug_redirects 0; listing_promotions 0. Bundle 7 sales tables are not present in production.
 - **Production privilege finding:** read-only `has_table_privilege` checks confirm the `anon` role has SELECT, INSERT, UPDATE, DELETE, TRUNCATE, TRIGGER, REFERENCES and MAINTAIN on `public.business_submissions`. RLS is enabled, but TRUNCATE bypasses RLS. The table currently has zero rows. Do not change production grants or migration history without owner-authorised remediation after the migration mismatch is reconciled.
@@ -686,7 +686,7 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 | 7 | Reconcile Bundle 8 after Bundle 7; preserve original enquiry/payment records | BLOCKED — Bundle 7 owner approval/release and production migration-history reconciliation are prerequisites. |
 | 8 | Isolate and review Proposal Composer after its dependencies | BLOCKED — Bundle 7 and Bundle 8 must be released first. |
 | 9 | Use the funnel baseline to fix the largest conversion leak | BLOCKED — no sufficient real conversion volume or owner-approved evaluation window; do not infer a leak from sparse events. |
-| 10 | Improve directory quality and coverage based on real user demand and lead value | BLOCKED — original prospect source data and sufficient verified demand evidence are unavailable.
+| 10 | Improve directory quality and coverage based on real user demand and lead value | BLOCKED — original prospect source data and sufficient verified demand evidence are unavailable. |
 
 ### Task 1 verification notes — 6 November 2026
 
@@ -705,13 +705,20 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 ### Current task and next eligible register task — 8 November 2026
 
 **SW-0010 — Record the original three phases: trust foundation, lead-generation funnel, then bookings after traction.**  
-**Status: IN PROGRESS — the explicit three-phase sequence has been added under Section 0; final verification and plan evidence are pending.**
+**Status: DONE — the three-phase sequence is explicit in Section 0; bookings remain deferred under Workstream 24.**
 
 Acceptance criteria:
 - The plan states the original three phases in the correct order.
 - The lead-generation phase is connected to the existing enquiry → qualification → proposal → actual payment → delivery funnel.
 - Bookings remain deferred until traction, participating businesses and operational capacity justify the separate Workstream 24 launch gate.
 - No booking feature, pricing, outreach or production change is introduced.
+
+**Completion evidence**
+- Added the three phases in order and connected the lead-generation phase to the existing enquiry → qualification → proposal → actual payment → delivery sequence.
+- Branch: `sewa/sw-0010-original-product-phases-20261108`; task commit: `48b7061c45da9ba2ecf5614c10b22968cf8ce4a4`.
+- Draft PR [#51](https://github.com/eboxont-code/neighbourhood-guidebook/pull/51) is open, mergeable and unmerged.
+- Push Quality Gate [#805](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42420443924) and PR Quality Gate [#806](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42420453007) passed. TypeScript, ESLint, 24 test files / 179 tests, production build, and disposable PostgreSQL migration/security checks passed. ESLint emitted 25 existing warnings; `npm ci` reported 13 dependency vulnerabilities (11 moderate, 2 high). No dependency changes were made.
+- Vercel preview `dpl_AaaLz9Jx2RGUq5h2XtwkKzUKkk8p` is READY. This is a preview only; production remains on its existing deployment.
 
 **Release and owner gates to preserve**
 - Bundle 7 PR #10 remains open/draft with no owner review, and is 8 commits behind current main. Do not open a replacement release PR, rebase its published branch or move to Bundle 8 without owner direction.
@@ -768,7 +775,7 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [BLOCKED] **SW-0007 · P0 · Audit current state** — Record that 1,000 listings is a conditional supply milestone, not the north-star KPI. [BLOCKED: Conditional 1,000-listing milestone is in open draft PR #26, stacked on PR #25; no owner review. Owner review/disposition required.]
 - [ ] [BLOCKED] **SW-0008 · P0 · Audit current state** — Set an initial decision window for evaluating the current funnel before redesigning it again. [BLOCKED: Requires the owner's decision on an initial funnel evaluation window and review date; no approved window is recorded.]
 - [ ] [BLOCKED] **SW-0009 · P1 · Audit current state** — Create a decision log for changes that affect the business model or brand position. [BLOCKED: Business-model/brand decision log is in open draft PR #44; no owner review has been submitted.]
-- [ ] [IN PROGRESS] **SW-0010 · P1 · Audit current state** — Record the original three phases: trust foundation, lead-generation funnel, then bookings after traction. [Active this session: record the original three strategic phases explicitly in Section 0.]
+- [x] [DONE] **SW-0010 · P1 · Audit current state** — Record the original three phases: trust foundation, lead-generation funnel, then bookings after traction. [Evidence: Original three-phase sequence recorded in Section 0. PR #51; task commit `48b7061c45da9ba2ecf5614c10b22968cf8ce4a4`; Quality Gates #805/#806 passed; preview READY.]
 - [ ] [TODO] **SW-0011 · P1 · Audit current state** — Keep the current money-first strategy while using data quality as a conversion enabler.
 - [ ] [TODO] **SW-0012 · P1 · Audit current state** — Define what qualifies as a high-value listing for the sales funnel: no site, broken site, or clearly weak site.
 - [ ] [TODO] **SW-0013 · P1 · Audit current state** — Keep existing free directory inclusion separate from any future paid placement offer.
