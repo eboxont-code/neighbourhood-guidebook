@@ -704,6 +704,7 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 - This was a verification of existing deployed copy, so no application change or new SW-0203 test was needed.
 - PR #53 Quality Gate run [#42425607843](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42425607843) completed successfully: dependency installation, TypeScript, ESLint, unit/component tests, production build, and disposable PostgreSQL migration/security checks all passed. Both workflow jobs completed successfully.
 - Vercel preview deployment [READY](https://vercel.com/boxont/neighbourhood-guidebook/3YWC9wkzt38APbE6dbaiL48UFmbv) at https://neighbourhood-guidebook-6yk06ufun-boxont.vercel.app, built from PR #53 commit `c8ba2797ac338a0d12eb85914720fb1c43bc30a2`. This is preview only; production remains on `41065104ea2bb6906f060d05fc6b2d4abbe5c6bc`.
+- Final plan commit `ef350402a85e743ee37a2703b046dfb7b3d525f8` also passed Quality Gate run [#42425801173](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42425801173). Its Vercel check was rate-limited by the free Hobby build allowance; the earlier PR preview above remains READY. No production deployment was attempted.
 - These passing checks do not validate SW-0161: its separate test branch was not included in PR #53 and remains blocked/unverified.
 
 **Next eligible task: SW-0001 — reconcile the one-sentence north-star goal against the exact register wording and the existing open strategy PR.**
