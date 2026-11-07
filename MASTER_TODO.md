@@ -716,6 +716,10 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 
 **Status: DONE on branch `sewa/sw-0009-business-model-decision-log-20261108` — 8 November 2026.** Added the decision log above using only policies and constraints already present in the repository plan, README and AGENTS instructions.
 
+- **Task commit:** `efa1012dd43e5ec9ac63bd93746872c48dafa2dd`.
+- **Draft PR:** [#44](https://github.com/eboxont-code/neighbourhood-guidebook/pull/44), open and unmerged.
+- **Quality Gates on the task commit:** push run [#736](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42386061894) and PR run [#737](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42386080645) both passed TypeScript, ESLint, unit/component tests, production build, and disposable PostgreSQL migration/security checks.
+
 - The log records the SEWA / Boxont brand hierarchy, website-enquiry commercial focus, free directory policy, paid-placement and booking gates, conditional listing milestone, owner approval requirements, $0 spend rule, revenue-recognition rule and factual-trust constraints.
 - It distinguishes current policy from deferred products and unresolved owner decisions. No price, scope, support promise, outreach permission, payment term or new commercial approval was invented.
 - Source dates for the underlying decisions were not available. The log explicitly treats 8 November as its documentation date, not an asserted approval date.
