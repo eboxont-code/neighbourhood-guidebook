@@ -736,7 +736,7 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 
 ### Next eligible task
 
-**SW-0010 — Record the original three phases: trust foundation, lead-generation funnel, then bookings after traction.** This is the first remaining P1 task after SW-0009 and can be documented from the existing approved strategy without choosing prices, setting a funnel measurement window or bypassing the Bundle 7 release gate.
+**SW-0201 — Write the single clearest sentence describing the website-design service for Kathmandu businesses.** This P0 offer-definition task takes priority over P1 SW-0010. The current For Businesses route already contains a candidate service description; the next run should verify that it is accurate, non-promissory and consistent with the visible English/Nepali offer, then add focused regression coverage or make the smallest necessary correction. Do not introduce prices, scope commitments or support promises; those remain owner-gated.
 
 
 ---
