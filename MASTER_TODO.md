@@ -700,7 +700,7 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 - Final push Quality Gate #555 passed: https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42342631007.
 - Final PR Quality Gate #556 passed: https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42342634166.
 - Both workflows passed TypeScript, lint, unit/component tests, production build and disposable PostgreSQL migration/security checks. Initial runs #553/#554 failed on the missing JSDOM observer stub and were superseded by the passing final runs.
-- Vercel preview for the task branch reached READY: https://vercel.com/boxont/neighbourhood-guidebook/EaZosDysNby65P3Bb2XPR8UMi2Rq. This is not a production deployment.
+- Vercel preview for PR #30 failed because the Hobby free-tier daily deployment limit was exceeded (more than 100 deployments); no paid upgrade or retry was attempted. The READY deployment with ID `dpl_EaZosDysNby65P3Bb2XPR8UMi2Rq` belongs to the separately closed PR #29 branch, not PR #30.
 - No production analytics rows, database migrations, production deployment, personal identifiers or cookies were added. Additional spend: $0.
 - An out-of-sequence draft PR #29 for SW-0121 was closed unmerged after rechecking the P0 register order; its branch is not part of main and must not be treated as completed or released work.
 
