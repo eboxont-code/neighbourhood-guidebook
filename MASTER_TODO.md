@@ -2,7 +2,7 @@
 
 > **Single source of truth for SEWA/Boxont execution. Read the whole file before each work session and update it before ending. This file combines the repository plan, revenue-first strategy and the 1,000-task register.**
 >
-> **Last reviewed:** 6 November 2026  
+> **Last reviewed:** 7 November 2026  
 >
 > **Merged inputs:** existing repository `MASTER_TODO.md`, the revenue-first strategy and 1,000-point checklist, and the matching 1,000-row CSV task register. The CSV and checklist IDs, priorities and task descriptions were reconciled. This file is now the only project execution plan.
 >
@@ -691,6 +691,21 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 - Original PR #7 was closed unmerged by the repository owner on 6 November 2026. It was not reopened and no replacement PR was opened. The new reconciliation branch is ready for review; wait for owner direction before opening a replacement PR or moving to Bundle 8.
 - No production database migration, production deployment, production setting change or merge was performed. Bundle 8 was left untouched.
 
+### Independent P0 register work — SW-0045 listing-page views (7 November 2026)
+
+- Verified current main at 7d7b75b3be48724d86c47519b469e51828f8f3b4. The previous branch sewa/analytics-listing-views-20261106 is an ancestor of current main (zero commits ahead, eight behind) and has no unique implementation or PR; it was not reused.
+- Added listing_view to TRACK_EVENTS and the listing detail route emits it once per business slug. The existing website-preview route continues to emit the separate preview_view event.
+- Added listing_view as the first admin funnel step, EN/NE labels, and excluded listing_view and preview_view from the click-only summary. Both events retain the existing anonymous payload (listing slug, language and path); no visitor ID, cookie, account ID, personal contact data or location was added. Do Not Track handling is unchanged.
+- Added identical forward-only migrations: supabase/migrations/20261107091900_listing_view_event.sql and drizzle/migrations/0013_listing_view_event.sql; appended Drizzle journal entry 13 and updated the disposable database runner to expect 14 migrations.
+- Added rendered-route coverage for one event per slug/rerender, funnel aggregation and click separation, analytics payload allowlisting, and Supabase/Drizzle migration parity.
+- Draft PR [#34](https://github.com/eboxont-code/neighbourhood-guidebook/pull/34), branch sewa/sw-0045-listing-page-views-20261107, final code/test commit 44ae04d4e23603d47f562dad9e05fc5569284eaa. The branch is 15 commits ahead of current main, zero behind. PR remains open, draft and unmerged. **SW-0045 is REVIEW, not DONE:** the production event constraint does not yet allow listing_view; the forward migration must pass the approved release process before production can record the new event.
+- Final PR Quality Gate run [#601](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42359679259) passed: dependency installation, TypeScript, ESLint (0 errors; 25 existing warnings), 25/25 test files and 182/182 tests, production build, and disposable PostgreSQL migration/security/concurrency tests. All 14 Drizzle migrations applied successfully in the disposable database.
+- The code-complete PR preview on commit a20e4c7d7f12f2c2c164dc6e1d0ae4c09334d127 reached READY at https://neighbourhood-guidebook-git-sewa-sw-0045-listing-080920-boxont.vercel.app. The latest plan-only commit 672f5ebd22fac3dea4b16d5c5d298bc8de4aa671 did not receive a new Vercel preview because the free Hobby build-rate limit was reached; no upgrade or paid deployment was attempted. The current production deployment remains READY on 41065104ea2bb6906f060d05fc6b2d4abbe5c6bc, with sewa.boxont.com attached. Current main is five commits ahead of production; its Vercel status check remains blocked by the free build-rate limit.
+- Read-only production Supabase snapshot: project zvbavpcsyvibvpkxjzkn is ACTIVE_HEALTHY; eight migrations applied; 52 listings; eight analytics events (5 preview_view, 2 search_zero, 1 claim_click); zero contact messages, claims, business submissions, correction reports and promotions. The live event constraint currently allows 18 event names and does not include listing_view. No production rows, migrations, settings, policies or secrets were changed.
+- Supabase advisors remain: form_rate_log RLS enabled without a policy; authenticated execution of has_role as SECURITY DEFINER; leaked-password protection disabled; 17 RLS init-plan findings, three unused indexes and two multiple-permissive-policy findings. These were inspected only and not changed.
+- Repository currently has 26 open PRs and zero open issues. The local runtime has no repository checkout, so a local working-tree status could not be observed; remote branch ancestry and the complete PR diff were inspected.
+
+**Next eligible register task: SW-0049** — track website-enquiry form starts separately from successful submissions. SW-0041/#27, SW-0042/#33 and SW-0046–SW-0048/#30–#32 are REVIEW and await the existing PR sequence; SW-0043 and SW-0044 are BLOCKED by the privacy/source-data decisions below. The immediate Bundle 7 owner-review gate remains unchanged.
 ---
 
 ## 10. Instruction for every future AI session
@@ -728,14 +743,14 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 **Phase:** 1 - Revenue foundation  
 **Definition of done:** One page defines the revenue goal, what the site sells, what is deliberately deferred, and the rules that prevent trust or outreach mistakes.
 
-- [ ] [TODO] **SW-0001 · P0 · Audit current state** — Write a one-sentence north-star goal: generate qualified website-design opportunities for Boxont from Sewa.
-- [ ] [TODO] **SW-0002 · P0 · Audit current state** — Define a qualified website lead using observable criteria, not assumptions about willingness to pay.
-- [ ] [TODO] **SW-0003 · P0 · Audit current state** — Define the primary conversion as a completed website enquiry with identifiable business context.
-- [ ] [TODO] **SW-0004 · P0 · Audit current state** — Define secondary conversions for preview views, preview CTA clicks, claim requests, contact-form sends, and repeat visits.
-- [ ] [TODO] **SW-0005 · P0 · Audit current state** — Separate website-design revenue metrics from future listing-subscription and booking revenue metrics.
-- [ ] [TODO] **SW-0006 · P0 · Audit current state** — Record that directory traffic alone is not success unless it creates useful customer or business-owner outcomes.
-- [ ] [TODO] **SW-0007 · P0 · Audit current state** — Record that 1,000 listings is a conditional supply milestone, not the north-star KPI.
-- [ ] [TODO] **SW-0008 · P0 · Audit current state** — Set an initial decision window for evaluating the current funnel before redesigning it again.
+- [ ] [REVIEW] **SW-0001 · P0 · Audit current state** — Write a one-sentence north-star goal: generate qualified website-design opportunities for Boxont from Sewa.
+- [ ] [REVIEW] **SW-0002 · P0 · Audit current state** — Define a qualified website lead using observable criteria, not assumptions about willingness to pay.
+- [ ] [REVIEW] **SW-0003 · P0 · Audit current state** — Define the primary conversion as a completed website enquiry with identifiable business context.
+- [ ] [REVIEW] **SW-0004 · P0 · Audit current state** — Define secondary conversions for preview views, preview CTA clicks, claim requests, contact-form sends, and repeat visits.
+- [ ] [REVIEW] **SW-0005 · P0 · Audit current state** — Separate website-design revenue metrics from future listing-subscription and booking revenue metrics.
+- [ ] [REVIEW] **SW-0006 · P0 · Audit current state** — Record that directory traffic alone is not success unless it creates useful customer or business-owner outcomes.
+- [ ] [REVIEW] **SW-0007 · P0 · Audit current state** — Record that 1,000 listings is a conditional supply milestone, not the north-star KPI.
+- [ ] [BLOCKED] **SW-0008 · P0 · Audit current state** — Set an initial decision window for evaluating the current funnel before redesigning it again.
 - [ ] [TODO] **SW-0009 · P1 · Audit current state** — Create a decision log for changes that affect the business model or brand position.
 - [ ] [TODO] **SW-0010 · P1 · Audit current state** — Record the original three phases: trust foundation, lead-generation funnel, then bookings after traction.
 - [ ] [TODO] **SW-0011 · P1 · Audit current state** — Keep the current money-first strategy while using data quality as a conversion enabler.
@@ -774,14 +789,14 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 **Phase:** 1 - Revenue foundation  
 **Definition of done:** The owner can answer where qualified leads came from, which page generated them, and which funnel step leaks.
 
-- [ ] [TODO] **SW-0041 · P0 · Audit current state** — Check whether production analytics are already installed before adding another analytics product.
-- [ ] [TODO] **SW-0042 · P0 · Audit current state** — Verify that analytics events are not double-fired during route changes or form submissions.
-- [ ] [TODO] **SW-0043 · P0 · Audit current state** — Record weekly unique visitors and pageviews by landing page.
-- [ ] [TODO] **SW-0044 · P0 · Audit current state** — Record organic-search visits separately from direct, referral, and campaign visits where data supports it.
-- [ ] [TODO] **SW-0045 · P0 · Audit current state** — Record visits to listing pages separately from website-preview pages.
-- [ ] [TODO] **SW-0046 · P0 · Audit current state** — Track clicks on each listing's website-preview link with a stable event name.
-- [ ] [TODO] **SW-0047 · P0 · Audit current state** — Track preview-page views with the business slug as a non-personal content identifier.
-- [ ] [TODO] **SW-0048 · P0 · Audit current state** — Track the primary preview CTA click without sending personal form data to analytics.
+- [ ] [REVIEW] **SW-0041 · P0 · Audit current state** — Check whether production analytics are already installed before adding another analytics product.
+- [ ] [REVIEW] **SW-0042 · P0 · Audit current state** — Verify that analytics events are not double-fired during route changes or form submissions.
+- [ ] [BLOCKED] **SW-0043 · P0 · Audit current state** — Record weekly unique visitors and pageviews by landing page.
+- [ ] [BLOCKED] **SW-0044 · P0 · Audit current state** — Record organic-search visits separately from direct, referral, and campaign visits where data supports it.
+- [ ] [REVIEW] **SW-0045 · P0 · Audit current state** — Record visits to listing pages separately from website-preview pages.
+- [ ] [REVIEW] **SW-0046 · P0 · Audit current state** — Track clicks on each listing's website-preview link with a stable event name.
+- [ ] [REVIEW] **SW-0047 · P0 · Audit current state** — Track preview-page views with the business slug as a non-personal content identifier.
+- [ ] [REVIEW] **SW-0048 · P0 · Audit current state** — Track the primary preview CTA click without sending personal form data to analytics.
 - [ ] [TODO] **SW-0049 · P0 · Audit current state** — Track website-enquiry form starts and successful submissions as separate events.
 - [ ] [TODO] **SW-0050 · P0 · Audit current state** — Track claim-flow starts and completed claim submissions separately.
 - [ ] [TODO] **SW-0051 · P1 · Audit current state** — Track For Businesses page views and CTA clicks.

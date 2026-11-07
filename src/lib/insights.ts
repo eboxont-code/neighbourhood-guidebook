@@ -12,7 +12,7 @@ export function summarise(rows: EventRow[], days: number, now = new Date()) {
     if (new Date(r.created_at).getTime() < since) continue;
     if (r.event === "search" && r.query) bump(searches, r.query);
     else if (r.event === "search_zero" && r.query) { bump(zero, r.query); bump(searches, r.query); }
-    else if (r.event !== "search" && r.event !== "search_zero") {
+    else if (r.event !== "search" && r.event !== "search_zero" && r.event !== "listing_view" && r.event !== "preview_view") {
       bump(clicks, r.event);
       if (r.listing_slug) bump(listings, r.listing_slug);
     }
@@ -20,7 +20,7 @@ export function summarise(rows: EventRow[], days: number, now = new Date()) {
   return { searches: top(searches, 20), zero: top(zero, 20), clicks: top(clicks, 20), listings: top(listings, 10) };
 }
 
-export const FUNNEL_STEPS = ["preview_click", "preview_view", "preview_enquiry_click", "claim_click", "claim_submit", "enquiry_submit"] as const;
+export const FUNNEL_STEPS = ["listing_view", "preview_click", "preview_view", "preview_enquiry_click", "claim_click", "claim_submit", "enquiry_submit"] as const;
 export type FunnelStep = { event: (typeof FUNNEL_STEPS)[number]; count: number; rate: number | null };
 
 /** Funnel counts inside the window; rate is the percentage of the previous step (null for the first step or when the previous count is 0). */
