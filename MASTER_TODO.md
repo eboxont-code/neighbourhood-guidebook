@@ -1892,4 +1892,4 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [TODO] **SW-0999 · P2 · Audit current state** — Keep production seed/test records clearly marked so they do not look like real customers.
 - [ ] [TODO] **SW-1000 · P2 · Audit current state** — Document the database schema for listings, fields, sources, leads, and claims.
 
-Current register status on this branch: **7 DONE, 22 REVIEW, 33 BLOCKED, 936 TODO** across 999 Markdown task rows. The 1,000 unique IDs remain present; SW-0298 and SW-0299 share one existing Markdown row.
+Current register status on this branch: **7 DONE, 22 REVIEW, 33 BLOCKED, 937 TODO** across 999 Markdown task rows. The 1,000 unique IDs remain present; SW-0298 and SW-0299 share one existing Markdown row.
