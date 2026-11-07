@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { funnel, summarise, websiteEnquirySummary } from "@/lib/insights";
+import { claimFlowSummary, funnel, summarise, websiteEnquirySummary } from "@/lib/insights";
 import { trackPayload, TRACK_EVENTS } from "@/lib/track";
 import { readFileSync } from "node:fs";
 
@@ -48,6 +48,22 @@ describe("admin insights", () => {
     expect(websiteEnquirySummary(rows, 7, now)).toEqual({ starts: 2, submissions: 1 });
     expect(summarise(rows, 7, now).clicks).toEqual([["click_call", 1]]);
     const payload = trackPayload("enquiry_start", { slug: "listing-a" });
+    expect(payload.listing_slug).toBe("listing-a");
+    expect(Object.keys(payload).sort()).toEqual(["event", "lang", "listing_slug", "path", "query"]);
+  });
+
+  it("counts claim starts separately from successful submissions and excludes both from clicks", () => {
+    expect(TRACK_EVENTS).toContain("claim_start");
+    const rows = [
+      { event: "claim_start", query: null, listing_slug: "a", created_at: at(1) },
+      { event: "claim_start", query: null, listing_slug: "a", created_at: at(2) },
+      { event: "claim_submit", query: null, listing_slug: "a", created_at: at(2) },
+      { event: "claim_submit", query: null, listing_slug: "a", created_at: at(20) },
+      { event: "click_call", query: null, listing_slug: "a", created_at: at(1) },
+    ];
+    expect(claimFlowSummary(rows, 7, now)).toEqual({ starts: 2, submissions: 1 });
+    expect(summarise(rows, 7, now).clicks).toEqual([["click_call", 1]]);
+    const payload = trackPayload("claim_start", { slug: "listing-a" });
     expect(payload.listing_slug).toBe("listing-a");
     expect(Object.keys(payload).sort()).toEqual(["event", "lang", "listing_slug", "path", "query"]);
   });
