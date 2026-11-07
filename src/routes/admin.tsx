@@ -35,6 +35,7 @@ import { useI18n, type Key } from "@/lib/i18n";
 import {
   countByStatus,
   isLeadStatus,
+  leadListingLinks,
   leadSource,
   leadStatuses,
   leadTel,
@@ -44,7 +45,7 @@ import {
 import { AdminClaims } from "@/components/admin-claims";
 import { AdminInsights } from "@/components/admin-insights";
 import { AdminPromotions } from "@/components/admin-promotions";
-import { offersPreview, previewPath } from "@/lib/preview";
+
 import { PAYMENT_STATUSES, isPaymentStatus, summariseRevenue, type PaymentStatus } from "@/lib/commerce";
 import { optionLabel, submissionStatuses } from "@/lib/form-options";
 import { freshnessBucket, freshnessBuckets, stalestFirst } from "@/lib/verification";
@@ -1143,7 +1144,8 @@ function LeadCard({
   const src = leadSource(m.page);
   const topicKey = m.topic ? optionLabel("topic", m.topic) : null;
   const slug = m.source_listing_slug;
-  const listing = slug ? businesses.find((b) => b.slug === slug) : undefined;
+  const links = leadListingLinks(slug);
+  const listing = links?.business;
   const who = m.business_name || listing?.name || m.name;
   const tel = leadTel(m.phone);
   const waText = (m.business_name ? t("adLeadWaText") : t("adLeadWaTextShort"))
@@ -1227,10 +1229,10 @@ function LeadCard({
       </p>
       {slug && (
         <div className="flex flex-wrap gap-x-5 gap-y-1 text-sm">
-          {listing ? (
+          {links ? (
             <Link
               to="/s/$slug"
-              params={{ slug }}
+              params={{ slug: links.slug }}
               target="_blank"
               className="inline-flex min-h-11 items-center text-primary underline"
             >
@@ -1241,9 +1243,9 @@ function LeadCard({
               {t("adMsgListing")}: {slug}
             </span>
           )}
-          {listing && offersPreview(listing) && (
+          {links?.previewPath && (
             <a
-              href={previewPath(slug)}
+              href={links.previewPath}
               target="_blank"
               rel="noreferrer"
               className="inline-flex min-h-11 items-center text-primary underline"
