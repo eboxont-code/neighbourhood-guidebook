@@ -12,7 +12,7 @@ export function summarise(rows: EventRow[], days: number, now = new Date()) {
     if (new Date(r.created_at).getTime() < since) continue;
     if (r.event === "search" && r.query) bump(searches, r.query);
     else if (r.event === "search_zero" && r.query) { bump(zero, r.query); bump(searches, r.query); }
-    else if (!["search", "search_zero", "listing_view", "preview_view", "enquiry_start"].includes(r.event)) {
+    else if (!["search", "search_zero", "listing_view", "preview_view", "enquiry_start", "enquiry_submit"].includes(r.event)) {
       bump(clicks, r.event);
       if (r.listing_slug) bump(listings, r.listing_slug);
     }
