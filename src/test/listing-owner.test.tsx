@@ -1,10 +1,11 @@
 import { createElement, type ReactNode } from "react";
 import { fireEvent, render } from "@testing-library/react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 const { trackMock } = vi.hoisted(() => ({ trackMock: vi.fn() }));
 vi.mock("@/lib/track", () => ({ track: trackMock }));
+afterEach(() => vi.unstubAllGlobals());
 import { getBusiness, type WebsiteStatus } from "@/data/directory";
 import { Route } from "@/routes/s.$slug";
 
@@ -63,6 +64,11 @@ describe("listing preview analytics", () => {
       business: { ...original, websiteStatus: "none_found" },
     });
     try {
+      vi.stubGlobal("IntersectionObserver", class {
+        observe() {}
+        unobserve() {}
+        disconnect() {}
+      });
       const { container, unmount } = render(createElement(component));
       const previewLink = container.querySelector<HTMLAnchorElement>(
         'a[href="/s/nuad-thai-lazimpat/website-preview"]',
