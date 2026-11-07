@@ -2,7 +2,7 @@
 
 > **Single source of truth for SEWA/Boxont execution. Read the whole file before each work session and update it before ending. This file combines the repository plan, revenue-first strategy and the 1,000-task register.**
 >
-> **Last reviewed:** 7 November 2026  
+> **Last reviewed:** 8 November 2026  
 >
 > **Merged inputs:** existing repository `MASTER_TODO.md`, the revenue-first strategy and 1,000-point checklist, and the matching 1,000-row CSV task register. The CSV and checklist IDs, priorities and task descriptions were reconciled. This file is now the only project execution plan.
 >
@@ -723,11 +723,37 @@ Acceptance criteria:
 - The final Vercel preview deployment is READY on commit fb7ae140d3f8637fbe1e2c3b5c160e747eb75ed6; it does not change the Production alias or database.
 - PR [#40](https://github.com/eboxont-code/neighbourhood-guidebook/pull/40) remains open/draft, mergeable and unmerged. Its implementation/test commit `66b011edb2dd9f49001576a12163caa8f6592635` has a READY preview at [neighbourhood-guidebook-m2ng1wby9-boxont.vercel.app](https://neighbourhood-guidebook-m2ng1wby9-boxont.vercel.app), deployment dpl_4R6LFQuA7hkvfnGed9b1AzBFaNd5. Later documentation-only commits did not receive fresh previews because the Hobby build-rate limit was reached. This is preview only; production remains unchanged. No paid upgrade or production deployment was attempted.
 
-Register integrity after reconciliation: 1,000 unique task IDs across 999 task rows (SW-0298/SW-0299 share one existing row); 7 DONE, 61 REVIEW, 9 BLOCKED, 922 TODO, 0 IN PROGRESS.
+Register integrity after reconciliation: 1,000 unique task IDs across 999 task rows (SW-0298/SW-0299 share one existing row); 7 DONE, 62 REVIEW, 9 BLOCKED, 921 TODO, 0 IN PROGRESS.
 
-The next eligible task after SW-0173 is SW-0174, subject to the same release and owner-approval gates.
+The next eligible task after SW-0174 is SW-0175, subject to the same release and owner-approval gates.
 
 ---
+
+
+### Current verification record — SW-0174: shared preview slug isolation
+
+**Status: REVIEW — the existing shared route resolves its content from the current route loader data; rendered-component regression coverage passed. PR #42 remains draft and awaits owner review/release.**
+
+- Audited `src/routes/s.$slug_.website-preview.tsx`. `PreviewPage` derives business name, area/category, address, phone, description, services, hours, directions, social links, cover photo, owner CTA, return link and `preview_view` attribution from the current `Route.useLoaderData().business`. No cross-business module cache or hard-coded business record is used in the shared component.
+- Added `src/test/preview-slug-isolation.test.tsx`. It renders the same component instance with two fixture-derived business records, then switches the loader data. It asserts that the second business replaces the first business's name, address, description, phone, services, directions, social link, cover, CTA/listing URLs and analytics slug; no first-business sentinel remains.
+- The test also triggers an image error for the first business, then verifies the second business's cover image is restored after the slug change. This covers the component's slug-scoped image-failure state.
+- Fixtures clone two existing directory records and apply test-only sentinel values in memory. No directory record or production listing is modified.
+- Final implementation Quality Gates passed on commit `0ed16d8067d78d1cc4a7e8a5b45a98bc152d943f`: push run [#42381995232](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42381995232) and PR run [#42381999661](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42381999661). Both passed TypeScript, ESLint (0 errors; 25 existing warnings), 26/26 test files / 184/184 tests, production build, and disposable PostgreSQL migration/security/concurrency checks (13 migrations).
+- The first test attempt used an incorrect exact Instagram host selector; the observed canonical link host differed. The assertion was corrected to match the unique handle, and both final workflows passed. A second URL assertion was made robust by parsing the CTA query with `URLSearchParams`.
+- The final regression assertions also verify that the first business's phone and social handle are absent after switching, in addition to its unique content, directions, photo and links.
+- PR [#42](https://github.com/eboxont-code/neighbourhood-guidebook/pull/42) is open/draft and based on PR #40's SW-0173 branch. Review/release PR #40 before #42. PR #41 was closed unmerged as superseded by the correctly stacked PR #42; no code from PR #41 was merged.
+- No application code change was needed; the route already reads the current business record correctly. No production rows, migrations, policies, settings, secrets, deployment, DNS or billing were changed. Additional spend: $0.
+
+### Latest verified repository, deployment and database refresh — 8 November 2026
+
+- Current `main` remains `7d7b75b3be48724d86c47519b469e51828f8f3b4`; main Quality Gate [#42323594019](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42323594019) passed. The combined status still has a Vercel failure caused by the Hobby build-rate limit, not a GitHub Quality Gate failure.
+- Remote inventory: 50 branches, 34 open PRs and 0 open issues. PR #40 remains open/draft for SW-0173; PR #42 is open/draft for SW-0174 and is stacked on #40; PR #41 is closed unmerged as superseded; PR #43 is a separate open, non-draft search/AI discoverability change. No PR was merged. The API reports `protected:false`; the separate branch-protection endpoint remains unavailable (HTTP 403). This runtime has no local repository checkout, so a local working-tree status cannot be claimed; remote refs, commits and diffs were inspected.
+- Vercel Production deployment [dpl_5tkK3TvBeyRtV4Sjsve5PbYZDKBB](https://vercel.com/boxont/neighbourhood-guidebook/5tkK3TvBeyRtV4Sjsve5PbYZDKBB) remains READY with `sewa.boxont.com` attached, serving commit `41065104ea2bb6906f060d05fc6b2d4abbe5c6bc`. Main is five commits ahead. No deployment or paid upgrade was attempted.
+- Supabase project `zvbavpcsyvibvpkxjzkn` (`neighbourhood-guidebook`) remains ACTIVE_HEALTHY with 8 applied production migrations. Read-only counts: 52 published listings, 8 analytics events, 0 contact messages, 0 business claims, 0 business submissions, 0 correction reports and 0 listing promotions. The two sampled published records resolve to their own expected business slugs/names/addresses; no rows were changed.
+- Security Advisor still reports the existing `form_rate_log` RLS-without-policy finding, authenticated SECURITY DEFINER `has_role` warning and disabled leaked-password protection. Performance Advisor still reports 17 RLS initialization-plan findings, 3 unused indexes and 2 multiple-permissive-policy findings. Health Advisor has no findings. These are observations only.
+- Production migration history still has 8 entries; the final three remote version labels differ from repository migration filenames. `supabase/config.toml` still points to `hbsszybjdyrdbgbvvmht`, not the verified production project `zvbavpcsyvibvpkxjzkn`. Do not apply or repair production migrations without owner approval and target/history reconciliation.
+- The immediate queue's owner-only blockers remain: Task 1 requires an authorised browser/admin session and approved disposable staging account; Task 3 and SW-0241–SW-0247 require the original 20-business CSV; Task 4 requires the owner's inbox and authorised reset session; Task 6 requires owner review/approval of PR #10; Tasks 7–8 depend on Task 6 and the approved migration path; Task 9 needs an owner-approved evaluation window and sufficient real lead data; Task 10 needs real demand evidence and source/prospect data. Do not retry unchanged blockers or bypass these gates.
+- No production rows, migrations, policies, auth settings, secrets, DNS, billing or deployment were changed. Additional spend: $0.
 
 ## 10. Instruction for every future AI session
 
@@ -961,7 +987,7 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [REVIEW] **SW-0171 · P0 · Audit current state** — Verify the website action is omitted or clearly unavailable when no working official website exists. Evidence: working-official-website action gating is in open draft PR #28; owner review/release pending.
 - [ ] [REVIEW] **SW-0172 · P0 · Audit current state** — Verify social links come from the correct business record and open safely. Evidence: business-scoped social-link validation is in open draft PR #37; owner review/release pending.
 - [x] [DONE] **SW-0173 · P0 · Audit current state** — Verify service details appear only when provided or separately verified. Completed: regression tests confirm previews render only explicit service records and use the existing add-details fallback when none are present; production currently has no service entries. Evidence: PR #40; implementation/test commit 66b011edb2dd9f49001576a12163caa8f6592635; final verification Quality Gates #712/#713 passed (25 test files, 183 tests, typecheck, lint, build, disposable PostgreSQL migration/security tests).
-- [ ] [TODO] **SW-0174 · P0 · Audit current state** — Verify the shared template does not leak data between two business slugs.
+- [ ] [REVIEW] **SW-0174 · P0 · Audit current state** — Verify the shared template does not leak data between two business slugs. Evidence: same-component slug-switch regression coverage is in open draft PR #42, stacked on PR #40; final push and PR Quality Gates passed on implementation commit `0ed16d8067d78d1cc4a7e8a5b45a98bc152d943f`; owner review/release pending.
 - [ ] [TODO] **SW-0175 · P1 · Audit current state** — Verify category colour choices remain readable for every current category.
 - [ ] [TODO] **SW-0176 · P1 · Audit current state** — Verify English and Nepali preview variants use the same underlying business facts.
 - [ ] [TODO] **SW-0177 · P1 · Audit current state** — Check the template at 390px wide before checking larger breakpoints.
