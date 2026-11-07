@@ -1,3 +1,36 @@
+# SEWA public discovery policy
+# Public pages are available to search engines and AI search crawlers.
+# Keep private administration routes out of public indexes.
+
+User-agent: OAI-SearchBot
+Allow: /
+Disallow: /admin
+
+# GPTBot is separate from ChatGPT Search. Keep model-training crawling
+# disabled while allowing OAI-SearchBot to discover public SEWA pages.
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ChatGPT-User
+Allow: /
+Disallow: /admin
+
+User-agent: ClaudeBot
+Allow: /
+Disallow: /admin
+
+User-agent: PerplexityBot
+Allow: /
+Disallow: /admin
+
+User-agent: Google-Extended
+Allow: /
+Disallow: /admin
+
+User-agent: Amazonbot
+Allow: /
+Disallow: /admin
+
 User-agent: Googlebot
 Allow: /
 Disallow: /admin
