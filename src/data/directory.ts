@@ -1052,17 +1052,40 @@ export const telLink = (p: string) => `tel:+${intlDigits(p)}`;
 export const directionsLink = (b: Business) =>
   b.directions ?? (b.address ? mapsLink(`${b.name}, ${b.address}`) : undefined);
 
-const SOCIAL_BASE: Record<string, (h: string) => string> = {
-  Instagram: (h) => `https://www.instagram.com/${h}/`,
-  Facebook: (h) => `https://www.facebook.com/${h}`,
-  TikTok: (h) => `https://www.tiktok.com/@${h.replace(/^@/, "")}`,
-  YouTube: (h) => `https://www.youtube.com/@${h.replace(/^@/, "")}`,
+const SOCIAL_BASE = {
+  Instagram: (handle: string) => `https://www.instagram.com/${handle}/`,
+  Facebook: (handle: string) => `https://www.facebook.com/${handle}`,
+  TikTok: (handle: string) => `https://www.tiktok.com/@${handle}`,
+  YouTube: (handle: string) => `https://www.youtube.com/@${handle}`,
+} as const;
+type SocialPlatform = keyof typeof SOCIAL_BASE;
+const SOCIAL_HOST: Record<SocialPlatform, string> = {
+  Instagram: "www.instagram.com",
+  Facebook: "www.facebook.com",
+  TikTok: "www.tiktok.com",
+  YouTube: "www.youtube.com",
+};
+const SOCIAL_HANDLE: Record<SocialPlatform, RegExp> = {
+  Instagram: /^[A-Za-z0-9](?:[A-Za-z0-9._]{0,28}[A-Za-z0-9])?$/,
+  Facebook: /^[A-Za-z0-9](?:[A-Za-z0-9._-]{0,98}[A-Za-z0-9])?$/,
+  TikTok: /^[A-Za-z0-9](?:[A-Za-z0-9._]{0,22}[A-Za-z0-9])?$/,
+  YouTube: /^[A-Za-z0-9](?:[A-Za-z0-9._-]{0,28}[A-Za-z0-9])?$/,
 };
 export function socialLinks(b: Business) {
   return (b.social ?? []).flatMap((entry) => {
-    const [platform, handle] = entry.split(" ");
-    const make = platform && handle ? SOCIAL_BASE[platform] : undefined;
-    return make && handle ? [{ platform, handle, url: make(handle) }] : [];
+    if (typeof entry !== "string") return [];
+    const [platform, rawHandle, ...extra] = entry.trim().split(/\s+/);
+    if (!platform || !rawHandle || extra.length || !Object.prototype.hasOwnProperty.call(SOCIAL_BASE, platform)) return [];
+    const key = platform as SocialPlatform;
+    const handle = rawHandle.replace(/^@/, "");
+    if (!SOCIAL_HANDLE[key].test(handle)) return [];
+    try {
+      const url = new URL(SOCIAL_BASE[key](handle));
+      if (url.protocol !== "https:" || url.hostname !== SOCIAL_HOST[key] || url.username || url.password) return [];
+      return [{ platform: key, handle: rawHandle, url: url.href }];
+    } catch {
+      return [];
+    }
   });
 }
 // A website is shown only when one is listed and its status is known from a check.
