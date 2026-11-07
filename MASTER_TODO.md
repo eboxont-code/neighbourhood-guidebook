@@ -145,10 +145,10 @@ Never mark work [DONE] merely because code exists, a PR is merged, or a preview 
 
 ### Current refresh — 7 November 2026 (read-only)
 
-- **GitHub:** `main` is `7d7b75b3be48724d86c47519b469e51828f8f3b4`. Main Quality Gate [#42323594019](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42323594019) passed on that exact SHA. The combined commit status separately reports a Vercel failure caused by the Hobby build-rate limit. Main is not branch-protected. The repository has 44 branches, 29 open pull requests (all observed as drafts), and 0 open issues. The GitHub integration exposes no local checkout, so no local working-tree cleanliness claim is made.
+- **GitHub:** `main` is `7d7b75b3be48724d86c47519b469e51828f8f3b4`. Main Quality Gate [#42323594019](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42323594019) passed on that exact SHA. The combined commit status separately reports a Vercel failure caused by the Hobby build-rate limit. Main is not branch-protected. The repository has 45 branches, 30 open pull requests (all observed as drafts), and 0 open issues. The GitHub integration exposes no local checkout, so no local working-tree cleanliness claim is made.
 - **Instructions:** Read root `AGENTS.md`, `README.md`, and `roadmap.md`; the tree contains only the root AGENTS file. The Lovable north-star file remains unchanged at blob SHA `9d748d0f22dd60969680c61964f18ea4fe6900df`.
 - **Open work:** PR #10 Bundle 7 remains draft and has no owner review; its recorded base `ee38ca0e978f0149ca10f5b2caadb33282729148` is behind current main. PR #8 remains stacked on Bundle 7. PR #12 (form guards) and PRs #20–#27 (strategy/measurement), #28, and #30–#37 (preview, analytics and social-link work) remain open drafts and unmerged. Do not duplicate their branch-only changes or treat them as released.
-- **Vercel:** Project `neighbourhood-guidebook` (`prj_zdxJhQFdQrH76wYIefxmaOVRLFx8`) is on the Hobby plan. Latest verified Production deployment is `dpl_5tkK3TvBeyRtV4Sjsve5PbYZDKBB`, `READY`, on commit `41065104ea2bb6906f060d05fc6b2d4abbe5c6bc`; `sewa.boxont.com` is verified on the project. Current main is 5 commits ahead of production. A read-only GET of `https://sewa.boxont.com` returned HTTP 200. No deployment was started.
+- **Vercel:** Project `neighbourhood-guidebook` (`prj_zdxJhQFdQrH76wYIefxmaOVRLFx8`) is on the Hobby plan. Latest verified Production deployment is `dpl_5tkK3TvBeyRtV4Sjsve5PbYZDKBB`, `READY`, on commit `41065104ea2bb6906f060d05fc6b2d4abbe5c6bc`; `sewa.boxont.com` is verified on the project. Current main is 5 commits ahead of production. Read-only GETs of `https://sewa.boxont.com`, `/contact`, and `/for-businesses` returned HTTP 200; the latter two rendered no `tel:` or WhatsApp links. No deployment was started.
 - **Supabase:** Project `neighbourhood-guidebook` (`zvbavpcsyvibvpkxjzkn`) is `ACTIVE_HEALTHY`, PostgreSQL 17.11. Read-only aggregates: 52 listings, 8 analytics events, 0 contact messages, 0 business claims, 0 business submissions, 0 correction reports, and 0 listing promotions. Eight migrations are applied: `20261019014611`, `20261026004848`, `20261027005142`, `20261028005902`, `20261029004600`, `20261104111910`, `20261104111922`, `20261104111936`.
 - **Migration gate:** Repository `supabase/config.toml` still points to `hbsszybjdyrdbgbvvmht`, not the active production project `zvbavpcsyvibvpkxjzkn`. The last three remote migration version labels differ from repository filenames: remote `20261104111910/20261104111922/20261104111936` versus local `20261102130000/20261103114000/20261104100000`. Reconcile the target and migration history before any production migration; none was run.
 - **Advisors:** Security reports `form_rate_log` RLS without a policy (INFO), authenticated execution of SECURITY DEFINER `public.has_role` (WARN), and leaked-password protection disabled (WARN). Performance reports 17 RLS initialization-plan findings, 3 unused indexes, and 2 multiple-permissive-policy findings. Health Advisor returned no findings. These were inspected only.
@@ -691,16 +691,18 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 
 ### Current task
 
-**SW-0090 — Verify public forms do not publish the owner's private phone number.**  
-**Status: IN PROGRESS — P0; main-source audit is complete and a regression guard is being added.**
+**No task is currently marked [IN PROGRESS].**
 
-- `src/config.ts` currently sets `SITE_CONTACT.phone`, `whatsapp`, and `email` to empty strings.
-- `src/components/site.tsx` imports `SITE_NAME` only; the public footer renders navigation links and no operator phone/WhatsApp/email action.
-- `src/routes/contact.tsx` and `src/routes/for-businesses.tsx` render the shared `ContactForm`; its optional phone field belongs to the submitting visitor. Public listing `tel:` actions derive from each listing's public `b.phone`, not the SEWA operator contact config.
-- Acceptance evidence to add: a unit test that keeps all operator contact channels blank by default. No visitor contact values or business phone data will be copied into analytics or public operator contact.
-- No production changes or database access are required for this task.
+**Last completed:** SW-0090 — Verify public forms do not publish the owner's private phone number.
 
-**Next eligible task after SW-0090:** SW-0096 — verify business name is stored separately from the person's name. SW-0091–SW-0095 remain blocked on the unmerged PR #12 sequence.
+- The operator contact configuration remains blank for phone, WhatsApp, and email; only an explicitly approved public business contact may be added in future.
+- The public contact and For Businesses production routes returned HTTP 200 and contained no operator `tel:` or WhatsApp links. Listing call actions use the business's own public listing phone.
+- Regression test: `src/test/public-contact.test.ts`.
+- Implementation commit: `d046e25c2d15dd35fbc42c02012922015e096abd`.
+- Push Quality Gate [#42372201933](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42372201933) passed: TypeScript, ESLint, unit/component tests, production build, and disposable PostgreSQL migration/security tests.
+- Draft PR: [#38 — keep private operator contact details out of public forms](https://github.com/eboxont-code/neighbourhood-guidebook/pull/38). No merge or production release was performed.
+
+**Next eligible task:** SW-0096 — verify business name is stored separately from the person's name. SW-0091–SW-0095 remain blocked on owner review/release of PR #12. SW-0089 remains blocked pending real desktop/mobile keyboard testing in a browser environment.
 
 
 ---
@@ -841,7 +843,7 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [BLOCKED] **SW-0087 · P0 · Audit current state** — Verify a failed submission shows a useful retry message without losing typed values. **Blocker:** PR #12 already contains failure/retry regression coverage on an unmerged draft branch; owner review/release is required.
 - [ ] [BLOCKED] **SW-0088 · P0 · Audit current state** — Verify form validation explains which required field needs attention. **Blocker:** PR #12 already contains field-validation regression coverage on an unmerged draft branch; owner review/release is required.
 - [ ] [BLOCKED] **SW-0089 · P0 · Audit current state** — Verify the form works with keyboard-only interaction on desktop and mobile. **Blocker:** full keyboard-only verification across desktop and mobile needs a real browser automation setup or owner-authorised manual browser session. The current test stack is JSDOM-only and package.json has no browser automation dependency; do not claim this acceptance criterion from static inspection alone.
-- [ ] [IN PROGRESS] **SW-0090 · P0 · Audit current state** — Verify the form does not publish the owner's private phone number. **Acceptance:** public operator phone, WhatsApp, and email remain unpublished; regression guard is being added.
+- [x] [DONE] **SW-0090 · P0 · Audit current state** — Verify the form does not publish the owner's private phone number. **Evidence:** `SITE_CONTACT` phone/WhatsApp/email are blank; the public footer does not render operator contact; production `/contact` and `/for-businesses` returned HTTP 200 with no `tel:`/WhatsApp links; regression test `src/test/public-contact.test.ts` passed in Quality Gate [#42372201933](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42372201933). Implementation commit `d046e25c2d15dd35fbc42c02012922015e096abd`; draft PR [#38](https://github.com/eboxont-code/neighbourhood-guidebook/pull/38).
 - [ ] [BLOCKED] **SW-0091 · P0 · Audit current state** — Retain the source route and business slug when a lead comes from a preview. **Blocker:** PR #12 already contains preview source/listing attribution changes on an unmerged draft branch; owner review/release is required.
 - [ ] [BLOCKED] **SW-0092 · P0 · Audit current state** — Retain the originating listing when a lead comes from a claim button. **Blocker:** PR #12 already contains claim source attribution changes on an unmerged draft branch; owner review/release is required.
 - [ ] [BLOCKED] **SW-0093 · P0 · Audit current state** — Retain the form intent when a lead comes from the For Businesses page. **Blocker:** PR #12 already contains For Businesses intent attribution changes on an unmerged draft branch; owner review/release is required.
@@ -1889,3 +1891,5 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [TODO] **SW-0998 · P2 · Audit current state** — Add a safe test for the core lead-stage transitions.
 - [ ] [TODO] **SW-0999 · P2 · Audit current state** — Keep production seed/test records clearly marked so they do not look like real customers.
 - [ ] [TODO] **SW-1000 · P2 · Audit current state** — Document the database schema for listings, fields, sources, leads, and claims.
+
+Current register status on this branch: **7 DONE, 22 REVIEW, 33 BLOCKED, 936 TODO** across 999 Markdown task rows. The 1,000 unique IDs remain present; SW-0298 and SW-0299 share one existing Markdown row.
