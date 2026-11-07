@@ -92,6 +92,13 @@
       "when": 1793750400000,
       "tag": "0012_listing_promotions",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1793751900000,
+      "tag": "0013_business_sales_pipeline",
+      "breakpoints": true
     }
   ]
 }

@@ -186,4 +186,21 @@ describe("SEWA database contracts", () => {
     expect(migrations).toMatch(/CREATE POLICY "Admins can read events"[\s\S]*?has_role\(auth\.uid\(\),\s*'admin'/i);
   });
 
+  it("keeps the Boxont sales pipeline private and admin-managed", () => {
+    const drizzle = readProjectFile("drizzle/migrations/0013_business_sales_pipeline.sql");
+    const supabase = readProjectFile("supabase/migrations/20261104102500_business_sales_pipeline.sql");
+    expect(drizzle).toBe(supabase);
+    for (const table of ["business_sales_prospects", "business_sales_activities"]) {
+      expect(drizzle).toMatch(new RegExp(`ALTER TABLE public\\.${table} ENABLE ROW LEVEL SECURITY`, "i"));
+      expect(drizzle).toMatch(new RegExp(`CREATE POLICY "Admins manage ${table === "business_sales_prospects" ? "business sales prospects" : "business sales activities"}"`, "i"));
+    }
+    expect(drizzle).toMatch(/stage IN \('identified'.*'do_not_contact'\)/);
+    expect(drizzle).toMatch(/paid_amount_npr <= coalesce\(quote_amount_npr, 0\)/);
+    expect(drizzle).toMatch(/set_business_sales_prospect_updated_at/);
+    expect(drizzle).toMatch(/sales_cash_cannot_decrease/);
+    expect(readProjectFile("scripts/ci/test-sewa-database.sh")).toMatch(/migration_count" -ne 14/);
+    expect(readProjectFile("scripts/ci/verify-sewa-database.sql")).toMatch(/private Boxont sales pipeline/);
+  });
+
+
 });
