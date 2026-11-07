@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { hoursToWeek, normalizePhone, slugify, validUrl, weekToHours } from "@/lib/admin-listing";
+import { adminAccessState } from "@/lib/admin-access";
 import { rowToBusiness } from "@/lib/listings.functions";
 import { businesses, getBusiness, listingSnapshot, liveSlugRedirects, setListings } from "@/data/directory";
 
@@ -107,5 +108,19 @@ describe("live listings", () => {
     setListings(listingSnapshot.map((x) => ({ ...x })));
     expect(businesses).toHaveLength(37);
     expect(liveSlugRedirects).toEqual({});
+  });
+});
+
+
+describe("admin access boundary", () => {
+  it("keeps the dashboard closed while authentication or role checks are unresolved", () => {
+    expect(adminAccessState("loading", null)).toBe("loading");
+    expect(adminAccessState("signed-in", null)).toBe("checking");
+  });
+
+  it("requires a signed-in session and an explicit admin role for dashboard access", () => {
+    expect(adminAccessState("signed-out", true)).toBe("sign-in");
+    expect(adminAccessState("signed-in", false)).toBe("denied");
+    expect(adminAccessState("signed-in", true)).toBe("dashboard");
   });
 });
