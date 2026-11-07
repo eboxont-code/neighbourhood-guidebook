@@ -22,7 +22,7 @@ type LeadListing = Pick<Business, "slug" | "name" | "websiteStatus" | "website">
 export function leadListingLinks(
   sourceSlug: string | null | undefined,
   items: readonly LeadListing[] = businesses,
-  redirects: Readonly<Record<string, string>> = { ...slugRedirects, ...liveSlugRedirects },
+  redirects: Readonly<Record<string, string>> = { ...liveSlugRedirects, ...slugRedirects },
 ): { business: LeadListing; slug: string; previewPath: string | null } | null {
   let currentSlug = sourceSlug?.trim();
   if (!currentSlug) return null;
