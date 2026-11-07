@@ -703,7 +703,8 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 | 11 | SW-0168 — Verify website-preview area/address accuracy | REVIEW — draft PR #17 stacked preview-location regression; 4 focused tests and Quality Gate runs #461/#462 passed. |
 | 12 | SW-0169 — Verify map/directions reliability | REVIEW — draft PR #18 stacked on PR #17; 8 invalid-coordinate cases and area-only/street-address directions fallbacks tested; Quality Gate runs #469/#470 passed. |
 | 13 | SW-0170 — Verify website-preview phone action and phone fact | REVIEW — draft PR #19 stacked on PR #18; checked official-source gating and 12 regression cases; Quality Gate runs #475/#476 passed. |
-| 14 | SW-0171 — Verify website action availability | TODO — next eligible task; inspect only the preview's official website action and recorded website status. |
+| 14 | SW-0171 — Verify website action availability | REVIEW — draft PR #28 stacked on PR #19; Website action now requires a working status and an official HTTP(S) URL; 8 focused render cases and final Quality Gates #541/#542 passed. Keep REVIEW until the stack is owner-approved and released. |
+| 15 | SW-0172 — Verify social links come from the correct business record and open safely | TODO — next eligible task; audit listing/preview social-link construction, source ownership and external-link safety. |
 
 ### Task 1 verification notes — 6 November 2026
 
@@ -1035,12 +1036,26 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 - Draft PR [#19](https://github.com/eboxont-code/neighbourhood-guidebook/pull/19) is stacked on draft PR #18 and remains unmerged. Vercel reports a free build-rate-limit failure for this preview; no paid upgrade or manual deployment was attempted. Production deployment dpl_Gou24q64tcmGASESDmvqbxzrWpP7 remains READY on main; the production homepage returned HTTP 200. No production deployment or database write was initiated.
 - No business phone values, source records, production data, schema, migrations, settings, outreach or pricing changed. No live calls or business contacts were made. Additional spend: $0. Keep REVIEW until the stacked preview chain is owner-reviewed and released.
 
-### Next eligible task — SW-0171
+### Previous task — SW-0171
 
-**Status: TODO — verify the website action is omitted or clearly unavailable when no working official website exists.**
+**Status: REVIEW — the listing Website action now appears only when a recorded URL is marked working and passes official HTTP(S) URL validation.**
 
-- Audit the existing preview website action and recorded website / websiteStatus fields; do not infer a working official site from social or third-party URLs.
-- Add focused render tests for missing, failed, not-checked and working official website cases. Preserve recorded URLs and do not contact businesses.
+- Audited `src/routes/s.$slug.tsx`: the quick-action builder used `showWebsite(b)`, which deliberately includes both `working` and `failed` for the separate status disclosure. That let a failed URL remain clickable. The existing `websiteButton(b)` helper requires a recorded URL and `websiteStatus === "working"`; `officialWebsite(b)` additionally rejects non-HTTP(S) and common social-network hosts.
+- Changed only the public Website action gate to require `websiteButton(b) && officialWebsite(b) && b.website`. The status row still discloses a failed check without offering it as a click action.
+- Extended `src/test/listing-owner.test.tsx` with eight focused render cases: failed, not-checked, none-found, owner-no-site, working official URL, social URL, unsafe scheme and missing URL. The positive assertion scopes to the quick-action group and allows repeated responsive action copies.
+- Final GitHub Quality Gate push [#541](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42338535424) and PR [#542](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42338539040) both passed on code head `fd5c2eb99317730fd217e32ab885664a6342d0d0`: TypeScript, ESLint (0 errors; 25 existing warnings), 29 test files / 253 tests, production build, and disposable PostgreSQL migration/security checks. The initial test attempts exposed an assertion that assumed a single responsive action copy; the final regression test checks presence in the quick-action group instead.
+- Read-only production listing aggregate: 52 published rows; 36 contain a website URL; website status counts are 27 working, 2 failed, 9 not-checked, 14 none-found and 0 owner-no-site; 0 rows have explicit `fieldSources.website`. Of rows with URLs, 2 are marked failed and 7 not-checked. The deployed source still uses the old `showWebsite(b)` action gate, so the two failed URLs remain exposed until this stacked fix is released. No business/source records were changed.
+- Current `main` is `7d7b75b3be48724d86c47519b469e51828f8f3b4`; main Quality Gate [#516](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42323594019) passed on that SHA; the separate run #518 was cancelled. The combined status still reports a Vercel build-rate-limit failure.
+- Latest production Vercel deployment [`dpl_5tkK3TvBeyRtV4Sjsve5PbYZDKBB`](https://vercel.com/boxont/neighbourhood-guidebook/5tkK3TvBeyRtV4Sjsve5PbYZDKBB) is READY on commit `41065104ea2bb6906f060d05fc6b2d4abbe5c6bc`; the project lists `sewa.boxont.com` as an attached domain. Main is five commits ahead of production. The PR #28 Vercel preview check is blocked by the free build-rate limit; no upgrade or deployment was attempted.
+- Supabase project `zvbavpcsyvibvpkxjzkn` is ACTIVE_HEALTHY; production migration history lists eight applied migrations. All database inspection was read-only.
+- There are 21 open PRs and 0 open issues. PR #28 is open, draft and stacked on PR #19; it remains unmerged. No local repository checkout is mounted in this runtime, so local working-tree cleanliness is not claimed; the remote PR diff contains only the listing route, its focused regression test and this plan update.
+- No production database writes, migrations, settings, deployment, business contacts, outreach, pricing changes or paid resources. Additional spend: $0. Keep REVIEW until the stacked preview chain is owner-reviewed and released.
+
+### Next eligible task — SW-0172
+
+**Status: TODO — verify social links come from the correct business record and open safely.**
+
+- Audit `socialLinks` and listing/preview render call sites. Confirm links are built only from the current business record, use supported official social domains, and retain safe external-link attributes; add focused missing/malformed/cross-listing regression cases without changing business data.
 ---
 
 ## 10. Instruction for every future AI session
@@ -1272,8 +1287,8 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [REVIEW] **SW-0168 · P0 · Audit current state** — Verify the preview uses the correct area and address fields without upgrading a vague area into an exact address. Evidence: four render tests verify exact address preservation, area-only address preservation, no area-to-address/directions invention, and coordinate-gated map rendering; Quality Gate runs #461/#462 passed (28 files / 223 tests, TypeScript, lint, build and disposable PostgreSQL migration/security checks). Draft PR #17, unmerged.
 - [ ] [REVIEW] **SW-0169 · P0 · Audit current state** — Verify the map/directions action appears only when a reliable location exists. Evidence: `hasPin` rejects missing/partial/non-finite/out-of-range coordinate pairs; directions fallback requires detail beyond area/city labels while preserving explicit URLs and street-level addresses. Eight invalid-coordinate render cases plus area-only and street-level fallback tests; Quality Gate runs #469/#470 passed (28 files / 233 tests, TypeScript, lint, build and disposable PostgreSQL migration/security checks). Draft PR #18 stacked on #17, unmerged.
 - [ ] [REVIEW] **SW-0170 · P0 · Audit current state** — Verify the phone action appears only when a verified public phone exists. Evidence: preview call and phone fact now require checked website/official-social provenance; 12 focused cases; Quality Gate runs #475/#476 passed (29 files / 245 tests). Draft PR #19 is stacked on #18; retain REVIEW until owner-approved release.
-- [ ] [TODO] **SW-0171 · P0 · Audit current state** — Verify the website action is omitted or clearly unavailable when no working official website exists.
-- [ ] [TODO] **SW-0172 · P0 · Audit current state** — Verify social links come from the correct business record and open safely.
+- [ ] [REVIEW] **SW-0171 · P0 · Audit current state** — Verify the website action is omitted or clearly unavailable when no working official website exists. Evidence: `ListingActions` now requires a recorded working website plus official HTTP(S) URL validation; eight render cases cover failed, not-checked, none-found, owner-no-site, working, social, unsafe-scheme and missing-URL states. Final Quality Gates #541/#542 passed (29 files / 253 tests). Draft PR #28 is stacked on PR #19 and remains unmerged; keep REVIEW until owner-approved release.
+- [ ] [TODO] **SW-0172 · P0 · Audit current state** — Verify social links come from the correct business record and open safely. Next eligible after SW-0171 review; inspect the existing listing/preview render path and test source ownership and external-link safety.
 - [ ] [TODO] **SW-0173 · P0 · Audit current state** — Verify service details appear only when provided or separately verified.
 - [ ] [TODO] **SW-0174 · P0 · Audit current state** — Verify the shared template does not leak data between two business slugs.
 - [ ] [TODO] **SW-0175 · P1 · Audit current state** — Verify category colour choices remain readable for every current category.

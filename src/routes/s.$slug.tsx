@@ -8,6 +8,7 @@ import { SectionHead } from "@/components/blocks";
 import { HeartButton, VenueRow } from "@/components/venue";
 import { MapView } from "@/components/map-view";
 import { businesses, dayLabel, placeName, timeLabel, getCity, hasPin, whatsappLink, directionsLink, slugRedirects, liveSlugRedirects, showWebsite, socialLinks, websiteButton, getArea, getBusiness, getCategory, telLink, websiteStatusSentence, kathmanduNow, type Business } from "@/data/directory";
+import { officialWebsite } from "@/lib/verification";
 import { weeklySchedule } from "@/lib/hours";
 import { useI18n, hoursSourceLabel, type Key } from "@/lib/i18n";
 import { businessJsonLd, breadcrumbJsonLd, listingTitle } from "@/lib/seo";
@@ -332,7 +333,7 @@ function ListingActions({ b, dir }: { b: Business; dir?: string | undefined }) {
     ...(b.phone ? [{ href: telLink(b.phone), label: t("callShort"), Icon: Phone, ev: "click_call" as const }] : []),
     ...(b.whatsapp ? [{ href: whatsappLink(b.whatsapp), label: t("whatsapp"), Icon: Phone, ev: "click_whatsapp" as const }] : []),
     ...(dir ? [{ href: dir, label: t("actionDirections"), Icon: Navigation, ev: "click_directions" as const }] : []),
-    ...(showWebsite(b) && b.website ? [{ href: b.website, label: t("actionWebsite"), Icon: Globe, ev: "click_website" as const }] : []),
+    ...(websiteButton(b) && officialWebsite(b) && b.website ? [{ href: b.website, label: t("actionWebsite"), Icon: Globe, ev: "click_website" as const }] : []),
     ...(instagram ? [{ href: instagram.url, label: t("actionInstagram"), Icon: Globe, ev: "click_instagram" as const }] : []),
   ];
   return <div role="group" aria-label={t("quickActions")} className="flex min-w-0 flex-wrap gap-2 lg:flex-col">
