@@ -693,7 +693,7 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 
 **No task is currently marked [IN PROGRESS].**
 
-**Last completed:** SW-0090 — Verify public forms do not publish the owner's private phone number.
+**Last completed:** SW-0096 — Capture business name as a separate field from the person's name.
 
 - The operator contact configuration remains blank for phone, WhatsApp, and email; only an explicitly approved public business contact may be added in future.
 - The public contact and For Businesses production routes returned HTTP 200 and contained no operator `tel:` or WhatsApp links. Listing call actions use the business's own public listing phone.
@@ -703,7 +703,20 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 - Push Quality Gate [#42372472577](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42372472577) and PR Quality Gate [#42372476228](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42372476228) both passed on the final plan commit: TypeScript, ESLint, unit/component tests, production build, and disposable PostgreSQL migration/security tests. Initial implementation push run [#42372201933](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42372201933) also passed.
 - Draft PR: [#38 — keep private operator contact details out of public forms](https://github.com/eboxont-code/neighbourhood-guidebook/pull/38). No merge or production release was performed.
 
-**Next eligible task:** SW-0096 — verify business name is stored separately from the person's name. SW-0091–SW-0095 remain blocked on owner review/release of PR #12. SW-0089 remains blocked pending real desktop/mobile keyboard testing in a browser environment.
+### Completed task — SW-0096 business and submitter names (7 November 2026)
+
+**Status: DONE — the current main implementation already stores the two identities separately; existing rendered-form regression coverage and the full GitHub Quality Gate passed. No schema change or duplicate test was needed.**
+
+- Audited `src/components/forms.tsx`: `contactSchema` requires the person's `name` and keeps `business_name` as a separate optional field. The React form state holds independent values, the business field is prefilled only from the business context, and the submit payload preserves both keys.
+- `src/routes/contact.tsx` and `src/routes/for-businesses.tsx` pass the business identity separately from the submitter name. The person must enter their own name; a listing/business name is not copied into that field.
+- `drizzle/migrations/0000_create_contact_and_correction_forms.sql` defines separate `name` and `business_name` columns. Read-only production `information_schema.columns` inspection confirms both columns exist in `public.contact_messages`; generated Supabase types include both fields. The admin lead view in `src/routes/admin.tsx` uses `business_name` for business identity and `name` for the submitter.
+- Existing regression coverage on PR #12 branch `sewa/analytics-submission-guard-20261106`, file `src/test/analytics-submission.test.tsx`, asserts a contact insert keeps `name: "Test Owner"` and `business_name: "Aavaran"` separate. It also checks mixed-language values (`सुमन श्रेष्ठ` and `Himalayan क्याफे`) and separate business/submitter names for new-business submissions. No duplicate test was added.
+- PR #12 head `1f120d7305ca43dea2da0cc7cafa7e493525d2ef`; Quality Gate run [#42252435434](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42252435434) (workflow run #431) passed both jobs: TypeScript, ESLint, unit/component tests, production build, and disposable PostgreSQL migration/security tests. PR #12 remains open/draft with no submitted reviews; its Vercel status is rate-limited by the Hobby build allowance, separate from the passing GitHub Quality Gate.
+- Production schema inspection was read-only. Production currently has zero contact messages, so no customer records were sampled. No production rows, migrations, settings or secrets were changed.
+- This task verifies existing field separation; it does not authorize production test submissions or a release.
+
+
+**Next eligible task:** SW-0173 — verify service details appear only when provided or separately verified. SW-0091–SW-0095 remain blocked on owner review/release of PR #12. SW-0089 remains blocked pending real desktop/mobile keyboard testing in a browser environment. SW-0172 has passed its implementation and regression Quality Gates in draft PR #37; it remains unmerged pending owner review.
 
 
 ---
@@ -850,7 +863,7 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [BLOCKED] **SW-0093 · P0 · Audit current state** — Retain the form intent when a lead comes from the For Businesses page. **Blocker:** PR #12 already contains For Businesses intent attribution changes on an unmerged draft branch; owner review/release is required.
 - [ ] [BLOCKED] **SW-0094 · P0 · Audit current state** — Set a default source only when the source genuinely cannot be identified. **Blocker:** PR #12 already contains source-fallback changes on an unmerged draft branch; owner review/release is required.
 - [ ] [BLOCKED] **SW-0095 · P0 · Audit current state** — Store source metadata in structured columns rather than embedding it only in a message string. **Blocker:** PR #12 already contains structured source-metadata changes on an unmerged draft branch; owner review/release is required.
-- [ ] [TODO] **SW-0096 · P0 · Audit current state** — Capture business name as a separate field from the person's name.
+- [x] [DONE] **SW-0096 · P0 · Audit current state** — Capture business name as a separate field from the person's name. — Verified in main: separate form state/schema fields, distinct database columns and admin display; rendered regression coverage and Quality Gate #431 passed on PR #12 branch. No production changes.
 - [ ] [TODO] **SW-0097 · P1 · Audit current state** — Capture a reply method that the user can reasonably respond to, without demanding excessive data.
 - [ ] [TODO] **SW-0098 · P1 · Audit current state** — Make phone optional when email or another agreed reply method is sufficient.
 - [ ] [TODO] **SW-0099 · P1 · Audit current state** — Avoid collecting home address, precise location, or unrelated personal information in sales forms.
@@ -938,7 +951,7 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [TODO] **SW-0169 · P0 · Audit current state** — Verify the map/directions action appears only when a reliable location exists.
 - [ ] [TODO] **SW-0170 · P0 · Audit current state** — Verify the phone action appears only when a verified public phone exists.
 - [ ] [TODO] **SW-0171 · P0 · Audit current state** — Verify the website action is omitted or clearly unavailable when no working official website exists.
-- [ ] [TODO] **SW-0172 · P0 · Audit current state** — Verify social links come from the correct business record and open safely.
+- [x] [DONE] **SW-0172 · P0 · Audit current state** — Verify social links come from the correct business record and open safely. — Verified in PR #37; code/test Quality Gate [#42368547258](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42368547258) and final plan Quality Gate [#42368716550](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42368716550) passed both jobs. PR remains draft/unmerged pending owner review.
 - [ ] [TODO] **SW-0173 · P0 · Audit current state** — Verify service details appear only when provided or separately verified.
 - [ ] [TODO] **SW-0174 · P0 · Audit current state** — Verify the shared template does not leak data between two business slugs.
 - [ ] [TODO] **SW-0175 · P1 · Audit current state** — Verify category colour choices remain readable for every current category.
@@ -1893,4 +1906,4 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [TODO] **SW-0999 · P2 · Audit current state** — Keep production seed/test records clearly marked so they do not look like real customers.
 - [ ] [TODO] **SW-1000 · P2 · Audit current state** — Document the database schema for listings, fields, sources, leads, and claims.
 
-Current register status on this branch: **7 DONE, 22 REVIEW, 33 BLOCKED, 937 TODO** across 999 Markdown task rows. The 1,000 unique IDs remain present; SW-0298 and SW-0299 share one existing Markdown row.
+Current register status on this branch: **9 DONE, 22 REVIEW, 33 BLOCKED, 935 TODO** across 999 Markdown task rows. All 1,000 unique IDs remain present; SW-0298 and SW-0299 share one existing Markdown row.
