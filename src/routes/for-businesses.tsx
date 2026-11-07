@@ -23,7 +23,7 @@ export const Route = createFileRoute("/for-businesses")({
   head: () => {
     const head = pageMeta(
       "Website design in Kathmandu for salons, spas and clinics",
-      "Website design in Kathmandu for small businesses: simple, mobile-friendly sites for salons, barbers, spas and clinics with services, hours, one-tap call and map. Your directory listing stays free.",
+      `${dict.en.fbOwnerIntro} Your SEWA directory listing stays free.`,
       "/for-businesses",
     );
     const en = dict.en;
@@ -33,7 +33,7 @@ export const Route = createFileRoute("/for-businesses")({
       serviceType: "Website design", url: `${SITE_URL}/for-businesses`,
       areaServed: { "@type": "City", name: "Kathmandu" },
       provider: { "@type": "Organization", name: SITE_NAME, url: SITE_URL },
-      description: "Simple, mobile-friendly websites for salons, barbers, spas and clinics in Kathmandu.",
+      description: dict.en.fbOwnerIntro,
     };
     const faqLd = {
       "@context": "https://schema.org", "@type": "FAQPage",
