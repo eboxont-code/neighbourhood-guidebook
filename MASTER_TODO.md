@@ -688,7 +688,7 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 - Bundle 8 and Proposal Composer remain gated behind Bundle 7 and owner approval.
 - No production migration, deployment, setting change or merge was performed.
 
-### Current task — SW-0046: listing preview click attribution
+### Completed task — SW-0046: listing preview click attribution
 
 **Status: DONE — verified by rendered component regression test and both final GitHub Quality Gates.**
 
@@ -706,9 +706,10 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 
 ### Current repository and production verification — 7 November 2026
 
-- GitHub `main`: `7d7b75b3be48724d86c47519b469e51828f8f3b4`; main Quality Gate #516 passed. The main Vercel check is blocked by the Hobby daily build-rate limit.
-- Remote inventory at this checkpoint: 37 branches, 22 open PRs (all drafts), 0 open issues. Main reports `protected=false`. No local checkout is mounted in this runtime, so no local working-tree cleanliness is claimed.
-- PR #30 is open, draft and mergeable against current main. PR #29 is closed unmerged.
+- GitHub `main`: `7d7b75b3be48724d86c47519b469e51828f8f3b4`; main Quality Gate run #42323594019 passed. The main Vercel check remains blocked by the Hobby daily build-rate limit.
+- Remote inventory at this checkpoint: 38 branches, 23 open PRs, 0 open issues. Main reports `protected=false`. No local checkout is mounted in this runtime, so no local working-tree cleanliness is claimed.
+- PR #30 is open, draft and mergeable against current main. PR #31 is open, draft and mergeable, stacked on PR #30. PR #29 is closed unmerged.
+- PR #31 preview deployment `dpl_5EqmrAHbbPs2ZYTgUR1Yd75txkzH` is READY on commit `f2b7a6faa53345fe85e1a521f22f3712539df81f`; this is not a production deployment.
 - Production Vercel deployment `dpl_5tkK3TvBeyRtV4Sjsve5PbYZDKBB` is READY on commit `41065104ea2bb6906f060d05fc6b2d4abbe5c6bc`; main is five commits ahead. The production domain remains attached. No production deployment was attempted.
 - Active Supabase production project: `zvbavpcsyvibvpkxjzkn` (ACTIVE_HEALTHY). Read-only aggregate counts: 52 published listings, 0 contact messages, 8 analytics events, 0 claims, 0 business submissions, 0 correction reports and 0 listing promotions. Contact-message stage counts are all zero.
 - `contact_messages` and `user_roles` have RLS enabled. Live policy metadata shows admin-only SELECT/UPDATE for contact messages through `has_role(auth.uid(), 'admin')`; anonymous SELECT is not granted. The disposable PostgreSQL security suite passed on both final PR #30 runs.
@@ -717,7 +718,23 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 - `npm ci` reported 13 dependency vulnerabilities (11 moderate, 2 high) in the existing lockfile; no dependency upgrades were included in this task.
 - The Lovable north-star file remains unchanged.
 
-**Next eligible task: SW-0047 — track preview-page views with the business slug as a non-personal content identifier.** The existing `preview_view` call is present; add a rendered-route regression test before marking it DONE.
+### Current task — SW-0047: preview-view attribution
+
+**Status: DONE — verified by rendered-route regression test and both final GitHub Quality Gates.**
+
+- Audited `src/routes/s.$slug_.website-preview.tsx`: the existing `PreviewPage` effect calls `track("preview_view", { slug: b.slug })` and is keyed by `b.slug`. No application change was needed.
+- Added `src/test/preview-analytics.test.tsx`. The rendered-route test mounts an eligible preview, verifies exactly one `preview_view` with the correct business slug, verifies an unchanged rerender does not double-fire, and verifies switching the loaded business slug emits one correctly attributed event for the new business.
+- The test mocks the analytics client; it does not insert production or test rows. No visitor identifier, cookie, form/contact data, event allowlist change, schema change, or new analytics provider was added.
+- Implementation commit: `f2b7a6faa53345fe85e1a521f22f3712539df81f`. Draft PR #31: https://github.com/eboxont-code/neighbourhood-guidebook/pull/31 (stacked on PR #30; do not merge independently of its parent).
+- Push Quality Gate #42346869853 passed: https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42346869853.
+- PR Quality Gate #42346894490 passed: https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42346894490.
+- Both final workflows passed dependency installation, TypeScript validation, ESLint, all unit/component tests, production build, and disposable PostgreSQL migration/security tests. The push run reported 25 test files and 181 tests passed; lint had 0 errors and 25 existing warnings. `npm ci` reported 13 existing dependency vulnerabilities (11 moderate, 2 high).
+- Vercel preview deployment `dpl_5EqmrAHbbPs2ZYTgUR1Yd75txkzH` is READY on this commit: https://vercel.com/boxont/neighbourhood-guidebook/5EqmrAHbbPs2ZYTgUR1Yd75txkzH. This is preview only.
+- Read-only production GET of `/s/nuad-thai-lazimpat/website-preview` returned HTTP 200 and `noindex, nofollow`. Production deployment remains READY on `41065104ea2bb6906f060d05fc6b2d4abbe5c6bc`; main remains five commits ahead. No production deployment was attempted.
+- Read-only Supabase snapshot: 52 published listings; 8 analytics events (5 `preview_view`, 2 `search_zero`, 1 `claim_click`); 0 contact messages, claims, business submissions, correction reports, and listing promotions.
+- No production database writes, migrations, authentication/settings changes, or deployment. Additional spend: $0.
+
+**Next eligible task: SW-0048 — track the primary preview CTA click without sending personal form data to analytics.** The existing CTA emits `preview_enquiry_click`; add a rendered-route regression test proving one event with the business slug and no form/contact fields.
 ---
 
 ## 10. Instruction for every future AI session
@@ -807,7 +824,7 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [BLOCKED] **SW-0044 · P0 · Audit current state** — Record organic-search visits separately from direct, referral, and campaign visits where data supports it. Blocked: organic/referral/campaign attribution fields are not retained; the required schema change must wait for the outstanding Bundle 7 migration ordering/review.
 - [ ] [BLOCKED] **SW-0045 · P0 · Audit current state** — Record visits to listing pages separately from website-preview pages. Blocked: a listing_view event requires an analytics allowlist/database migration; PR #10 already reserves the next migration slot and is owner-gated.
 - [x] [DONE] **SW-0046 · P0 · Audit current state** — Track clicks on each listing's website-preview link with a stable event name. Evidence: listing route regression test proves one preview_click with the listing slug per click; final push and PR Quality Gates #555/#556 passed.
-- [ ] [TODO] **SW-0047 · P0 · Audit current state** — Track preview-page views with the business slug as a non-personal content identifier.
+- [x] [DONE] **SW-0047 · P0 · Audit current state** — Track preview-page views with the business slug as a non-personal content identifier. Evidence: rendered-route regression test verifies one `preview_view` with the correct slug, no duplicate on unchanged rerender, and correct attribution when the slug changes; final push/PR Quality Gates #42346869853/#42346894490 passed.
 - [ ] [TODO] **SW-0048 · P0 · Audit current state** — Track the primary preview CTA click without sending personal form data to analytics.
 - [ ] [TODO] **SW-0049 · P0 · Audit current state** — Track website-enquiry form starts and successful submissions as separate events.
 - [ ] [TODO] **SW-0050 · P0 · Audit current state** — Track claim-flow starts and completed claim submissions separately.
