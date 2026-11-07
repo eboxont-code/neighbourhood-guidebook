@@ -63,7 +63,7 @@ describe("admin insights", () => {
     expect(payload.listing_slug).toBe("listing-a");
     expect(Object.keys(payload).sort()).toEqual(["event", "lang", "listing_slug", "path", "query"]);
 
-    const supabaseMigration = readFileSync(new URL("../../supabase/migrations/20261107091900_listing_view_event.sql", import.meta.url), "utf8");
+    const supabaseMigration = readFileSync("supabase/migrations/20261107091900_listing_view_event.sql", "utf8");
     const drizzleMigration = readFileSync(new URL("../../drizzle/migrations/0013_listing_view_event.sql", import.meta.url), "utf8");
     expect(supabaseMigration).toBe(drizzleMigration);
     expect(supabaseMigration).toContain("'listing_view'");
