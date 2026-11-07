@@ -726,9 +726,24 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 - Vercel preview deployment `dpl_FHn8tMCzvxmYoRSAr88pDKV9i4fF` is READY for this branch. It is not a production deployment.
 - No application code, business data, production database, migrations, Auth settings, pricing, outreach, or production deployment changed. Additional spend: $0.
 
+### Completed task — SW-0041
+
+**Status: DONE on the SW-0041 draft branch — 7 November 2026.** Production analytics is already installed as anonymous, first-party Supabase event tracking. A separate third-party analytics product is not needed for the current measurement scope.
+
+Evidence:
+- `src/lib/track.ts` defines the 18-event `TRACK_EVENTS` allowlist and sends events to the existing `public.analytics_events` table through the Supabase client. Tracking is skipped during server rendering and when Do Not Track is enabled. The payload contains only event, listing slug, normalised search query, language and path; it does not contain names, account IDs, cookies or device coordinates.
+- `src/components/admin-insights.tsx` reads the same table; `src/lib/insights.ts` aggregates search terms, zero-result demand, click events and the preview/claim/enquiry funnel. `package.json` contains no third-party analytics SDK.
+- The repository migration chain creates the table and RLS rules in `20261028005902_analytics_events.sql`, adds preview/claim/enquiry events in `20261029004600_analytics_funnel_events.sql`, adds service-package events in `20261103114000_service_revenue_pipeline.sql`, and adds `sponsored_click` in `20261104100000_listing_promotions.sql`. The Supabase and Drizzle listing-promotion migration files are byte-identical. The resulting 18-value database constraint matches the application allowlist.
+- Read-only production inspection of Supabase project `zvbavpcsyvibvpkxjzkn` confirms the project is `ACTIVE_HEALTHY`; `public.analytics_events` exists with RLS enabled and 8 rows. Event counts: 5 `preview_view`, 2 `search_zero`, and 1 `claim_click`. There are 52 published listings and 0 saved contact messages, claims, business submissions, correction reports or promotions.
+- These are raw anonymous event rows, not unique visitors or sessions. The current implementation cannot measure unique visitors or repeat visits; no such claim is made.
+- No analytics provider, SDK, cookie, visitor identifier, tracking behaviour, schema or database migration was added. No production rows, settings or deployment were changed. Additional spend: $0.
+
+**Verification boundary:** GitHub Quality Gate [#42323594019](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42323594019) passed on current `main` at `7d7b75b3be48724d86c47519b469e51828f8f3b4`. The existing SW-0007 PR's task and final-plan checks [#42329299572](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42329299572) and [#42329415679](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42329415679) also passed. SW-0041 branch Quality Gates [push #42333373316](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42333373316) and [PR #42333384227](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42333384227) both completed successfully, including TypeScript, ESLint, unit/component tests, production build, and disposable PostgreSQL migration/security tests. The PR preview deployment `dpl_GiEsUzSArb1ccPEhmoV4S8g55Xmu` is READY at `https://neighbourhood-guidebook-nm5ovy2o3-boxont.vercel.app`; it is a preview only, not production. Production deployment remains READY on `41065104ea2bb6906f060d05fc6b2d4abbe5c6bc`, five commits behind `main`; no deployment was attempted because the Vercel Hobby daily deployment allowance is exhausted.
+
 ### Next eligible task
 
-**SW-0041 — Check whether production analytics are already installed before adding another analytics product.** SW-0002–SW-0006 are blocked pending owner review/reconciliation of their existing draft PRs #20–#24; SW-0008 is blocked pending the owner's business decision on the evaluation window. Do not repeat those branch-only tasks or invent a decision window.
+**SW-0042 — Verify analytics events are not double-fired during route changes or form submissions.** Audit existing `track()` call sites and route/form lifecycle behaviour, then add focused regression tests only if a real duplicate path is found. This can be investigated with repository code and local/CI tests; it does not require production writes, a customer submission, an owner session, or another analytics provider.
+
 
 ---
 
@@ -813,7 +828,7 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 **Phase:** 1 - Revenue foundation  
 **Definition of done:** The owner can answer where qualified leads came from, which page generated them, and which funnel step leaks.
 
-- [ ] [TODO] **SW-0041 · P0 · Audit current state** — Check whether production analytics are already installed before adding another analytics product.
+- [x] [DONE] **SW-0041 · P0 · Audit current state** — Check whether production analytics are already installed before adding another analytics product. Verified 7 November 2026: anonymous first-party Supabase tracking, the production `analytics_events` table, and the admin Insights view are already installed; no separate analytics product is needed.
 - [ ] [TODO] **SW-0042 · P0 · Audit current state** — Verify that analytics events are not double-fired during route changes or form submissions.
 - [ ] [TODO] **SW-0043 · P0 · Audit current state** — Record weekly unique visitors and pageviews by landing page.
 - [ ] [TODO] **SW-0044 · P0 · Audit current state** — Record organic-search visits separately from direct, referral, and campaign visits where data supports it.
