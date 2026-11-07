@@ -1,5 +1,5 @@
 import { createElement, type ReactNode } from "react";
-import { cleanup, render, waitFor } from "@testing-library/react";
+import { cleanup, fireEvent, render, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 const { trackMock } = vi.hoisted(() => ({ trackMock: vi.fn() }));
@@ -51,6 +51,32 @@ describe("website preview analytics", () => {
 
       await waitFor(() => expect(trackMock).toHaveBeenCalledTimes(2));
       expect(trackMock).toHaveBeenNthCalledWith(2, "preview_view", { slug: second.slug });
+    } finally {
+      loader.mockRestore();
+    }
+  });
+
+  it("tracks one primary enquiry CTA click with only the business slug", async () => {
+    const [business] = previewExamples(businesses);
+    if (!business) throw new Error("Expected an eligible preview listing");
+
+    const component = Route.options.component;
+    if (!component) throw new Error("Missing website preview page component");
+
+    const loader = vi.spyOn(Route, "useLoaderData").mockReturnValue({ business });
+    try {
+      const view = render(createElement(component));
+
+      await waitFor(() => expect(trackMock).toHaveBeenCalledWith("preview_view", { slug: business.slug }));
+      trackMock.mockClear();
+
+      const cta = view.container.querySelector(".pv-bar a");
+      if (!cta) throw new Error("Missing primary preview enquiry CTA");
+      fireEvent.click(cta);
+
+      expect(trackMock).toHaveBeenCalledTimes(1);
+      expect(trackMock).toHaveBeenCalledWith("preview_enquiry_click", { slug: business.slug });
+      expect(trackMock.mock.calls[0]).toEqual(["preview_enquiry_click", { slug: business.slug }]);
     } finally {
       loader.mockRestore();
     }
