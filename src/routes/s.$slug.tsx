@@ -128,6 +128,8 @@ function ShopPage() {
   const headRef = useRef<HTMLDivElement>(null);
   const [stuck, setStuck] = useState(false);
   const [spy, setSpy] = useState("about");
+
+  useEffect(() => { track("listing_view", { slug: b.slug }); }, [b.slug]);
   const dir = typeof b.lat === "number" && typeof b.lng === "number" ? `https://www.google.com/maps/search/?api=1&query=${b.lat},${b.lng}` : b.address ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(b.address)}` : undefined;
   const tabs = [
     { id: "about", label: t("tabAbout") },
