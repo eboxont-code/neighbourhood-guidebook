@@ -19,7 +19,7 @@
 
 SEWA is a free, useful, neighbourhood-first directory for discovering real local businesses. Boxont is the commercial operator.
 
-**North star:** qualified website-design enquiries that can realistically become paid Boxont projects.
+**North star:** Generate qualified website-design opportunities for Boxont from SEWA, with a realistic path to paid projects.
 
 **Main funnel:** useful listing or qualified prospect → relevant free website preview → one clear CTA → attributed enquiry → manual qualification → quote/proposal → won or lost → payment and delivery.
 
@@ -703,9 +703,18 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 - Original PR #7 was closed unmerged by the repository owner on 6 November 2026. PR #10 is the clean replacement draft; its current head passed Quality Gate runs [#42219577306](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42219577306) and [#42218901255](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42218901255), but it has no owner review submissions. Wait for explicit owner review/approval before release merge or moving to Bundle 8.
 - No production database migration, production deployment, production setting change or merge was performed. Bundle 8 was left untouched.
 
-### Current task — SW-0001
+### Completed task — SW-0001
 
-**Status: IN PROGRESS.** Make the north-star goal explicit in Section 0, then mark the register row complete only after the plan read-back and final CI pass. No application or production change is required.
+**Status: DONE — 7 November 2026.** Section 0 now states the one-sentence north-star goal explicitly: generate qualified website-design opportunities for Boxont from SEWA, with a realistic path to paid projects.
+
+- The goal names SEWA as the source and Boxont as the commercial operator.
+- It prioritises qualified website-design opportunities rather than directory size, raw traffic, or feature count.
+- No numerical target, owner willingness to pay, or conversion result was invented.
+- This was a strategy/documentation task. No application code, customer data, production settings, database schema, or deployment changed.
+
+### Next eligible task
+
+**SW-0002 — Define a qualified website lead using observable criteria, not assumptions about willingness to pay.** This is the next P0 register item and can be documented from existing form fields and manual review rules without owner-only credentials or a production write.
 
 ---
 
@@ -744,7 +753,7 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 **Phase:** 1 - Revenue foundation  
 **Definition of done:** One page defines the revenue goal, what the site sells, what is deliberately deferred, and the rules that prevent trust or outreach mistakes.
 
-- [ ] [IN PROGRESS] **SW-0001 · P0 · Audit current state** — Write a one-sentence north-star goal: generate qualified website-design opportunities for Boxont from Sewa.
+- [x] [DONE] **SW-0001 · P0 · Audit current state** — Write a one-sentence north-star goal: generate qualified website-design opportunities for Boxont from Sewa. Explicit SEWA-to-Boxont north-star recorded in Section 0 and verified 7 November 2026.
 - [ ] [TODO] **SW-0002 · P0 · Audit current state** — Define a qualified website lead using observable criteria, not assumptions about willingness to pay.
 - [ ] [TODO] **SW-0003 · P0 · Audit current state** — Define the primary conversion as a completed website enquiry with identifiable business context.
 - [ ] [TODO] **SW-0004 · P0 · Audit current state** — Define secondary conversions for preview views, preview CTA clicks, claim requests, contact-form sends, and repeat visits.
