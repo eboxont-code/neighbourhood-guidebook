@@ -90,4 +90,4 @@ Across the 18 eligible records: 4 preview-view events across 3 businesses; 0 CTA
 
 ## Source and export note
 
-The detailed 1,000-row checklist and seven-sheet workbook were exported as the audit deliverable in the originating ChatGPT conversation. This repository copy records the checkpoint findings and method. Do not treat this Markdown summary as a substitute for the full checklist.
+The complete, Git-tracked 1,000-row checklist is in [`1000-POINT-CHECKLIST.md`](./1000-POINT-CHECKLIST.md). It preserves every criterion ID, status, priority, one-point scoring rule and row-level evidence note for all reviewed checks. The seven-sheet Excel workbook remains a separate local artifact; this repository contains the Markdown checklist and this audit summary.
