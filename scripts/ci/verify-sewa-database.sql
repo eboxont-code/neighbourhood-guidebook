@@ -68,10 +68,21 @@ BEGIN
   ] LOOP
     IF has_table_privilege('anon', format('public.%I', table_name), 'SELECT')
        OR has_table_privilege('anon', format('public.%I', table_name), 'UPDATE')
-       OR has_table_privilege('anon', format('public.%I', table_name), 'DELETE') THEN
+       OR has_table_privilege('anon', format('public.%I', table_name), 'DELETE')
+       OR has_table_privilege('anon', format('public.%I', table_name), 'TRUNCATE') THEN
       RAISE EXCEPTION 'anonymous role has an unexpected private-table privilege on %', table_name;
     END IF;
   END LOOP;
+
+  IF has_column_privilege('anon', 'public.contact_messages', 'admin_note', 'INSERT')
+     OR has_column_privilege('authenticated', 'public.contact_messages', 'admin_note', 'INSERT')
+     OR has_column_privilege('anon', 'public.contact_messages', 'admin_note', 'UPDATE')
+     OR has_table_privilege('anon', 'public.contact_messages', 'SELECT') THEN
+    RAISE EXCEPTION 'public roles must not read or write private contact-message sales notes';
+  END IF;
+  IF NOT has_column_privilege('authenticated', 'public.contact_messages', 'admin_note', 'UPDATE') THEN
+    RAISE EXCEPTION 'authenticated administrators must be able to update private sales notes';
+  END IF;
 
   SELECT count(*)
   INTO trigger_count
@@ -221,6 +232,49 @@ SET ROLE anon;
 SELECT set_config('request.headers', '{"cf-connecting-ip":"198.51.100.77"}', false);
 DO $$
 DECLARE
+  note_insert_blocked boolean := false;
+BEGIN
+  BEGIN
+    INSERT INTO public.contact_messages (name, message, page, admin_note)
+    VALUES ('SEWA CI Private Note Test', 'Disposable private-note boundary test', 'contact', 'must stay private');
+  EXCEPTION WHEN insufficient_privilege THEN
+    note_insert_blocked := true;
+  END;
+  IF NOT note_insert_blocked THEN
+    RAISE EXCEPTION 'anonymous caller inserted a private contact-message sales note';
+  END IF;
+END
+$$;
+
+DO $$
+DECLARE
+  note_insert_blocked boolean := false;
+BEGIN
+  BEGIN
+    INSERT INTO public.business_submissions (business_name, category, area, is_owner, name, contact, admin_note)
+    VALUES ('SEWA CI Private Note Test', 'cafes', 'thamel', true, 'CI Submitter', 'ci@example.com', 'must stay private');
+  EXCEPTION WHEN insufficient_privilege THEN
+    note_insert_blocked := true;
+  END;
+  IF NOT note_insert_blocked THEN
+    RAISE EXCEPTION 'anonymous caller inserted a private business-submission admin note';
+  END IF;
+END
+$$;
+RESET ROLE;
+
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM public.business_submissions WHERE business_name = 'SEWA CI Private Note Test') THEN
+    RAISE EXCEPTION 'rejected private-note submission was stored';
+  END IF;
+END
+$$;
+
+SET ROLE anon;
+SELECT set_config('request.headers', '{"cf-connecting-ip":"198.51.100.77"}', false);
+DO $$
+DECLARE
   attempt integer;
   blocked boolean := false;
 BEGIN
@@ -289,6 +343,9 @@ BEGIN
   IF (SELECT count(*) FROM public.contact_messages WHERE name = 'SEWA CI Rate Test') <> 0 THEN
     RAISE EXCEPTION 'a non-admin caller read private contact messages';
   END IF;
+  UPDATE public.contact_messages
+    SET admin_note = 'unauthorised note write'
+    WHERE name = 'SEWA CI Rate Test';
   IF (SELECT count(*) FROM public.listing_promotions) <> 1 THEN
     RAISE EXCEPTION 'a non-admin caller could not see the public active campaign';
   END IF;
@@ -321,6 +378,18 @@ BEGIN
   END IF;
   IF (SELECT count(*) FROM public.contact_messages WHERE name = 'SEWA CI Rate Test') <> 3 THEN
     RAISE EXCEPTION 'the administrator could not read private contact messages';
+  END IF;
+  IF (SELECT count(*) FROM public.contact_messages WHERE name = 'SEWA CI Rate Test' AND admin_note IS NOT NULL) <> 0 THEN
+    RAISE EXCEPTION 'a non-admin caller changed a private sales note';
+  END IF;
+  UPDATE public.contact_messages
+    SET admin_note = 'Private sales note CI'
+    WHERE id = (SELECT id FROM public.contact_messages WHERE name = 'SEWA CI Rate Test' ORDER BY id LIMIT 1);
+  IF NOT EXISTS (
+    SELECT 1 FROM public.contact_messages
+    WHERE name = 'SEWA CI Rate Test' AND admin_note = 'Private sales note CI'
+  ) THEN
+    RAISE EXCEPTION 'the administrator could not save a private sales note';
   END IF;
   UPDATE public.contact_messages
     SET quote_amount_npr = 15000, payment_status = 'quoted'
