@@ -8,8 +8,8 @@ const at = (d: number) => new Date(now.getTime() - d * 86400000).toISOString();
 const ev = (event: string, d = 1, listing_slug: string | null = null) => ({ event, listing_slug, query: null, created_at: at(d) });
 
 describe("funnel", () => {
-  it("tracks the five new funnel events", () => {
-    for (const e of ["preview_view", "preview_enquiry_click", "claim_submit", "enquiry_submit", "nearby_click"]) expect(TRACK_EVENTS).toContain(e);
+  it("tracks listing and preview funnel events", () => {
+    for (const e of ["listing_view", "preview_view", "preview_enquiry_click", "claim_submit", "enquiry_submit", "nearby_click"]) expect(TRACK_EVENTS).toContain(e);
   });
   it("computes step-to-step percentages and a dash when the earlier step is 0", () => {
     const rows = [ev("preview_click"), ev("preview_click"), ev("preview_click"), ev("preview_click"), ev("preview_view", 1, "a"), ev("preview_view", 2, "a"), ev("preview_view", 2, "b"), ev("preview_enquiry_click"), ev("claim_submit"), ev("preview_view", 20, "c")];
