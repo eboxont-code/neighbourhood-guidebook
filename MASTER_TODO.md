@@ -912,7 +912,7 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 **Phase:** 1 - Revenue foundation  
 **Definition of done:** The current shared preview template gives each suitable business a credible concept, remains clearly a preview, and produces attributable enquiries.
 
-- [ ] [REVIEW] **SW-0161 · P0 · Reported preview template exists; regression-test** — Regression-test the existing shared preview template against a business with no website.
+- [ ] [IN PROGRESS] **SW-0161 · P0 · Reported preview template exists; regression-test** — Regression-test the existing shared preview template against a business with no website. Selected 8 November 2026; use the existing published no-website listing as a disposable render fixture, with no production writes.
 - [ ] [REVIEW] **SW-0162 · P0 · Reported preview template exists; regression-test** — Regression-test the template against a business whose listed website is broken.
 - [ ] [REVIEW] **SW-0163 · P0 · Reported preview template exists; regression-test** — Regression-test the template against a business with a working website to ensure it is not mislabelled.
 - [ ] [TODO] **SW-0164 · P0 · Audit current state** — Verify preview routes use the expected business slug and fail safely for an unknown slug.
