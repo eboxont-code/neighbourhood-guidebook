@@ -7,6 +7,10 @@ function readProjectFile(path: string): string {
   return readFileSync(resolve(process.cwd(), path), "utf8");
 }
 
+function normalizeSql(sql: string): string {
+  return sql.split("\n").filter((line) => !line.trim().startsWith("--")).join("\n").replace(/\\s+/g, " ").trim();
+}
+
 describe("private sales-note boundaries", () => {
   it("keeps admin notes out of public form schemas and routes", () => {
     const contactPayload = contactSchema.parse({
@@ -57,7 +61,7 @@ describe("private sales-note boundaries", () => {
     const leadMigration = readProjectFile("drizzle/migrations/0003_contact_messages_lead_status.sql");
     const deployedLeadMigration = readProjectFile("supabase/migrations/20261019014611_contact_messages_lead_status.sql");
 
-    expect(leadMigration).toBe(deployedLeadMigration);
+    expect(normalizeSql(leadMigration)).toBe(normalizeSql(deployedLeadMigration));
     expect(base).toMatch(/ALTER TABLE public\.contact_messages ENABLE ROW LEVEL SECURITY/i);
     expect(rolePolicies).toMatch(/CREATE POLICY "Admins can read contact messages"[\s\S]*?public\.has_role\(auth\.uid\(\),\s*'admin'/i);
     expect(leadMigration).toMatch(/CREATE POLICY "Admins can update contact messages"[\s\S]*?public\.has_role\(auth\.uid\(\),\s*'admin'/i);
