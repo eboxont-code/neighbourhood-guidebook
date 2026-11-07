@@ -51,8 +51,9 @@ function previewMarkup(services: Business["services"]) {
 
 function serviceItems(markup: string): string[] {
   const document = new DOMParser().parseFromString(markup, "text/html");
+  const labels: string[] = [dict.en.services, dict.ne.services];
   const heading = Array.from(document.querySelectorAll("h3")).find((item) =>
-    [dict.en.services, dict.ne.services].includes(item.textContent ?? ""),
+    labels.includes(item.textContent ?? ""),
   );
   const list = heading?.nextElementSibling;
   if (!(list instanceof HTMLUListElement)) throw new Error("Missing preview services list");
