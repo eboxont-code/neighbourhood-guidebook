@@ -138,6 +138,22 @@ Keep the current and future commercial streams separate. These are internal meas
 
 ---
 
+### Meaningful directory outcomes — 7 November 2026
+
+Directory traffic is exposure, not success. Report the outcome stages separately; do not add them together as if every event were a different person or a completed outcome.
+
+1. **Exposure and activity:** visits, searches, preview views, and raw analytics-event counts describe reach or usage only. The current `analytics_events` schema has no visitor or session identifier, so event rows are not unique visitors or repeat visits.
+2. **Intent:** `preview_click`, `preview_enquiry_click`, `claim_click`, `click_call`, `click_whatsapp`, `click_directions`, `click_website`, `click_instagram`, `nearby_click`, and `save` record actions or taps, not completed calls, conversations, journeys, claims, or leads. In particular, `click_call` does not prove that a call connected. Keep the Lovable north-star file unchanged; describe the current measure as call-button taps until a completion signal exists.
+3. **Submitted requests:** count a request only from its persisted row, once by primary key, in `contact_messages`, `business_claims`, `business_submissions`, or `correction_reports`. A click, validation state, success screen, honeypot-only response, failed/rate-limited insert, or best-effort analytics event is not proof of a saved request.
+4. **Reviewed directory and owner outcomes:** a claim is owner-verified only when `business_claims.status = 'verified'`. A business submission is not a published supply improvement merely because its review status changes: the admin action updates the submission status/note only, and the submission schema has no `listing_id`; separately verify a corresponding published `listings` record. A correction is complete only after the actual listing change is confirmed; `correction_reports` has no resolution-status field, so raw report counts are not resolved-correction counts.
+5. **Commercial outcomes:** a website enquiry is a qualified opportunity only after the manual SW-0002 criteria are met. A quote is pipeline value, a `won` lead status is a won opportunity, and recorded paid amounts are cash received. Keep website services, sponsored placements, future subscriptions, and bookings separate under SW-0005. Traffic, clicks, enquiry counts, and quote values are not revenue.
+
+**Consumer outcome evidence:** current tracking cannot prove that a call, WhatsApp conversation, directions journey, or visit was completed. Report outbound taps as intent proxies, not customer outcomes; claim completion only with explicit user-confirmed or otherwise verified evidence.
+
+**No numerical target yet:** do not set a traffic-to-outcome target until a reliable baseline and outcome capture exist. Do not add visitor IDs, cookies, new analytics events, or personal data for this task; any measurement change needs a separate privacy review.
+
+**Read-only production snapshot — 7 November 2026:** 52 published listings; 8 analytics rows (5 `preview_view`, 1 `claim_click`, 2 `search_zero`); 0 `contact_messages`, 0 `business_claims`, 0 `business_submissions`, 0 `correction_reports`, and 0 `listing_promotions`. This is the recorded database snapshot only; it does not prove that no consumer value or off-platform outcomes exist.
+
 ## 1. Non-negotiable rules
 
 - **$0 additional expenditure.** Use existing free allowances and open-source software. Never upgrade, subscribe, purchase an API, create billable infrastructure or accept a charge without asking for explicit approval first.
@@ -725,7 +741,7 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 | 10 | Improve directory quality and coverage based on real user demand and lead value | BLOCKED — only 2 zero-result searches and no saved enquiries are present in the current production snapshot; the prospect CSV is also unavailable, so demand/lead-value prioritisation is not evidence-based yet |
 | 11 | Define secondary conversions for preview views, preview CTA clicks, claim requests, contact-form sends, and repeat visits | DONE 7 Nov 2026 — definitions and measurement limits recorded in Section 0 and verified against current code and the live event constraint |
 | 12 | Separate website-design revenue metrics from future listing-subscription and booking revenue metrics | DONE 7 Nov 2026 — website-service totals now exclude promotion requests; current and future revenue streams and refund limits are defined and tested in PR #23 |
-| 13 | Record that directory traffic alone is not success unless it creates useful customer or business-owner outcomes | TODO — SW-0006 is the next independently actionable P0 register item; define outcomes without inventing numerical targets |
+| 13 | Record that directory traffic alone is not success unless it creates useful customer or business-owner outcomes | IN PROGRESS — SW-0006; outcome stages drafted against current analytics, forms, admin review and read-only production evidence |
 
 ### Task 1 verification notes — 7 November 2026
 
@@ -807,10 +823,10 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 - GitHub snapshot after opening PR #23: 30 branches, 16 open draft PRs, 0 open issues. Main remains `ee38ca0e978f0149ca10f5b2caadb33282729148`; its Quality Gate run [#42217060656](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42217060656) passed. The runtime has no local repository checkout, so no local working-tree status is claimed.
 - No production rows, migrations, settings, secrets, DNS, billing, pricing, or deployment were changed. No outreach was sent. Additional spend: $0.
 
-### Next eligible task
+### Current task
 
 **SW-0006 — Record that directory traffic alone is not success unless it creates useful customer or business-owner outcomes.**  
-This is an independently actionable definition task. It can distinguish visitor activity from meaningful customer and business-owner outcomes without inventing targets or requiring owner input.
+**Status: IN PROGRESS — outcome definitions drafted against current analytics, persisted submission paths, admin review controls, and read-only production evidence; final verification pending.**
 
 
 ---
@@ -855,7 +871,7 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [x] [DONE] **SW-0003 · P0 · Audit current state** — Define the primary conversion as a completed website enquiry with identifiable business context. Definition and source-of-truth rules recorded in Section 0 on 7 November 2026.
 - [x] [DONE] **SW-0004 · P0 · Audit current state** — Define secondary conversions for preview views, preview CTA clicks, claim requests, contact-form sends, and repeat visits. Definitions and measurement limits recorded in Section 0 on 7 November 2026.
 - [x] [DONE] **SW-0005 · P0 · Audit current state** — Separate website-design revenue metrics from future listing-subscription and booking revenue metrics. Website-service categorisation, sponsored-placement separation, and future subscription/booking boundaries implemented and verified on 7 November 2026 in draft PR #23.
-- [ ] [TODO] **SW-0006 · P0 · Audit current state** — Record that directory traffic alone is not success unless it creates useful customer or business-owner outcomes.
+- [ ] [IN PROGRESS] **SW-0006 · P0 · Audit current state** — Record that directory traffic alone is not success unless it creates useful customer or business-owner outcomes. Outcome definitions drafted; final verification pending.
 - [ ] [TODO] **SW-0007 · P0 · Audit current state** — Record that 1,000 listings is a conditional supply milestone, not the north-star KPI.
 - [ ] [TODO] **SW-0008 · P0 · Audit current state** — Set an initial decision window for evaluating the current funnel before redesigning it again.
 - [ ] [TODO] **SW-0009 · P1 · Audit current state** — Create a decision log for changes that affect the business model or brand position.
