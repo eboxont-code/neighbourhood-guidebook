@@ -257,7 +257,7 @@ These are 5 November 2026 observations. Refresh refs and compare exact diffs bef
 
 - [x] [DONE] Establish this master plan as the intended single source of truth.
 - [x] [DONE] Save this file in the repository root as `MASTER_TODO.md`; confirmed present on `main`.
-- [ ] [REVIEW] Inventory of 39 remote branches, 24 open PRs and 0 open issues was verified on 7 Nov 2026; exact branch diff/ancestry review remains open.
+- [ ] [REVIEW] Inventory of 40 remote branches, 25 open PRs and 0 open issues was verified on 7 Nov 2026; exact branch diff/ancestry review remains open.
 - [ ] [REVIEW] PR-to-branch relationships for all open PRs are recorded above; identify and compare unique changes on branches without PRs.
 - [ ] [TODO] Identify obsolete branches and duplicate bundle numbering.
 - [ ] [TODO] Standardise future branch and PR naming.
@@ -681,7 +681,7 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 - Production Supabase project `zvbavpcsyvibvpkxjzkn` is ACTIVE_HEALTHY with 8 applied migrations. Read-only counts: 52 published listings, 8 analytics events, 0 contact messages, 0 business claims, 0 business submissions, 0 correction reports, and 0 listing promotions.
 - The production `analytics_events_event_check` constraint allows the existing 18 event names. The preview route tracks `preview_view` in an effect keyed by business slug. PR #31 adds a passing regression test for one event on initial render, no duplicate on same-slug rerender, and one event when the slug changes.
 - PR #12 adds a ref-based in-flight submission guard and passing tests proving same-tick duplicate contact and claim submits produce one database insert and one success event. PR #12 and PR #31 remain open/draft and unmerged, so these protections are not yet part of production `main`.
-- SW-0042 is REVIEW, not DONE, until the relevant PRs are reviewed and merged. SW-0043 and SW-0044 are BLOCKED by privacy/source-attribution decisions. The next independently eligible P0 task is SW-0045 (listing-page views distinct from preview views), which can be prepared with a forward-only migration and disposable CI tests; no production migration is authorised.
+- SW-0042 is REVIEW, not DONE, until the relevant PRs are reviewed and merged. Its plan reconciliation is PR #33 (open/draft); Quality Gate #578 passed on the initial plan commit, and the Vercel preview is blocked by the free daily deployment limit. SW-0043 and SW-0044 are BLOCKED by privacy/source-attribution decisions. The next independently eligible P0 task is SW-0045 (listing-page views distinct from preview views), which can be prepared with a forward-only migration and disposable CI tests; no production migration is authorised.
 
 ### Task 2 attribution audit — 6 November 2026
 
@@ -786,7 +786,7 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 **Definition of done:** The owner can answer where qualified leads came from, which page generated them, and which funnel step leaks.
 
 - [ ] [REVIEW] **SW-0041 · P0 · Audit current state** — Check whether production analytics are already installed before adding another analytics product. (PR #27 open/draft; Quality Gate #533 passed; unmerged.)
-- [ ] [REVIEW] **SW-0042 · P0 · Audit current state** — Verify that analytics events are not double-fired during route changes or form submissions. (PR #12 Quality Gate #431 and PR #31 Quality Gate #567 passed. PR #12 tests same-tick duplicate contact/claim submissions emit one success event; PR #31 tests preview_view fires once on rerender and once for a changed business slug. Both PRs remain open/draft and unmerged.)
+- [ ] [REVIEW] **SW-0042 · P0 · Audit current state** — Verify that analytics events are not double-fired during route changes or form submissions. (PR #12 Quality Gate #431 and PR #31 Quality Gate #567 passed. PR #12 tests same-tick duplicate contact/claim submissions emit one success event; PR #31 tests preview_view fires once on rerender and once for a changed business slug. Both PRs remain open/draft and unmerged. Plan verification is in PR #33; Quality Gate #578 passed on commit b888560055e2016462206839881fc1e0b8663827.)
 - [ ] [BLOCKED] **SW-0043 · P0 · Audit current state** — Record weekly unique visitors and pageviews by landing page. (BLOCKED: requires an owner-approved privacy decision on whether to introduce an anonymous visitor/session identifier and its retention window; current analytics intentionally has no visitor/session identifier.)
 - [ ] [BLOCKED] **SW-0044 · P0 · Audit current state** — Record organic-search visits separately from direct, referral, and campaign visits where data supports it. (BLOCKED: requires an owner-approved privacy-safe referrer/UTM schema and retention rule; current analytics stores no source/referrer/campaign fields, and raw referrers can contain query data.)
 - [ ] [TODO] **SW-0045 · P0 · Audit current state** — Record visits to listing pages separately from website-preview pages.
