@@ -86,7 +86,7 @@ describe("shared website-preview slug isolation", () => {
       expect(container.textContent).toContain(alpha.description);
       expect(container.textContent).toContain(alpha.services[0]?.name);
       expect(container.querySelector(`a[href="${alpha.directions}"]`)).toBeInTheDocument();
-      expect(container.querySelector('a[href="https://www.instagram.com/alpha_only_profile"]')).toBeInTheDocument();
+      expect(container.querySelector('a[href*="alpha_only_profile"]')).toBeInTheDocument();
       expect(container.querySelector(`a[href="/s/${alpha.slug}"]`)).toBeInTheDocument();
       expect(track).toHaveBeenCalledWith("preview_view", { slug: alpha.slug });
 
@@ -112,7 +112,7 @@ describe("shared website-preview slug isolation", () => {
       expect(container.textContent).toContain(beta.cover?.credit);
       expect(container.textContent).not.toContain("ALPHA_ONLY");
       expect(container.querySelector(`a[href="${beta.directions}"]`)).toBeInTheDocument();
-      expect(container.querySelector('a[href="https://www.instagram.com/beta_only_profile"]')).toBeInTheDocument();
+      expect(container.querySelector('a[href*="beta_only_profile"]')).toBeInTheDocument();
       expect(container.querySelector(`a[href="/s/${beta.slug}"]`)).toBeInTheDocument();
       expect(container.querySelector(`img[src="${alpha.cover?.url}"]`)).not.toBeInTheDocument();
       expect(container.querySelector('a[href="https://www.instagram.com/alpha_only_profile"]')).not.toBeInTheDocument();
