@@ -24,25 +24,32 @@ vi.mock("@/lib/geo", async (importOriginal) => ({
 vi.mock("@/components/map-view", () => ({ MapView: () => null }));
 vi.mock("@/components/venue", () => ({ HeartButton: () => null, VenueRow: () => null }));
 
-function renderListingLinks(business: Business) {
+function renderListingDocument(business: Business) {
   const component = Route.options.component;
   if (!component) throw new Error("Missing listing page");
   const loader = vi.spyOn(Route, "useLoaderData").mockReturnValue({ business });
   try {
-    const document = new DOMParser().parseFromString(renderToStaticMarkup(createElement(component)), "text/html");
-    return Array.from(document.querySelectorAll("a"), (a) => a.getAttribute("href") ?? "");
+    return new DOMParser().parseFromString(renderToStaticMarkup(createElement(component)), "text/html");
   } finally {
     loader.mockRestore();
   }
 }
 
-function listingLinks(status: WebsiteStatus, slug = "nuad-thai-lazimpat", website?: string | null) {
+function listingBusiness(status: WebsiteStatus, slug = "nuad-thai-lazimpat", website?: string | null) {
   const original = getBusiness(slug);
   if (!original) throw new Error("Missing test listing");
   const business: Business = { ...original, websiteStatus: status };
   if (website === null) delete business.website;
   else if (website !== undefined) business.website = website;
-  return renderListingLinks(business);
+  return business;
+}
+
+function listingLinks(status: WebsiteStatus, slug = "nuad-thai-lazimpat", website?: string | null) {
+  return Array.from(renderListingDocument(listingBusiness(status, slug, website)).querySelectorAll("a"), (a) => a.getAttribute("href") ?? "");
+}
+
+function websiteActionLinks(status: WebsiteStatus, slug: string, website?: string | null) {
+  return Array.from(renderListingDocument(listingBusiness(status, slug, website)).querySelectorAll('[role="group"] a'), (a) => a.getAttribute("href") ?? "");
 }
 
 describe("listing owner destinations", () => {
@@ -62,7 +69,7 @@ describe("listing website action availability", () => {
     (status) => {
       const business = getBusiness("aavaran-durbar-marg");
       if (!business?.website) throw new Error("Missing official website fixture");
-      const links = listingLinks(status, business.slug);
+      const links = websiteActionLinks(status, business.slug);
       expect(links).not.toContain(business.website);
     },
   );
@@ -70,7 +77,7 @@ describe("listing website action availability", () => {
   it("exposes one action for a recorded working official website", () => {
     const business = getBusiness("aavaran-durbar-marg");
     if (!business?.website) throw new Error("Missing official website fixture");
-    const links = listingLinks("working", business.slug);
+    const links = websiteActionLinks("working", business.slug);
     expect(links.filter((href) => href === business.website)).toHaveLength(1);
   });
 
@@ -80,12 +87,12 @@ describe("listing website action availability", () => {
   ])("does not expose a non-website URL as a website action: %s", (website) => {
     const business = getBusiness("aavaran-durbar-marg");
     if (!business) throw new Error("Missing website fixture");
-    expect(listingLinks("working", business.slug, website)).not.toContain(website);
+    expect(websiteActionLinks("working", business.slug, website)).not.toContain(website);
   });
 
   it("does not expose a website action when the URL is missing", () => {
     const business = getBusiness("aavaran-durbar-marg");
     if (!business?.website) throw new Error("Missing official website fixture");
-    expect(listingLinks("working", business.slug, null)).not.toContain(business.website);
+    expect(websiteActionLinks("working", business.slug, null)).not.toContain(business.website);
   });
 });
