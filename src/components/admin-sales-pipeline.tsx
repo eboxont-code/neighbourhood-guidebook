@@ -9,6 +9,8 @@ import {
   buildSalesOutreachDraft,
   isOpenSalesStage,
   salesFollowUpState,
+  salesStageCounts,
+  upsertSalesProspect,
   type SalesActivityType,
   type SalesInterest,
   type SalesStage,
@@ -158,6 +160,7 @@ export function AdminSalesPipeline() {
   const quotedValue = open.reduce((sum, prospect) => sum + (prospect.quote_amount_npr ?? 0), 0);
   const receivedCash = (prospects ?? []).reduce((sum, prospect) => sum + prospect.paid_amount_npr, 0);
   const wonCount = (prospects ?? []).filter((prospect) => prospect.stage === "won").length;
+  const stageCounts = useMemo(() => salesStageCounts(prospects ?? []), [prospects]);
 
   const visible = useMemo(() => (prospects ?? []).filter((prospect) => {
     if (filter !== "all" && prospect.stage !== filter) return false;
@@ -245,6 +248,9 @@ export function AdminSalesPipeline() {
       setNote(result.error?.code === "23505" ? t("salesDuplicate") : t("salesSaveError"));
       return;
     }
+
+    // Reflect the saved stage change immediately; activity logging and the full refresh follow.
+    setProspects((current) => current ? upsertSalesProspect(current, result.data) : current);
 
     const events: {
       prospect_id: string;
@@ -373,7 +379,10 @@ export function AdminSalesPipeline() {
             <input className={field} value={search} onChange={(e) => setSearch(e.target.value)} placeholder={t("salesSearch")} />
             <select className={field} value={filter} onChange={(e) => setFilter(e.target.value)}>
               <option value="all">{t("salesAllStages")}</option>
-              {Object.keys(stageKeys).map((stage) => <option key={stage} value={stage}>{stageLabel(stage)}</option>)}
+              {Object.keys(stageKeys).map((stage) => {
+                const value = stage as SalesStage;
+                return <option key={stage} value={stage}>{stageLabel(stage)} ({stageCounts[value]})</option>;
+              })}
             </select>
           </div>
           <div className="overflow-hidden rounded-2xl border border-border bg-card">
