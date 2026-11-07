@@ -87,8 +87,15 @@ function renderPreview(business: Business) {
 
 function expectSafeSocialLinks(document: Document, business: Business) {
   const expected = socialLinks(business).map((link) => link.url).sort();
-  const anchors = Array.from(document.querySelectorAll("a")).filter((anchor) => expected.includes(anchor.href));
-  expect(anchors.map((anchor) => anchor.href).sort()).toEqual(expected);
+  const anchors = Array.from(document.querySelectorAll("a")).filter((anchor) => {
+    try {
+      return SOCIAL_HOSTS.has(new URL(anchor.href).hostname);
+    } catch {
+      return false;
+    }
+  });
+  expect(anchors.every((anchor) => expected.includes(anchor.href))).toBe(true);
+  expect([...new Set(anchors.map((anchor) => anchor.href))].sort()).toEqual(expected);
   for (const anchor of anchors) {
     expect(anchor.getAttribute("target")).toBe("_blank");
     const rel = new Set((anchor.getAttribute("rel") ?? "").split(/\s+/));
