@@ -8,7 +8,7 @@ function readProjectFile(path: string): string {
 }
 
 function normalizeSql(sql: string): string {
-  return sql.split("\n").filter((line) => !line.trim().startsWith("--")).join("\n").replace(/\\s+/g, " ").trim();
+  return sql.split("\n").filter((line) => !line.trim().startsWith("--")).join("\n").replace(/\s+/g, " ").trim();
 }
 
 describe("private sales-note boundaries", () => {
