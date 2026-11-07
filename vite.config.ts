@@ -6,12 +6,12 @@ import { nitro } from "nitro/vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 import { defineConfig } from "vite";
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   plugins: [
     tanstackStart({
       server: { entry: "server" },
     }),
-    nitro(),
+    nitro(mode === "development" ? { output: { publicDir: resolve(process.cwd(), "dist") } } : {}),
     tsconfigPaths(),
     tailwindcss(),
     react(),
@@ -22,4 +22,4 @@ export default defineConfig({
     },
     dedupe: ["react", "react-dom", "@tanstack/react-router"],
   },
-});
+}));

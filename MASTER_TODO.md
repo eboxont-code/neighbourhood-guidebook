@@ -483,7 +483,7 @@ Historical audit baseline (not a verified current count): 52 businesses, 8 categ
 - [x] [DONE] Improve profile readability and prominent contact actions. Already implemented: readable profile sections and data-supported Call, Directions and Website actions near the profile heading. Verified at 390px in EN/NE on 5 Nov 2026: contact targets 94px wide and 57px high, no horizontal overflow.
 - [ ] [TODO] Test saved listings and nearby discovery.
 - [x] [DONE] Add helpful links on the empty Saved page. Already shipped: "Browse places" button plus links to the three most-used categories, EN/NE, 44px tap targets. Verified 5 Nov 2026.
-- [ ] [TODO] Write a fuller About page.
+- [x] [DONE] Write a fuller About page. Reviewed existing content first; added explicit purpose and language-support sections and expanded verification and correction guidance in EN/NE. Verified `/about` at 390×844 on 7 Nov 2026: both languages wrap without horizontal overflow; correction link is 44px high and opens `/suggest-correction`. All 179 tests pass; preview build/typecheck OK. No publishing or migrations. Also corrected the carried-over preview output-directory failure without changing production output defaults.
 - [ ] [TODO] Remove broken links, dead actions and confusing copy.
 - [x] [DONE] Boxont logo favicon. Shipped by GuideBook bot, 26-31 Oct 2026.
 - [x] [DONE] Homepage line showing the real business count. Shipped by GuideBook bot, 26-31 Oct 2026.
