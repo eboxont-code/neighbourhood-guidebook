@@ -121,8 +121,8 @@ function AdminPage() {
       if (event === "SIGNED_OUT") setRecoveryMode(false);
       setSession(nextSession);
     });
-    void supabase.auth.getSession().then(({ data }) => {
-      if (!authEventSeen) setSession(data.session);
+    void supabase.auth.getSession().then(({ data, error }) => {
+      if (!authEventSeen) setSession(error ? null : data.session);
     }).catch(() => {
       if (!authEventSeen) setSession(null);
     });
