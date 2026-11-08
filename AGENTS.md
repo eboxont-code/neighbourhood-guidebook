@@ -52,6 +52,12 @@
 - Lazy-load map code on the client. Do not let browser-only mapping code execute during server rendering.
 - Owner claims and website previews must continue to use the shared listing record and existing eligibility rules.
 
+### Call-to-action discipline
+- Within one page, section, card or form context, show one primary call-to-action for the same next step. Do not repeat the same action within one context.
+- Repeated labels are acceptable only when each control belongs to a distinct choice (for example, one package-selection button per package card), or when a persistent shortcut has a clear destination and is hidden while that destination is visible. Document the reason and add a focused regression test.
+- Keep primary conversion actions distinct from navigation, listing-specific contact actions and form-submit controls; these are different intents, not duplicate CTAs.
+- On mobile, a sticky CTA must not cover or duplicate the visible form action. When its destination form is visible, hide the sticky CTA and remove it from keyboard navigation.
+
 ## Quality gate
 
 Before a bundle is considered complete, run:
