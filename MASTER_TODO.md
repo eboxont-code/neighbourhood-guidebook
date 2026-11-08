@@ -181,7 +181,7 @@ Never mark work [DONE] merely because code exists, a PR is merged, or a preview 
 - Production Vercel deployment [dpl_C2uz2N5ucXpmJkX6amij3V1Emobw](https://vercel.com/boxont/neighbourhood-guidebook/C2uz2N5ucXpmJkX6amij3V1Emobw) remains READY on exact commit `ed383e62e9195d94a32fcb4bad21ccb756ed439f`, with `sewa.boxont.com` attached. The public homepage and `/robots.txt` returned HTTP 200. Current `main` is 12 commits ahead of Production; neither open draft PR was merged and no Production deployment was triggered.
 - Connected Production Supabase project `zvbavpcsyvibvpkxjzkn` is ACTIVE_HEALTHY on PostgreSQL 17.11 with 8 applied timestamped migrations. The existing Security Advisor findings remain: one RLS-enabled table without policies, one authenticated SECURITY DEFINER function, and leaked-password protection disabled. Inspection was read-only.
 - SW-0768 environment audit: the browser build receives only `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY`; server runtime uses `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY`; the service-role key is confined to the server-only client. Vercel metadata lists those five variables for Development, Preview and Production; no values were decrypted and no hidden Production variables were reported. Unused project-ID placeholders and the local-only Drizzle migration URL are not part of the production build. The repository's Supabase CLI project ID differs from the connected Production project ID; do not run CLI migrations until that target is reconciled.
-- Task register integrity remains 1,000 unique IDs in 999 Markdown rows (SW-0298 and SW-0299 share one row). SW-0768 is now marked DONE on this evidence branch; SW-0764/0765/0767 remain REVIEW and SW-0766 remains BLOCKED. Next eligible task: SW-0769.
+- Task register integrity remains 1,000 unique IDs in 999 Markdown rows (SW-0298 and SW-0299 share one row). Status: 13 DONE, 66 BLOCKED, 12 REVIEW and 909 TODO. SW-0768 is marked DONE on this evidence branch; SW-0764/0765/0767 remain REVIEW and SW-0766 remains BLOCKED. Next eligible task: SW-0769.
 - No Production database writes, migrations, permission changes, secret retrieval, authentication/configuration changes, publishing, customer/business data changes, outreach or additional spend occurred.
 
 ### Repository baseline
@@ -704,7 +704,8 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 | 8 | Isolate and review Proposal Composer after its dependencies | BLOCKED — depends on Bundle 7 and Bundle 8 release |
 | 9 | Use the funnel baseline to fix the largest conversion leak | BLOCKED — requires an owner-approved evaluation window and sufficient real conversion evidence; do not infer a leak from clicks alone |
 | 10 | Improve directory quality and coverage based on real user demand and lead value | BLOCKED — original 20-business prospect CSV and verified demand evidence are unavailable; the separate 18-candidate preview workbook is not a substitute |
-| 11 | SW-0768 — review environment variables used in the production build | TODO — next eligible after SW-0767; inspect names and exposure paths only, never values |
+| 11 | SW-0768 — review environment variables used in the production build | DONE — source, build settings and Vercel environment names/targets audited without retrieving values; CLI project-ID mismatch recorded as a migration-target warning |
+| 12 | SW-0769 — remove secrets, credentials, private tokens, and internal admin URLs from logs and public assets | TODO — next eligible P0 audit; inspect source and public assets without printing secret values |
 
 ### Task 1 verification notes — 6 November 2026
 
@@ -774,7 +775,7 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 - Production enquiry end-to-end testing remains blocked until an owner-authorised browser/admin session and approved disposable test account are available. The production anonymous privilege remediation remains separate from SW-0042 and must respect migration-history/release controls.
 
 
-### Current task — automation run 12
+### Previous task — SW-0767 (8 November 2026)
 
 **Completed this run: SW-0767 — review Supabase keys and ensure a service-role key is never shipped to the browser.**
 
@@ -785,7 +786,25 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 - No runtime application code, Production secrets, Vercel settings, Supabase settings, data, grants or migrations were changed. Additional spend: $0.
 - Status: **REVIEW — audit and regression guard added; exact-head CI pending.**
 
-**Next eligible task: SW-0768 — review environment variables used in the production build.** Inspect variable names and exposure paths only; do not retrieve or print secret values. SW-0204 remains BLOCKED because PR #66's attempt 4 still failed before runner assignment. SW-0764 and SW-0765 remain REVIEW; SW-0766 remains BLOCKED pending migration-history reconciliation and explicit task-specific authorization.
+**Next eligible task at the end of the previous run: SW-0768 — review environment variables used in the production build.** Inspect variable names and exposure paths only; do not retrieve or print secret values. SW-0204 remains BLOCKED because PR #66's attempt 4 still failed before runner assignment. SW-0764 and SW-0765 remain REVIEW; SW-0766 remains BLOCKED pending migration-history reconciliation and explicit task-specific authorization.
+
+
+### Current task — SW-0768 (8 November 2026)
+
+**Completed this run: SW-0768 — review environment variables used in the production build.**
+
+- Reviewed 84 non-test, non-UI application source files and the relevant environment example, ignore rules, Vite build settings, GitHub quality workflow and Drizzle migration configuration.
+- Confirmed that only the two publishable Supabase variables with the `VITE_` prefix are exposed to the browser build. Server-side Supabase URL and publishable-key variables remain separate; the service-role key is only read by the server-only client.
+- Read Vercel environment-variable metadata without decrypting values. The five Supabase URL/key variables are configured for Development, Preview and Production; the service-role key is marked sensitive. No hidden Production variables were reported. No secret values were read or printed.
+- The project-ID placeholders in `.env.example` and CI are unused by application source. The Drizzle migration URL is only used by migration tooling and is not configured in Vercel.
+- Recorded a separate migration-target warning: the repository's `supabase/config.toml` project ID differs from the connected Production Supabase project. No CLI migration or database change was attempted.
+- Updated the evidence in [PR #67](https://github.com/eboxont-code/neighbourhood-guidebook/pull/67). The audit itself is complete; PR #67 remains draft because its exact-head automated checks have failed before executing any steps. Its Vercel preview reached READY, but it is not Production. The existing Production deployment remains unchanged.
+- No application runtime code, Production environment settings, secrets, database records or migrations were changed. Additional spend: $0.
+
+**Next eligible task: SW-0769 — remove secrets, credentials, private tokens, and internal admin URLs from logs and public assets.** Inspect source and public assets without printing secret values. SW-0204 remains BLOCKED pending a new runner-allocation result; SW-0764/0765/0767 remain REVIEW; SW-0766 remains BLOCKED pending migration-history reconciliation and explicit task-specific authorization.
+
+---
+
 
 ---
 
