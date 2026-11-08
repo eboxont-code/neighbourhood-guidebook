@@ -19,6 +19,7 @@ import { offersPreview } from "@/lib/preview";
 import { ProvenanceDisclosure } from "@/components/provenance-disclosure";
 import { nearbyPlaces } from "@/lib/nearby";
 import { otherBranches } from "@/lib/branches";
+import { shareImage, shareText } from "@/lib/social-meta";
 
 export const Route = createFileRoute("/s/$slug")({
   loader: ({ params }) => {
@@ -32,9 +33,8 @@ export const Route = createFileRoute("/s/$slug")({
     if (!loaderData) return { meta: [{ title: "Not found" }, { name: "robots", content: "noindex" }] };
     const b = loaderData.business;
     const area = getArea(b.area)?.name ?? "";
-    const cat = getCategory(b.category)?.name.replace(/s$/, "").toLowerCase() ?? "business";
-    const bits = [b.phone ? `phone ${b.phone}` : "", b.hours?.length ? "opening hours" : "", "website check"].filter(Boolean).join(", ");
-    const head = pageMeta(listingTitle(b.name, area), `${b.name} is a ${cat} in ${area}, ${getCity(getArea(b.area)?.city ?? "")?.name ?? ""}. See the ${bits}, and where each detail came from.`, `/s/${b.slug}`, { type: "business.business", ...(b.cover ? { image: b.cover.url } : {}) });
+    const place = [area, getCity(getArea(b.area)?.city ?? "")?.name].filter(Boolean).join(", ");
+    const head = pageMeta(listingTitle(b.name, area), shareText("shareListingDescription", { name: b.name, place }), `/s/${b.slug}`, { type: "business.business", ...shareImage(b.cover, b.name) });
     return { ...head, scripts: [{ type: "application/ld+json", children: JSON.stringify(businessJsonLd(b)) }, { type: "application/ld+json", children: JSON.stringify(breadcrumbJsonLd(b)) }] };
   },
   notFoundComponent: NotFoundView,

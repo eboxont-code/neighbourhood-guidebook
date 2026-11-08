@@ -10,7 +10,7 @@ export function listingTitle(name: string, area: string): string {
 }
 
 /** Per-page head tags: title, description, Open Graph, Twitter card and canonical. */
-export function pageMeta(title: string, description: string, path?: string, opts: { image?: string; type?: string } = {}) {
+export function pageMeta(title: string, description: string, path?: string, opts: { image?: string; type?: string; imageAlt?: string; imageWidth?: number; imageHeight?: number; card?: "summary" | "summary_large_image" } = {}) {
   const full = `${title} · ${SITE_NAME}`;
   const url = path ? `${SITE_URL}${path}` : undefined;
   const meta: Record<string, string>[] = [
@@ -20,12 +20,14 @@ export function pageMeta(title: string, description: string, path?: string, opts
     { property: "og:description", content: description },
     { property: "og:type", content: opts.type ?? "website" },
     { property: "og:site_name", content: SITE_NAME },
-    { name: "twitter:card", content: opts.image ? "summary_large_image" : "summary" },
+    { name: "twitter:card", content: opts.card ?? (opts.image ? "summary_large_image" : "summary") },
     { name: "twitter:title", content: full },
     { name: "twitter:description", content: description },
   ];
   if (url) meta.push({ property: "og:url", content: url });
   if (opts.image) meta.push({ property: "og:image", content: opts.image }, { name: "twitter:image", content: opts.image });
+  if (opts.image && opts.imageAlt) meta.push({ property: "og:image:alt", content: opts.imageAlt }, { name: "twitter:image:alt", content: opts.imageAlt });
+  if (opts.image && opts.imageWidth && opts.imageHeight) meta.push({ property: "og:image:width", content: String(opts.imageWidth) }, { property: "og:image:height", content: String(opts.imageHeight) });
   return { meta, links: url ? [{ rel: "canonical", href: url }] : [] };
 }
 

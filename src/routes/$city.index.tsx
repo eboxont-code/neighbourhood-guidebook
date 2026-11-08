@@ -3,8 +3,9 @@ import { NotFoundView, Page, pageMeta } from "@/components/site";
 import { MapView } from "@/components/map-view";
 import { CatIcon } from "@/components/cover";
 import { areaTone, count, firstSentence, SectionHead } from "@/components/blocks";
-import { placeName, areasInUse, getArea, businessesIn, categoriesIn, getCity } from "@/data/directory";
+import { placeName, areasInUse, businessesIn, categoriesIn, getCity } from "@/data/directory";
 import { useI18n, type Key } from "@/lib/i18n";
+import { shareImage, shareText } from "@/lib/social-meta";
 
 export const Route = createFileRoute("/$city/")({
   loader: ({ params }) => {
@@ -77,7 +78,5 @@ function CityPage() {
 }
 
 function cityMeta(slug: string, name: string) {
-  const names = areasInUse(slug).map((a) => getArea(a.slug)?.name ?? a.slug).slice(0, 4);
-  const list = names.length > 1 ? `${names.slice(0, -1).join(", ")} and ${names[names.length - 1]}` : names[0] ?? name;
-  return pageMeta(`${name} by neighbourhood: salons, cafés, hotels and more`, `Everyday places in ${name}, area by area, including ${list}, with phone numbers, opening hours and directions you can check.`, `/${slug}`);
+  return pageMeta(shareText("shareCityTitle", { city: name }), shareText("shareCityDescription", { city: name }), `/${slug}`, shareImage());
 }
