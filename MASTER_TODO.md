@@ -2,7 +2,7 @@
 
 > **Single source of truth for SEWA/Boxont execution. Read the whole file before each work session and update it before ending. This file combines the repository plan, revenue-first strategy and the 1,000-task register.**
 >
-> **Last reviewed:** 8 November 2026
+> **Last reviewed:** 9 November 2026
 >
 > **Merged inputs:** existing repository `MASTER_TODO.md`, the revenue-first strategy and 1,000-point checklist, and the matching 1,000-row CSV task register. The CSV and checklist IDs, priorities and task descriptions were reconciled. This file is now the only project execution plan.
 >
@@ -142,6 +142,17 @@ Never mark work [DONE] merely because code exists, a PR is merged, or a preview 
 ---
 
 ## 3. Repository snapshot and history
+
+### Latest verified snapshot — 9 November 2026, automation run 14 (read-only)
+
+- GitHub `main` is `6766c5a1d70a58db6c856050a4167df2854079fa`. The repository has 48 open pull requests and 0 open issues. No local checkout is mounted in this runtime, so a local working-tree status cannot be claimed.
+- PR #66 remains open/draft at exact head `eeb996b4e9054117f1ce1e617cd0657f10e651b2`; its Quality Gate [#42478354088](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42478354088) failed before runner assignment (both jobs had no executed steps). Its exact-head Vercel Preview is READY; it is not Production.
+- PR #67 and #68 remain open/draft on older base `d880f47490871376d7527d00088c3e0fdfba634e`; their latest recorded exact-head Quality Gates failed before runner assignment. PR #72 targets current main and is 2 commits ahead / 0 behind before this run; its exact-head Quality Gate [#42523777185](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42523777185) also failed before runner assignment. Its Vercel preview attempt was blocked by the free daily deployment allowance. No human reviews or unresolved review threads are present.
+- The latest main Quality Gate [#42498639315](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42498639315) failed before runner assignment. GitHub's combined status for main reports the Vercel deployment check as successful.
+- Vercel Production deployment [dpl_2fFbgQ9n8EJKUmqdANwJTnnasiH8](https://vercel.com/boxont/neighbourhood-guidebook/2fFbgQ9n8EJKUmqdANwJTnnasiH8) is READY on the exact main SHA above, with `sewa.boxont.com` attached. No merge or new Production deployment was triggered in this run.
+- Supabase project `zvbavpcsyvibvpkxjzkn` is ACTIVE_HEALTHY on PostgreSQL 17.11 with 8 applied migrations. Security Advisor: 3 findings. Performance Advisor: 17 RLS initialization-plan findings, 3 unused-index findings and 2 multiple-permissive-policy findings. Health Advisor: no findings. Read-only metadata confirms RLS is enabled on all 10 public tables; broad anonymous/authenticated table grants including TRUNCATE remain on seven tables and require separate remediation. No rows, grants, policies, migrations, Auth settings, environment values or secrets were changed.
+- Last recorded successful Production GET checks for `/admin`, `/robots.txt` and `/sitemap.xml` are documented in automation run 13. This run's web inspection service could not retrieve those URLs, so no new live-page result is claimed.
+- No Production database writes, migrations, customer/business data changes, outreach, pricing or configuration changes. Additional spend: $0.
 
 ### Latest verified snapshot — 8 November 2026, automation run 11 (read-only)
 
@@ -769,6 +780,26 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 **Register after this update:** 1,000 unique task IDs in 999 Markdown rows; SW-0298 and SW-0299 share one row. Status by row: 12 DONE, 74 BLOCKED, 9 REVIEW, 904 TODO, 0 IN PROGRESS.
 
 **Safety:** No production writes, migrations, deployment, outreach, pricing or configuration changes. Additional spend: $0.
+
+
+
+### Automation run 14 — 9 November 2026, 08:00 Brisbane
+
+**Completed this run: SW-0773 — keep crawler directives separate from access control.** Status: REVIEW pending the documentation PR's required checks and release.
+
+- Read-only source review of `src/routes/admin.tsx` confirms the route is client-rendered (`ssr: false)), carries `noindex, nofollow`, and checks the current Supabase session plus the `has_role` RPC before rendering the dashboard. The route imports the publishable browser client; no service-role client is used by this page. The client-side gate improves the visitor experience but is not the security boundary.
+- Read-only Production metadata queries confirm RLS is enabled on all 10 public tables. Admin-only SELECT policies protect `contact_messages`, `business_claims`, `business_submissions`, `correction_reports` and `analytics_events`; `user_roles` allows a signed-in user to read only their own role. Public policies intentionally expose published listings, slug redirects and active paid promotions.
+- **Important existing risk:** the `anon` and `authenticated` roles still have broad table-level privileges, including TRUNCATE, on `analytics_events`, `business_claims`, `business_submissions`, `listing_promotions`, `listings`, `slug_redirects` and `user_roles`. RLS does not protect TRUNCATE. This remains part of the separate SW-0766 remediation gate; no permission or policy was changed. The public crawler directives do not mitigate this database risk.
+- The Supabase `has_role` function is executable by authenticated users and is used by the admin RLS policies; the Security Advisor's existing SECURITY DEFINER finding remains open. No claim is made that a robots directive or client-side check protects private data.
+- Run 13 contains the last successful Production GET evidence for `/admin`, `/robots.txt` and `/sitemap.xml`. A fresh web fetch attempt in this run returned an inspection-service error for all three URLs, so no new live smoke result is claimed. The Production deployment itself remains READY on the exact main commit.
+- Direct unauthenticated API and authenticated non-admin session tests were not run; those require a runnable API test environment or an authorised disposable session and remain blocked under SW-0762/SW-0763. No production form, admin login or data write was attempted.
+- No application code changed. No automated test suite ran for this documentation-only audit; the register was checked for 1,000 unique IDs in 999 rows, with no missing or duplicate IDs. Required GitHub checks on the existing PR #72 head had failed before runner assignment; the new documentation commit must remain draft until its own exact-head checks execute and pass.
+- No merge, Production deployment, database write, migration, permission change, outreach or paid spend occurred. Additional spend: $0.
+
+**Next eligible task:** SW-0774 — check that direct URLs to lead details require authorisation. Reuse the current admin/data-access implementation and do not treat noindex as an access control.
+
+**Register after this update:** 1,000 unique task IDs in 999 Markdown rows; SW-0298 and SW-0299 share one row. Status by row: 12 DONE, 74 BLOCKED, 10 REVIEW, 903 TODO, 0 IN PROGRESS.
+
 
 ---
 
@@ -1692,7 +1723,7 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [BLOCKED] **SW-0770 · P0 · Audit current state** — Ensure password reset and admin session flows behave safely. — BLOCKED: requires the owner-controlled recovery inbox and an authorised admin test session. No such inbox/session is available to this run; unlock when the owner provides both.
 - [ ] [BLOCKED] **SW-0771 · P1 · Audit current state** — Review session expiry and logout behaviour. — BLOCKED: static review is complete, but actual session expiry and logout (including the preview editor broker) require an owner-authorised admin test session and preview session. No such session is available. Unlock when the owner authorises and supplies a disposable test session; no Production customer data or credentials should be used.
 - [ ] [BLOCKED] **SW-0772 · P1 · Audit current state** — Verify admin pages are not indexable by search engines. — BLOCKED after a completed read-only audit: `/admin` has `noindex, nofollow`; `robots.txt` disallows `/admin`; the sitemap excludes admin, search and website-preview routes. Production GET checks returned 200 for `/admin`, `/robots.txt` and `/sitemap.xml`; the 116-entry sitemap contains none of those private/non-indexable paths. This is crawler guidance, not access control. Findings are in [PR #72](https://github.com/eboxont-code/neighbourhood-guidebook/pull/72). The documentation PR cannot be merged until GitHub assigns runners and the required Quality Gate passes; Vercel's free preview limit also prevented a preview. Unlock when checks can run; do not upgrade or retry unchanged.
-- [ ] [TODO] **SW-0773 · P1 · Audit current state** — Keep noindex separate from access control; never rely on robots.txt to protect private data.
+- [ ] [REVIEW] **SW-0773 · P1 · Audit current state** — Keep noindex separate from access control; never rely on robots.txt to protect private data. — Verified 9 Nov 2026: `src/routes/admin.tsx` uses `ssr: false`, emits `noindex, nofollow`, and renders the dashboard only after a browser session check plus `has_role(..., 'admin')`; this is a user-interface gate, not the data-access boundary. The admin route uses the publishable browser Supabase client. Production RLS is enabled on all 10 public tables. Admin-only SELECT policies protect contact messages, claims, business submissions, correction reports and analytics; `user_roles` permits users to read their own role; public policies expose published listings, redirects and currently active paid promotions. Important residual risk: anon/authenticated still have broad table-level privileges, including TRUNCATE, on seven tables; TRUNCATE is not governed by RLS. This is the separate SW-0766 database-remediation issue, not something noindex or robots.txt can fix. Direct anonymous/non-admin API tests remain blocked under SW-0762/SW-0763. No Production changes were made. Audit evidence is recorded in PR #72; task remains REVIEW until required checks execute and the documentation is released.
 - [ ] [TODO] **SW-0774 · P1 · Audit current state** — Check direct URLs to lead details require authorisation.
 - [ ] [TODO] **SW-0775 · P1 · Audit current state** — Review API rate limits for form endpoints.
 - [ ] [TODO] **SW-0776 · P1 · Audit current state** — Sanitise and validate user-supplied text before rendering it in the admin.
