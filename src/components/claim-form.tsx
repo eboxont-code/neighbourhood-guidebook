@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react';
+import { useRef, useState, type FormEvent } from 'react';
 import { Loader2 } from 'lucide-react';
 import { businesses, getBusiness, searchBusinesses } from '@/data/directory';
 import { supabase } from '@/integrations/supabase/client';
@@ -16,11 +16,12 @@ export function ClaimForm({ listing }: { listing: string }) {
   const [hp, setHp] = useState('');
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [status, setStatus] = useState<'idle' | 'sending' | 'done' | 'error' | 'limited'>('idle');
+  const submitting = useRef(false);
   const b = getBusiness(slug);
   const items = query.trim() ? searchBusinesses(query) : businesses;
   async function submit(e: FormEvent) {
     e.preventDefault();
-    if (status === 'sending') return;
+    if (submitting.current || status === 'sending') return;
     const parsed = claimSchema.safeParse({ ...v, listing_slug: b?.slug ?? '', listing_id: b?.id ?? null });
     if (!parsed.success) {
       const errs = errorsFrom(parsed.error.issues, t); setErrors(errs);
@@ -28,9 +29,18 @@ export function ClaimForm({ listing }: { listing: string }) {
       return;
     }
     setErrors({}); if (isBot(hp)) return setStatus('done');
+    submitting.current = true;
     setStatus('sending');
-    try { const { error } = await supabase.from('business_claims').insert({ ...parsed.data, client_key: clientKey() }); const st = statusFromError(error); if (st === 'done') track('claim_submit', { slug: parsed.data.listing_slug }); setStatus(st); }
-    catch { setStatus('error'); }
+    try {
+      const { error } = await supabase.from('business_claims').insert({ ...parsed.data, client_key: clientKey() });
+      const st = statusFromError(error);
+      if (st === 'done') track('claim_submit', { slug: parsed.data.listing_slug });
+      if (st !== 'done') submitting.current = false;
+      setStatus(st);
+    } catch {
+      submitting.current = false;
+      setStatus('error');
+    }
   }
   if (status === 'done') return <Done text={t('claimThanks')} />;
   const input = (key: 'name' | 'contact' | 'proof_url', label: string, max: number, type: string, autoComplete?: string) => <Field id={`claim-${key}`} label={label} required error={errors[key]} hint={key === 'proof_url' ? t('claimProofHint') : undefined}><input id={`claim-${key}`} className="field min-h-11 text-base" type={type} autoComplete={autoComplete} maxLength={max} required enterKeyHint="next" aria-invalid={!!errors[key]} aria-describedby={errors[key] ? `claim-${key}-error` : undefined} value={v[key]} onChange={(e) => setV({ ...v, [key]: e.target.value })} /></Field>;
