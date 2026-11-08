@@ -112,11 +112,20 @@ function AdminPage() {
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
   const [recoveryMode, setRecoveryMode] = useState(false);
   useEffect(() => {
+    // Auth events are authoritative once received. A delayed initial getSession()
+    // must not restore an expired session after SIGNED_OUT has already fired.
+    let authEventSeen = false;
     const { data } = supabase.auth.onAuthStateChange((event, nextSession) => {
+      authEventSeen = true;
       if (event === "PASSWORD_RECOVERY") setRecoveryMode(true);
+      if (event === "SIGNED_OUT") setRecoveryMode(false);
       setSession(nextSession);
     });
-    supabase.auth.getSession().then(({ data }) => setSession(data.session));
+    void supabase.auth.getSession().then(({ data }) => {
+      if (!authEventSeen) setSession(data.session);
+    }).catch(() => {
+      if (!authEventSeen) setSession(null);
+    });
     return () => data.subscription.unsubscribe();
   }, []);
   useEffect(() => {
