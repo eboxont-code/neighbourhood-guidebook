@@ -47,8 +47,11 @@ describe("application log redaction", () => {
     expect(url).not.toContain("password-value");
     expect(url).not.toContain("private-code");
 
+    const query = redactSensitiveText("https://example.test/callback?token=private-token");
+    expect(query).toBe("https://example.test/callback?token=[redacted]");
+
     const admin = redactSensitiveText("Open https://sewa.boxont.com/admin?code=private-code");
-    expect(admin).toBe("[admin URL redacted]");
+    expect(admin).toBe("Open [admin URL redacted]");
     expect(redactSensitiveText("Request http://localhost:3000/health")).not.toContain("localhost");
     expect(redactSensitiveText("route /admin/reset")).toContain("[admin route]/reset");
   });
@@ -127,5 +130,21 @@ describe("public asset boundary", () => {
     );
     expect(adminUrls).toEqual(["https://sewa.boxont.com/admin"]);
     expect(adminRoute).not.toMatch(/https?:\/\/(?:localhost|127(?:\.\d{1,3}){3}|[^/\s]+\.vercel\.app)\/admin/i);
+  });
+});
+
+
+
+describe("safe application log wiring", () => {
+  it("sanitizes server warnings and browser listing refresh errors", () => {
+    const projectRoot = process.cwd();
+    const serverCapture = readFileSync(resolve(projectRoot, "src/lib/error-capture.ts"), "utf8");
+    const listingSource = readFileSync(resolve(projectRoot, "src/lib/listings.ts"), "utf8");
+    const browserReporter = readFileSync(resolve(projectRoot, "src/lib/sewa-error-reporting.ts"), "utf8");
+
+    expect(serverCapture).toContain("console.warn =");
+    expect(serverCapture).toContain("redactSensitiveData");
+    expect(listingSource).toContain('reportSewaError(e, { source: "listings-refresh" })');
+    expect(browserReporter).toContain("redactSensitiveText");
   });
 });
