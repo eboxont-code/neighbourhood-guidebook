@@ -9,6 +9,7 @@ import { SITE_NAME } from "@/config";
 import { dayLabel, directionsLink, getArea, getBusiness, getCategory, getCity, hasPin, kathmanduNow, liveSlugRedirects, placeName, slugRedirects, socialLinks, telLink, timeLabel, whatsappLink, type Business } from "@/data/directory";
 import { useI18n, type Key } from "@/lib/i18n";
 import { pageMeta } from "@/lib/seo";
+import { offersPreview } from "@/lib/preview";
 import { statusDetail, weekTable } from "@/lib/venue";
 
 /**
@@ -21,6 +22,8 @@ export const Route = createFileRoute("/s/$slug_/website-preview")({
     if (moved) throw redirect({ to: "/s/$slug/website-preview", params: { slug: moved }, statusCode: 301 });
     const business = getBusiness(params.slug);
     if (!business) throw notFound();
+    // A preview is only for listings without a working official website.
+    if (!offersPreview(business)) throw notFound();
     return { business };
   },
   head: ({ loaderData }) => {
