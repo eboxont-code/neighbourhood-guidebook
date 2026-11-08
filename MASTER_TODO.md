@@ -2,7 +2,7 @@
 
 > **Single source of truth for SEWA/Boxont execution. Read the whole file before each work session and update it before ending. This file combines the repository plan, revenue-first strategy and the 1,000-task register.**
 >
-> **Last reviewed:** 6 November 2026  
+> **Last reviewed:** 8 November 2026
 >
 > **Merged inputs:** existing repository `MASTER_TODO.md`, the revenue-first strategy and 1,000-point checklist, and the matching 1,000-row CSV task register. The CSV and checklist IDs, priorities and task descriptions were reconciled. This file is now the only project execution plan.
 >
@@ -141,7 +141,22 @@ Never mark work [DONE] merely because code exists, a PR is merged, or a preview 
 
 ---
 
-## 3. Verified repository snapshot — 5 November 2026
+## 3. Repository snapshot and history
+
+### Latest verified snapshot — 8 November 2026 (read-only)
+
+The 5 November baseline below is historical. This is the latest independently checked state:
+
+- GitHub `main`: `7d7b75b3be48724d86c47519b469e51828f8f3b4`. Open pull requests: 43 (including this PR #53; PR #52 was closed unmerged). Open issues: 0.
+- Combined status on current `main` reports only Vercel failure `build-rate-limit`. No workflow run was returned for the current main SHA or the closed PR #52 head at initial inspection. New evidence: PR #53's GitHub Actions Quality Gate runs #42425607843, #42425801173 and #42425942179 all completed successfully; GitHub Actions is therefore available for revalidating the retained SW-0161 branch. The current-main Vercel rate-limit status remains.
+- No local repository checkout is mounted in this runtime, and outbound Git access is unavailable. The local working tree therefore cannot be inspected or tested here; remote refs, commits, PRs and file contents were inspected.
+- PR #10 (Bundle 7) is open/draft, 16 commits ahead and 0 behind current main; it has no submitted reviews. PR #45 and PR #51 are also open drafts with no submitted reviews. Do not merge or bypass owner review.
+- PR #52 (SW-0161 test attempt) was closed unmerged because its test could not be executed: no local checkout/network, no GitHub Actions workflow run, and Vercel's free Hobby build-rate limit blocks a preview. Its branch is retained for later revalidation.
+- Vercel production deployment `dpl_5tkK3TvBeyRtV4Sjsve5PbYZDKBB` is READY, with `sewa.boxont.com` attached, on commit `41065104ea2bb6906f060d05fc6b2d4abbe5c6bc`. Production remains on an older commit than current main. The Vercel project remains on Hobby; no upgrade or paid resource was created.
+- Supabase project `zvbavpcsyvibvpkxjzkn` is ACTIVE_HEALTHY in `ap-south-1`, PostgreSQL 17.11. Production has 8 applied migrations.
+- Read-only listing aggregate: 52 published listings; 16 have no website URL; website statuses are 14 `none_found`, 0 `owner_no_site`, 2 `failed`, 27 `working`, and 9 `not_checked`.
+- Security Advisor: 3 findings (RLS enabled without policies on `form_rate_log`; authenticated execution of SECURITY DEFINER `has_role`; leaked-password protection disabled). Performance Advisor: 17 RLS initialization-plan findings, 3 unused indexes and 2 multiple-permissive-policy findings. Health Advisor: no findings.
+- No production database writes, migrations, settings changes or deployments were performed.
 
 ### Repository baseline
 
@@ -653,16 +668,16 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 
 | Order | Task | Status |
 |---:|---|---|
-| 1 | Test the production preview → quote form → database → admin lead path end to end | REVIEW — live route, prefill, anonymous insert permissions and admin quote/payment writes verified; real browser POST and signed-in admin UI remain unverified |
+| 1 | Test the production preview → quote form → database → admin lead path end to end | BLOCKED — real browser POST and signed-in admin UI require an owner-authorised browser/admin session and approved disposable test account; production remains read-only |
 | 2 | Verify lead source, business, preview URL and campaign attribution across each form | DONE — source and listing attribution audited; UTM/referrer/campaign ID are not retained on lead records |
 | 3 | Revalidate the existing 20-business prospect CSV and each website status | BLOCKED — original 20-business CSV not found in `main` or the Library; do not recreate or guess the list |
-| 4 | Confirm production deployment and complete admin password recovery verification | Deployment + domain mapping DONE 5 Nov; password-reset journey TODO |
+| 4 | Confirm production deployment and complete admin password recovery verification | BLOCKED — deployment/domain are READY, but the real reset email, recovery link and normal admin sign-in require the owner-controlled inbox and an authorised recovery session |
 | 5 | Review the 390px preview and quote form; capture real screenshots | DONE 6 Nov 2026: EN/NE at 390×844 first, then 1280×1800; screenshots captured of preview sections, enquiry forms and inline errors. No horizontal overflow; 44px+ effective targets; labeled 16px inputs. Enlarged language controls, linked form hints, removed duplicated optional wording and prevented the hidden quote pill covering the form. 179 tests pass; preview build/typecheck OK. Presentation only; no enquiries sent, schema/attribution/admin changes, outreach, publishing or deployment. |
-| 6 | Reconcile Bundle 7 Sales Pipeline against current `main` | REVIEW — reconciled branch ready; PostgreSQL migration/security tests, TypeScript, lint, unit/component tests and production build passed; previous PR #7 remains closed by owner |
-| 7 | Reconcile Bundle 8 after Bundle 7; preserve original enquiry/payment records | TODO |
-| 8 | Isolate and review Proposal Composer after its dependencies | TODO |
-| 9 | Use the funnel baseline to fix the largest conversion leak | TODO |
-| 10 | Improve directory quality and coverage based on real user demand and lead value | TODO |
+| 6 | Reconcile Bundle 7 Sales Pipeline against current `main` | BLOCKED — PR #10 is open/draft (16 ahead, 0 behind) with no submitted owner review; owner approval and production migration-history reconciliation are required before release |
+| 7 | Reconcile Bundle 8 after Bundle 7; preserve original enquiry/payment records | BLOCKED — depends on approved Bundle 7 release and verified production migration-history reconciliation |
+| 8 | Isolate and review Proposal Composer after its dependencies | BLOCKED — depends on Bundle 7 and Bundle 8 release |
+| 9 | Use the funnel baseline to fix the largest conversion leak | BLOCKED — requires an owner-approved evaluation window and sufficient real conversion evidence; do not infer a leak from clicks alone |
+| 10 | Improve directory quality and coverage based on real user demand and lead value | BLOCKED — original 20-business prospect CSV and verified demand evidence are unavailable; the separate 18-candidate preview workbook is not a substitute |
 
 ### Task 1 verification notes — 6 November 2026
 
@@ -680,16 +695,24 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 
 ### Current task
 
-**Task 6 — Reconcile Bundle 7 Sales Pipeline against current `main`.**  
-**Status: REVIEW — code reconciled on a clean branch; owner review is the remaining gate.**
+**Completed this run: SW-0203 — Explain the difference between the free directory listing and a paid website project.**
 
-- Created `sewa/bundle-07-reconciled-main` from current `main`. The branch contains the Bundle 7 feature delta only; current `main`'s newer `src/lib/sales-pipeline.ts` was preserved, including inbound-lead mapping and proposal-draft helpers.
-- Integrated the admin Sales Pipeline tab, component, typed Supabase tables, English/Nepali translations, Drizzle and Supabase migrations, migration journal entry, database contract test and disposable PostgreSQL security checks.
-- Preserved the newer proposal and inbound-conversion tests already on `main`; the older Bundle 7 copy no longer replaces them.
-- Drizzle and Supabase migration files are byte-identical. CI migration count and success message both correctly report 14 migrations.
-- GitHub Quality Gate run [#42216569490](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42216569490) passed: disposable PostgreSQL migration/security tests, TypeScript validation, lint, unit/component tests and production build.
-- Original PR #7 was closed unmerged by the repository owner on 6 November 2026. It was not reopened and no replacement PR was opened. The new reconciliation branch is ready for review; wait for owner direction before opening a replacement PR or moving to Bundle 8.
-- No production database migration, production deployment, production setting change or merge was performed. Bundle 8 was left untouched.
+- The public For Businesses page says the SEWA directory listing remains free whether or not a business buys a website service.
+- The pricing note says website services and sponsored visibility are optional; sponsorship does not change verification or normal listing order, and external costs are disclosed before approval.
+- The FAQ independently confirms every directory listing is free and does not depend on having a website with Boxont.
+- English and Nepali strings were checked at `main` and at the deployed production commit. The page component file is identical between those refs; the relevant translation keys are identical.
+- This was a verification of existing deployed copy, so no application change or new SW-0203 test was needed.
+- PR #53 Quality Gate run [#42425607843](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42425607843) completed successfully: dependency installation, TypeScript, ESLint, unit/component tests, production build, and disposable PostgreSQL migration/security checks all passed. Both workflow jobs completed successfully.
+- Vercel preview deployment [READY](https://vercel.com/boxont/neighbourhood-guidebook/3YWC9wkzt38APbE6dbaiL48UFmbv) at https://neighbourhood-guidebook-6yk06ufun-boxont.vercel.app, built from PR #53 commit `c8ba2797ac338a0d12eb85914720fb1c43bc30a2`. This is preview only; production remains on `41065104ea2bb6906f060d05fc6b2d4abbe5c6bc`.
+- Final plan commit `ef350402a85e743ee37a2703b046dfb7b3d525f8` also passed Quality Gate run [#42425801173](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42425801173). Its Vercel check was rate-limited by the free Hobby build allowance; the earlier PR preview above remains READY. No production deployment was attempted.
+- These passing checks do not validate SW-0161: its separate test branch was not included in PR #53 and remains blocked/unverified.
+
+**Next eligible task: SW-0161 — re-open/revalidate the retained no-website preview regression test now that GitHub Actions is operational.**
+
+- Current main already contains: “qualified website-design enquiries that can realistically become paid Boxont projects.”
+- Existing PRs #20–#26 contain the related strategy/measurement work; do not duplicate their changes or merge without owner review.
+- SW-0161 was initially blocked while no workflow run was available; PR #53 has since produced three successful GitHub Actions Quality Gates, so SW-0161 is now REVIEW and SW-0162/0163 return to TODO. SW-0201 remains blocked by owner review of PR #45; SW-0202 remains blocked by owner-approved customer criteria and missing prospect evidence.
+- No production database write, migration, deployment, outreach or additional spend occurred.
 
 ---
 
@@ -912,9 +935,9 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 **Phase:** 1 - Revenue foundation  
 **Definition of done:** The current shared preview template gives each suitable business a credible concept, remains clearly a preview, and produces attributable enquiries.
 
-- [ ] [REVIEW] **SW-0161 · P0 · Reported preview template exists; regression-test** — Regression-test the existing shared preview template against a business with no website.
-- [ ] [REVIEW] **SW-0162 · P0 · Reported preview template exists; regression-test** — Regression-test the template against a business whose listed website is broken.
-- [ ] [REVIEW] **SW-0163 · P0 · Reported preview template exists; regression-test** — Regression-test the template against a business with a working website to ensure it is not mislabelled.
+- [ ] [REVIEW] **SW-0161 · P0 · Reported preview template exists; regression-test** — Regression-test the existing shared preview template against a business with no website. — Test authored on retained branch `sewa/sw-0161-preview-no-website-20261108`; PR #52 is closed unmerged. GitHub Actions is now demonstrably operational on PR #53 (Quality Gate runs #42425607843, #42425801173 and #42425942179 passed); re-open/revalidate this test in the next run.
+- [ ] [TODO] **SW-0162 · P0 · Reported preview template exists; regression-test** — Regression-test the template against a business whose listed website is broken.
+- [ ] [TODO] **SW-0163 · P0 · Reported preview template exists; regression-test** — Regression-test the template against a business with a working website to ensure it is not mislabelled.
 - [ ] [TODO] **SW-0164 · P0 · Audit current state** — Verify preview routes use the expected business slug and fail safely for an unknown slug.
 - [ ] [TODO] **SW-0165 · P0 · Audit current state** — Verify the preview displays the correct business name from the listing record.
 - [ ] [TODO] **SW-0166 · P0 · Audit current state** — Verify the preview displays only hours that exist and are sufficiently trustworthy.
@@ -958,9 +981,9 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 **Phase:** 1 - Revenue foundation  
 **Definition of done:** The offer is understandable and deliverable, with prices and promises published only after the owner approves them.
 
-- [ ] [TODO] **SW-0201 · P0 · Audit current state** — Write the single clearest sentence describing the website-design service for Kathmandu businesses.
-- [ ] [TODO] **SW-0202 · P0 · Audit current state** — Define the ideal first customer segment based on need and deliverability rather than assumed budget.
-- [ ] [TODO] **SW-0203 · P0 · Audit current state** — Explain the difference between the free directory listing and a paid website project.
+- [ ] [BLOCKED] **SW-0201 · P0 · Audit current state** — Write the single clearest sentence describing the website-design service for Kathmandu businesses. — Existing implementation and tests are in open draft PR #45; owner review is required before treating the change as released. Do not duplicate it.
+- [ ] [BLOCKED] **SW-0202 · P0 · Audit current state** — Define the ideal first customer segment based on need and deliverability rather than assumed budget. — Requires owner-approved first-customer criteria and verified prospect evidence; the original 20-business CSV remains unavailable.
+- [x] [DONE] **SW-0203 · P0 · Audit current state** — Explain the difference between the free directory listing and a paid website project. — Verified on current main and deployed production commit `41065104ea2bb6906f060d05fc6b2d4abbe5c6bc`: English/Nepali `fbPricingBody`, `fbPricingNote`, `fbQ2` and `fbA2` explicitly separate the always-free SEWA listing from optional website/sponsored services. `src/routes/for-businesses.tsx` is identical between main and production; the cited translation keys match. No code change was needed.
 - [ ] [TODO] **SW-0204 · P0 · Audit current state** — Explain the difference between a preview concept and a launched website.
 - [ ] [TODO] **SW-0205 · P1 · Audit current state** — List the website deliverables that can reliably be provided today.
 - [ ] [TODO] **SW-0206 · P1 · Audit current state** — List optional deliverables that require a separate quote.
@@ -1601,9 +1624,9 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 **Phase:** 3 - Product reliability  
 **Definition of done:** Public pages, forms, admin, location handling, and exports respect the stated privacy and security model.
 
-- [ ] [REVIEW] **SW-0761 · P0 · Admin area reported; regression-test access boundary** — Verify the /admin area redirects unauthorised visitors to a safe authentication state.
-- [ ] [TODO] **SW-0762 · P0 · Audit current state** — Verify an unauthenticated request cannot access lead data through a direct API call.
-- [ ] [TODO] **SW-0763 · P0 · Audit current state** — Verify an authenticated but unauthorised user cannot change admin data.
+- [ ] [BLOCKED] **SW-0761 · P0 · Admin area reported; regression-test access boundary** — Verify the /admin area redirects unauthorised visitors to a safe authentication state. — Requires an owner-authorised browser/admin session to verify the live redirect boundary.
+- [ ] [BLOCKED] **SW-0762 · P0 · Audit current state** — Verify an unauthenticated request cannot access lead data through a direct API call. — A direct anonymous PostgREST API request cannot be issued from this runtime; read-only SQL inspection is not a substitute. Requires a runnable API test environment.
+- [ ] [BLOCKED] **SW-0763 · P0 · Audit current state** — Verify an authenticated but unauthorised user cannot change admin data. — Requires a disposable authenticated non-admin test account/session; none is available.
 - [ ] [TODO] **SW-0764 · P0 · Audit current state** — Check database row-level security policies for every table that holds leads or private notes.
 - [ ] [TODO] **SW-0765 · P0 · Audit current state** — Check public read access exposes only fields intended for listing pages.
 - [ ] [TODO] **SW-0766 · P0 · Audit current state** — Check public write access is limited to validated form actions.
