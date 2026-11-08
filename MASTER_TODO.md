@@ -143,20 +143,19 @@ Never mark work [DONE] merely because code exists, a PR is merged, or a preview 
 
 ## 3. Repository snapshot and history
 
-### Latest verified snapshot — 8 November 2026 (read-only)
+### Latest verified snapshot — 8 November 2026, automation run 11 (read-only)
 
-The 5 November baseline below is historical. This is the latest independently checked state:
+The 5 November baseline below is historical. The current verified state is:
 
-- GitHub `main`: `7d7b75b3be48724d86c47519b469e51828f8f3b4`. Open pull requests: 43 (including this PR #53; PR #52 was closed unmerged). Open issues: 0.
-- Combined status on current `main` reports only Vercel failure `build-rate-limit`. No workflow run was returned for the current main SHA or the closed PR #52 head at initial inspection. New evidence: PR #53's GitHub Actions Quality Gate runs #42425607843, #42425801173 and #42425942179 all completed successfully; GitHub Actions is therefore available for revalidating the retained SW-0161 branch. The current-main Vercel rate-limit status remains.
-- No local repository checkout is mounted in this runtime, and outbound Git access is unavailable. The local working tree therefore cannot be inspected or tested here; remote refs, commits, PRs and file contents were inspected.
-- PR #10 (Bundle 7) is open/draft, 16 commits ahead and 0 behind current main; it has no submitted reviews. PR #45 and PR #51 are also open drafts with no submitted reviews. Do not merge or bypass owner review.
-- PR #52 (SW-0161 test attempt) was closed unmerged because its test could not be executed: no local checkout/network, no GitHub Actions workflow run, and Vercel's free Hobby build-rate limit blocks a preview. Its branch is retained for later revalidation.
-- Vercel production deployment `dpl_5tkK3TvBeyRtV4Sjsve5PbYZDKBB` is READY, with `sewa.boxont.com` attached, on commit `41065104ea2bb6906f060d05fc6b2d4abbe5c6bc`. Production remains on an older commit than current main. The Vercel project remains on Hobby; no upgrade or paid resource was created.
-- Supabase project `zvbavpcsyvibvpkxjzkn` is ACTIVE_HEALTHY in `ap-south-1`, PostgreSQL 17.11. Production has 8 applied migrations.
-- Read-only listing aggregate: 52 published listings; 16 have no website URL; website statuses are 14 `none_found`, 0 `owner_no_site`, 2 `failed`, 27 `working`, and 9 `not_checked`.
+- GitHub `main`: `a1e4babb3d9457d7627a0a5b33f3bb81c5642435`, merge commit for PR #53. There are 43 open pull requests and 0 open issues. PR #53 is merged; PR #52 remains closed and unmerged; PR #54 is the current SW-0161 PR.
+- PR #54 targets current `main`; its test code commit is `62171a6aac4e78684a760af9ef3db7364eca03d6`. Quality Gate run [#42429469383](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42429469383) passed on PR head `d279679cdbb89d7aaa0ffe24547e96d682bbdb0a): TypeScript, ESLint, all 25 test files/180 tests, production build, all 13 disposable PostgreSQL migrations and database security/concurrency checks.
+- Vercel preview deployment [READY](https://vercel.com/boxont/neighbourhood-guidebook/J9e7neyHzGWEvcKiuwgKqu9u5dyf): `dpl_J9e7neyHzGWEvcKiuwgKqu9u5dyf`, built from the SW-0161 test code commit above. Preview alias: `neighbourhood-guidebook-git-sewa-sw-0161-no-websi-f20150-boxont.vercel.app`. The first Vercel deployment attempt reported the free daily API-deployment limit, but a later deployment for the same branch reached READY; the combined status still shows the earlier Vercel failure and is not being represented as a successful status check.
+- The latest Vercel Production deployment remains READY: `dpl_G7iMH7fsH43TrovRhQqbbEnVPB3X`, built from exact main SHA `a1e4babb3d9457d7627a0a5b33f3bb81c5642435`, with `sewa.boxont.com` attached. PR #53's merge triggered the normal Git-linked Production deployment. No SW-0161 production merge/deployment has occurred yet.
+- Vercel project `prj_zdxJhQFdQrH76wYIefxmaOVRLFx8` is linked to this repository and remains on the Boxont Hobby team. No paid upgrade or resource was created.
+- No local repository checkout is mounted in this runtime. Remote refs, file contents, PR diffs and CI were inspected; a local working-tree status cannot be claimed. The GitHub branch-protection endpoint returned HTTP 403 to this connection, so its settings cannot be independently read here; GitHub's merge endpoint remains the enforcement point.
+- Supabase project `zvbavpcsyvibvpkxjzkn` is ACTIVE_HEALTHY in `ap-south-1`, PostgreSQL 17.11, with 8 applied production migrations. Read-only table inspection reports 52 published listings, 0 contact messages and 0 business submissions.
 - Security Advisor: 3 findings (RLS enabled without policies on `form_rate_log`; authenticated execution of SECURITY DEFINER `has_role`; leaked-password protection disabled). Performance Advisor: 17 RLS initialization-plan findings, 3 unused indexes and 2 multiple-permissive-policy findings. Health Advisor: no findings.
-- No production database writes, migrations, settings changes or deployments were performed.
+- No production database writes, migrations, settings changes or customer/business data changes occurred. The production deployment at the time of this snapshot remains the READY main deployment listed above.
 
 ### Repository baseline
 
@@ -341,7 +340,7 @@ The primary funnel is Sewa discovery/prospect → free preview → attributed en
 - [x] [DONE] Admin quote/payment tracking foundation.
 - [x] [DONE] Separate quoted value from cash received.
 - [x] [DONE] Revenue summary foundation.
-- [ ] [IN PROGRESS] Test full public enquiry → admin inbox → quote → payment journey using safe test data; verify persistence, source/business attribution, admin-only commercial fields and cleanup.
+- [ ] [BLOCKED] Test full public enquiry → admin inbox → quote → payment journey using safe test data; requires an owner-authorised browser/admin session and approved disposable test account. Production remains read-only.
 - [ ] [TODO] Confirm visitors can submit enquiries but cannot write commercial fields.
 - [ ] [TODO] Confirm only authorised admins can record quotes and payments.
 - [ ] [TODO] Verify totals against source records, including partial payments/refunds where supported.
@@ -695,24 +694,23 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 
 ### Current task
 
-**Completed this run: SW-0203 — Explain the difference between the free directory listing and a paid website project.**
+**Completed this run: SW-0161 — regression-test the shared website preview for a business with no website.**
 
-- The public For Businesses page says the SEWA directory listing remains free whether or not a business buys a website service.
-- The pricing note says website services and sponsored visibility are optional; sponsorship does not change verification or normal listing order, and external costs are disclosed before approval.
-- The FAQ independently confirms every directory listing is free and does not depend on having a website with Boxont.
-- English and Nepali strings were checked at `main` and at the deployed production commit. The page component file is identical between those refs; the relevant translation keys are identical.
-- This was a verification of existing deployed copy, so no application change or new SW-0203 test was needed.
-- PR #53 Quality Gate run [#42425607843](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42425607843) completed successfully: dependency installation, TypeScript, ESLint, unit/component tests, production build, and disposable PostgreSQL migration/security checks all passed. Both workflow jobs completed successfully.
-- Vercel preview deployment [READY](https://vercel.com/boxont/neighbourhood-guidebook/3YWC9wkzt38APbE6dbaiL48UFmbv) at https://neighbourhood-guidebook-6yk06ufun-boxont.vercel.app, built from PR #53 commit `c8ba2797ac338a0d12eb85914720fb1c43bc30a2`. This is preview only; production remains on `41065104ea2bb6906f060d05fc6b2d4abbe5c6bc`.
-- Final plan commit `ef350402a85e743ee37a2703b046dfb7b3d525f8` also passed Quality Gate run [#42425801173](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42425801173). Its Vercel check was rate-limited by the free Hobby build allowance; the earlier PR preview above remains READY. No production deployment was attempted.
-- These passing checks do not validate SW-0161: its separate test branch was not included in PR #53 and remains blocked/unverified.
+- Audited the current shared preview route and the real bundled listing fixture `the-new-barber-durbar-marg`: `websiteStatus: "none_found"`, no website URL, recorded phone/address, and recorded social/directions links. The existing route renders one shared template and does not invent an official-website action; no application runtime change was required.
+- Added render-only regression test `src/test/preview-no-website.test.tsx`. It verifies fixture status and missing website, business identity, recorded address/phone, preview enquiry CTA listing/name attribution, and that external/contact links are limited to recorded directions, phone and social profiles.
+- The test uses the existing Vitest jsdom environment and submits no forms or production data.
+- PR #54: [test(sewa): verify shared preview for a business without a website](https://github.com/eboxont-code/neighbourhood-guidebook/pull/54), current pre-evidence-update head `d279679cdbb89d7aaa0ffe24547e96d682bbdb0a`, based directly on current main `a1e4babb3d9457d7627a0a5b33f3bb81c5642435`. No code review submissions or unresolved review threads were returned; Vercel bot comments only.
+- Quality Gate [#42429469383](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42429469383) passed: TypeScript, ESLint (0 errors, 25 existing warnings), 25 test files/180 tests including the new no-website test, production build, and 13 disposable PostgreSQL migrations plus database security/concurrency checks.
+- Vercel preview deployment [READY](https://vercel.com/boxont/neighbourhood-guidebook/J9e7neyHzGWEvcKiuwgKqu9u5dyf) on test code commit `62171a6aac4e78684a760af9ef3db7364eca03d6`. The separate initial Vercel status failure is due to the free daily deployment limit; no upgrade or paid spend.
+- No production database writes, migrations or customer/business data changes. Production remains on READY main commit `a1e4babb3d9457d7627a0a5b33f3bb81c5642435`. A public HTTP smoke request could not be completed from this runtime because outbound DNS/network access is unavailable; deployment READY is not being described as a successful live smoke test.
+- PR merge and any resulting Production deployment are tracked separately from test completion. The final PR head's latest Quality Gate must be checked before merge; after merge, verify the exact deployed commit and attempt a non-destructive live smoke check.
 
-**Next eligible task: SW-0161 — re-open/revalidate the retained no-website preview regression test now that GitHub Actions is operational.**
+**Next eligible task: SW-0162 — regression-test the shared preview for a business whose listed website is broken.**
 
-- Current main already contains: “qualified website-design enquiries that can realistically become paid Boxont projects.”
-- Existing PRs #20–#26 contain the related strategy/measurement work; do not duplicate their changes or merge without owner review.
-- SW-0161 was initially blocked while no workflow run was available; PR #53 has since produced three successful GitHub Actions Quality Gates, so SW-0161 is now REVIEW and SW-0162/0163 return to TODO. SW-0201 remains blocked by owner review of PR #45; SW-0202 remains blocked by owner-approved customer criteria and missing prospect evidence.
-- No production database write, migration, deployment, outreach or additional spend occurred.
+- SW-0201 remains blocked by owner review of PR #45; SW-0202 remains blocked by owner-approved customer criteria and the missing original prospect evidence. The original 20-business CSV is not replaced by the separate 18-candidate workbook.
+- The public enquiry end-to-end test remains blocked until an owner-authorised browser/admin session and approved disposable test account are available.
+- The production database remains read-only. No outreach, pricing, customer-data changes or additional spend are authorised.
+
 
 ---
 
@@ -935,7 +933,7 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 **Phase:** 1 - Revenue foundation  
 **Definition of done:** The current shared preview template gives each suitable business a credible concept, remains clearly a preview, and produces attributable enquiries.
 
-- [ ] [REVIEW] **SW-0161 · P0 · Reported preview template exists; regression-test** — Regression-test the existing shared preview template against a business with no website. — Test authored on retained branch `sewa/sw-0161-preview-no-website-20261108`; PR #52 is closed unmerged. GitHub Actions is now demonstrably operational on PR #53 (Quality Gate runs #42425607843, #42425801173 and #42425942179 passed); re-open/revalidate this test in the next run.
+- [x] [DONE] **SW-0161 · P0 · Reported preview template exists; regression-test** — Regression-test the existing shared preview template against a business with no website. — Render-only regression test `src/test/preview-no-website.test.tsx` passed in Quality Gate [#42429469383](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42429469383) on PR #54; 25 test files/180 tests passed, including the new fixture test. No production writes or application runtime changes.
 - [ ] [TODO] **SW-0162 · P0 · Reported preview template exists; regression-test** — Regression-test the template against a business whose listed website is broken.
 - [ ] [TODO] **SW-0163 · P0 · Reported preview template exists; regression-test** — Regression-test the template against a business with a working website to ensure it is not mislabelled.
 - [ ] [TODO] **SW-0164 · P0 · Audit current state** — Verify preview routes use the expected business slug and fail safely for an unknown slug.
