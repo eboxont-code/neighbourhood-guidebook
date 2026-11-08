@@ -50,19 +50,31 @@ const adminSession = {
 };
 
 function listingQuery() {
-  const query: any = {
-    select: vi.fn(() => query),
-    order: vi.fn(() => query),
-    then: (resolve: (value: unknown) => unknown, reject?: (reason: unknown) => unknown) =>
-      Promise.resolve({ data: [], error: null }).then(resolve, reject),
+  const result = Promise.resolve({ data: [] as unknown[], error: null });
+  type Query = {
+    select: (...args: unknown[]) => Query;
+    order: (...args: unknown[]) => Query;
+    then: typeof result.then;
+  };
+  let query: Query;
+  query = {
+    select: (..._args: unknown[]) => query,
+    order: (..._args: unknown[]) => query,
+    then: result.then.bind(result),
   };
   return query;
 }
 
 function countQuery() {
-  const query: any = {
-    select: vi.fn(() => query),
-    eq: vi.fn(() => Promise.resolve({ count: 0, error: null })),
+  const result = Promise.resolve({ count: 0, error: null });
+  type Query = {
+    select: (...args: unknown[]) => Query;
+    eq: (...args: unknown[]) => typeof result;
+  };
+  let query: Query;
+  query = {
+    select: (..._args: unknown[]) => query,
+    eq: (..._args: unknown[]) => result,
   };
   return query;
 }
