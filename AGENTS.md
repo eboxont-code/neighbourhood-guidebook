@@ -39,6 +39,7 @@
 
 - Development-mode preview builds place Nitro public assets in `dist`; production keeps Nitro defaults to preserve the existing hosting output.
 - Interface strings go through `src/lib/i18n.tsx`. Business names and business-supplied data are not translated.
+- Write project-authored interface copy in natural, human English and Nepali rather than word-for-word translation. Keep the same meaning, tone and action in both languages, and keep translation keys and interpolation placeholders aligned. Avoid em dashes in UI copy; prefer full stops, commas, colons or parentheses. Preserve business-supplied names and descriptions. If wording is ambiguous or culturally sensitive, request fluent review rather than guessing.
 - Kathmandu opening status uses `Asia/Kathmandu` time. Do not guess opening status when the recorded schedule is missing or cannot be parsed.
 - Field provenance is derived by `src/lib/provenance.ts`. Verification and freshness rules belong in `src/lib/verification.ts`.
 - Location data is stored only for the local discovery feature and must not be sent to analytics. Sanitise errors and breadcrumbs before logging.
