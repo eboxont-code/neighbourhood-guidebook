@@ -143,6 +143,19 @@ Never mark work [DONE] merely because code exists, a PR is merged, or a preview 
 
 ## 3. Repository snapshot and history
 
+### Latest verified refresh — 8 November 2026, 22:57 Brisbane (read-only)
+
+- GitHub `main` is `6766c5a1d70a58db6c856050a4167df2854079fa` (8 November 2026, 11:35:37 UTC; “Fixed social meta imports”). Repository search returns 45 open pull requests and 0 open issues. The `main` branch is not protected (`protected=false`, no required status contexts). No local repository checkout is mounted in this runtime, so a local working-tree status cannot be claimed.
+- The latest READY Vercel Production deployment is [`dpl_2fFbgQ9n8EJKUmqdANwJTnnasiH8`](https://vercel.com/boxont/neighbourhood-guidebook/2fFbgQ9n8EJKUmqdANwJTnnasiH8), exact Git source SHA `6766c5a1d70a58db6c856050a4167df2854079fa`, target `production`, with alias `sewa.boxont.com`. GitHub's combined status for this main SHA reports Vercel success; no GitHub Actions workflow run was returned for the exact main SHA.
+- PR #66 is open/draft, targets `main` at `6766c5a1d70a58db6c856050a4167df2854079fa`, and has exact head `eeb996b4e9054117f1ce1e617cd0657f10e651b2` (3 commits ahead / 0 behind; 3 files). Exact-head Quality Gate [#42478354088](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42478354088) failed before runner assignment; both jobs have zero steps. Its exact-head Preview deployment [`dpl_GMcPdScEBrsFS6FrZ4hDdBMbSGp5`](https://vercel.com/boxont/neighbourhood-guidebook/GMcPdScEBrsFS6FrZ4hDdBMbSGp5) is READY at `neighbourhood-guidebook-git-sewa-sw-0204-preview-55e7ee-boxont.vercel.app`; this is not Production. No reviews or unresolved threads are present.
+- PR #67 is open/draft at head `9e8d8bba9fd601716c683b94373d727c0cc542c0` (18 commits, 7 files); exact-head Quality Gate [#42462075571](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42462075571) failed before runner assignment, with zero steps. PR #68 is open/draft at head `4a00158b657252d8d2b8972539757c5bf8f72294` (5 commits, one file); exact-head Quality Gate [#42469810806](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42469810806) failed before runner assignment, with zero steps. Neither PR has submitted reviews or unresolved threads. No repository tests ran on either head.
+- PR #69 is open/draft at head `ea90c0487802493a4eb01f632ce21e8e14750754` (6 commits, one file). Exact-head Quality Gate [#42478708067](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42478708067) failed before runner assignment, with zero steps. Its Vercel status reports the free Hobby daily deployment limit; no Preview exists for this SHA. No reviews or unresolved threads are present.
+- The current PR checks above did not execute TypeScript, lint, unit/component tests, production build or disposable PostgreSQL tests. No checks were bypassed, and no PR was merged. Vercel's latest Production deployment remains the exact main commit above.
+- Read-only Production Supabase inspection: project `zvbavpcsyvibvpkxjzkn` is ACTIVE_HEALTHY on PostgreSQL 17.11 with 8 applied migrations. An aggregate SELECT found 0 total `listing_promotions` rows (0 active paid, 0 upcoming paid, 0 quoted). A separate SELECT found no public base table with “book” in its name. No Production rows, grants, policies, migrations, Auth settings or secrets were changed.
+- SW-0014 audit: Section 0 explicitly defers bookings until demand, participating businesses and support capacity exist. The current public route inventory contains no booking route; the component inventory contains no booking UI; `src/lib/commerce.ts` has no booking flow. Legacy booking-coming-soon translation keys are not referenced by current routes/components. No booking functionality was added or enabled.
+- Live smoke attempts for the Production homepage and `/for-businesses` returned an inspection-runtime Internal Error / URL inaccessible. No live page behaviour is claimed. No Production writes/migrations, customer/business data changes, outreach, pricing/configuration changes or additional spend occurred.
+- Register integrity before this update: 999 task rows representing all 1,000 unique IDs `SW-0001`–`SW-1000`, with no missing or duplicate IDs. The post-update status counts are recorded in the Automation run 12 note below.
+
 ### Latest verified snapshot — 8 November 2026, automation run 11 (read-only)
 
 - GitHub `main` after the SW-0042 implementation and plan-evidence merges: `64f884c1e7d184270386bc8eeb3c470d11d51fc3` (PR #64 merge commit). There are 41 open pull requests and 0 open issues. PRs #63 and #64 are merged; stale plan-only PRs #33 and #62 are closed unmerged as superseded.
@@ -739,7 +752,7 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 - PR #33 (stale SW-0042 plan-only branch) and PR #62 (stale branch-comparison-only plan update) were commented and closed unmerged as superseded. Their useful branch-comparison evidence is incorporated here. PR #12 and PR #31 remain open because they contain other independent tasks.
 - Production database: read-only snapshot remains 52 published listings, 10 analytics events, 0 contact messages, 0 business submissions and 8 applied migrations. No Production writes or migrations. Additional spend: $0.
 
-**Next eligible task: SW-0204 — explain the difference between a preview concept and a launched website.** This is the first remaining P0 TODO in register order; the later P0 security checks SW-0764–SW-0770 follow it.
+**Next eligible task: SW-0015 — record that no price may be published without the owner's approval.** SW-0204 and SW-0764–SW-0769 remain BLOCKED by exact-head Quality Gate runner failures; SW-0770 requires an owner-authorised recovery session. SW-0011 is verified DONE, SW-0012 and SW-0013 are BLOCKED, and SW-0014 is verified DONE.
 - SW-0041 remains blocked by its parent PR #27 / PR #26 decision stack. SW-0043–SW-0044 remain blocked by owner-approved privacy/identity/retention rules and verified Search Console or equivalent attribution evidence.
 - SW-0045–SW-0050 remain in existing PRs #30–#36; PR #30/#34 are stale/conflicted and later PRs are stacked on them. Reconcile after SW-0204; do not duplicate the existing implementation.
 - SW-0081–SW-0084 require an owner-authorised browser/admin session and disposable test account. SW-0085–SW-0088 and SW-0091–SW-0095 remain in stale/conflicted PR #12; SW-0089 requires a physical keyboard-only session; SW-0090/0096 depend on stale PRs #38/#39.
@@ -749,6 +762,14 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 
 
 ---
+
+### Automation run 12 — SW-0014 bookings remain deferred (8 November 2026, 22:57 Brisbane)
+
+- Selected SW-0014 after the earlier P0 tasks were checked against their current exact-head evidence. PR #66's preview is now READY for its exact head, but its Quality Gate failed before runner assignment; PRs #67/#68/#69 have the same pre-runner failure. SW-0770 still requires an owner-controlled recovery session.
+- Verified the booking launch gate against the current source and Production state: bookings remain deferred in Section 0 until proven demand, participating businesses and support capacity are present. The public route list has no booking route, the component list has no booking UI, the commerce module contains no booking flow, and a read-only Production information-schema query found no public table with “book” in its name. The legacy English translation strings “coming soon” / “planned for later” are not referenced by current routes or components, so they are not rendered as a public booking promise.
+- Marked SW-0014 DONE based on that evidence. No application code, public copy, database schema, Production records, migrations, permissions, settings or secrets were changed.
+- Reconciled the register: SW-0011 DONE from the existing Section 0 strategy; SW-0012 and SW-0013 BLOCKED by owner-only criteria/approval; SW-0204 and SW-0764–SW-0769 BLOCKED by failed-before-runner checks; SW-0770 BLOCKED by the owner-controlled recovery session. The register remains 999 task rows with 1,000 unique IDs. Post-update counts: 14 DONE, 74 BLOCKED, 9 REVIEW, 902 TODO, 0 IN PROGRESS.
+- Production remains READY on exact main commit `6766c5a1d70a58db6c856050a4167df2854079fa`. No merge or deployment was triggered. Live page smoke could not be completed because the inspection runtime could not retrieve the public site. Production Supabase remained read-only; additional spend: $0.
 
 ## 10. Instruction for every future AI session
 
