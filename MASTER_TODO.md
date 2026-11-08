@@ -2,7 +2,7 @@
 
 > **Single source of truth for SEWA/Boxont execution. Read the whole file before each work session and update it before ending. This file combines the repository plan, revenue-first strategy and the 1,000-task register.**
 >
-> **Last reviewed:** 8 November 2026
+> **Last reviewed:** 9 November 2026
 >
 > **Merged inputs:** existing repository `MASTER_TODO.md`, the revenue-first strategy and 1,000-point checklist, and the matching 1,000-row CSV task register. The CSV and checklist IDs, priorities and task descriptions were reconciled. This file is now the only project execution plan.
 >
@@ -89,6 +89,7 @@ Establish a baseline before choosing numerical targets. Do not invent targets or
 - Mobile usability, accessibility and performance are essential.
 - **No outbound prospecting or promotional outreach may be sent without the owner's explicit approval.** Do not automate WhatsApp, SMS, email or bulk outreach. Drafting, copying or opening a prefilled communication link is not sending and does not authorize it; sending must remain a separate, deliberate human action after approval.
 - Do not scrape private contact information.
+- **Never publish the owner's personal phone number on public SEWA pages or public business-facing materials.** Use the public contact form for operator enquiries unless the owner explicitly approves another public contact route. Phone actions on directory listings must use only that specific business's own public, source-supported contact number; never substitute an operator number.
 - A lead, enquiry, quote or proposal is not revenue. Record revenue only when money is actually received; account for refunds.
 - Sponsored placements must be clearly labelled and must never manipulate verification status or organic ranking.
 - Keep customer contact details, payment information, internal notes and commercial records private.
@@ -145,7 +146,7 @@ Never mark work [DONE] merely because code exists, a PR is merged, or a preview 
 
 ### Latest verified snapshot — 9 November 2026, automation run 11 (read-only)
 
-- Current GitHub main: 6766c5a1d70a58db6c856050a4167df2854079fa (8 Nov 2026 11:35 UTC). The private repository has 46 open PRs and 0 open issues. Root AGENTS.md, README.md, package.json, .github/workflows/quality.yml, the full 1,936-line master plan and all 1,000 task IDs were reviewed.
+- Current GitHub main: 6766c5a1d70a58db6c856050a4167df2854079fa (8 Nov 2026 11:35 UTC). The private repository has 47 open PRs and 0 open issues. Root AGENTS.md, README.md, package.json, .github/workflows/quality.yml, the full 1,936-line master plan and all 1,000 task IDs were reviewed.
 - No local repository checkout is mounted in this runtime; remote GitHub refs/files were inspected, but a local working-tree status cannot be claimed. The branch-protection endpoint returned HTTP 403 to the connected GitHub integration, so branch protection/rulesets could not be independently verified. Do not use that limitation to bypass the repository Quality Gate.
 - Main Quality Gate #42476445938 (https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42476445938) failed on exact main SHA 6766c5a1d70a58db6c856050a4167df2854079fa; both jobs have zero steps and no runner, so typecheck, lint, tests, production build and disposable PostgreSQL checks did not execute. The combined commit status reports only the successful Vercel deployment.
 - PR #66 (https://github.com/eboxont-code/neighbourhood-guidebook/pull/66) is open/draft, 3 commits ahead / 0 behind main, exact head eeb996b4e9054117f1ce1e617cd0657f10e651b2. Preview deployment dpl_GMcPdScEBrsFS6FrZ4hDdBMbSGp5 (https://vercel.com/boxont/neighbourhood-guidebook/GMcPdScEBrsFS6FrZ4hDdBMbSGp5) is READY for that exact head. Quality Gate #42478354088 (https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42478354088) failed before runner assignment with zero steps in both jobs. No tests ran; no merge or Production release occurred.
@@ -154,7 +155,7 @@ Never mark work [DONE] merely because code exists, a PR is merged, or a preview 
 - PRs #69 and #70 remain open/draft documentation branches (6 and 3 commits ahead / 0 behind main respectively); their changes are not part of main and do not supersede this file until merged.
 - Latest READY Production deployment is dpl_2fFbgQ9n8EJKUmqdANwJTnnasiH8 (https://vercel.com/boxont/neighbourhood-guidebook/2fFbgQ9n8EJKUmqdANwJTnnasiH8), target production, deployed commit exactly 6766c5a1d70a58db6c856050a4167df2854079fa, aliases include sewa.boxont.com. The PR #66 preview is not Production. Browser smoke checks for the production domain and preview returned Internal Error / URL inaccessible from this runtime; no live behaviour is claimed.
 - Production Supabase project zvbavpcsyvibvpkxjzkn remains ACTIVE_HEALTHY on PostgreSQL 17.11 with 8 applied timestamped migrations. Security Advisor reports 3 findings; Health Advisor reports none. Production migration history still differs from the 13-entry Drizzle journal, and supabase/config.toml points to a different project reference. All inspection was read-only; no records, grants, policies, migrations, Auth settings or secrets were changed.
-- Register after this run: 999 task rows, 1,000 unique IDs; 17 DONE, 66 BLOCKED, 11 REVIEW, 905 TODO and 0 IN PROGRESS. Additional spend: $0.
+- Register after this run: 999 task rows, 1,000 unique IDs; 18 DONE, 66 BLOCKED, 11 REVIEW, 904 TODO and 0 IN PROGRESS. Additional spend: $0.
 
 ### Latest verified snapshot — 8 November 2026, automation run 11 (read-only)
 
@@ -778,6 +779,20 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 
 PR #66/#67/#68 exact-head checks, Production deployment and database state are recorded in the latest repository snapshot above. No merge or deployment was attempted in this run. Additional spend: $0.
 
+
+### Automation run — 9 November 2026 — SW-0017
+
+**Completed this run: SW-0017 — record that the owner's personal phone number must not be published on SEWA.**
+
+- Added a clear rule in Section 1: never publish the owner's personal phone number on public SEWA pages or business-facing material. Operator enquiries use the public contact form unless the owner explicitly approves another public route. Listing call actions must use only that listing's own public, source-supported business number.
+- Audited current-main source files: `src/routes/contact.tsx` renders the contact form and contains no direct operator phone action; `src/routes/for-businesses.tsx` uses the enquiry form and contains no operator phone link; `src/components/site.tsx` creates a call link only from the current listing's `b.phone` field; `src/routes/__root.tsx` contains no operator contact metadata. The bundled directory contains business phone fields, not a configured operator contact number. The Vercel environment-variable names contain only the expected Supabase configuration keys, with no operator phone setting.
+- No owner personal phone value was retrieved, copied, compared or published. This is intentionally a policy and source audit; it does not claim to validate an undisclosed private number against each business record. No code changed, no outreach occurred, and no customer/business data or production configuration was changed.
+- Live page smoke checks for `https://sewa.boxont.com` and `/robots.txt` were unavailable from this runtime (web inspection Internal Error; container DNS resolution failed). Production deployment remains READY on exact main SHA `6766c5a1d70a58db6c856050a4167df2854079fa`; no merge or deployment was triggered.
+- Documentation/source audit tests are not applicable. PR #71 remains draft; its prior exact-head Quality Gate `#42498765773` failed before runner assignment with zero steps. The updated head must still pass the repository Quality Gate before merge. Branch protection could not be queried (GitHub API 403), so do not infer that checks or reviews are optional. No preview or production release is claimed.
+- No production database reads of personal contact values, writes, migrations, grants, policy changes or secret retrieval. Additional spend: $0.
+
+**Next eligible task: SW-0018 — record that the public contact form is the only public route for contacting the operator unless the owner changes that rule.**
+
 ---
 
 ## 10. Instruction for every future AI session
@@ -831,7 +846,7 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [TODO] **SW-0014 · P1 · Audit current state** — Keep bookings explicitly deferred until the booking launch gate is met.
 - [ ] [TODO] **SW-0015 · P1 · Audit current state** — Record that no price may be published without the owner's approval.
 - [x] [DONE] **SW-0016 · P1 · Audit current state** — Record that no outreach message may be sent without the owner's explicit approval. — Verified 9 Nov 2026: Section 1 now requires explicit owner approval before any outbound prospecting or promotional message is sent. Source audit found buildSalesOutreachDraft is a human-reviewed draft helper that never sends or stores a message; the admin only renders user-clickable tel: and prefilled wa.me links. Draft Bundle 7 PR #10 states that opening WhatsApp or copying text does not send anything. No outbound email/SMS/WhatsApp provider or server send endpoint was found in the inspected main source tree. The Supabase password-recovery email is a separate user-initiated account-recovery flow, not prospect outreach. No message was sent; no Production or database changes.
-- [ ] [TODO] **SW-0017 · P1 · Audit current state** — Record that the owner's personal phone number must not be published on Sewa.
+- [x] [DONE] **SW-0017 · P1 · Audit current state** — Record that the owner's personal phone number must not be published on Sewa. — Verified 9 Nov 2026: Section 1 now prohibits publishing the operator's personal phone number and directs operator enquiries to the public contact form unless another route is explicitly approved. Source audit of `src/routes/contact.tsx`, `src/routes/for-businesses.tsx`, `src/components/site.tsx`, `src/routes/__root.tsx`, `.env.example`, Vercel environment-variable names and the bundled directory found no operator phone constant or operator `tel:`/WhatsApp contact action. The listing-card call action uses only the listing's own `b.phone` field; directory phone fields are business contact data. The owner's private number was not retrieved or compared. Source-level audit only; production page fetch unavailable.
 - [ ] [TODO] **SW-0018 · P1 · Audit current state** — Record that the public contact form is the only public route for contacting the operator unless the owner changes that rule.
 - [ ] [TODO] **SW-0019 · P1 · Audit current state** — Set the language standard: natural human English and Nepali, with no em dashes.
 - [ ] [TODO] **SW-0020 · P1 · Audit current state** — Set the interface rule that a button or repeated CTA appears once per context unless testing proves otherwise.
