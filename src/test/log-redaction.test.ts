@@ -113,7 +113,7 @@ describe("public asset boundary", () => {
       expect(content).not.toMatch(
         /https?:\/\/(?:localhost|127(?:\.\d{1,3}){3}|0\.0\.0\.0|10(?:\.\d{1,3}){3}|192\.168(?:\.\d{1,3}){2}|172\.(?:1[6-9]|2\d|3[01])(?:\.\d{1,3}){2}|[a-z0-9-]+\.local)/i,
       );
-      expect(content).not.toMatch(/https?:\/\/[^\s"'<>]*\/admin(?:[/?#]|$)/i);
+      expect(content).not.toMatch(/https?:\/\/[^\s"'<>]*\/admin(?=[/?#\s"'<>]|$)/i);
     }
 
     const robots = readFileSync(resolve(publicRoot, "robots.txt"), "utf8");
@@ -122,7 +122,7 @@ describe("public asset boundary", () => {
 
   it("keeps the password-recovery redirect on the approved public domain", () => {
     const adminRoute = readFileSync(resolve(projectRoot, "src/routes/admin.tsx"), "utf8");
-    const adminUrls = [...adminRoute.matchAll(/https?:\/\/[^\s"'<>]*\/admin(?:[/?#]|$)/gi)].map(
+    const adminUrls = [...adminRoute.matchAll(/https?:\/\/[^\s"'<>]*\/admin(?=[/?#\s"'<>]|$)/gi)].map(
       ([url]) => url,
     );
     expect(adminUrls).toEqual(["https://sewa.boxont.com/admin"]);
