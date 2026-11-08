@@ -82,15 +82,18 @@ describe("preview concept versus launched website", () => {
     const document = renderPreview("the-new-barber-durbar-marg");
     const banner = document.querySelector(".pv-bar p span:nth-child(2)")?.textContent ?? "";
     const ownerNote = document.querySelector("#owner .owner-note p")?.textContent ?? "";
+    const bannerCta = document.querySelector(".pv-bar a")?.textContent ?? "";
 
     if (lang === "en") {
       expect(banner).toContain("not a live");
+      expect(bannerCta).toContain("Ask about making this your website");
       expect(ownerNote).toContain("not published on your own domain");
       expect(ownerNote).toContain("separate project");
       expect(ownerNote).toContain("in writing");
       expect(document.querySelector("#owner h2")?.textContent).toContain("separate website project");
     } else {
       expect(banner).toContain("लाइभ वेबसाइट");
+      expect(bannerCta).toContain("यसलाई आफ्नो वेबसाइट बनाउनेबारे सोध्नुहोस्");
       expect(ownerNote).toContain("तपाईंको आफ्नै डोमेनमा प्रकाशित गरिएको छैन");
       expect(ownerNote).toContain("छुट्टै परियोजना");
       expect(ownerNote).toContain("लिखित रूपमा");

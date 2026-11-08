@@ -15,6 +15,7 @@ import { applyCatFilters, parseCatSearch, type CatFilters } from "@/lib/filters"
 import { useI18n, type Key } from "@/lib/i18n";
 import { sponsoredFor } from "@/lib/promotions";
 import { categoryLocalAreas } from "@/lib/local-pages";
+import { shareImage, shareText } from "@/lib/social-meta";
 
 export const Route = createFileRoute("/$city/$section")({
   validateSearch: (s: Record<string, unknown>): CatFilters => parseCatSearch(s),
@@ -36,13 +37,12 @@ export const Route = createFileRoute("/$city/$section")({
     if (sec.kind === "area") {
       const a = getArea(sec.slug)!;
       const items = businessesIn(city.slug).filter((b) => b.area === a.slug);
-      const types = categoriesIn(items).map((c) => c.name.toLowerCase());
-      const list = types.length > 3 ? `${types.slice(0, 3).join(", ")} and more` : types.length > 1 ? `${types.slice(0, -1).join(", ")} and ${types[types.length - 1]}` : types[0] ?? "local places";
-      const head = pageMeta(`Places in ${a.name}, ${city.name}: ${list}`, `Local places in ${a.name}, ${city.name}, with phone numbers, opening hours, directions and whether each website works.`, path);
+      const values = { area: a.name, city: city.name };
+      const head = pageMeta(shareText("shareAreaTitle", values), shareText("shareAreaDescription", values), path, shareImage());
       return { ...head, scripts: [{ type: "application/ld+json", children: JSON.stringify(areaBreadcrumbJsonLd(city, a)) }, { type: "application/ld+json", children: JSON.stringify(itemListJsonLd(`Places in ${a.name}`, items)) }] };
     }
     const c = getCategory(sec.slug)!;
-    return pageMeta(`${c.name} in ${city.name}`, `${c.name} in ${city.name}, with phone numbers, opening hours, directions and whether each website works.`, path);
+    return pageMeta(`${c.name} in ${city.name}`, `${c.name} in ${city.name}, with phone numbers, opening hours, directions and whether each website works.`, path, shareImage());
   },
   notFoundComponent: NotFoundView,
   component: SectionPage,

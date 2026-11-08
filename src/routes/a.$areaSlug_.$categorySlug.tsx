@@ -5,6 +5,7 @@ import { getArea, getCategory, getCity, placeName } from "@/data/directory";
 import { localFacts, localItems, qualifiesLocalPage } from "@/lib/local-pages";
 import { dict, useI18n, type Key } from "@/lib/i18n";
 import { itemListJsonLd, pageMeta } from "@/lib/seo";
+import { shareImage } from "@/lib/social-meta";
 
 export const Route = createFileRoute("/a/$areaSlug_/$categorySlug")({
   loader: ({ params }) => {
@@ -20,7 +21,7 @@ export const Route = createFileRoute("/a/$areaSlug_/$categorySlug")({
     const name = `${category.name} in ${area.name}, ${city.name}`;
     const facts = localFacts(items);
     const description = `${items.length} recorded ${category.name.toLowerCase()} listings in ${area.name}, ${city.name}. ${facts.mapped} mapped, ${facts.saturday} with Saturday hours and ${facts.verified} verified against official sources.`;
-    const head = pageMeta(name, description, `/a/${area.slug}/${category.slug}`);
+    const head = pageMeta(name, description, `/a/${area.slug}/${category.slug}`, shareImage());
     const title = `${name} | Sewa`;
     return { ...head, meta: head.meta.map((meta) => "title" in meta ? { title } : meta["property"] === "og:title" || meta["name"] === "twitter:title" ? { ...meta, content: title } : meta), scripts: [{ type: "application/ld+json", children: JSON.stringify(itemListJsonLd(name, items)) }] };
   },

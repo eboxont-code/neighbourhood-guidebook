@@ -143,7 +143,16 @@ Never mark work [DONE] merely because code exists, a PR is merged, or a preview 
 
 ## 3. Repository snapshot and history
 
-### Latest verified snapshot — 8 November 2026, automation run 11 (read-only)
+### Latest verified refresh — 8 November 2026, 21:55 Brisbane (read-only)
+
+- GitHub `main` is `6766c5a1d70a58db6c856050a4167df2854079fa` (8 November 2026, 11:35:37 UTC; “Fixed social meta imports”). The repository search returned 45 open pull requests and 0 open issues. GitHub reports the `main` branch is not protected. No local repository checkout is mounted in this runtime, so a local working-tree status cannot be claimed.
+- The latest READY Vercel Production deployment is `dpl_2fFbgQ9n8EJKUmqdANwJTnnasiH8`, exact Git source SHA `6766c5a1d70a58db6c856050a4167df2854079fa`, with `sewa.boxont.com` attached. The connected Boxont Vercel team is on the Hobby plan. GitHub’s combined status for this main SHA reports Vercel success; no GitHub Actions workflow run was returned for this SHA.
+- PR #66 is open/draft, targets `main`, and has no human reviews or unresolved review threads. Its previous head `8a313ab72f43988f2fb4107fdb672ca97c996172` was 2 commits ahead and 5 behind current main (diverged). Exact-head Quality Gate [#42441337629](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42441337629) failed before runner assignment: both jobs had zero steps and no runner ID. Vercel recorded a preview failure for that old head due to the free daily API deployment limit; no preview deployment exists for that exact SHA. This run is refreshing the existing PR with a normal merge commit, not rebasing or force-pushing.
+- PR #67, #68 and #69 remain open/draft. Their recorded heads are respectively `9e8d8bba9fd601716c683b94373d727c0cc542c0`, `4a00158b657252d8d2b8972539757c5bf8f72294`, and `88e1c50be2145e711970c4739d457ee5aa417424`. Their exact-head Quality Gates failed before executing steps. PR #68 has a READY preview for its documentation head, not Production. PR #69 is 3 commits ahead and 5 behind current main (diverged); its plan update is not on main.
+- Read-only Supabase inspection: project `zvbavpcsyvibvpkxjzkn` is ACTIVE_HEALTHY on PostgreSQL 17.11 with 8 applied migrations. Security Advisor: 3 findings (one RLS-enabled table without policies, one authenticated SECURITY DEFINER function, and leaked-password protection disabled). Performance Advisor: 17 RLS initialization-plan findings, 3 unused-index findings, and 2 multiple-permissive-policy findings. Health Advisor: no findings. No production records, grants, policies, migrations, Auth settings or secrets were changed.
+- Live homepage and affected preview routes could not be retrieved by the web inspection runtime (Internal Error / URL inaccessible). No live page behaviour is claimed from that failed fetch. No production writes or migrations, customer/business data changes, outreach, pricing changes, configuration changes or additional spend occurred.
+
+### Prior verified snapshot — 8 November 2026, automation run 11 (before the 11:35 UTC main update)
 
 - GitHub `main` after the SW-0042 implementation and plan-evidence merges: `64f884c1e7d184270386bc8eeb3c470d11d51fc3` (PR #64 merge commit). There are 41 open pull requests and 0 open issues. PRs #63 and #64 are merged; stale plan-only PRs #33 and #62 are closed unmerged as superseded.
 - SW-0042 implementation PR #63 [test(sewa): prevent duplicate analytics on route and form events](https://github.com/eboxont-code/neighbourhood-guidebook/pull/63) merged from exact head `47a669081cbd82c6252c389bd4756d2c2e59d783` as `4c2505bdbc66f51c9d3316d2db44ab41a50148cb`, using the established merge-commit method with an exact-head SHA guard. No human reviews or unresolved review threads were present.
@@ -485,7 +494,7 @@ Historical audit baseline (not a verified current count): 52 businesses, 8 categ
 - [x] [DONE] Improve useful neighbourhood and category landing pages. Local pages /a/durbar-marg/salons and /a/lazimpat/spas added and listed in the sitemap. Shipped by GuideBook bot, 26-31 Oct 2026.
 - [ ] [TODO] Add more area x category pages only where real listing data exists.
 - [ ] [TODO] Avoid thin, duplicated or fabricated SEO pages.
-- [ ] [TODO] Improve social preview metadata.
+- [ ] [IN PROGRESS] Improve social preview metadata. Reviewing homepage, listing and neighbourhood share cards using existing brand assets only; no publishing or migrations.
 - [ ] [TODO] Use free search performance tools where available.
 - [ ] [TODO] Measure organic traffic and useful discovery outcomes.
 
@@ -739,13 +748,20 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 - PR #33 (stale SW-0042 plan-only branch) and PR #62 (stale branch-comparison-only plan update) were commented and closed unmerged as superseded. Their useful branch-comparison evidence is incorporated here. PR #12 and PR #31 remain open because they contain other independent tasks.
 - Production database: read-only snapshot remains 52 published listings, 10 analytics events, 0 contact messages, 0 business submissions and 8 applied migrations. No Production writes or migrations. Additional spend: $0.
 
-**Next eligible task: SW-0204 — explain the difference between a preview concept and a launched website.** This is the first remaining P0 TODO in register order; the later P0 security checks SW-0764–SW-0770 follow it.
+**Current task: SW-0204 — explain the difference between a preview concept and a launched website.** The existing PR #66 is being refreshed against current main; completion remains subject to exact-head checks and preview/live verification.
 - SW-0041 remains blocked by its parent PR #27 / PR #26 decision stack. SW-0043–SW-0044 remain blocked by owner-approved privacy/identity/retention rules and verified Search Console or equivalent attribution evidence.
 - SW-0045–SW-0050 remain in existing PRs #30–#36; PR #30/#34 are stale/conflicted and later PRs are stacked on them. Reconcile after SW-0204; do not duplicate the existing implementation.
 - SW-0081–SW-0084 require an owner-authorised browser/admin session and disposable test account. SW-0085–SW-0088 and SW-0091–SW-0095 remain in stale/conflicted PR #12; SW-0089 requires a physical keyboard-only session; SW-0090/0096 depend on stale PRs #38/#39.
 - SW-0121–SW-0124 remain behind the Bundle 7 owner release/migration gate. SW-0125–SW-0127 remain in PRs #48–#50; their branches are stale/diverged and must be reconciled after higher-priority P0 work. SW-0164–SW-0171 remain stacked on stale/conflicted PR #12; SW-0172/#37 and SW-0173/#40 need branch reconciliation; SW-0174/#42 depends on PR #40.
 - SW-0201 remains blocked by owner review of PR #45; SW-0202 and SW-0241–SW-0247 remain blocked by owner-approved prospect criteria and the missing original 20-business CSV. The separate 18-candidate workbook is not a substitute.
 - Production enquiry end-to-end testing remains blocked until an owner-authorised browser/admin session and approved disposable test account are available. The production anonymous privilege remediation remains separate from SW-0042 and must respect migration-history/release controls.
+
+
+### Automation run 11 — SW-0204 current execution (8 November 2026, 21:55 Brisbane)
+
+- Selected SW-0204 as the first remaining P0 task. The existing PR #66 already contains English/Nepali preview-versus-launch copy and a render test. The current main branch had advanced since that PR was opened, so this run is preserving the PR and merging current main into its branch without rebasing or force-pushing.
+- The preview page uses the updated banner, owner heading and owner note; the For Businesses page uses the updated explanation. The focused regression test also checks the English and Nepali preview CTA wording.
+- Status at start of this run: IN PROGRESS. No merge or Production release has been attempted yet. Production remains on the READY deployment above; live route smoke checks are unavailable from this runtime. Production Supabase remains read-only; additional spend remains $0.
 
 
 ---
@@ -1018,7 +1034,7 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [BLOCKED] **SW-0201 · P0 · Audit current state** — Write the single clearest sentence describing the website-design service for Kathmandu businesses. — Existing implementation and tests are in open draft PR #45; owner review is required before treating the change as released. Do not duplicate it. — Verified 8 Nov 2026: implementation is in draft PR #45; branch is 29 commits behind current main and GitHub reports mergeable=false. Reconcile conflicts and rerun CI before merge.
 - [ ] [BLOCKED] **SW-0202 · P0 · Audit current state** — Define the ideal first customer segment based on need and deliverability rather than assumed budget. — Requires owner-approved first-customer criteria and verified prospect evidence; the original 20-business CSV remains unavailable. — Verified 8 Nov 2026: requires owner-approved first-customer criteria and the original verified 20-business prospect CSV; the separate 18-candidate preview workbook is not a substitute.
 - [x] [DONE] **SW-0203 · P0 · Audit current state** — Explain the difference between the free directory listing and a paid website project. — Verified on current main and deployed production commit `41065104ea2bb6906f060d05fc6b2d4abbe5c6bc`: English/Nepali `fbPricingBody`, `fbPricingNote`, `fbQ2` and `fbA2` explicitly separate the always-free SEWA listing from optional website/sponsored services. `src/routes/for-businesses.tsx` is identical between main and production; the cited translation keys match. No code change was needed.
-- [ ] [TODO] **SW-0204 · P0 · Audit current state** — Explain the difference between a preview concept and a launched website.
+- [ ] [IN PROGRESS] **SW-0204 · P0 · Audit current state** — Explain the difference between a preview concept and a launched website. — Existing bilingual implementation and render regression test are in PR #66; this run is refreshing the branch against current main and will require fresh exact-head checks and preview verification before completion.
 - [ ] [TODO] **SW-0205 · P1 · Audit current state** — List the website deliverables that can reliably be provided today.
 - [ ] [TODO] **SW-0206 · P1 · Audit current state** — List optional deliverables that require a separate quote.
 - [ ] [TODO] **SW-0207 · P1 · Audit current state** — Define what a basic one-page website includes before taking payment.

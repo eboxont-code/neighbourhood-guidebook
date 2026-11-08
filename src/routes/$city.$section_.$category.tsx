@@ -10,6 +10,7 @@ import { isOpen } from "@/lib/filters";
 import { comboBreadcrumbJsonLd, itemListJsonLd } from "@/lib/seo";
 import { sortByDistance, useLocation } from "@/lib/geo";
 import { useI18n } from "@/lib/i18n";
+import { shareImage } from "@/lib/social-meta";
 
 /** Listings in one area and one category. Only combos with at least one listing exist. */
 function comboItems(city: string, area: string, category: string): Business[] {
@@ -35,7 +36,7 @@ export const Route = createFileRoute("/$city/$section_/$category")({
     const name = `${cat.name} in ${area.name}, ${city.name}`;
     const n = items.length;
     const desc = `${n === 1 ? "1 place" : `${n} places`} in ${area.name}, ${city.name} listed under ${cat.name.toLowerCase()}, with phone numbers, opening hours, directions and whether each website works.`;
-    const head = pageMeta(name, desc, `/${city.slug}/${area.slug}/${cat.slug}`);
+    const head = pageMeta(name, desc, `/${city.slug}/${area.slug}/${cat.slug}`, shareImage());
     return { ...head, scripts: [
       { type: "application/ld+json", children: JSON.stringify(comboBreadcrumbJsonLd(city, area, cat)) },
       { type: "application/ld+json", children: JSON.stringify(itemListJsonLd(name, items)) },
