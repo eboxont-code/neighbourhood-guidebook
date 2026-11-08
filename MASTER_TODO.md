@@ -87,7 +87,7 @@ Establish a baseline before choosing numerical targets. Do not invent targets or
 - Distinguish verified, source-checked, unknown and unverified information honestly.
 - English and Nepali are first-class interface languages.
 - Mobile usability, accessibility and performance are essential.
-- Do not send unsolicited messages automatically or introduce bulk-spam outreach.
+- **No outbound prospecting or promotional outreach may be sent without the owner's explicit approval.** Do not automate WhatsApp, SMS, email or bulk outreach. Drafting, copying or opening a prefilled communication link is not sending and does not authorize it; sending must remain a separate, deliberate human action after approval.
 - Do not scrape private contact information.
 - A lead, enquiry, quote or proposal is not revenue. Record revenue only when money is actually received; account for refunds.
 - Sponsored placements must be clearly labelled and must never manipulate verification status or organic ranking.
@@ -142,6 +142,19 @@ Never mark work [DONE] merely because code exists, a PR is merged, or a preview 
 ---
 
 ## 3. Repository snapshot and history
+
+### Latest verified snapshot — 9 November 2026, automation run 11 (read-only)
+
+- Current GitHub main: 6766c5a1d70a58db6c856050a4167df2854079fa (8 Nov 2026 11:35 UTC). The private repository has 46 open PRs and 0 open issues. Root AGENTS.md, README.md, package.json, .github/workflows/quality.yml, the full 1,936-line master plan and all 1,000 task IDs were reviewed.
+- No local repository checkout is mounted in this runtime; remote GitHub refs/files were inspected, but a local working-tree status cannot be claimed. The branch-protection endpoint returned HTTP 403 to the connected GitHub integration, so branch protection/rulesets could not be independently verified. Do not use that limitation to bypass the repository Quality Gate.
+- Main Quality Gate #42476445938 (https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42476445938) failed on exact main SHA 6766c5a1d70a58db6c856050a4167df2854079fa; both jobs have zero steps and no runner, so typecheck, lint, tests, production build and disposable PostgreSQL checks did not execute. The combined commit status reports only the successful Vercel deployment.
+- PR #66 (https://github.com/eboxont-code/neighbourhood-guidebook/pull/66) is open/draft, 3 commits ahead / 0 behind main, exact head eeb996b4e9054117f1ce1e617cd0657f10e651b2. Preview deployment dpl_GMcPdScEBrsFS6FrZ4hDdBMbSGp5 (https://vercel.com/boxont/neighbourhood-guidebook/GMcPdScEBrsFS6FrZ4hDdBMbSGp5) is READY for that exact head. Quality Gate #42478354088 (https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42478354088) failed before runner assignment with zero steps in both jobs. No tests ran; no merge or Production release occurred.
+- PR #67 (https://github.com/eboxont-code/neighbourhood-guidebook/pull/67) is open/draft at 9e8d8bba9fd601716c683b94373d727c0cc542c0, 18 commits ahead / 5 behind current main. Its exact-head Quality Gate #42462075571 (https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42462075571) failed before runner assignment; both jobs have zero steps. The service-role boundary and log-redaction tests did not execute. No submitted reviews or unresolved review threads are present.
+- PR #68 (https://github.com/eboxont-code/neighbourhood-guidebook/pull/68) is open/draft at 8951266c95796f71f7e182427ba6c8f0644fc96f, 7 commits ahead / 5 behind current main. Exact-head Quality Gate #42493138830 (https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42493138830) failed before runner assignment; both jobs have zero steps. No submitted reviews or unresolved review threads are present. PRs #67 and #68 are diverged from current main and must be reconciled before any merge.
+- PRs #69 and #70 remain open/draft documentation branches (6 and 3 commits ahead / 0 behind main respectively); their changes are not part of main and do not supersede this file until merged.
+- Latest READY Production deployment is dpl_2fFbgQ9n8EJKUmqdANwJTnnasiH8 (https://vercel.com/boxont/neighbourhood-guidebook/2fFbgQ9n8EJKUmqdANwJTnnasiH8), target production, deployed commit exactly 6766c5a1d70a58db6c856050a4167df2854079fa, aliases include sewa.boxont.com. The PR #66 preview is not Production. Browser smoke checks for the production domain and preview returned Internal Error / URL inaccessible from this runtime; no live behaviour is claimed.
+- Production Supabase project zvbavpcsyvibvpkxjzkn remains ACTIVE_HEALTHY on PostgreSQL 17.11 with 8 applied timestamped migrations. Security Advisor reports 3 findings; Health Advisor reports none. Production migration history still differs from the 13-entry Drizzle journal, and supabase/config.toml points to a different project reference. All inspection was read-only; no records, grants, policies, migrations, Auth settings or secrets were changed.
+- Register after this run: 999 task rows, 1,000 unique IDs; 17 DONE, 66 BLOCKED, 11 REVIEW, 905 TODO and 0 IN PROGRESS. Additional spend: $0.
 
 ### Latest verified snapshot — 8 November 2026, automation run 11 (read-only)
 
@@ -739,7 +752,7 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 - PR #33 (stale SW-0042 plan-only branch) and PR #62 (stale branch-comparison-only plan update) were commented and closed unmerged as superseded. Their useful branch-comparison evidence is incorporated here. PR #12 and PR #31 remain open because they contain other independent tasks.
 - Production database: read-only snapshot remains 52 published listings, 10 analytics events, 0 contact messages, 0 business submissions and 8 applied migrations. No Production writes or migrations. Additional spend: $0.
 
-**Next eligible task: SW-0204 — explain the difference between a preview concept and a launched website.** This is the first remaining P0 TODO in register order; the later P0 security checks SW-0764–SW-0770 follow it.
+**Previous next-task selection (8 November 2026): SW-0204 — explain the difference between a preview concept and a launched website.** It was the first remaining P0 TODO at that snapshot; automation run 11 below records its current CI blocker and the updated next eligible task.
 - SW-0041 remains blocked by its parent PR #27 / PR #26 decision stack. SW-0043–SW-0044 remain blocked by owner-approved privacy/identity/retention rules and verified Search Console or equivalent attribution evidence.
 - SW-0045–SW-0050 remain in existing PRs #30–#36; PR #30/#34 are stale/conflicted and later PRs are stacked on them. Reconcile after SW-0204; do not duplicate the existing implementation.
 - SW-0081–SW-0084 require an owner-authorised browser/admin session and disposable test account. SW-0085–SW-0088 and SW-0091–SW-0095 remain in stale/conflicted PR #12; SW-0089 requires a physical keyboard-only session; SW-0090/0096 depend on stale PRs #38/#39.
@@ -747,6 +760,23 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 - SW-0201 remains blocked by owner review of PR #45; SW-0202 and SW-0241–SW-0247 remain blocked by owner-approved prospect criteria and the missing original 20-business CSV. The separate 18-candidate workbook is not a substitute.
 - Production enquiry end-to-end testing remains blocked until an owner-authorised browser/admin session and approved disposable test account are available. The production anonymous privilege remediation remains separate from SW-0042 and must respect migration-history/release controls.
 
+### Automation run 11 — 9 November 2026
+
+**Completed this run: SW-0016 — record that no outreach message may be sent without the owner's explicit approval.**
+
+- Strengthened Section 1 so the rule is explicit for outbound prospecting and promotional messages. Drafting, copying or opening a prefilled link does not authorize sending; any send remains a separate deliberate human action after owner approval.
+- Audited current-main source: src/lib/sales-pipeline.ts describes buildSalesOutreachDraft as a human-reviewed draft helper that never sends or stores a message; src/routes/admin.tsx and src/lib/leads.ts only build user-clickable tel: and prefilled wa.me links. The draft Bundle 7 PR #10 says its WhatsApp action opens a draft and copying text does not send it. No outbound email/SMS/WhatsApp provider or server send endpoint was found in the inspected source tree. The Supabase password-recovery email is a separate user-initiated account-recovery flow, not prospect outreach.
+- No outreach message was sent, no customer/business data was accessed or changed, and no Production or database setting was changed. No code changed; this is a policy and source audit.
+
+**Priority blockers recorded:**
+- SW-0204 is BLOCKED by PR #66's exact-head Quality Gate failing before runner assignment (two jobs, zero steps). Its exact-head Vercel Preview is READY, but tests did not run and the preview is not Production.
+- SW-0764–SW-0766 are DONE as read-only audits; their findings are documented in PR #68. Database remediation is separate and remains blocked by migration-history reconciliation and explicit task-specific authorization.
+- SW-0767 and SW-0769 remain REVIEW in PR #67 because the exact-head checks did not execute; the service-role regression test and log-redaction repository tests are unverified. SW-0768 is DONE as a read-only environment audit; no secret values were decrypted.
+- SW-0770 is BLOCKED until the owner-controlled recovery inbox and authorised administrator test session are available.
+
+**Next eligible task: SW-0017 — record that the owner's personal phone number must not be published on SEWA.**
+
+PR #66/#67/#68 exact-head checks, Production deployment and database state are recorded in the latest repository snapshot above. No merge or deployment was attempted in this run. Additional spend: $0.
 
 ---
 
@@ -800,7 +830,7 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [TODO] **SW-0013 · P1 · Audit current state** — Keep existing free directory inclusion separate from any future paid placement offer.
 - [ ] [TODO] **SW-0014 · P1 · Audit current state** — Keep bookings explicitly deferred until the booking launch gate is met.
 - [ ] [TODO] **SW-0015 · P1 · Audit current state** — Record that no price may be published without the owner's approval.
-- [ ] [TODO] **SW-0016 · P1 · Audit current state** — Record that no outreach message may be sent without the owner's explicit approval.
+- [x] [DONE] **SW-0016 · P1 · Audit current state** — Record that no outreach message may be sent without the owner's explicit approval. — Verified 9 Nov 2026: Section 1 now requires explicit owner approval before any outbound prospecting or promotional message is sent. Source audit found buildSalesOutreachDraft is a human-reviewed draft helper that never sends or stores a message; the admin only renders user-clickable tel: and prefilled wa.me links. Draft Bundle 7 PR #10 states that opening WhatsApp or copying text does not send anything. No outbound email/SMS/WhatsApp provider or server send endpoint was found in the inspected main source tree. The Supabase password-recovery email is a separate user-initiated account-recovery flow, not prospect outreach. No message was sent; no Production or database changes.
 - [ ] [TODO] **SW-0017 · P1 · Audit current state** — Record that the owner's personal phone number must not be published on Sewa.
 - [ ] [TODO] **SW-0018 · P1 · Audit current state** — Record that the public contact form is the only public route for contacting the operator unless the owner changes that rule.
 - [ ] [TODO] **SW-0019 · P1 · Audit current state** — Set the language standard: natural human English and Nepali, with no em dashes.
@@ -1018,7 +1048,7 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [BLOCKED] **SW-0201 · P0 · Audit current state** — Write the single clearest sentence describing the website-design service for Kathmandu businesses. — Existing implementation and tests are in open draft PR #45; owner review is required before treating the change as released. Do not duplicate it. — Verified 8 Nov 2026: implementation is in draft PR #45; branch is 29 commits behind current main and GitHub reports mergeable=false. Reconcile conflicts and rerun CI before merge.
 - [ ] [BLOCKED] **SW-0202 · P0 · Audit current state** — Define the ideal first customer segment based on need and deliverability rather than assumed budget. — Requires owner-approved first-customer criteria and verified prospect evidence; the original 20-business CSV remains unavailable. — Verified 8 Nov 2026: requires owner-approved first-customer criteria and the original verified 20-business prospect CSV; the separate 18-candidate preview workbook is not a substitute.
 - [x] [DONE] **SW-0203 · P0 · Audit current state** — Explain the difference between the free directory listing and a paid website project. — Verified on current main and deployed production commit `41065104ea2bb6906f060d05fc6b2d4abbe5c6bc`: English/Nepali `fbPricingBody`, `fbPricingNote`, `fbQ2` and `fbA2` explicitly separate the always-free SEWA listing from optional website/sponsored services. `src/routes/for-businesses.tsx` is identical between main and production; the cited translation keys match. No code change was needed.
-- [ ] [TODO] **SW-0204 · P0 · Audit current state** — Explain the difference between a preview concept and a launched website.
+- [ ] [BLOCKED] **SW-0204 · P0 · Audit current state** — Explain the difference between a preview concept and a launched website. — PR #66 is 3 commits ahead / 0 behind main. Its exact head eeb996b4e9054117f1ce1e617cd0657f10e651b2 has a READY Preview (dpl_GMcPdScEBrsFS6FrZ4hDdBMbSGp5), but Quality Gate #42478354088 failed before runner assignment: both jobs have zero steps, so tests, typecheck, lint, build and database tests did not run. Wait for GitHub runner availability; do not retry unchanged or merge. Preview is not Production.
 - [ ] [TODO] **SW-0205 · P1 · Audit current state** — List the website deliverables that can reliably be provided today.
 - [ ] [TODO] **SW-0206 · P1 · Audit current state** — List optional deliverables that require a separate quote.
 - [ ] [TODO] **SW-0207 · P1 · Audit current state** — Define what a basic one-page website includes before taking payment.
@@ -1661,13 +1691,13 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [BLOCKED] **SW-0761 · P0 · Admin area reported; regression-test access boundary** — Verify the /admin area redirects unauthorised visitors to a safe authentication state. — Requires an owner-authorised browser/admin session to verify the live redirect boundary.
 - [ ] [BLOCKED] **SW-0762 · P0 · Audit current state** — Verify an unauthenticated request cannot access lead data through a direct API call. — A direct anonymous PostgREST API request cannot be issued from this runtime; read-only SQL inspection is not a substitute. Requires a runnable API test environment.
 - [ ] [BLOCKED] **SW-0763 · P0 · Audit current state** — Verify an authenticated but unauthorised user cannot change admin data. — Requires a disposable authenticated non-admin test account/session; none is available.
-- [ ] [TODO] **SW-0764 · P0 · Audit current state** — Check database row-level security policies for every table that holds leads or private notes.
-- [ ] [TODO] **SW-0765 · P0 · Audit current state** — Check public read access exposes only fields intended for listing pages.
-- [ ] [TODO] **SW-0766 · P0 · Audit current state** — Check public write access is limited to validated form actions.
-- [ ] [TODO] **SW-0767 · P0 · Audit current state** — Review Supabase keys and ensure a service-role key is never shipped to the browser.
-- [ ] [TODO] **SW-0768 · P0 · Audit current state** — Review environment variables used in the production build.
-- [ ] [TODO] **SW-0769 · P0 · Audit current state** — Remove secrets, credentials, private tokens, and internal admin URLs from logs and public assets.
-- [ ] [TODO] **SW-0770 · P0 · Audit current state** — Ensure password reset and admin session flows behave safely.
+- [x] [DONE] **SW-0764 · P0 · Audit current state** — Check database row-level security policies for every table that holds leads or private notes. — Read-only Production audit documented in PR #68: RLS and policies reviewed for contact messages, business submissions, claims, correction reports, roles, analytics and rate limiting. Private reads/updates are admin-restricted; intended public insert paths and their limitations are recorded. Audit only; no Production remediation or writes.
+- [x] [DONE] **SW-0765 · P0 · Audit current state** — Check public read access exposes only fields intended for listing pages. — Read-only audit documented in PR #68: the public loader selects narrow display projections, but anonymous table SELECT permits direct reads of all granted columns on listings, redirects and promotions, including promotion quote/paid/refund amounts. The last recorded Production snapshot had zero promotion rows. Audit only; no grants or data changed.
+- [x] [DONE] **SW-0766 · P0 · Audit current state** — Check public write access is limited to validated form actions. — Read-only Production audit documented in PR #68: anonymous grants include broad table privileges, including TRUNCATE, on seven tables; contact/correction insert policies use WITH CHECK (true), and correction submissions do not validate a published listing slug. Production has 8 applied migrations while the Drizzle journal has 13 entries; reconcile the histories before any forward-only remediation. No Production rows, grants, policies or migrations changed.
+- [ ] [REVIEW] **SW-0767 · P0 · Audit current state** — Review Supabase keys and ensure a service-role key is never shipped to the browser. — PR #67 source audit found the service-role key is confined to the server-only client and is not browser-exposed; a regression test was added. Exact-head Quality Gate #42462075571 failed before runner assignment with zero steps, so the new test did not execute. Keep in review until the required checks run.
+- [x] [DONE] **SW-0768 · P0 · Audit current state** — Review environment variables used in the production build. — Read-only build-environment audit documented in PR #67: browser build variables are limited to the public Supabase URL and publishable key; the service-role key is server-only and marked sensitive in Vercel metadata. No values were decrypted. The local Supabase CLI project reference differs from Production; do not run CLI migrations until reconciled. No Production settings or secrets changed.
+- [ ] [REVIEW] **SW-0769 · P0 · Audit current state** — Remove secrets, credentials, private tokens, and internal admin URLs from logs and public assets. — PR #67 added log redaction and regression tests; a targeted local JavaScript smoke check passed 8/8 synthetic cases, but the exact-head Quality Gate #42462075571 failed before runner assignment and the repository tests did not run. Direct compiled-Production-bundle inspection also remains unavailable. Keep in review.
+- [ ] [BLOCKED] **SW-0770 · P0 · Audit current state** — Ensure password reset and admin session flows behave safely. — Requires the owner-controlled recovery inbox and an authorised administrator test session to verify the real recovery email, link and signed-in admin journey. Neither is available; do not attempt recovery or change credentials.
 - [ ] [TODO] **SW-0771 · P1 · Audit current state** — Review session expiry and logout behaviour.
 - [ ] [TODO] **SW-0772 · P1 · Audit current state** — Verify admin pages are not indexable by search engines.
 - [ ] [TODO] **SW-0773 · P1 · Audit current state** — Keep noindex separate from access control; never rely on robots.txt to protect private data.
