@@ -485,7 +485,7 @@ Historical audit baseline (not a verified current count): 52 businesses, 8 categ
 - [x] [DONE] Improve useful neighbourhood and category landing pages. Local pages /a/durbar-marg/salons and /a/lazimpat/spas added and listed in the sitemap. Shipped by GuideBook bot, 26-31 Oct 2026.
 - [ ] [TODO] Add more area x category pages only where real listing data exists.
 - [ ] [TODO] Avoid thin, duplicated or fabricated SEO pages.
-- [ ] [TODO] Improve social preview metadata.
+- [ ] [IN PROGRESS] Improve social preview metadata. Reviewing homepage, listing and neighbourhood share cards using existing brand assets only; no publishing or migrations.
 - [ ] [TODO] Use free search performance tools where available.
 - [ ] [TODO] Measure organic traffic and useful discovery outcomes.
 
