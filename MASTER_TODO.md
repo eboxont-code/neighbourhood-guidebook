@@ -147,14 +147,15 @@ Never mark work [DONE] merely because code exists, a PR is merged, or a preview 
 
 The 5 November baseline below is historical. The current verified state is:
 
-- GitHub `main`: `a1e4babb3d9457d7627a0a5b33f3bb81c5642435`, merge commit for PR #53. There are 42 open pull requests and 0 open issues. PR #53 is merged; PR #52 remains closed and unmerged with its original test branch retained.
-- The combined status for current `main` reports Vercel success. The latest Vercel Production deployment is READY: `dpl_G7iMH7fsH43TrovRhQqbbEnVPB3X`, built from the exact main SHA above, with `sewa.boxont.com` and the existing Vercel aliases attached. PR #53's merge triggered the normal Git-linked Production deployment.
+- GitHub `main`: `a1e4babb3d9457d7627a0a5b33f3bb81c5642435`, merge commit for PR #53. There are 43 open pull requests and 0 open issues. PR #53 is merged; PR #52 remains closed and unmerged; PR #54 is the current SW-0161 PR.
+- PR #54 targets current `main`; its test code commit is `62171a6aac4e78684a760af9ef3db7364eca03d6`. Quality Gate run [#42429469383](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42429469383) passed on PR head `d279679cdbb89d7aaa0ffe24547e96d682bbdb0a): TypeScript, ESLint, all 25 test files/180 tests, production build, all 13 disposable PostgreSQL migrations and database security/concurrency checks.
+- Vercel preview deployment [READY](https://vercel.com/boxont/neighbourhood-guidebook/J9e7neyHzGWEvcKiuwgKqu9u5dyf): `dpl_J9e7neyHzGWEvcKiuwgKqu9u5dyf`, built from the SW-0161 test code commit above. Preview alias: `neighbourhood-guidebook-git-sewa-sw-0161-no-websi-f20150-boxont.vercel.app`. The first Vercel deployment attempt reported the free daily API-deployment limit, but a later deployment for the same branch reached READY; the combined status still shows the earlier Vercel failure and is not being represented as a successful status check.
+- The latest Vercel Production deployment remains READY: `dpl_G7iMH7fsH43TrovRhQqbbEnVPB3X`, built from exact main SHA `a1e4babb3d9457d7627a0a5b33f3bb81c5642435`, with `sewa.boxont.com` attached. PR #53's merge triggered the normal Git-linked Production deployment. No SW-0161 production merge/deployment has occurred yet.
 - Vercel project `prj_zdxJhQFdQrH76wYIefxmaOVRLFx8` is linked to this repository and remains on the Boxont Hobby team. No paid upgrade or resource was created.
 - No local repository checkout is mounted in this runtime. Remote refs, file contents, PR diffs and CI were inspected; a local working-tree status cannot be claimed. The GitHub branch-protection endpoint returned HTTP 403 to this connection, so its settings cannot be independently read here; GitHub's merge endpoint remains the enforcement point.
-- The retained SW-0161 branch `sewa/sw-0161-preview-no-website-20261108` contains the first render-only test attempt and was the head of closed PR #52. Its combined status has only the Vercel free build-rate-limit failure; no Quality Gate was run on that old head. The new run will port the test to a fresh branch from current main and use the now-operational GitHub Actions workflow.
 - Supabase project `zvbavpcsyvibvpkxjzkn` is ACTIVE_HEALTHY in `ap-south-1`, PostgreSQL 17.11, with 8 applied production migrations. Read-only table inspection reports 52 published listings, 0 contact messages and 0 business submissions.
 - Security Advisor: 3 findings (RLS enabled without policies on `form_rate_log`; authenticated execution of SECURITY DEFINER `has_role`; leaked-password protection disabled). Performance Advisor: 17 RLS initialization-plan findings, 3 unused indexes and 2 multiple-permissive-policy findings. Health Advisor: no findings.
-- No production database writes, migrations, settings changes or customer/business data changes occurred. The only production deployment in this snapshot was the automatic deployment following the earlier PR #53 merge; no deployment was initiated for SW-0161 at the start of this run.
+- No production database writes, migrations, settings changes or customer/business data changes occurred. The production deployment at the time of this snapshot remains the READY main deployment listed above.
 
 ### Repository baseline
 
@@ -693,18 +694,21 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 
 ### Current task
 
-**In progress this run: SW-0161 — regression-test the shared website preview for a business with no website.**
+**Completed this run: SW-0161 — regression-test the shared website preview for a business with no website.**
 
-- The previous attempt was PR #52, closed unmerged because its head had no executable GitHub Actions run and Vercel's Hobby build-rate limit was the only reported status.
-- New evidence changes the testing path: GitHub Actions is operational, and PR #53 has merged. Current `main` is `a1e4babb3d9457d7627a0a5b33f3bb81c5642435`; its matching Vercel Production deployment is READY at `dpl_G7iMH7fsH43TrovRhQqbbEnVPB3X`.
-- Audited the current shared preview route and the real bundled listing fixture `the-new-barber-durbar-marg`: `websiteStatus: "none_found"`, no website URL, a recorded phone and address, and recorded social/directions links. The route renders one shared template and does not invent an official-website action.
-- Ported the retained render-only test to a fresh current-main branch `sewa/sw-0161-no-website-preview-regression-20261108`. It checks the real fixture, business identity, recorded address/phone, preview CTA listing/name attribution, and that all external/contact links are limited to the listing's recorded directions, phone and social profiles. No form submission or production write is performed.
-- Test file: `src/test/preview-no-website.test.tsx`. The test uses the repository's existing Vitest jsdom environment. CI verification is pending; do not mark this task DONE until the final Quality Gate passes.
-- No application runtime code or database schema is changed.
+- Audited the current shared preview route and the real bundled listing fixture `the-new-barber-durbar-marg`: `websiteStatus: "none_found"`, no website URL, recorded phone/address, and recorded social/directions links. The existing route renders one shared template and does not invent an official-website action; no application runtime change was required.
+- Added render-only regression test `src/test/preview-no-website.test.tsx`. It verifies fixture status and missing website, business identity, recorded address/phone, preview enquiry CTA listing/name attribution, and that external/contact links are limited to recorded directions, phone and social profiles.
+- The test uses the existing Vitest jsdom environment and submits no forms or production data.
+- PR #54: [test(sewa): verify shared preview for a business without a website](https://github.com/eboxont-code/neighbourhood-guidebook/pull/54), current pre-evidence-update head `d279679cdbb89d7aaa0ffe24547e96d682bbdb0a`, based directly on current main `a1e4babb3d9457d7627a0a5b33f3bb81c5642435`. No code review submissions or unresolved review threads were returned; Vercel bot comments only.
+- Quality Gate [#42429469383](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42429469383) passed: TypeScript, ESLint (0 errors, 25 existing warnings), 25 test files/180 tests including the new no-website test, production build, and 13 disposable PostgreSQL migrations plus database security/concurrency checks.
+- Vercel preview deployment [READY](https://vercel.com/boxont/neighbourhood-guidebook/J9e7neyHzGWEvcKiuwgKqu9u5dyf) on test code commit `62171a6aac4e78684a760af9ef3db7364eca03d6`. The separate initial Vercel status failure is due to the free daily deployment limit; no upgrade or paid spend.
+- No production database writes, migrations or customer/business data changes. Production remains on READY main commit `a1e4babb3d9457d7627a0a5b33f3bb81c5642435`. A public HTTP smoke request could not be completed from this runtime because outbound DNS/network access is unavailable; deployment READY is not being described as a successful live smoke test.
+- PR merge and any resulting Production deployment are tracked separately from test completion. The final PR head's latest Quality Gate must be checked before merge; after merge, verify the exact deployed commit and attempt a non-destructive live smoke check.
 
-**Next eligible task after SW-0161: SW-0162 — regression-test the shared preview for a business whose listed website is broken.**
+**Next eligible task: SW-0162 — regression-test the shared preview for a business whose listed website is broken.**
 
 - SW-0201 remains blocked by owner review of PR #45; SW-0202 remains blocked by owner-approved customer criteria and the missing original prospect evidence. The original 20-business CSV is not replaced by the separate 18-candidate workbook.
+- The public enquiry end-to-end test remains blocked until an owner-authorised browser/admin session and approved disposable test account are available.
 - The production database remains read-only. No outreach, pricing, customer-data changes or additional spend are authorised.
 
 
@@ -929,7 +933,7 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 **Phase:** 1 - Revenue foundation  
 **Definition of done:** The current shared preview template gives each suitable business a credible concept, remains clearly a preview, and produces attributable enquiries.
 
-- [ ] [IN PROGRESS] **SW-0161 · P0 · Reported preview template exists; regression-test** — Regression-test the existing shared preview template against a business with no website. — Selected 8 November 2026; ported the retained PR #52 render test to fresh current-main branch `sewa/sw-0161-no-website-preview-regression-20261108`. Uses bundled fixture `the-new-barber-durbar-marg`; CI verification pending.
+- [x] [DONE] **SW-0161 · P0 · Reported preview template exists; regression-test** — Regression-test the existing shared preview template against a business with no website. — Render-only regression test `src/test/preview-no-website.test.tsx` passed in Quality Gate [#42429469383](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42429469383) on PR #54; 25 test files/180 tests passed, including the new fixture test. No production writes or application runtime changes.
 - [ ] [TODO] **SW-0162 · P0 · Reported preview template exists; regression-test** — Regression-test the template against a business whose listed website is broken.
 - [ ] [TODO] **SW-0163 · P0 · Reported preview template exists; regression-test** — Regression-test the template against a business with a working website to ensure it is not mislabelled.
 - [ ] [TODO] **SW-0164 · P0 · Audit current state** — Verify preview routes use the expected business slug and fail safely for an unknown slug.
