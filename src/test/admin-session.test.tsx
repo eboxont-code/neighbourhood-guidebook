@@ -150,6 +150,18 @@ describe("admin session expiry and logout", () => {
     expect(await screen.findByRole("heading", { name: "adSignInTitle" })).toBeInTheDocument();
     expect(screen.queryByText("adLoading")).not.toBeInTheDocument();
   });
+  it("fails closed when the initial session read returns an error", async () => {
+    authMocks.getSession.mockResolvedValue({
+      data: { session: adminSession },
+      error: new Error("synthetic session error"),
+    });
+
+    render(createElement(AdminPage));
+
+    expect(await screen.findByRole("heading", { name: "adSignInTitle" })).toBeInTheDocument();
+    expect(screen.queryByRole("tab", { name: "adTabListings" })).not.toBeInTheDocument();
+  });
+
 
   it("leaves password-recovery mode when Supabase reports sign-out", async () => {
     render(createElement(AdminPage));
