@@ -5,6 +5,14 @@ const KEY = "dir-lang";
 
 export const dict = {
   en: {
+    shareHomeTitle: "Local businesses in Nepal",
+    shareHomeDescription: "Explore local business listings, starting with Kathmandu. See recorded contact details, opening hours and directions where available.",
+    shareAreaTitle: "Places in {area}, {city}",
+    shareAreaDescription: "Explore local business listings in {area}, {city}. See recorded details and their sources.",
+    shareCityTitle: "Explore {city} by neighbourhood",
+    shareCityDescription: "Browse neighbourhoods and business categories in {city}. See recorded listing details and their sources.",
+    shareListingDescription: "{name} in {place}. View recorded business details and their sources on SEWA.",
+    shareLogoAlt: "Boxont logo, SEWA directory",
     languageLabel: "Language",
     localCategoryLinks: "Explore by type in {area}",
     localAreaLinks: "Explore {cat} by area",
@@ -549,6 +557,14 @@ export const dict = {
     pvCat_salons: "Salon", pvCat_barbers: "Barber", pvCat_spas: "Spa", pvCat_clinics: "Clinic", pvCat_cafes: "Café", pvCat_restaurants: "Restaurant", pvCat_gyms: "Gym", pvCat_hotels: "Hotel",
   },
   ne: {
+    shareHomeTitle: "नेपालका स्थानीय व्यवसाय",
+    shareHomeDescription: "काठमाडौंबाट सुरु भएको स्थानीय व्यवसायको सूची हेर्नुहोस्। उपलब्ध सम्पर्क विवरण, खुल्ने समय र बाटोको जानकारी पाउनुहोस्।",
+    shareAreaTitle: "{city}को {area}मा रहेका व्यवसाय",
+    shareAreaDescription: "{city}को {area}मा रहेका स्थानीय व्यवसायको सूची हेर्नुहोस्। अभिलेखमा भएका विवरण र तिनका स्रोत हेर्नुहोस्।",
+    shareCityTitle: "टोलअनुसार {city} हेर्नुहोस्",
+    shareCityDescription: "{city}का टोल र व्यवसायका प्रकार हेर्नुहोस्। सूचीमा भएका विवरण र तिनका स्रोत हेर्नुहोस्।",
+    shareListingDescription: "{place}मा {name}। सेवामा अभिलेखमा भएका व्यवसायका विवरण र तिनका स्रोत हेर्नुहोस्।",
+    shareLogoAlt: "Boxont को लोगो, सेवा व्यवसाय निर्देशिका",
     languageLabel: "भाषा",
     localCategoryLinks: "{area}मा प्रकारअनुसार हेर्नुहोस्",
     localAreaLinks: "क्षेत्रअनुसार {cat} हेर्नुहोस्",

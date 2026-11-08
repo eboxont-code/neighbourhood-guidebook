@@ -8,10 +8,10 @@ import { isOpen } from "@/lib/filters";
 import { sortByDistance, useLocation } from "@/lib/geo";
 import { newListings } from "@/lib/venue";
 import { useI18n } from "@/lib/i18n";
-import { SITE_NAME } from "@/config";
+import { shareImage, shareText } from "@/lib/social-meta";
 
 export const Route = createFileRoute("/")({
-  head: () => pageMeta("A local guide to everyday businesses in Nepal", `${SITE_NAME} is a local guide to everyday businesses in Nepal, starting with Kathmandu: phone numbers, opening hours, directions and whether each website works.`, "/"),
+  head: () => pageMeta(shareText("shareHomeTitle"), shareText("shareHomeDescription"), "/", shareImage()),
   component: Home,
 });
 
