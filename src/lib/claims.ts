@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { safeExternalHttpUrl } from '@/lib/urls';
 export const claimRoles = ['owner', 'manager', 'staff', 'other'] as const;
 export const claimWants = ['hours', 'photos', 'services', 'phone', 'address', 'other'] as const;
 export const claimStatuses = ['new', 'verified', 'rejected'] as const;
