@@ -2,7 +2,7 @@
 
 > **Single source of truth for SEWA/Boxont execution. Read the whole file before each work session and update it before ending. This file combines the repository plan, revenue-first strategy and the 1,000-task register.**
 >
-> **Last reviewed:** 8 November 2026
+> **Last reviewed:** 9 November 2026
 >
 > **Merged inputs:** existing repository `MASTER_TODO.md`, the revenue-first strategy and 1,000-point checklist, and the matching 1,000-row CSV task register. The CSV and checklist IDs, priorities and task descriptions were reconciled. This file is now the only project execution plan.
 >
@@ -142,6 +142,18 @@ Never mark work [DONE] merely because code exists, a PR is merged, or a preview 
 ---
 
 ## 3. Repository snapshot and history
+
+### Latest verified snapshot — 9 November 2026, automation run 12 (read-only)
+
+- GitHub `main` is `6766c5a1d70a58db6c856050a4167df2854079fa` (8 November 2026, 11:35:37 UTC). The repository has 48 open pull requests and 0 open issues. GitHub reports that `main` is not protected. No local checkout is mounted, so a local working-tree status cannot be claimed.
+- PR #66 remains open and draft, targets `main` at `6766c5a1d70a58db6c856050a4167df2854079fa`, and has exact head `9ea0c62e6f39309ae6753570dd8e4d99e139ee0e`. It is mergeable, with no human reviews or unresolved review threads. Exact-head Quality Gate [#42543071096](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42543071096) failed before runner assignment: both jobs had runner ID 0 and no steps, so typecheck, lint, tests, build and disposable PostgreSQL checks did not execute. Vercel reports the free daily deployment limit for this exact head. The latest READY PR preview, [dpl_J8cYfXJggLLEHwkc8iP5PYckyhRs](https://vercel.com/boxont/neighbourhood-guidebook/J8cYfXJggLLEHwkc8iP5PYckyhRs), is for the earlier head `78240ea13a90acc29dbc76b029b0bfeabb682d33`, not the current PR head.
+- The latest READY Production deployment is [dpl_2fFbgQ9n8EJKUmqdANwJTnnasiH8](https://vercel.com/boxont/neighbourhood-guidebook/2fFbgQ9n8EJKUmqdANwJTnnasiH8), exact Git source SHA `6766c5a1d70a58db6c856050a4167df2854079fa`, with `sewa.boxont.com` attached. Merging PR #66 would trigger the existing Git-linked Vercel Production workflow; no merge has been attempted.
+- Non-destructive page fetches for the Production For Businesses page, the Production preview route, and the current preview deployment were inaccessible from this runtime. The deployment record is READY, but no affected live behaviour is claimed as verified.
+- Read-only Production Supabase inspection: 52 published listings, 10 analytics events, 0 contact messages, 0 business submissions and 8 applied migrations. No records or migration history were changed.
+- SW-0764 RLS audit: `contact_messages`, `business_claims`, `business_submissions`, `correction_reports` and `form_rate_log` all have RLS enabled. `contact_messages` permits admin-only reads/updates; anonymous direct table access is not granted. `business_claims` and `business_submissions` permit admin-only reads/updates and public inserts only when status is `new` and `admin_note` is null; no public read/update/delete policies exist. Although table-level grants on those two tables are broad, the current RLS policies restrict anonymous/authenticated access to the allowed insert path. `correction_reports` permits public inserts and admin-only reads. `form_rate_log` has no policies and no anonymous/authenticated table privileges. No RLS-disabled lead/private-note table was found.
+- The database tables are not configured with FORCE ROW LEVEL SECURITY; the table owner and service role can bypass RLS by design. This audit covers the anonymous/authenticated policy boundary and does not replace a direct API test with disposable authenticated accounts.
+- Register integrity remains 1,000 unique task IDs in 999 Markdown rows. Status after this run: 12 DONE, 65 BLOCKED, 10 REVIEW, 912 TODO, 0 IN PROGRESS.
+- No Production writes or migrations, customer/business data changes, outreach, pricing changes, hosting/configuration changes or additional spend occurred.
 
 ### Latest verified snapshot — 8 November 2026, automation run 11 (read-only)
 
@@ -748,6 +760,17 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 - Production enquiry end-to-end testing remains blocked until an owner-authorised browser/admin session and approved disposable test account are available. The production anonymous privilege remediation remains separate from SW-0042 and must respect migration-history/release controls.
 
 
+### Automation run 12 — SW-0764 RLS policy audit (9 November 2026, 10:55 Brisbane)
+
+- SW-0204 was the first remaining P0 task, but its existing PR #66 cannot be verified safely in this run. The exact head `9ea0c62e6f39309ae6753570dd8e4d99e139ee0e` failed Quality Gate before either job received a runner; both jobs have zero steps. Vercel also reports its free daily deployment limit for this head. PR #66 remains draft and unmerged. No unchanged retry or paid workaround was attempted.
+- Selected SW-0764 as the next independently actionable P0 task. Queried the Production PostgreSQL catalog and effective table privileges using SELECT-only statements. Identified lead/private-note tables `contact_messages`, `business_claims` and `business_submissions`, plus adjacent contact-bearing `correction_reports` and the operational `form_rate_log`.
+- All five tables have RLS enabled. The claim and business-submission policies permit anonymous/authenticated INSERT only when `status = 'new'` and `admin_note IS NULL`; SELECT and UPDATE are restricted to users for whom `has_role(auth.uid(), 'admin')` is true, and no public UPDATE or DELETE policy exists. `contact_messages` has admin-only SELECT/UPDATE policies and no anonymous table grant; its public INSERT policy does not grant a direct anonymous insert privilege. `correction_reports` permits public INSERT and admin-only SELECT. `form_rate_log` has no RLS policies and no anonymous/authenticated table privileges. Broad table grants on claims/submissions do not bypass the row policies for those roles.
+- No RLS-disabled lead/private-note table was found. FORCE RLS is off on these tables, so owners and the service role can bypass RLS; this is recorded as a boundary of the audit, not changed. A direct anonymous API test and authenticated non-admin session test remain separate tasks requiring their own test environment/accounts.
+- SW-0764 is marked REVIEW until this evidence update passes the repository's checks and is merged. No policies, grants, records, migrations or Production settings were changed. Database counts remain 52 published listings, 10 analytics events, 0 contact messages and 0 business submissions; 8 migrations are applied. Additional spend: $0.
+- **Next eligible task: SW-0765 — check public read access exposes only fields intended for listing pages.** This can be audited independently with read-only schema/policy evidence after the current documentation update is reviewed.
+
+
+
 ---
 
 ## 10. Instruction for every future AI session
@@ -1018,7 +1041,7 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [BLOCKED] **SW-0201 · P0 · Audit current state** — Write the single clearest sentence describing the website-design service for Kathmandu businesses. — Existing implementation and tests are in open draft PR #45; owner review is required before treating the change as released. Do not duplicate it. — Verified 8 Nov 2026: implementation is in draft PR #45; branch is 29 commits behind current main and GitHub reports mergeable=false. Reconcile conflicts and rerun CI before merge.
 - [ ] [BLOCKED] **SW-0202 · P0 · Audit current state** — Define the ideal first customer segment based on need and deliverability rather than assumed budget. — Requires owner-approved first-customer criteria and verified prospect evidence; the original 20-business CSV remains unavailable. — Verified 8 Nov 2026: requires owner-approved first-customer criteria and the original verified 20-business prospect CSV; the separate 18-candidate preview workbook is not a substitute.
 - [x] [DONE] **SW-0203 · P0 · Audit current state** — Explain the difference between the free directory listing and a paid website project. — Verified on current main and deployed production commit `41065104ea2bb6906f060d05fc6b2d4abbe5c6bc`: English/Nepali `fbPricingBody`, `fbPricingNote`, `fbQ2` and `fbA2` explicitly separate the always-free SEWA listing from optional website/sponsored services. `src/routes/for-businesses.tsx` is identical between main and production; the cited translation keys match. No code change was needed.
-- [ ] [TODO] **SW-0204 · P0 · Audit current state** — Explain the difference between a preview concept and a launched website.
+- [ ] [BLOCKED] **SW-0204 · P0 · Audit current state** — Explain the difference between a preview concept and a launched website. — Existing bilingual copy and regression coverage remain in draft PR #66. The exact current head `9ea0c62e6f39309ae6753570dd8e4d99e139ee0e` has no executed checks because both GitHub Actions jobs failed before runner assignment (runner ID 0, no steps); Vercel's free daily deployment limit also prevents a READY preview for this head. Keep the PR draft and unmerged. Unlock when a runner is assigned and the free preview quota resets, then rerun the full checks and verify the exact-head preview and affected Production pages.
 - [ ] [TODO] **SW-0205 · P1 · Audit current state** — List the website deliverables that can reliably be provided today.
 - [ ] [TODO] **SW-0206 · P1 · Audit current state** — List optional deliverables that require a separate quote.
 - [ ] [TODO] **SW-0207 · P1 · Audit current state** — Define what a basic one-page website includes before taking payment.
@@ -1661,7 +1684,7 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [BLOCKED] **SW-0761 · P0 · Admin area reported; regression-test access boundary** — Verify the /admin area redirects unauthorised visitors to a safe authentication state. — Requires an owner-authorised browser/admin session to verify the live redirect boundary.
 - [ ] [BLOCKED] **SW-0762 · P0 · Audit current state** — Verify an unauthenticated request cannot access lead data through a direct API call. — A direct anonymous PostgREST API request cannot be issued from this runtime; read-only SQL inspection is not a substitute. Requires a runnable API test environment.
 - [ ] [BLOCKED] **SW-0763 · P0 · Audit current state** — Verify an authenticated but unauthorised user cannot change admin data. — Requires a disposable authenticated non-admin test account/session; none is available.
-- [ ] [TODO] **SW-0764 · P0 · Audit current state** — Check database row-level security policies for every table that holds leads or private notes.
+- [ ] [REVIEW] **SW-0764 · P0 · Audit current state** — Check database row-level security policies for every table that holds leads or private notes. — Read-only Production audit completed 9 Nov 2026 and documented in Automation run 12 below; the documentation update is awaiting its own checks and merge. RLS is enabled on all identified lead/private-note tables. Public access to claims/submissions is limited by current policies to inserts with status `new` and `admin_note` null; admin reads/updates are role-gated. `form_rate_log` has no client grants or policies.
 - [ ] [TODO] **SW-0765 · P0 · Audit current state** — Check public read access exposes only fields intended for listing pages.
 - [ ] [TODO] **SW-0766 · P0 · Audit current state** — Check public write access is limited to validated form actions.
 - [ ] [TODO] **SW-0767 · P0 · Audit current state** — Review Supabase keys and ensure a service-role key is never shipped to the browser.
