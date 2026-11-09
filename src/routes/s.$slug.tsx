@@ -197,7 +197,7 @@ function ShopPage() {
       </div>
 
       <div className="sheet">
-        <main className="mx-auto max-w-2xl px-5 pt-4 pb-6 lg:grid lg:max-w-6xl lg:grid-cols-[minmax(0,1fr)_21rem] lg:gap-10 lg:pt-6">
+        <main id="main-content" tabIndex={-1} className="mx-auto max-w-2xl px-5 pt-4 pb-6 lg:grid lg:max-w-6xl lg:grid-cols-[minmax(0,1fr)_21rem] lg:gap-10 lg:pt-6">
           <div className="min-w-0">
             <Crumbs b={b} />
             <h1 className="mt-1 text-[1.625rem] leading-tight font-semibold tracking-tight break-words sm:text-3xl">{b.name}</h1>

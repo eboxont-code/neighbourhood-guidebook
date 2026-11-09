@@ -140,7 +140,7 @@ export function HoursLine({ b }: { b: Business }) {
 }
 
 export function Page({ children, wide = false }: { children: ReactNode; wide?: boolean }) {
-  return <main className={`page-enter mx-auto px-5 py-6 ${wide ? "max-w-6xl" : "max-w-2xl"}`}>{children}</main>;
+  return <main id="main-content" tabIndex={-1} className={`page-enter mx-auto px-5 py-6 ${wide ? "max-w-6xl" : "max-w-2xl"}`}>{children}</main>;
 }
 
 
