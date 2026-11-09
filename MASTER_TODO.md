@@ -143,6 +143,19 @@ Never mark work [DONE] merely because code exists, a PR is merged, or a preview 
 
 ## 3. Repository snapshot and history
 
+### Latest verified refresh — 10 November 2026 (read-only)
+
+- GitHub `main` is `906f31c473a34c7346f02183d94e4f8465b89372`. The repository has 58 open pull requests and 0 open issues. Branch metadata reports `main` as unprotected. No local repository checkout is mounted, so no local working-tree status is claimed.
+- The exact-main Quality Gate [#42614821075](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42614821075) failed before either job executed a step; no typecheck, lint, tests, build or disposable PostgreSQL checks ran. The later main run [#42623279467](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42623279467) was cancelled. Main's combined status also reports the Vercel free Hobby daily build limit.
+- PR #66 (SW-0204) remains open/draft at exact head `9ea0c62e6f39309ae6753570dd8e4d99e139ee0e`. It is 5 commits ahead / 4 behind current main. Its exact-head Quality Gate [#42543071096](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42543071096) failed before runner assignment with zero executed steps. No current preview exists for that head; the branch remains unmerged.
+- Existing P0 security audit work remains in open/draft PRs [#67](https://github.com/eboxont-code/neighbourhood-guidebook/pull/67), [#68](https://github.com/eboxont-code/neighbourhood-guidebook/pull/68), [#72](https://github.com/eboxont-code/neighbourhood-guidebook/pull/72) and [#73](https://github.com/eboxont-code/neighbourhood-guidebook/pull/73). Their current Vercel checks report the free daily build limit; prior exact-head GitHub checks failed before executing steps. Do not repeat the audits or change Production permissions.
+- Existing policy and delivery work is already represented by open/draft PRs [#69](https://github.com/eboxont-code/neighbourhood-guidebook/pull/69), [#70](https://github.com/eboxont-code/neighbourhood-guidebook/pull/70), [#71](https://github.com/eboxont-code/neighbourhood-guidebook/pull/71), [#78](https://github.com/eboxont-code/neighbourhood-guidebook/pull/78), [#79](https://github.com/eboxont-code/neighbourhood-guidebook/pull/79), [#80](https://github.com/eboxont-code/neighbourhood-guidebook/pull/80), [#81](https://github.com/eboxont-code/neighbourhood-guidebook/pull/81) and [#82](https://github.com/eboxont-code/neighbourhood-guidebook/pull/82). They must not be duplicated or merged without their exact-head checks.
+- The Boxont Vercel Hobby team links project `neighbourhood-guidebook` to this exact GitHub repository. The latest READY Production deployment is [`dpl_2fFbgQ9n8EJKUmqdANwJTnnasiH8`](https://vercel.com/boxont/neighbourhood-guidebook/2fFbgQ9n8EJKUmqdANwJTnnasiH8), source branch `main`, deployed commit `6766c5a1d70a58db6c856050a4167df2854079fa`, with `sewa.boxont.com` attached. Current main is 4 commits ahead of Production; no Production deployment exists for current main. The latest project deployment `dpl_7L6KCEgskdBNm6h7ZVAAhr3QZR2L` is a READY Preview (target is not Production), not the live site.
+- Non-destructive Production smoke checks returned HTTP 200 for the homepage, For Businesses page and the no-website preview route. These checks describe the existing Production commit only. No form was submitted and no open PR behaviour is claimed as live.
+- Production Supabase project `zvbavpcsyvibvpkxjzkn` is ACTIVE_HEALTHY on PostgreSQL 17.11 with 8 applied migrations. All 10 public tables have RLS enabled. Read-only row counts: 52 listings, 10 analytics events, 3 form-rate rows, 1 admin-role row, and 0 contact messages, business submissions, business claims, correction reports, slug redirects and listing promotions. Security Advisor reports 3 findings; Performance Advisor reports 17 RLS initialization-plan findings, 3 unused-index findings and 2 multiple-permissive-policy findings; Health Advisor reports 0 findings.
+- The connected Lovable workspace contains only the BearBreaker and MTDGC projects; there is no SEWA / Neighbourhood Guidebook project to identify. Do not edit either unrelated project. SW-0024 is therefore BLOCKED until the owner connects or identifies the correct SEWA project.
+- All Production and database inspection was read-only. No records, grants, policies, schema, migrations, Auth settings, secrets, DNS, hosting settings, billing, prices or outreach were changed. Additional spend: $0.
+
 ### Latest verified refresh - 9 November 2026 (read-only)
 
 - GitHub `main` is `906f31c473a34c7346f02183d94e4f8465b89372` ("Fixed screen reader grouping"). The repository is private, the default branch is `main`, there are 57 open pull requests and 0 open issues. No local checkout is mounted in this runtime, so local working-tree cleanliness cannot be claimed.
@@ -763,7 +776,7 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 - PR #33 (stale SW-0042 plan-only branch) and PR #62 (stale branch-comparison-only plan update) were commented and closed unmerged as superseded. Their useful branch-comparison evidence is incorporated here. PR #12 and PR #31 remain open because they contain other independent tasks.
 - Production database: read-only snapshot remains 52 published listings, 10 analytics events, 0 contact messages, 0 business submissions and 8 applied migrations. No Production writes or migrations. Additional spend: $0.
 
-**Next eligible task: SW-0204 — explain the difference between a preview concept and a launched website.** This is the first remaining P0 TODO in register order; the later P0 security checks SW-0764–SW-0770 follow it.
+**Next eligible task after the verified SW-0025 audit: SW-0051 — track For Businesses page views and CTA clicks using the existing anonymous first-party analytics.** Do not add another analytics product or personal identifiers. Start only when the repository Quality Gate can execute and the existing event/privacy constraints are confirmed.
 - SW-0041 remains blocked by its parent PR #27 / PR #26 decision stack. SW-0043–SW-0044 remain blocked by owner-approved privacy/identity/retention rules and verified Search Console or equivalent attribution evidence.
 - SW-0045–SW-0050 remain in existing PRs #30–#36; PR #30/#34 are stale/conflicted and later PRs are stacked on them. Reconcile after SW-0204; do not duplicate the existing implementation.
 - SW-0081–SW-0084 require an owner-authorised browser/admin session and disposable test account. SW-0085–SW-0088 and SW-0091–SW-0095 remain in stale/conflicted PR #12; SW-0089 requires a physical keyboard-only session; SW-0090/0096 depend on stale PRs #38/#39.
@@ -773,6 +786,19 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 
 
 ---
+
+### Automation run 13 — SW-0025 GitHub/Vercel deployment-path audit (10 November 2026)
+
+**Outcome: VERIFIED BUT AWAITING REQUIRED CHECKS — SW-0025.** The established GitHub-to-Vercel Production path and target were positively identified. The task is recorded as REVIEW, not DONE, because the required repository Quality Gate is not executing on current commits. No application code changed.
+
+- Verified the Vercel project is linked to GitHub repository `eboxont-code/neighbourhood-guidebook`, with Production targeting `main` and the custom domain `sewa.boxont.com`.
+- The current Production deployment is READY on commit `6766c5a1d70a58db6c856050a4167df2854079fa`; current `main` is four commits ahead. The latest READY project deployment is a Preview, not Production. The free Hobby daily build limit is blocking current-main/PR builds; no paid workaround was used.
+- Read-only smoke checks returned HTTP 200 for the existing Production homepage, For Businesses page and no-website preview. No form was submitted. These checks do not verify any unmerged PR.
+- The current-main Quality Gate [#42614821075](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42614821075) failed before any step ran; the later main run [#42623279467](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42623279467) was cancelled. No typecheck, lint, automated tests, build or disposable PostgreSQL tests ran. The exact-head check on PR #66 [#42543071096](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42543071096) also failed before any step ran.
+- SW-0024 is BLOCKED because the connected Lovable workspace has no SEWA project. SW-0770 is BLOCKED pending the owner-controlled recovery inbox and authorised admin test session. SW-0204 remains BLOCKED in PR #66; SW-0764–SW-0769 remain REVIEW in their existing draft audit PRs.
+- Register after this update: 1,000 unique task IDs in 999 Markdown rows; SW-0298 and SW-0299 share one physical row. Updated register status counts: {"P0 DONE":6,"P0 BLOCKED":64,"P1 BLOCKED":4,"P1 REVIEW":19,"P1 TODO":325,"P2 TODO":428,"P3 TODO":140,"P2 REVIEW":1,"P1 DONE":4,"P2 DONE":2,"P0 REVIEW":6}; 1,000 unique task IDs in 999 Markdown rows.
+- No local checkout was available, so no local working-tree status or local npm suite is claimed. No production/database writes, migrations, settings, secrets, outreach, pricing, deployment or publishing occurred. Additional spend: $0.
+- Next task to resume when checks can execute: SW-0051 — track For Businesses page views and CTA clicks using the existing anonymous analytics, subject to the stated privacy constraints.
 
 ## 10. Instruction for every future AI session
 
@@ -1691,7 +1717,7 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [REVIEW] **SW-0767 · P0 · Audit current state** — Review Supabase keys and ensure a service-role key is never shipped to the browser. — Browser/server Supabase key-boundary audit evidence is in open/draft PR #67; exact-head checks/release remain outstanding.
 - [ ] [REVIEW] **SW-0768 · P0 · Audit current state** — Review environment variables used in the production build. — Production build-environment audit evidence is in open/draft PR #67; values were not decrypted; exact-head checks/release remain outstanding.
 - [ ] [REVIEW] **SW-0769 · P0 · Audit current state** — Remove secrets, credentials, private tokens, and internal admin URLs from logs and public assets. — Sensitive-log/public-asset audit and redaction changes are in open/draft PR #67; exact-head checks/release remain outstanding.
-- [ ] [TODO] **SW-0770 · P0 · Audit current state** — Ensure password reset and admin session flows behave safely.
+- [ ] [BLOCKED] **SW-0770 · P0 · Audit current state** — Ensure password reset and admin session flows behave safely. — Requires the owner-controlled recovery inbox and an authorised administrator test session; neither is available. Unlock when the owner provides the recovery inbox and authorises a safe test session. Do not use owner credentials or send a real recovery email.
 - [ ] [TODO] **SW-0771 · P1 · Audit current state** — Review session expiry and logout behaviour.
 - [ ] [TODO] **SW-0772 · P1 · Audit current state** — Verify admin pages are not indexable by search engines.
 - [ ] [TODO] **SW-0773 · P1 · Audit current state** — Keep noindex separate from access control; never rely on robots.txt to protect private data.
