@@ -2,7 +2,7 @@
 
 > **Single source of truth for SEWA/Boxont execution. Read the whole file before each work session and update it before ending. This file combines the repository plan, revenue-first strategy and the 1,000-task register.**
 >
-> **Last reviewed:** 8 November 2026
+> **Last reviewed:** 9 November 2026
 >
 > **Merged inputs:** existing repository `MASTER_TODO.md`, the revenue-first strategy and 1,000-point checklist, and the matching 1,000-row CSV task register. The CSV and checklist IDs, priorities and task descriptions were reconciled. This file is now the only project execution plan.
 >
@@ -142,6 +142,19 @@ Never mark work [DONE] merely because code exists, a PR is merged, or a preview 
 ---
 
 ## 3. Repository snapshot and history
+
+### Latest verified snapshot — 9 November 2026, 21:57 Brisbane (read-only)
+
+- GitHub `main` is `906f31c473a34c7346f02183d94e4f8465b89372` (“Fixed screen reader grouping”). The repository has 56 open pull requests and 0 open issues. GitHub reports `main` is not protected. No local checkout is mounted, so local working-tree cleanliness cannot be claimed.
+- Exact-main Quality Gate [#42545646764](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42545646764) failed before runner assignment: both jobs had runner ID 0 and zero steps. The combined main status reports Vercel failure because the free daily deployment allowance is exhausted.
+- SW-0204 remains blocked in [PR #66](https://github.com/eboxont-code/neighbourhood-guidebook/pull/66): exact head `9ea0c62e6f39309ae6753570dd8e4d99e139ee0e`, base SHA `6766c5a1d70a58db6c856050a4167df2854079fa`, and comparison with current main is 5 commits ahead / 4 behind. Exact-head Quality Gate [#42543071096](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42543071096) failed before runner assignment with zero steps. Vercel's free daily limit blocks a current preview; the last READY preview is for an earlier head, not this one.
+- P0 security audits SW-0764–SW-0769 are already represented in open/draft PRs [#67](https://github.com/eboxont-code/neighbourhood-guidebook/pull/67), [#68](https://github.com/eboxont-code/neighbourhood-guidebook/pull/68) and [#73](https://github.com/eboxont-code/neighbourhood-guidebook/pull/73). Their exact-head checks/release remain outstanding. SW-0770 also needs the owner-controlled recovery inbox and an authorised admin session.
+- P1 strategy and policy work SW-0011 and SW-0013–SW-0021 is already represented in open/draft PRs #69, #70, #71 and #80. SW-0012 remains blocked by the missing owner-approved qualification criteria and original 20-business CSV. Do not duplicate these existing changes.
+- Latest Vercel Production deployment is READY: [dpl_2fFbgQ9n8EJKUmqdANwJTnnasiH8](https://vercel.com/boxont/neighbourhood-guidebook/2fFbgQ9n8EJKUmqdANwJTnnasiH8), deployed from commit `6766c5a1d70a58db6c856050a4167df2854079fa`, with `sewa.boxont.com` attached. Current main is four commits ahead of Production.
+- Live smoke checks were attempted with the web and HTTP clients, but both could not resolve `sewa.boxont.com` (HTTP 000). Production deployment is READY; affected live behaviour remains unverified.
+- Production Supabase project `zvbavpcsyvibvpkxjzkn` is ACTIVE_HEALTHY on PostgreSQL 17.11 with 8 applied migrations. All 10 public tables have RLS enabled. Read-only table metadata reports 52 listings, 10 analytics events, 3 rate-limit rows, 0 contact messages, 0 correction reports, 0 business submissions, 0 business claims, 0 slug redirects, 0 promotions and 1 admin-role row. No row contents were read.
+- No production writes, migrations, permission/configuration changes, outreach or price changes occurred. Additional spend: $0.
+- Register integrity after this status reconciliation: 1,000 unique task IDs in 999 Markdown rows; status counts are 12 DONE, 67 BLOCKED, 26 REVIEW, 894 TODO and 0 IN PROGRESS.
 
 ### Latest verified snapshot — 8 November 2026, automation run 11 (read-only)
 
@@ -619,6 +632,11 @@ For every database change:
 - [ ] [TODO] Check migration order against production migration history.
 - [ ] [TODO] State clearly whether the migration has or has not been applied in production.
 
+For every visual or layout change:
+- [ ] Capture actual rendered screenshots at the primary 390 CSS pixel phone viewport (typically 390 × 844) for each affected route and important state; include a relevant desktop viewport when responsive layout changes.
+- [ ] Attach screenshots or durable artifact links to the pull request and identify the route, viewport, and exact commit shown.
+- [ ] The reviewer must open and inspect the screenshots before calling the task DONE. If capture or inspection is unavailable, keep the task REVIEW or BLOCKED.
+
 For every release:
 
 - [ ] [TODO] Identify exact commit to deploy.
@@ -680,6 +698,14 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 | 9 | Use the funnel baseline to fix the largest conversion leak | BLOCKED — requires an owner-approved evaluation window and sufficient real conversion evidence; do not infer a leak from clicks alone |
 | 10 | Improve directory quality and coverage based on real user demand and lead value | BLOCKED — original 20-business prospect CSV and verified demand evidence are unavailable; the separate 18-candidate preview workbook is not a substitute |
 
+### Current execution — 9 November 2026, 21:57 Brisbane
+
+- Selected SW-0204 first because it is the first remaining P0 task. Its existing PR #66 is blocked by a diverged branch, runner-allocation failures on the exact head, and the Vercel free daily preview limit. It is now marked BLOCKED; do not retry unchanged.
+- The next P0 security audits SW-0764–SW-0769 are already documented or implemented in open/draft PRs #67, #68 and #73. Their required checks/release remain outstanding. SW-0770 needs the owner-controlled recovery inbox and authorised admin session.
+- Earlier P1 policy tasks SW-0011 and SW-0013–SW-0021 are already represented in open/draft PRs #69, #70, #71 and #80. SW-0012 is blocked by missing owner criteria and source data. These are not duplicated in this run.
+- Selected SW-0022 as the next independent P1 task. The new screenshot-review rule is recorded in AGENTS.md and Section 6 above. Its status is REVIEW until exact-head checks and release are complete.
+- Next eligible task after SW-0022: SW-0023 — make future Lovable prompts goal-led and acceptance-criteria-driven.
+
 ### Task 1 verification notes — 6 November 2026
 
 - Production `main` is `794b959b9056a9ec147414c39db4b6da6c0b79f1`. Vercel production deployment is READY on that exact commit; domain `sewa.boxont.com` is attached.
@@ -694,7 +720,7 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 - `contact_messages` has no UTM, campaign ID, landing/referrer route, or explicit preview URL fields. `analytics_events` records `listing_slug`, event, query, language and path, but no UTM/campaign fields. Sponsored clicks are counted by listing, placement/target key and date window; they are not joined to a specific campaign or later enquiry. No promotions or sponsored-click rows currently exist in production.
 - Keep SW-0060 and SW-0061 TODO. Mark SW-0062 REVIEW: the preview slug/page mapping is present in code, but the browser submit/validation journey has not been exercised end to end. No schema or application changes were made during this audit.
 
-### Current task
+### Historical task notes — earlier completed runs
 
 **Completed this run: SW-0161 — regression-test the shared website preview for a business with no website.**
 
@@ -739,7 +765,7 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 - PR #33 (stale SW-0042 plan-only branch) and PR #62 (stale branch-comparison-only plan update) were commented and closed unmerged as superseded. Their useful branch-comparison evidence is incorporated here. PR #12 and PR #31 remain open because they contain other independent tasks.
 - Production database: read-only snapshot remains 52 published listings, 10 analytics events, 0 contact messages, 0 business submissions and 8 applied migrations. No Production writes or migrations. Additional spend: $0.
 
-**Next eligible task: SW-0204 — explain the difference between a preview concept and a launched website.** This is the first remaining P0 TODO in register order; the later P0 security checks SW-0764–SW-0770 follow it.
+**Historical next eligible task at that point: SW-0204.** Its current blocked state and the new next eligible task are recorded in the 9 November execution note above.
 - SW-0041 remains blocked by its parent PR #27 / PR #26 decision stack. SW-0043–SW-0044 remain blocked by owner-approved privacy/identity/retention rules and verified Search Console or equivalent attribution evidence.
 - SW-0045–SW-0050 remain in existing PRs #30–#36; PR #30/#34 are stale/conflicted and later PRs are stacked on them. Reconcile after SW-0204; do not duplicate the existing implementation.
 - SW-0081–SW-0084 require an owner-authorised browser/admin session and disposable test account. SW-0085–SW-0088 and SW-0091–SW-0095 remain in stale/conflicted PR #12; SW-0089 requires a physical keyboard-only session; SW-0090/0096 depend on stale PRs #38/#39.
@@ -795,18 +821,18 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [BLOCKED] **SW-0008 · P0 · Audit current state** — Set an initial decision window for evaluating the current funnel before redesigning it again. — Verified 8 Nov 2026: requires an owner-approved initial funnel evaluation window; no approval or conversion baseline has been supplied.
 - [ ] [BLOCKED] **SW-0009 · P1 · Audit current state** — Create a decision log for changes that affect the business model or brand position. — Verified 8 Nov 2026: business-model decision log remains in open draft PR #44; commercial/brand decisions require owner review.
 - [ ] [BLOCKED] **SW-0010 · P1 · Audit current state** — Record the original three phases: trust foundation, lead-generation funnel, then bookings after traction. — Verified 8 Nov 2026: implementation is in draft PR #51, but its base is 29 commits behind current main and GitHub reports mergeable=false; reconcile branch conflicts and rerun CI before merge.
-- [ ] [TODO] **SW-0011 · P1 · Audit current state** — Keep the current money-first strategy while using data quality as a conversion enabler.
-- [ ] [TODO] **SW-0012 · P1 · Audit current state** — Define what qualifies as a high-value listing for the sales funnel: no site, broken site, or clearly weak site.
-- [ ] [TODO] **SW-0013 · P1 · Audit current state** — Keep existing free directory inclusion separate from any future paid placement offer.
-- [ ] [TODO] **SW-0014 · P1 · Audit current state** — Keep bookings explicitly deferred until the booking launch gate is met.
-- [ ] [TODO] **SW-0015 · P1 · Audit current state** — Record that no price may be published without the owner's approval.
-- [ ] [TODO] **SW-0016 · P1 · Audit current state** — Record that no outreach message may be sent without the owner's explicit approval.
-- [ ] [TODO] **SW-0017 · P1 · Audit current state** — Record that the owner's personal phone number must not be published on Sewa.
-- [ ] [TODO] **SW-0018 · P1 · Audit current state** — Record that the public contact form is the only public route for contacting the operator unless the owner changes that rule.
-- [ ] [TODO] **SW-0019 · P1 · Audit current state** — Set the language standard: natural human English and Nepali, with no em dashes.
-- [ ] [TODO] **SW-0020 · P1 · Audit current state** — Set the interface rule that a button or repeated CTA appears once per context unless testing proves otherwise.
-- [ ] [TODO] **SW-0021 · P1 · Audit current state** — Set the mobile-first review width to approximately 390 CSS pixels.
-- [ ] [TODO] **SW-0022 · P1 · Audit current state** — Require the reviewer to inspect actual phone-width screenshots before calling a design change complete.
+- [ ] [REVIEW] **SW-0011 · P1 · Audit current state** — Keep the current money-first strategy while using data quality as a conversion enabler. — Existing evidence is in open/draft PR #69; awaiting exact-head checks and release. Do not duplicate.
+- [ ] [BLOCKED] **SW-0012 · P1 · Audit current state** — Define what qualifies as a high-value listing for the sales funnel: no site, broken site, or clearly weak site. — Requires owner-approved observable qualification criteria and the original verified 20-business prospect CSV; the separate 18-candidate preview workbook is not a substitute.
+- [ ] [REVIEW] **SW-0013 · P1 · Audit current state** — Keep existing free directory inclusion separate from any future paid placement offer. — Existing free-listing boundary evidence is in open/draft PR #69; awaiting checks and release. Do not duplicate.
+- [ ] [REVIEW] **SW-0014 · P1 · Audit current state** — Keep bookings explicitly deferred until the booking launch gate is met. — Bookings-deferred evidence is in open/draft PR #70; awaiting checks and release. Do not duplicate.
+- [ ] [REVIEW] **SW-0015 · P1 · Audit current state** — Record that no price may be published without the owner's approval. — No-unapproved-price evidence is in open/draft PR #70; awaiting checks and release. Do not duplicate.
+- [ ] [REVIEW] **SW-0016 · P1 · Audit current state** — Record that no outreach message may be sent without the owner's explicit approval. — Owner-approval outreach rule is in open/draft PR #71; awaiting checks and release. No outreach was sent.
+- [ ] [REVIEW] **SW-0017 · P1 · Audit current state** — Record that the owner's personal phone number must not be published on Sewa. — Owner personal-phone privacy rule is in open/draft PR #71; awaiting checks and release.
+- [ ] [REVIEW] **SW-0018 · P1 · Audit current state** — Record that the public contact form is the only public route for contacting the operator unless the owner changes that rule. — Operator contact-form-only rule is in open/draft PR #71; awaiting checks and release.
+- [ ] [REVIEW] **SW-0019 · P1 · Audit current state** — Set the language standard: natural human English and Nepali, with no em dashes. — Bilingual language standard and regression checks are in open/draft PR #71; awaiting checks and release.
+- [ ] [REVIEW] **SW-0020 · P1 · Audit current state** — Set the interface rule that a button or repeated CTA appears once per context unless testing proves otherwise. — One-primary-CTA-per-context rule is in open/draft PR #71; awaiting checks and release.
+- [ ] [REVIEW] **SW-0021 · P1 · Audit current state** — Set the mobile-first review width to approximately 390 CSS pixels. — 390 CSS pixel mobile review width is in open/draft PR #80; awaiting checks and release.
+- [ ] [REVIEW] **SW-0022 · P1 · Audit current state** — Require the reviewer to inspect actual phone-width screenshots before calling a design change complete. — Added mandatory 390 CSS pixel rendered screenshots and reviewer inspection to AGENTS.md and this quality gate. This documentation change is not DONE until its exact-head checks pass and the PR is released.
 - [ ] [TODO] **SW-0023 · P1 · Audit current state** — Keep Lovable prompts long, goal-led, and acceptance-criteria-driven when the connector is used for design-heavy work.
 - [ ] [TODO] **SW-0024 · P1 · Audit current state** — Use the connected Lovable project only when the correct project can be positively identified; do not guess or edit a different project.
 - [ ] [TODO] **SW-0025 · P1 · Audit current state** — Use GitHub/Vercel workflow for code changes when that is the established production path; confirm repository and deployment target first.
@@ -1018,7 +1044,7 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [BLOCKED] **SW-0201 · P0 · Audit current state** — Write the single clearest sentence describing the website-design service for Kathmandu businesses. — Existing implementation and tests are in open draft PR #45; owner review is required before treating the change as released. Do not duplicate it. — Verified 8 Nov 2026: implementation is in draft PR #45; branch is 29 commits behind current main and GitHub reports mergeable=false. Reconcile conflicts and rerun CI before merge.
 - [ ] [BLOCKED] **SW-0202 · P0 · Audit current state** — Define the ideal first customer segment based on need and deliverability rather than assumed budget. — Requires owner-approved first-customer criteria and verified prospect evidence; the original 20-business CSV remains unavailable. — Verified 8 Nov 2026: requires owner-approved first-customer criteria and the original verified 20-business prospect CSV; the separate 18-candidate preview workbook is not a substitute.
 - [x] [DONE] **SW-0203 · P0 · Audit current state** — Explain the difference between the free directory listing and a paid website project. — Verified on current main and deployed production commit `41065104ea2bb6906f060d05fc6b2d4abbe5c6bc`: English/Nepali `fbPricingBody`, `fbPricingNote`, `fbQ2` and `fbA2` explicitly separate the always-free SEWA listing from optional website/sponsored services. `src/routes/for-businesses.tsx` is identical between main and production; the cited translation keys match. No code change was needed.
-- [ ] [TODO] **SW-0204 · P0 · Audit current state** — Explain the difference between a preview concept and a launched website.
+- [ ] [BLOCKED] **SW-0204 · P0 · Audit current state** — Explain the difference between a preview concept and a launched website. — Existing PR #66 is open/draft at head 9ea0c62e6f39309ae6753570dd8e4d99e139ee0e, based on 6766c5a1d70a58db6c856050a4167df2854079fa and diverged from current main by 5 ahead / 4 behind. Exact-head Quality Gate #42543071096 failed before runner assignment with zero steps; Vercel free daily deployment limit blocks a current preview. Do not retry unchanged.
 - [ ] [TODO] **SW-0205 · P1 · Audit current state** — List the website deliverables that can reliably be provided today.
 - [ ] [TODO] **SW-0206 · P1 · Audit current state** — List optional deliverables that require a separate quote.
 - [ ] [TODO] **SW-0207 · P1 · Audit current state** — Define what a basic one-page website includes before taking payment.
@@ -1661,13 +1687,13 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [BLOCKED] **SW-0761 · P0 · Admin area reported; regression-test access boundary** — Verify the /admin area redirects unauthorised visitors to a safe authentication state. — Requires an owner-authorised browser/admin session to verify the live redirect boundary.
 - [ ] [BLOCKED] **SW-0762 · P0 · Audit current state** — Verify an unauthenticated request cannot access lead data through a direct API call. — A direct anonymous PostgREST API request cannot be issued from this runtime; read-only SQL inspection is not a substitute. Requires a runnable API test environment.
 - [ ] [BLOCKED] **SW-0763 · P0 · Audit current state** — Verify an authenticated but unauthorised user cannot change admin data. — Requires a disposable authenticated non-admin test account/session; none is available.
-- [ ] [TODO] **SW-0764 · P0 · Audit current state** — Check database row-level security policies for every table that holds leads or private notes.
-- [ ] [TODO] **SW-0765 · P0 · Audit current state** — Check public read access exposes only fields intended for listing pages.
-- [ ] [TODO] **SW-0766 · P0 · Audit current state** — Check public write access is limited to validated form actions.
-- [ ] [TODO] **SW-0767 · P0 · Audit current state** — Review Supabase keys and ensure a service-role key is never shipped to the browser.
-- [ ] [TODO] **SW-0768 · P0 · Audit current state** — Review environment variables used in the production build.
-- [ ] [TODO] **SW-0769 · P0 · Audit current state** — Remove secrets, credentials, private tokens, and internal admin URLs from logs and public assets.
-- [ ] [TODO] **SW-0770 · P0 · Audit current state** — Ensure password reset and admin session flows behave safely.
+- [ ] [REVIEW] **SW-0764 · P0 · Audit current state** — Check database row-level security policies for every table that holds leads or private notes. — Read-only RLS audit evidence is in open/draft PRs #67, #68 and #73; exact-head checks/release remain outstanding.
+- [ ] [REVIEW] **SW-0765 · P0 · Audit current state** — Check public read access exposes only fields intended for listing pages. — Public listing projection and live grant audit evidence is in open/draft PRs #67 and #68; exact-head checks/release remain outstanding.
+- [ ] [REVIEW] **SW-0766 · P0 · Audit current state** — Check public write access is limited to validated form actions. — Public write/constraint audit evidence is in open/draft PRs #67 and #68. Remediation additionally requires migration-history reconciliation and explicit task-specific authorisation; no production writes are authorised.
+- [ ] [REVIEW] **SW-0767 · P0 · Audit current state** — Review Supabase keys and ensure a service-role key is never shipped to the browser. — Browser/server key-boundary audit is in open/draft PR #67; exact-head checks/release remain outstanding.
+- [ ] [REVIEW] **SW-0768 · P0 · Audit current state** — Review environment variables used in the production build. — Production build-variable audit is in open/draft PR #67; values were not decrypted and exact-head checks/release remain outstanding.
+- [ ] [REVIEW] **SW-0769 · P0 · Audit current state** — Remove secrets, credentials, private tokens, and internal admin URLs from logs and public assets. — Sensitive-log/public-asset audit and redaction changes are in open/draft PR #67; exact-head checks/release remain outstanding.
+- [ ] [BLOCKED] **SW-0770 · P0 · Audit current state** — Ensure password reset and admin session flows behave safely. — Actual password-reset and admin-session verification requires the owner-controlled recovery inbox and an authorised administrator test session; neither is available.
 - [ ] [TODO] **SW-0771 · P1 · Audit current state** — Review session expiry and logout behaviour.
 - [ ] [TODO] **SW-0772 · P1 · Audit current state** — Verify admin pages are not indexable by search engines.
 - [ ] [TODO] **SW-0773 · P1 · Audit current state** — Keep noindex separate from access control; never rely on robots.txt to protect private data.
