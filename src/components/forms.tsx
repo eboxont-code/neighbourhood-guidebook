@@ -263,7 +263,7 @@ export const submissionSchema = z.object({
  category: z.string().refine((s) => categories.some((c) => c.slug === s),'errChoice'),
  area: z.string().refine((s) => s === 'other' || areas.some((a) => a.slug === s),'errChoice'),
  address: opt(500), phone: opt(30),
- website: opt(500).refine((s) => !s || /^https?:\/\/[^\s]+$/i.test(s), 'erUrl'),
+ website: opt(500).refine((s) => !s || safeExternalHttpUrl(s) !== null, 'erUrl'),
  opening_hours: opt(1000), is_owner: z.enum(['yes','no'],{message:'errChoice'}).transform((s) => s === 'yes'),
  name: opt(100), contact: reach, note: opt(2000),
 });
