@@ -494,7 +494,7 @@ Historical audit baseline (not a verified current count): 52 businesses, 8 categ
 - [ ] [TODO] Audit mobile experience on common Android devices and browsers.
 - [ ] [TODO] Audit desktop layouts.
 - [ ] [TODO] Improve loading speed and remove unnecessary client-side code.
-- [ ] [TODO] Test accessibility and keyboard navigation.
+- [ ] [IN PROGRESS] Test accessibility and keyboard navigation. Auditing home, search, listing profile, Saved, About and preview/quote in EN/NE at 390px first, then desktop; presentation only, no publishing or migrations.
 - [ ] [TODO] Test English/Nepali switching across public and admin journeys.
 - [x] [DONE] Improve profile readability and prominent contact actions. Already implemented: readable profile sections and data-supported Call, Directions and Website actions near the profile heading. Verified at 390px in EN/NE on 5 Nov 2026: contact targets 94px wide and 57px high, no horizontal overflow.
 - [ ] [TODO] Test saved listings and nearby discovery.
