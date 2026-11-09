@@ -755,7 +755,7 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 - The English and Nepali privacy statements both say the visitor's location is not sent to Boxont and remains on the device/tab for the session.
 - Read-only Production Supabase metadata confirms the analytics_events table contains only id, created_at, event, listing_slug, query, lang and path; there are no location or coordinate columns. The project is ACTIVE_HEALTHY with 8 applied migrations. No Production rows were read, and no records, permissions or migrations were changed.
 - Fourteen targeted source assertions passed, plus the Production schema-metadata check. The location helper and its consumers match the deployed Production source; the listing/search route files contain unrelated newer changes, but their location data flow is unchanged. Public-page fetching from this runtime remains unavailable, so this is a source/schema audit, not a live network-capture claim.
-- No application code change was needed. Status: REVIEW until the documentation PR's exact-head Quality Gate passes and the plan update is merged. No Production deployment was triggered. Additional spend: $0.
+- No application code change was needed. Status: REVIEW in PR #84 [docs(sewa): verify precise location stays on device](https://github.com/eboxont-code/neighbourhood-guidebook/pull/84), pending the exact-head Quality Gate and merge. Initial audit commit: 580330b347f38625b1aea7c23a709e26a56d0629. No Production deployment was triggered. Additional spend: $0.
 
 **Blocked work skipped without repeating it**
 
