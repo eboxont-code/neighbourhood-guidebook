@@ -52,10 +52,11 @@ function Row({ label, children, fullOnPhone = false }: { label: string; children
 
 function Crumbs({ b }: { b: Business }) {
   const { t, lang } = useI18n();
-  const area = getArea(b.area)!;
-  const city = getCity(area.city)!;
-  const cat = getCategory(b.category)!;
-  const link = "inline-flex min-h-11 items-center hover:text-foreground hover:underline";
+  const area = getArea(b.area);
+  const city = area ? getCity(area.city) : undefined;
+  const cat = getCategory(b.category);
+  if (!area || !city || !cat) return null;
+  const link = "inline-flex min-h-11 min-w-11 items-center justify-center px-1 hover:text-foreground hover:underline";
   const sep = <ChevronRight aria-hidden className="h-3.5 w-3.5 shrink-0" />;
   return (
     <nav aria-label={t("breadcrumb")} className="-mt-1 overflow-x-auto [scrollbar-width:none]">
@@ -196,7 +197,7 @@ function ShopPage() {
       </div>
 
       <div className="sheet">
-        <main className="mx-auto max-w-2xl px-5 pt-4 pb-6 lg:grid lg:max-w-6xl lg:grid-cols-[minmax(0,1fr)_21rem] lg:gap-10 lg:pt-6">
+        <main id="main-content" tabIndex={-1} className="mx-auto max-w-2xl px-5 pt-4 pb-6 lg:grid lg:max-w-6xl lg:grid-cols-[minmax(0,1fr)_21rem] lg:gap-10 lg:pt-6">
           <div className="min-w-0">
             <Crumbs b={b} />
             <h1 className="mt-1 text-[1.625rem] leading-tight font-semibold tracking-tight break-words sm:text-3xl">{b.name}</h1>
@@ -241,21 +242,21 @@ function ShopPage() {
                     {socialLinks(b).filter((x) => x.platform !== "Instagram").map((x) => <a key={x.url} href={x.url} target="_blank" rel="noopener noreferrer" className="block break-all text-primary underline">{x.platform} {x.handle}</a>)}
                   </Row>
                 )}
+                </dl>
                 {(b.sourceNotes || b.addedOn) && (
                   <div className="mt-4 rounded-2xl border border-border bg-muted/50 p-4">
                     <h3 className="text-sm font-semibold">{t("howChecked")}</h3>
                     {b.sourceNotes && (
                       <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                         {t("source")}: {b.sourceNotes}
-                        {b.sourceUrl && <a href={b.sourceUrl} target="_blank" rel="noopener noreferrer" className="ml-1.5 text-primary underline">{t("viewSource")}</a>}
+                        {b.sourceUrl && <a href={b.sourceUrl} target="_blank" rel="noopener noreferrer" className="ml-1.5 inline-flex min-h-11 min-w-11 items-center text-primary underline">{t("viewSource")}</a>}
                       </p>
                     )}
                     {b.addedOn && <p className="mt-1.5 text-sm text-muted-foreground">{t("addedToGuide")}: {formatDate(b.addedOn, lang)}</p>}
                   </div>
                 )}
                 <Link to="/suggest-correction" search={{ listing: b.slug }} className="mt-2 inline-flex min-h-11 items-center text-sm text-primary underline">{t("reportOutdated")}</Link>
-                {b.description && <Row label={t("note")}>{b.description}</Row>}
-              </dl>
+                {b.description && <dl><Row label={t("note")}>{b.description}</Row></dl>}
             </section>
 
             <section id="hours" className="scroll-mt-28 pt-8">

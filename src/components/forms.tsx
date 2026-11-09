@@ -1,5 +1,5 @@
 import { track } from "@/lib/track";
-import { useRef, useState, type FormEvent, type ReactNode } from "react";
+import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { z } from "zod";
 import { CheckCircle2, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -104,6 +104,12 @@ export function ContactForm({ business, listing, page, message = "", doneText, s
   const [servicePackage, setServicePackage] = useState<ServicePackageId | "">(initialServicePackage);
   const [budgetBand, setBudgetBand] = useState<ServiceBudgetBand | "">("");
   const [v, setV] = useState({ name: "", business_name: business, phone: "", message });
+  const previousMessage = useRef(message);
+  useEffect(() => {
+    const previous = previousMessage.current;
+    setV((current) => current.message === previous ? { ...current, message } : current);
+    previousMessage.current = message;
+  }, [message]);
   const [errors, setErrors] = useState<{ [k: string]: string | undefined }>({});
   const [status, setStatus] = useState<Status>("idle");
   const submitting = useRef(false);

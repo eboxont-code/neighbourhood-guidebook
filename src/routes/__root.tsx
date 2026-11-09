@@ -13,7 +13,8 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportSewaError } from "../lib/sewa-error-reporting";
-import { LangProvider } from "@/lib/i18n";
+import { LangProvider, useI18n } from "@/lib/i18n";
+import { Button } from "@/components/ui/button";
 import { BottomNav, Footer, Header, NotFoundView } from "@/components/site";
 import { ensureListings } from "@/lib/listings";
 import { previewSlug } from "@/lib/preview";
@@ -42,39 +43,44 @@ function NotFoundComponent() {
 }
 
 function ErrorComponent({ error, reset }: ErrorComponentProps) {
+  return <LangProvider><PublicError error={error} reset={reset} /></LangProvider>;
+}
+
+function PublicError({ error, reset }: ErrorComponentProps) {
+  const { t } = useI18n();
   const router = useRouter();
   useEffect(() => {
     reportSewaError(error, { boundary: "root_error_component" });
   }, [error]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
+    <main id="main-content" tabIndex={-1} className="flex min-h-dvh items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
         <h1 className="text-xl font-semibold tracking-tight text-foreground">
-          This page didn't load
+          {t("pageErrorTitle")}
         </h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          Something went wrong on our end. You can try refreshing or head back home.
+          {t("pageErrorBody")}
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
-          <button
+          <Button
             onClick={() => {
               router.invalidate();
               reset();
             }}
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+            className="min-h-11 px-4"
           >
-            Try again
-          </button>
+            {t("retryPage")}
+          </Button>
           <a
             href="/"
-            className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
+            className="inline-flex min-h-11 items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
           >
-            Go home
+            {t("goHome")}
           </a>
         </div>
       </div>
-    </div>
+    </main>
   );
 }
 
@@ -130,6 +136,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <LangProvider>
+        <SkipLink />
         {!standalone && <Header />}
         <Outlet />
         {!standalone && <Footer />}
@@ -137,4 +144,9 @@ function RootComponent() {
       </LangProvider>
     </QueryClientProvider>
   );
+}
+
+function SkipLink() {
+  const { t } = useI18n();
+  return <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[1100] focus:inline-flex focus:min-h-11 focus:items-center focus:rounded-md focus:bg-card focus:px-4 focus:text-primary focus:shadow-lg">{t("skipContent")}</a>;
 }

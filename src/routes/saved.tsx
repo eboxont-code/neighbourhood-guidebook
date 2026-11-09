@@ -38,7 +38,7 @@ function SavedPage() {
           <div className="mt-4 flex flex-wrap justify-center gap-x-5 gap-y-1">{suggestions.map(({ category }) => {
             const listing = businesses.find((b) => b.category === category.slug);
             const area = listing ? getArea(listing.area) : undefined;
-            return area ? <Link key={category.slug} to="/$city/$section" params={{ city: area.city, section: category.slug }} className="inline-flex min-h-11 items-center text-sm text-primary underline">{lang === 'ne' ? category.nameNe : category.name}</Link> : null;
+            return area ? <Link key={category.slug} to="/$city/$section" params={{ city: area.city, section: category.slug }} className="inline-flex min-h-11 min-w-11 items-center justify-center px-2 text-sm text-primary underline">{lang === 'ne' ? category.nameNe : category.name}</Link> : null;
           })}</div></>}
     </Page>
   );

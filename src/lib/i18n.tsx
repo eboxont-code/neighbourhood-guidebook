@@ -5,6 +5,10 @@ const KEY = "dir-lang";
 
 export const dict = {
   en: {
+    skipContent: "Skip to content",
+    pageErrorTitle: "This page didn't load",
+    pageErrorBody: "Something went wrong. Try again or return to the home page.",
+    retryPage: "Try again",
     shareHomeTitle: "Local businesses in Nepal",
     shareHomeDescription: "Explore local business listings, starting with Kathmandu. See recorded contact details, opening hours and directions where available.",
     shareAreaTitle: "Places in {area}, {city}",
@@ -557,6 +561,10 @@ export const dict = {
     pvCat_salons: "Salon", pvCat_barbers: "Barber", pvCat_spas: "Spa", pvCat_clinics: "Clinic", pvCat_cafes: "Café", pvCat_restaurants: "Restaurant", pvCat_gyms: "Gym", pvCat_hotels: "Hotel",
   },
   ne: {
+    skipContent: "मुख्य सामग्रीमा जानुहोस्",
+    pageErrorTitle: "यो पेज खुल्न सकेन",
+    pageErrorBody: "केही समस्या भयो। फेरि प्रयास गर्नुहोस् वा गृहपृष्ठमा फर्कनुहोस्।",
+    retryPage: "फेरि प्रयास गर्नुहोस्",
     shareHomeTitle: "नेपालका स्थानीय व्यवसाय",
     shareHomeDescription: "काठमाडौंबाट सुरु भएको स्थानीय व्यवसायको सूची हेर्नुहोस्। उपलब्ध सम्पर्क विवरण, खुल्ने समय र बाटोको जानकारी पाउनुहोस्।",
     shareAreaTitle: "{city}को {area}मा रहेका व्यवसाय",

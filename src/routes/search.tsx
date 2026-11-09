@@ -150,7 +150,7 @@ function SearchPage() {
       <div className="border-b border-border bg-card">
         <div className="mx-auto max-w-3xl px-5 pt-4 pb-4">
           <h1 className="sr-only">{t("navSearch")}</h1>
-          <SearchBox initial={q} autoFocus={!active} />
+          <SearchBox initial={q} />
           {active && (
             <div className="mt-3 flex items-center gap-2">
               <p className="flex min-h-11 min-w-0 flex-1 items-center rounded-full bg-muted px-4 text-sm font-semibold">
@@ -279,6 +279,7 @@ function SearchPage() {
           </div>
         ) : results.length === 0 ? (
           <EmptyState
+            as="h2"
             title={filtered ? t("noFilterTitle") : t("noResultsTitle")}
             body={filtered ? t("noFilterBody") : t("tryOther")}
             action={

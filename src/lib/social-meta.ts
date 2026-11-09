@@ -21,7 +21,7 @@ export function shareImage(cover?: { url: string }, name?: string) {
     const resized = covers[cover.url];
     // Unknown covers stay with the host's page preview rather than tagging an unsized original.
     if (!resized) return {};
-    return { image: `${ASSET_ORIGIN}${resized.url}`, imageAlt: name, imageWidth: 1200, imageHeight: 630 };
+    return { image: `${ASSET_ORIGIN}${resized.url}`, ...(name ? { imageAlt: name } : {}), imageWidth: 1200, imageHeight: 630 };
   }
   return { image: `${ASSET_ORIGIN}${logo.url}`, imageAlt: dict.en.shareLogoAlt, imageWidth: 512, imageHeight: 512, card: "summary" as const };
 }
