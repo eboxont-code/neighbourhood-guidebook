@@ -82,7 +82,7 @@ afterEach(() => {
 
 describe("search location permission", () => {
   it("does not request location when a shared URL already has the near filter", () => {
-    const component = Route.options.component;
+    const component = SearchRoute.options.component;
     if (!component) throw new Error("Missing search page component");
 
     const search = vi.spyOn(SearchRoute, "useSearch").mockReturnValue({ q: "", near: true });
