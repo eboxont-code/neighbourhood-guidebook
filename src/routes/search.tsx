@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Clock, Map as MapIcon, Search as SearchIcon, SlidersHorizontal } from "lucide-react";
 import { EmptyState, Page, SearchBox, pageMeta, useNow } from "@/components/site";
 import { RowList, SectionHead } from "@/components/blocks";
+import { LocationCard } from "@/components/venue";
 import { FullMap } from "@/components/map-view";
 import {
   areasInUse,
@@ -83,9 +84,6 @@ function SearchPage() {
   const active = q.trim() || filtered;
   const [recent, setRecent] = useState<string[]>([]);
   useEffect(() => setRecent(readRecent()), []);
-  useEffect(() => {
-    if (s.near && loc.state.status === "idle") requestLocation();
-  }, [s.near]); // eslint-disable-line react-hooks/exhaustive-deps
   // Anonymous demand count once the person pauses on a query: which searches find nothing tells us what to add.
   useEffect(() => {
     const v = q.trim();
@@ -232,6 +230,8 @@ function SearchPage() {
         </div>
       </div>
       <Page>
+        {/* A shared near-filter URL is not consent; ask only after the visitor chooses the existing location button. */}
+        {s.near && loc.state.status !== "nepal" && <LocationCard />}
         {!active ? (
           <div className="space-y-8">
             {recent.length > 0 && (
