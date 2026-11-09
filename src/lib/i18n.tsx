@@ -541,7 +541,7 @@ export const dict = {
     adPwError: "Couldn't change the password. Check the current password and try again.",
     adLoading: "Loading…",
     // Free website preview (/s/<slug>/website-preview)
-    pvBarText: "Free website preview by Sewa", pvBarNote: "Concept preview made from public listing details—not a live or official website.", pvBarCta: "Ask about making this your website", pvBarShort: "Free preview by Sewa", pvBarNoteShort: "Concept preview—not a live or official site",
+    pvBarText: "Free website preview by Sewa", pvBarNote: "Concept preview made from public listing details. It is not a live or official website.", pvBarCta: "Ask about making this your website", pvBarShort: "Free preview by Sewa", pvBarNoteShort: "Concept preview, not a live or official site",
     pvNavVisit: "Visit", pvNavContact: "Contact", pvHeroIn: "{cat} in {area}, {city}", pvCallNow: "Call now",
     pvWelcome: "Welcome to {name}", pvAboutFallback: "{name} is in {area}, {city}. Opening hours, directions and ways to get in touch are all on this page.",
     pvFactToday: "Today", pvFactWhere: "Where", pvFactPhone: "Phone", pvSeeWeek: "See the full week",
@@ -1093,7 +1093,7 @@ export const dict = {
     adPwError: "पासवर्ड बदल्न सकिएन। हालको पासवर्ड जाँचेर फेरि प्रयास गर्नुहोस्।",
     adLoading: "लोड हुँदै…",
     // निःशुल्क वेबसाइट नमुना
-    pvBarText: "सेवाले बनाएको निःशुल्क वेबसाइट नमुना", pvBarNote: "सार्वजनिक सूचीका विवरणबाट बनाइएको नमुना—यो लाइभ वेबसाइट वा आधिकारिक साइट होइन।", pvBarCta: "यसलाई आफ्नो वेबसाइट बनाउनेबारे सोध्नुहोस्", pvBarShort: "सेवाको निःशुल्क नमुना", pvBarNoteShort: "अवधारणा नमुना—लाइभ वा आधिकारिक साइट होइन",
+    pvBarText: "सेवाले बनाएको निःशुल्क वेबसाइट नमुना", pvBarNote: "सार्वजनिक सूचीका विवरणबाट बनाइएको नमुना। यो लाइभ वेबसाइट वा आधिकारिक साइट होइन।", pvBarCta: "यसलाई आफ्नो वेबसाइट बनाउनेबारे सोध्नुहोस्", pvBarShort: "सेवाको निःशुल्क नमुना", pvBarNoteShort: "अवधारणा नमुना, लाइभ वा आधिकारिक साइट होइन",
     pvNavVisit: "ठेगाना", pvNavContact: "सम्पर्क", pvHeroIn: "{city}, {area}मा {cat}", pvCallNow: "अहिले फोन गर्नुहोस्",
     pvWelcome: "{name}मा स्वागत छ", pvAboutFallback: "{name} {city}को {area}मा छ। खुल्ने समय, बाटो र सम्पर्क गर्ने तरिका सबै यही पेजमा छन्।",
     pvFactToday: "आज", pvFactWhere: "कहाँ", pvFactPhone: "फोन", pvSeeWeek: "पूरा हप्ता हेर्नुहोस्",
