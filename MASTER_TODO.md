@@ -153,7 +153,7 @@ Never mark work [DONE] merely because code exists, a PR is merged, or a preview 
 - Vercel Production remains READY at [deployment dpl_2fFbgQ9n8EJKUmqdANwJTnnasiH8](https://vercel.com/boxont/neighbourhood-guidebook/2fFbgQ9n8EJKUmqdANwJTnnasiH8), exact deployed commit `6766c5a1d70a58db6c856050a4167df2854079fa`, with `sewa.boxont.com` attached. There is no Production deployment record for current main `906f31c473a34c7346f02183d94e4f8465b89372`. A newer READY Preview exists for a different task branch and is not evidence for PR #66.
 - Read-only live-page inspection of the homepage, For Businesses page and an eligible preview returned “URL not accessible” from the inspection service. No current live-page behaviour is claimed.
 - Production Supabase project `zvbavpcsyvibvpkxjzkn` is ACTIVE_HEALTHY on PostgreSQL 17.11, with 8 applied migrations and 10 public tables (all 10 have RLS enabled). Security Advisor: 3 findings; Performance Advisor: 17 RLS initialization-plan findings, 3 unused-index findings and 2 multiple-permissive-policy findings; Health Advisor: 0 findings. Inspection was limited to project, migration, table and advisor metadata; no production rows, grants, policies, migrations, Auth settings or secrets were changed.
-- The GitHub branch-protection endpoint returned HTTP 403 (“Resource not accessible by integration”), so branch protection could not be confirmed through this connection.
+- GitHub branch metadata reports `main` as unprotected (`protected=false`, `protection.enabled=false`); the detailed branch-protection endpoint returned HTTP 403, so individual ruleset details remain unavailable.
 - Register status before this run: 12 DONE, 64 BLOCKED, 9 REVIEW, 914 TODO, 0 IN PROGRESS. Updated status after this run is recorded below.
 - No production data, database configuration, migrations, customer/business records, prices, outreach, hosting settings, DNS, secrets or billing were changed. Additional spend: $0.
 
@@ -765,7 +765,7 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 
 ### Automation run 11 — SW-0205 website-deliverables audit (9 November 2026)
 
-**Outcome: REVIEW — the source audit is complete. Documentation PR [#78](https://github.com/eboxont-code/neighbourhood-guidebook/pull/78) is open/draft, targeting main at `906f31c473a34c7346f02183d94e4f8465b89372`; task commit `ed509bc4a7514f40757f773f77d8c57a5285d86b`; no merge commit.**
+**Outcome: REVIEW — the source audit is complete. Documentation PR [#78](https://github.com/eboxont-code/neighbourhood-guidebook/pull/78) is open/draft, targeting main at `906f31c473a34c7346f02183d94e4f8465b89372`; task commit `ed509bc4a7514f40757f773f77d8c57a5285d86b`; the plan-evidence update is commit `4db6de713f00621567ce1f74c9fefb00055b9d43`; no merge commit. The exact-head Quality Gate [#42577434500](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42577434500) failed before runner assignment (both jobs runner ID 0, zero steps); Vercel reported the free build-rate limit and no Preview exists for that head.
 
 - Audited the current English/Nepali service page, shared website-preview route, preview eligibility helper, contact route, enquiry form, commerce definitions, README and the full root project instructions.
 - **Deliverable reliably evidenced today:** one responsive, one-page concept preview for an eligible listing that has no working official website. It is generated from recorded public listing fields, not invented business content. The preview can show the business name/category/location, description, recorded services and hours, recorded address and phone, a business-published cover photo or placeholder, directions and a map only when the required recorded fields exist, and the listing's recorded call, WhatsApp and social actions. The preview is bilingual, noindex, and its owner CTA opens the existing SEWA contact form with the listing and business attribution.
@@ -773,6 +773,7 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 - Fourteen focused, read-only source assertions passed. No application code or public offer copy changed. No application test suite was run because this is a documentation-only audit and no local checkout is available.
 - SW-0205 remains REVIEW until the documentation PR's required checks execute and the plan update is merged. No production release is required for the audit itself; the plan still must reach main.
 - **Next eligible task: SW-0206 — list optional deliverables that require a separate quote.** Use the existing package cards as evidence, keep public prices and promises unchanged, and do not infer owner-approved scope.
+- Register after this update: 1,000 unique task IDs in 999 rows; 12 DONE, 65 BLOCKED, 10 REVIEW, 912 TODO and 0 IN PROGRESS. After opening PR #78, the repository has 54 open pull requests and 0 open issues.
 
 
 ---
