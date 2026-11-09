@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound, redirect, useNavigate } from "@tanstack/react-router";
 import { List, Map as MapIcon } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 import { Maximize2 } from "lucide-react";
 import { NotFoundView, Page, pageMeta, useNow } from "@/components/site";
 import { FullMap, MapView } from "@/components/map-view";
