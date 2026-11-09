@@ -71,7 +71,9 @@ vi.mock("@/components/map-view", () => ({ FullMap: () => null }));
 vi.mock("@/lib/track", () => ({ track: vi.fn() }));
 
 import { SearchCard } from "@/components/search-card";
-import { Route } from "@/routes/search";
+import { getCity, resolveSection } from "@/data/directory";
+import { Route as CategoryRoute } from "@/routes/$city.$section";
+import { Route as SearchRoute } from "@/routes/search";
 
 afterEach(() => {
   cleanup();
@@ -83,7 +85,7 @@ describe("search location permission", () => {
     const component = Route.options.component;
     if (!component) throw new Error("Missing search page component");
 
-    const search = vi.spyOn(Route, "useSearch").mockReturnValue({ q: "", near: true });
+    const search = vi.spyOn(SearchRoute, "useSearch").mockReturnValue({ q: "", near: true });
     try {
       render(createElement(component));
 
@@ -103,5 +105,51 @@ describe("search location permission", () => {
     fireEvent.change(screen.getByLabelText("fWhere"), { target: { value: "near" } });
 
     expect(requestLocationMock).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe("category location permission", () => {
+  function categoryRoute() {
+    const component = CategoryRoute.options.component;
+    const city = getCity("kathmandu");
+    const sec = city ? resolveSection(city.slug, "cafes") : null;
+    if (!component || !city || !sec || sec.kind !== "category") {
+      throw new Error("Missing Kathmandu cafe category route fixture");
+    }
+    return { component, loaderData: { city, sec } };
+  }
+
+  it("does not request location when a shared category URL already has near sorting", () => {
+    const { component, loaderData } = categoryRoute();
+    const loader = vi.spyOn(CategoryRoute, "useLoaderData").mockReturnValue(loaderData);
+    const search = vi.spyOn(CategoryRoute, "useSearch").mockReturnValue({ sort: "near" });
+    try {
+      render(createElement(component));
+
+      expect(screen.getByRole("button", { name: "locUse" })).toBeInTheDocument();
+      expect(requestLocationMock).not.toHaveBeenCalled();
+
+      fireEvent.click(screen.getByRole("button", { name: "locUse" }));
+      expect(requestLocationMock).toHaveBeenCalledTimes(1);
+    } finally {
+      loader.mockRestore();
+      search.mockRestore();
+    }
+  });
+
+  it("requests location after the visitor chooses nearby sorting", () => {
+    const { component, loaderData } = categoryRoute();
+    const loader = vi.spyOn(CategoryRoute, "useLoaderData").mockReturnValue(loaderData);
+    const search = vi.spyOn(CategoryRoute, "useSearch").mockReturnValue({});
+    try {
+      render(createElement(component));
+
+      fireEvent.change(screen.getByLabelText("sortLabel"), { target: { value: "near" } });
+
+      expect(requestLocationMock).toHaveBeenCalledTimes(1);
+    } finally {
+      loader.mockRestore();
+      search.mockRestore();
+    }
   });
 });
