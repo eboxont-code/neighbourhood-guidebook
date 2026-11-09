@@ -73,3 +73,16 @@ Also review:
 - Error logs for secrets, personal information and precise location data.
 
 Do not claim that a check passed unless it was actually executed. Record any unverified production behaviour as outstanding.
+
+## Lovable design prompts
+
+- For design-heavy work through the connected Lovable project, use `docs/lovable-design-prompt-standard.md` as the required prompt structure and reusable template.
+- Write a self-contained, goal-led prompt that explains the user problem, intended business outcome, exact user journey and observable acceptance criteria. Do not replace this with a vague request such as “make it modern” or “improve the design”; detail should make the work unambiguous, not add filler.
+- Identify the exact project and inspect its current routes, components, design tokens, translations, data flow and relevant tests before proposing changes. Never guess which project or screen is meant.
+- Locate and read the existing Lovable north-star/knowledge file before design-heavy work. Preserve it verbatim: do not shorten, replace, rewrite or silently override it. If the task conflicts with it, record the conflict and stop that part for an owner decision.
+- State the exact in-scope pages and states, explicit non-goals, and constraints. Reuse the existing architecture and visual system; make the smallest complete change and avoid unrelated refactors.
+- Include the relevant phone and desktop layouts, English and Nepali parity, keyboard/accessibility behaviour, and loading, empty, validation, error and success states. For visual changes, follow the screenshot-review requirements and identify the route, viewport and state shown.
+- Use only recorded business facts and approved assets. Never invent listings, services, hours, prices, ratings, testimonials, sources, owner consent or verification evidence.
+- Keep the $0 additional-spend rule. Do not add paid APIs/services, change production data or settings, run production migrations, send outreach, publish prices, or deploy/publish without the applicable explicit authorisation and release gates.
+- Make every acceptance criterion observable and testable. Report checks actually run, screenshots actually inspected, exact preview/commit evidence, limitations and blockers; never describe an unverified preview or build as live.
+
