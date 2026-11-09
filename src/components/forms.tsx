@@ -1,6 +1,7 @@
 import { track } from "@/lib/track";
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { z } from "zod";
+import { safeExternalHttpUrl } from "@/lib/urls";
 import { CheckCircle2, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { businesses, categories, areas, placeName } from "@/data/directory";
