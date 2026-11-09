@@ -172,9 +172,9 @@ export function SearchBox({ initial = "", autoFocus = false }: { initial?: strin
           clearTimeout(timer.current);
           timer.current = setTimeout(() => go(v, true), 300);
         }}
-        className="h-11 min-w-0 flex-1 rounded-full bg-transparent pr-2 pl-10 text-[15px] text-base text-foreground outline-none placeholder:text-muted-foreground" />
+        className="h-11 min-w-0 flex-1 rounded-full bg-transparent pr-2 pl-10 text-base text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary placeholder:text-muted-foreground" />
       <Search aria-hidden className="pointer-events-none absolute top-1/2 left-4 h-[18px] w-[18px] -translate-y-1/2 text-muted-foreground" />
-      <button type="submit" className="action-btn action-primary min-h-11 shrink-0 px-4 text-sm">{t("search")}</button>
+      <Button type="submit" className="action-btn action-primary min-h-11 shrink-0 rounded-full px-4 text-sm">{t("search")}</Button>
     </form>
   );
 }

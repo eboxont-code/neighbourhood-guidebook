@@ -144,6 +144,11 @@
 @layer base {
   * { border-color: var(--color-border); }
   html { -webkit-tap-highlight-color: transparent; }
+  :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 3px;
+  }
+  :where(input, select, textarea, button, a, summary) { scroll-margin-block: 7rem; }
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
@@ -404,7 +409,7 @@
   display: flex; align-items: center; gap: 0.75rem; width: 100%; min-height: 3.25rem; padding: 0 1.125rem; border-radius: 999px;
   background: var(--muted); color: var(--foreground); font-size: 0.9375rem; text-align: left;
   border: 1px solid transparent; transition: border-color 160ms ease, background-color 160ms ease;
-  &:focus-within { border-color: var(--foreground); background: var(--card); }
+  &:focus-within { border-color: var(--foreground); background: var(--card); box-shadow: 0 0 0 2px var(--ring); }
   & input, & select { min-width: 0; flex: 1; background: transparent; outline: none; min-height: 3rem; appearance: none; }
 }
 @utility action-dark { background: var(--foreground); color: var(--panel); &:hover { filter: brightness(1.25); } }

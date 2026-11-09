@@ -148,7 +148,7 @@ function PreviewPage() {
   const steps: [Key, Key][] = [["pvNext1Title", "pvNext1Body"], ["pvNext2Title", "pvNext2Body"], ["pvNext3Title", "pvNext3Body"]];
 
   return (
-    <div className="pv-site overflow-x-clip pb-[calc(9rem+env(safe-area-inset-bottom))] lg:pb-0" style={style}>
+    <main className="pv-site overflow-x-clip pb-[calc(9rem+env(safe-area-inset-bottom))] lg:pb-0" style={style}>
       {/* Sewa bar: fixed at the bottom on phones, a slim strip on top on desktop. */}
       <div className="pv-bar" role="region" aria-label={t("pvBarText")}>
         <div className="mx-auto flex max-w-5xl flex-col items-stretch gap-2 px-4 py-2.5 lg:flex-row lg:items-center lg:px-6 lg:py-2">
@@ -315,7 +315,7 @@ function PreviewPage() {
           </div>
         </div>
       </footer>
-    </div>
+    </main>
   );
 }
 
@@ -323,10 +323,11 @@ function Fact({ icon: Icon, label, children }: { icon: typeof Clock; label: stri
   return (
     <div className="flex items-start gap-3.5 px-5 py-4">
       <span aria-hidden className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[var(--pv-tint)] text-[var(--pv-ink)]"><Icon className="h-4 w-4" /></span>
-      <div className="min-w-0">
-        <dt className="text-[12px] font-semibold tracking-wide text-muted-foreground uppercase">{label}</dt>
-        <dd className="mt-0.5 text-[15px] leading-snug font-medium break-words">{children}</dd>
-      </div>
+      <dt className="min-w-0 flex-1">
+        <span className="block text-[12px] font-semibold tracking-wide text-muted-foreground uppercase">{label}</span>
+        <span className="sr-only">: </span>
+      </dt>
+      <dd className="min-w-0 flex-1 text-[15px] leading-snug font-medium break-words">{children}</dd>
     </div>
   );
 }
