@@ -66,6 +66,8 @@ npm run build
 Also review:
 
 - Mobile layouts at narrow widths, including 390px.
+- For every visual or layout change, capture actual rendered screenshots at the primary 390 CSS pixel phone viewport (typically 390 × 844) for each affected route and important state. Include a relevant desktop viewport when the change affects responsive layout.
+- Attach the screenshots or durable artifact links to the pull request, and identify the route, viewport, and exact commit shown. The reviewer must open and inspect the actual images before calling the visual task DONE. Source review, a successful build, or an uninspected screenshot is not a substitute. If screenshots cannot be captured or inspected, leave the task REVIEW or BLOCKED.
 - English and Nepali interface journeys.
 - Anonymous versus administrator database permissions.
 - Migration ordering and rollback/recovery implications.
