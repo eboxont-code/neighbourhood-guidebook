@@ -75,6 +75,11 @@ describe("preview concept versus launched website", () => {
     expect(dict.ne.fbOwnerIntro).toContain("छुट्टै परियोजना");
     expect(dict.ne.fbExBody).toContain("लाइभ वेबसाइट होइन");
     expect(dict.ne.fbExBody).toContain("छुट्टै परियोजना");
+    const previewBoundaryCopy = [
+      dict.en.fbOwnerIntro, dict.en.fbExBody, dict.en.pvBarNote, dict.en.pvBarNoteShort, dict.en.pvOwnerSimpleBody,
+      dict.ne.fbOwnerIntro, dict.ne.fbExBody, dict.ne.pvBarNote, dict.ne.pvBarNoteShort, dict.ne.pvOwnerSimpleBody,
+    ];
+    expect(previewBoundaryCopy.join(" ")).not.toContain("—");
   });
 
   it.each(["en", "ne"] as const)("renders clear preview-only wording in %s", (lang) => {
