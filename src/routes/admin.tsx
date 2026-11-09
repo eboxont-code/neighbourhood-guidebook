@@ -21,6 +21,7 @@ import {
 } from "@/data/directory";
 import { rowToBusiness } from "@/lib/listings.functions";
 import { expireListings } from "@/lib/listings";
+import { externalUrlHost, safeExternalHttpUrl } from "@/lib/urls";
 import {
   hoursToWeek,
   normalizePhone,
@@ -1529,6 +1530,8 @@ function SubmissionCard({ m, onSaved }: { m: Submission; onSaved: (row: Submissi
     setState("saved");
     onSaved(data);
   }
+  const websiteUrl = safeExternalHttpUrl(m.website);
+  const websiteHost = websiteUrl ? externalUrlHost(websiteUrl) : null;
   const row = (label: Key, val: string | null | undefined) =>
     val ? (
       <p className="text-sm break-words">
@@ -1557,17 +1560,17 @@ function SubmissionCard({ m, onSaved }: { m: Submission; onSaved: (row: Submissi
         {row("subAddress", m.address)}
         {row("adPhone", m.phone)}
         {m.website && (
-          <p className="text-sm break-words">
-            <span className="text-muted-foreground">{t("subWebsite")}: </span>
-            <a
-              href={m.website}
-              target="_blank"
-              rel="noreferrer nofollow"
-              className="text-primary underline"
-            >
-              {m.website}
-            </a>
-          </p>
+          <div className="space-y-1 text-sm break-words">
+            <p>
+              <span className="text-muted-foreground">{t("subWebsite")}: </span>
+              {websiteUrl ? (
+                <a href={websiteUrl} target="_blank" rel="noopener noreferrer nofollow" title={websiteUrl} className="text-primary underline">
+                  {websiteHost}
+                </a>
+              ) : <span>{t("adInvalidExternalLink")}</span>}
+            </p>
+            {websiteUrl && <p className="text-xs text-muted-foreground">{t("adExternalLinkWarning")}</p>}
+          </div>
         )}
         {row("subHours", m.opening_hours)}
         {row("fName", m.name)}
