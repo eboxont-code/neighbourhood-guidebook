@@ -27,6 +27,7 @@ export function AdminInsights() {
   const s = summarise(rows, days);
   const f = funnel(rows, days);
   const clickLabel = (k: string) => { const key = `inEv_${k}` as Key; return t(key); };
+  const searchLabel = (k: string) => k === "other" ? t("inSearchOther") : k;
   return <div className="space-y-4">
     <p className="text-sm text-muted-foreground">{t("inIntro")}</p>
     <div role="group" aria-label={t("inPeriod")} className="chip-row">
@@ -38,8 +39,8 @@ export function AdminInsights() {
       <table className="w-full text-sm"><tbody>{f.steps.map((st, i) => <tr key={st.event} className="border-t border-border first:border-0"><td className="py-2 pr-2">{clickLabel(st.event)}</td><td className="py-2 text-right font-semibold tabular-nums">{st.count}</td><td className="w-14 py-2 text-right tabular-nums text-muted-foreground">{i === 0 ? "" : st.rate === null ? "-" : `${st.rate}%`}</td></tr>)}</tbody></table>
     </section>
     <Table title={t("inTopPreviews")} rows={f.topPreviews} />
-    <Table title={t("inZero")} rows={s.zero} />
-    <Table title={t("inSearches")} rows={s.searches} />
+    <Table title={t("inZero")} rows={s.zero} label={searchLabel} />
+    <Table title={t("inSearches")} rows={s.searches} label={searchLabel} />
     <Table title={t("inClicks")} rows={s.clicks} label={clickLabel} />
     <Table title={t("inListings")} rows={s.listings} />
   </div>;
