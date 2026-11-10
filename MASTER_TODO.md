@@ -758,7 +758,7 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 - Checked the preview's category-specific colour theme for every hue. `--pv-ink` on `--pv-tint` ranges from **7.35:1 to 7.94:1**; the `--pv-glow` kicker colour on either dark hero endpoint ranges from **8.97:1 to 10.89:1**; light hero text on the dark hero endpoints ranges from **15.08:1 to 17.84:1**.
 - Method: convert the actual OKLCH tokens to sRGB, calculate WCAG relative luminance, then calculate `(Llighter + 0.05) / (Ldarker + 0.05)`. These are source-token contrast calculations, not a screenshot, colour-vision simulation or full manual visual QA.
 - Result: all current category colour combinations pass the relevant contrast threshold. No colour value, component, listing, database record, hosting setting or deployment was changed. Additional spend: $0.
-- Task register after this task: **16 DONE, 67 BLOCKED, 9 REVIEW, 908 TODO, 0 IN PROGRESS** (1,000 task rows / 999 unique IDs). SW-0175 is recorded DONE; the separate lower-priority SW-0669 remains a duplicate audit entry and is not separately marked complete in this run.
+- Task register after this task: **14 DONE, 64 BLOCKED, 9 REVIEW, 913 TODO, 0 IN PROGRESS** (1,000 task rows / 999 unique IDs). SW-0175 is recorded DONE; the separate lower-priority SW-0669 remains a duplicate audit entry and is not separately marked complete in this run.
 - Next selected task remains the next independent item in the existing priority order; this audit does not unblock owner-only, migration-dependent or deployment-gated work.
 
 
