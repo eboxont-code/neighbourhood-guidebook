@@ -143,10 +143,11 @@ Never mark work [DONE] merely because code exists, a PR is merged, or a preview 
 
 ## 3. Repository snapshot and history
 
-### Latest verified snapshot — 10 November 2026, 14:59 Brisbane (read-only)
+### Latest verified snapshot — 10 November 2026, 15:10 Brisbane (read-only)
 
-- GitHub main is 32b3429e0b8604cdd3bfc310e20442e793ca1bf9; the repository is private, with 68 open pull requests and 0 open issues. Main reports unprotected. The connected GitHub access could not inspect repository rulesets. No local checkout is mounted, so a local working-tree status cannot be claimed.
+- GitHub main is 32b3429e0b8604cdd3bfc310e20442e793ca1bf9; the repository is private, with 69 open pull requests and 0 open issues. Main reports unprotected. The connected GitHub access could not inspect repository rulesets. No local checkout is mounted, so a local working-tree status cannot be claimed.
 - Root AGENTS.md, README.md, the full task plan/register and .github/workflows/quality.yml were read. The Quality Gate requires typecheck, lint, unit/component tests, production build and disposable PostgreSQL migration/security checks.
+- PR #93 is open/draft at the time of this snapshot; its exact head before this plan-status refresh is 8fa9c50ecf3ae786e682401e9fbb2698e25eb203 and it changes only MASTER_TODO.md. No GitHub Actions workflow run was returned for that head; its combined status shows Vercel failure because the free daily deployment limit was reached. No reviews or unresolved threads exist; it is not merged.
 - No GitHub Actions workflow run was returned for the exact current main SHA. The latest checked PR #92 head 38d3c5e02999037f4b31664955b89504724e300a had Quality Gate run #42754246365; both jobs failed before any steps executed. No tests, typecheck, lint, build or disposable PostgreSQL checks ran.
 - P0 PR #66 (SW-0204) remains open/draft, 10 commits ahead / 10 behind current main; exact-head run #42740539636 failed before steps. Its READY preview is not Production. P0 security audit work remains in open/draft PRs #67, #68, #72 and #73; do not duplicate or merge until required checks and release gates are satisfied.
 - Earlier P1 policy work remains in open/draft PRs #69–71 and #80–82. These branches are based on older main commits; their recorded Quality Gates did not complete. PR #92 records the GitHub/Vercel release path; PRs #86–88, #90 and #91 contain existing analytics/privacy verification work. No duplicate implementation was started.
@@ -770,7 +771,7 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 - **Task completed:** SW-0104, source audit of the shared form honeypot. No application code change was needed.
 - **Evidence:** src/components/forms.tsx defines the honeypot inside aria-hidden="true", moves it off-screen, sets tabIndex=-1 and autoComplete=off, and does not mark it required. Contact, correction, business-submission and claim forms all use it. Their submit handlers discard a non-empty honeypot before the database insert.
 - **Checks:** Seven focused source assertions passed. The full repository Quality Gate did not execute on the latest checked PR head; no browser/screen-reader accessibility-tree test was available. This was a read-only audit, so no application test file was changed.
-- **Delivery:** Plan evidence is proposed in PR #93. The PR is draft and unmerged until its required checks execute. No merge commit exists; no Production deployment was triggered.
+- **Delivery:** Plan evidence is proposed in PR #93 (current branch head is being recorded in the PR itself). The PR is draft and unmerged until its required checks execute. No merge commit exists; no Production deployment was triggered.
 - **Production:** Latest Production remains READY on deployment dpl_Lf5wrrSup3t4ZGLb6QcAuBtJcjRV, deployed commit c660943e42e24a8cffa9955b1075e0a8e9cc15e3. The live browser fetch was inaccessible; no live screen-reader behaviour is claimed.
 - **Database/cost:** Read-only only; no Production writes or migrations. Additional spend: $0.
 - **Next eligible task:** SW-0105 — verify and reconcile the existing same-tick duplicate-submit protection and its regression tests from merged PR #63; do not duplicate the implementation.
