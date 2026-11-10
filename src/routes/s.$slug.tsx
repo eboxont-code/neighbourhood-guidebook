@@ -333,7 +333,7 @@ function ListingActions({ b, dir }: { b: Business; dir?: string | undefined }) {
     ...(b.phone ? [{ href: telLink(b.phone), label: t("callShort"), Icon: Phone, ev: "click_call" as const }] : []),
     ...(b.whatsapp ? [{ href: whatsappLink(b.whatsapp), label: t("whatsapp"), Icon: Phone, ev: "click_whatsapp" as const }] : []),
     ...(dir ? [{ href: dir, label: t("actionDirections"), Icon: Navigation, ev: "click_directions" as const }] : []),
-    ...(showWebsite(b) && b.website ? [{ href: b.website, label: t("actionWebsite"), Icon: Globe, ev: "click_website" as const }] : []),
+    ...(websiteButton(b) && b.website ? [{ href: b.website, label: t("actionWebsite"), Icon: Globe, ev: "click_website" as const }] : []),
     ...(instagram ? [{ href: instagram.url, label: t("actionInstagram"), Icon: Globe, ev: "click_instagram" as const }] : []),
   ];
   return <div role="group" aria-label={t("quickActions")} className="flex min-w-0 flex-wrap gap-2 lg:flex-col">

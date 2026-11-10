@@ -472,7 +472,7 @@ Historical audit baseline (not a verified current count): 52 businesses, 8 categ
 - [ ] [TODO] Verify nearby discovery and map interaction. Near-me distances still to build.
 - [ ] [TODO] Verify opening-status calculations, including overnight schedules and Kathmandu local time. Structured day-by-day hours with Open now and Closes soon shipped (Shipped by GuideBook bot, 26-31 Oct 2026); overnight and timezone checks still open.
 - [ ] [TODO] Improve empty results and useful alternatives.
-- [ ] [TODO] Verify phone, WhatsApp, website and directions actions.
+- [x] [DONE] Verify phone, WhatsApp, website and directions actions. Checked 10 Nov 2026: each action renders only from recorded `phone`, `whatsapp`, `directions`/`address` and working `website` fields (tel:+977, wa.me, Maps, new tab); targets min-h-11 (57px measured at 390px); EN/NE labels in i18n. Fixed: Website action no longer shown for a failed site check.
 - [x] [DONE] One-tap Call, Directions and Instagram buttons on listings. Shipped by GuideBook bot, 26-31 Oct 2026.
 - [ ] [TODO] Improve mapped-listing coverage without inventing coordinates.
 
