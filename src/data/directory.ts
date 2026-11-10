@@ -994,6 +994,13 @@ export function searchBusinesses(query: string): Business[] {
             )),
       ),
     )
+    .map(({ b }) => {
+      // Relevance: full name match, then name contains a query word, then any other match. Stable within a tier.
+      const name = b.name.toLowerCase();
+      const rank = name.includes(words.join(" ")) ? 0 : words.some((w) => name.includes(w)) ? 1 : 2;
+      return { b, rank };
+    })
+    .sort((x, y) => x.rank - y.rank)
     .map(({ b }) => b);
 }
 
