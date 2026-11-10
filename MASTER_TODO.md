@@ -155,7 +155,7 @@ Never mark work [DONE] merely because code exists, a PR is merged, or a preview 
 - The connected Lovable workspace has no SEWA or neighbourhood-guidebook project. Its only listed projects are unrelated; searches for “SEWA” and “neighbourhood guidebook” return no matches. SW-0024 is BLOCKED until the correct project is connected and positively identified. No unrelated Lovable project was opened or edited.
 - SW-0025 verification passed 6/6 focused metadata assertions: exact GitHub repository/default branch, current main SHA, Vercel project-to-repository link, Production target/ref, production domain, and ancestry of current main from the deployed Production commit. The evidence and register update are in draft PR #92; this documentation-only PR still needs its own required checks and merge.
 - No Production database writes/migrations, customer/business changes, secrets, environment changes, DNS/billing changes, outreach, pricing changes or additional spend occurred. Additional spend: $0.
-- Register after this update: 1000 unique task IDs across 999 Markdown rows (SW-0298 and SW-0299 share one row). Status by row: 12 UNKNOWN, 91 BLOCKED, 10 REVIEW, 886 TODO.
+- Register after this update: 1000 unique task IDs across 999 Markdown rows (SW-0298 and SW-0299 share one row). Status by row: 12 DONE, 91 BLOCKED, 10 REVIEW, 886 TODO, 0 IN PROGRESS.
 
 **Current task: SW-0025 — confirm the established GitHub/Vercel release path.** REVIEW. The repository, linked Vercel project, Production branch/domain and deployed commit relationship are verified; PR #92 is open/draft and awaits its exact-head checks and merge.
 
