@@ -749,6 +749,18 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 
 
 ---
+### Automation run 13 — SW-0175 category colour contrast verification (10 November 2026)
+
+- Reviewed the current eight-category registry in `src/data/directory.ts`, the complete category palette and utility mappings in `src/styles.css`, the category hue map and use sites in `src/routes/s.$slug_.website-preview.tsx`, and the fallback category icon rendering in `src/components/cover.tsx`.
+- Confirmed the eight registry slugs (`salons`, `barbers`, `spas`, `clinics`, `cafes`, `restaurants`, `gyms`, `hotels`) each have a category background/ink pair, a `cat-*` utility and a corresponding preview HUE; there are no missing category mappings.
+- Calculated WCAG relative-luminance contrast from each CSS OKLCH foreground/background pair. The category tile label combinations range from **6.42:1 to 7.39:1**. The lowest pair is Restaurants; all eight clear the 4.5:1 AA threshold for normal text.
+- Also checked the generated `venue-placeholder` light-gradient endpoint for each category: ratios range from **6.63:1 to 7.60:1**. Category icon strokes/initials on the shared panel surface range from **7.30:1 to 8.33:1**, above the 3:1 non-text threshold.
+- Checked the preview's category-specific colour theme for every hue. `--pv-ink` on `--pv-tint` ranges from **7.35:1 to 7.94:1**; the `--pv-glow` kicker colour on either dark hero endpoint ranges from **8.97:1 to 10.89:1**; light hero text on the dark hero endpoints ranges from **15.08:1 to 17.84:1**.
+- Method: convert the actual OKLCH tokens to sRGB, calculate WCAG relative luminance, then calculate `(Llighter + 0.05) / (Ldarker + 0.05)`. These are source-token contrast calculations, not a screenshot, colour-vision simulation or full manual visual QA.
+- Result: all current category colour combinations pass the relevant contrast threshold. No colour value, component, listing, database record, hosting setting or deployment was changed. Additional spend: $0.
+- Task register after this task: **14 DONE, 64 BLOCKED, 9 REVIEW, 913 TODO, 0 IN PROGRESS** (1,000 task rows / 999 unique IDs). SW-0175 is recorded DONE; the separate lower-priority SW-0669 remains a duplicate audit entry and is not separately marked complete in this run.
+- Next selected task remains the next independent item in the existing priority order; this audit does not unblock owner-only, migration-dependent or deployment-gated work.
+
 
 ## 10. Instruction for every future AI session
 
@@ -983,7 +995,7 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [BLOCKED] **SW-0172 · P0 · Audit current state** — Verify social links come from the correct business record and open safely. — Verified 8 Nov 2026: existing PR #37 is 29 commits behind current main and GitHub reports mergeable=false; branch reconciliation and fresh CI are required.
 - [ ] [BLOCKED] **SW-0173 · P0 · Audit current state** — Verify service details appear only when provided or separately verified. — Verified 8 Nov 2026: existing PR #40 is 29 commits behind current main and GitHub reports mergeable=false; branch reconciliation and fresh CI are required.
 - [ ] [BLOCKED] **SW-0174 · P0 · Audit current state** — Verify the shared template does not leak data between two business slugs. — Verified 8 Nov 2026: existing PR #42 is stacked on PR #40; parent branch reconciliation and fresh CI are required.
-- [ ] [TODO] **SW-0175 · P1 · Audit current state** — Verify category colour choices remain readable for every current category.
+- [x] [DONE] **SW-0175 · P1 · Audit current state** — Verify category colour choices remain readable for every current category. — Read-only source and contrast audit completed 10 Nov 2026. All eight current categories have matching preview HUE entries and category CSS utilities. The lowest normal-text WCAG contrast was 6.42:1 (Restaurants category ink on its tint), above the 4.5:1 AA threshold. The category placeholder light-gradient endpoint is also above AA (minimum 6.63:1); category tile icon foregrounds exceed 7.30:1 on panel. The category-tinted website-preview theme also passes: pv-ink on pv-tint minimum 7.35:1, pv-glow on the dark hero minimum 8.97:1, and white hero text minimum 15.08:1. No application or colour values changed.
 - [ ] [TODO] **SW-0176 · P1 · Audit current state** — Verify English and Nepali preview variants use the same underlying business facts.
 - [ ] [TODO] **SW-0177 · P1 · Audit current state** — Check the template at 390px wide before checking larger breakpoints.
 - [ ] [TODO] **SW-0178 · P1 · Audit current state** — Check a long business name and a long location name for wrapping or overflow.
