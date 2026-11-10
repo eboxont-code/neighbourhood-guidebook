@@ -28,7 +28,9 @@ describe("sales leads", () => {
     expect(leadStageDuration("new", ago(3 * 3_600_000), null, now)).toEqual({ value: 3, unit: "hour" });
     expect(leadStageDuration("new", ago(2 * 86_400_000), null, now)).toEqual({ value: 2, unit: "day" });
     expect(leadStageDuration("new", ago(45 * 86_400_000), null, now)).toEqual({ value: 1, unit: "month" });
-    expect(leadStageDuration("new", ago(400 * 86_400_000), null, now)).toEqual({ value: 1, unit: "year" });
+    expect(leadStageDuration("new", ago(364 * 86_400_000), null, now)).toEqual({ value: 12, unit: "month" });
+    expect(leadStageDuration("new", ago(365 * 86_400_000), null, now)).toEqual({ value: 1, unit: "year" });
+    expect(leadStageDuration("new", ago(730 * 86_400_000), null, now)).toEqual({ value: 2, unit: "year" });
     expect(leadStageDuration("new", "not-a-date", null, now)).toBeNull();
     expect(leadStageDuration("new", ago(-60_000), null, now)).toBeNull();
   });

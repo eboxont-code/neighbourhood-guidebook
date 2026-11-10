@@ -1143,7 +1143,7 @@ function LeadCard({
   const stageAgeText = stageAge
     ? stageAge.lessThanMinute
       ? t("adLeadStageUnderMinute")
-      : t(`adLeadStage${stageAge.unit}${stageAge.value === 1 ? "" : "s"}` as Key).replace(
+      : t(`adLeadStage${stageAge.unit.charAt(0).toUpperCase()}${stageAge.unit.slice(1)}${stageAge.value === 1 ? "" : "s"}` as Key).replace(
           "{n}",
           new Intl.NumberFormat(lang === "ne" ? "ne-NP" : "en-GB").format(stageAge.value),
         )

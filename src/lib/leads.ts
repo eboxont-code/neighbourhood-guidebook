@@ -45,9 +45,9 @@ export function leadStageDuration(
   if (hours < 24) return { value: hours, unit: "hour" };
   const days = Math.floor(hours / 24);
   if (days < 30) return { value: days, unit: "day" };
-  const months = Math.floor(days / 30);
-  if (months < 12) return { value: months, unit: "month" };
-  return { value: Math.floor(months / 12), unit: "year" };
+  const years = Math.floor(days / 365);
+  if (years > 0) return { value: years, unit: "year" };
+  return { value: Math.max(1, Math.floor(days / 30)), unit: "month" };
 }
 
 /** A tel: link for a Nepali number, or null when it isn't one we can dial. */
