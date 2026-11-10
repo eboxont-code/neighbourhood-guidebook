@@ -26,3 +26,16 @@ describe("smarter search", () => {
     expect(searchBusinesses("zzzqqq")).toEqual([]);
   });
 });
+
+import { searchBusinesses as rankSearch, businesses as allBiz } from "@/data/directory";
+describe("search ranking", () => {
+  it("lists businesses whose name matches before description-only matches", () => {
+    const b = allBiz[allBiz.length - 1]!;
+    const word = b.name.toLowerCase().split(/\s+/).find((w) => w.length > 3)!;
+    const res = rankSearch(word);
+    const firstNonName = res.findIndex((r) => !r.name.toLowerCase().includes(word));
+    const lastName = res.map((r) => r.name.toLowerCase().includes(word)).lastIndexOf(true);
+    expect(res).toContain(b);
+    if (firstNonName !== -1) expect(lastName).toBeLessThan(firstNonName);
+  });
+});

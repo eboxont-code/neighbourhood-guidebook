@@ -466,7 +466,7 @@ Historical audit baseline (not a verified current count): 52 businesses, 8 categ
 
 ### Search and discovery
 
-- [ ] [TODO] Audit search relevance and accuracy.
+- [x] [DONE] Audit search relevance and accuracy. Evidence (10 Nov 2026): results only come from real listings; empty query lists nothing unless a filter is set; no-match and no-filter-match states have EN/NE titles; fixed missing ranking so name matches now list first (test in src/test/search-smart.test.ts).
 - [x] [DONE] Test English and Nepali queries and common spelling variants. EN/NE synonym and typo-tolerant search shipped. Shipped by GuideBook bot, 26-31 Oct 2026.
 - [x] [DONE] Improve category/neighbourhood filtering. Area search such as 'cafe thamel' plus Open Sat and Open Sun filters. Shipped by GuideBook bot, 26-31 Oct 2026.
 - [ ] [TODO] Verify nearby discovery and map interaction. Near-me distances still to build.
