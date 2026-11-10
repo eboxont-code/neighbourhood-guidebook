@@ -2,7 +2,7 @@
 
 > **Single source of truth for SEWA/Boxont execution. Read the whole file before each work session and update it before ending. This file combines the repository plan, revenue-first strategy and the 1,000-task register.**
 >
-> **Last reviewed:** 8 November 2026
+> **Last reviewed:** 10 November 2026
 >
 > **Merged inputs:** existing repository `MASTER_TODO.md`, the revenue-first strategy and 1,000-point checklist, and the matching 1,000-row CSV task register. The CSV and checklist IDs, priorities and task descriptions were reconciled. This file is now the only project execution plan.
 >
@@ -142,6 +142,19 @@ Never mark work [DONE] merely because code exists, a PR is merged, or a preview 
 ---
 
 ## 3. Repository snapshot and history
+
+### Latest autonomous verification — 10 November 2026, 16:01 Brisbane (read-only)
+
+- GitHub `main` is `32b3429e0b8604cdd3bfc310e20442e793ca1bf9`. The repository has 69 open pull requests and 0 open issues. No local repository checkout is mounted in this runtime, so no clean/dirty working-tree status is claimed.
+- **SW-0105 is DONE.** The current `main` and Production source both contain the synchronous duplicate-submit guard in the shared contact, correction and business-submission forms and in the claim form. The focused test dispatches two submit events in one React batch for six public submission journeys, verifies one database insert and one success event where applicable, and confirms a genuine retry after a failed request.
+- The implementation was merged in [PR #63](https://github.com/eboxont-code/neighbourhood-guidebook/pull/63), exact head `47a669081cbd82c6252c389bd4756d2c2e59d783`, merge commit `4c2505bdbc66f51c9d3316d2db44ab41a50148cb`. Exact-head Quality Gate [#42439206147](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42439206147) passed both jobs: 29 test files / 191 tests, TypeScript, ESLint (0 errors; 25 warnings), production build, and disposable PostgreSQL migration/security/concurrency checks.
+- The PR #63 merge is an ancestor of latest READY Production commit `c660943e42e24a8cffa9955b1075e0a8e9cc15e3`; current `main` is 7 commits ahead of Production. The `src/components/forms.tsx` and `src/components/claim-form.tsx` blobs match exactly between current `main` and the deployed Production commit. Vercel Production deployment [dpl_Lf5wrrSup3t4ZGLb6QcAuBtJcjRV](https://vercel.com/boxont/neighbourhood-guidebook/Lf5wrrSup3t4ZGLb6QcAuBtJcjRV) is READY and carries the `sewa.boxont.com` alias. This verifies the guarded implementation is deployed.
+- No real Production form submission was attempted because it would write a customer/business record. The Production database remained read-only; no records, migrations, permissions, settings or secrets were changed. Public GET checks for `/for-businesses` and `/contact` were inaccessible from this runtime, so no interactive live submission smoke test is claimed. No deployment was triggered by this run; additional spend remains $0.
+- The earlier SW-0204 work remains blocked in draft PR #66 by a branch that is 10 commits ahead / 10 behind current `main` and a Quality Gate that failed before steps ran. P0 security work remains in existing draft PRs #67, #68, #72 and #73 or requires an owner-controlled test session; no duplicate audit was started. The SW-0104 plan update remains in draft PR #93 and was not changed in this run.
+- Register integrity after this update: 1,000 unique task IDs across 999 Markdown task rows (SW-0298 and SW-0299 share one row): 13 DONE, 64 BLOCKED, 9 REVIEW, 913 TODO and 0 IN PROGRESS.
+- **Next task to assess: SW-0128 — add a lead-created timestamp visible in the admin.** First verify whether the existing admin message cards already satisfy this requirement; keep the work separate from the blocked Bundle 7 CRM release.
+
+
 
 ### Latest verified snapshot — 8 November 2026, automation run 11 (read-only)
 
@@ -901,7 +914,7 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [TODO] **SW-0102 · P1 · Audit current state** — Set an honest response expectation only after the owner has approved a service standard.
 - [ ] [TODO] **SW-0103 · P1 · Audit current state** — Check whether spam controls block real submissions on mobile networks.
 - [ ] [TODO] **SW-0104 · P1 · Audit current state** — Check that the honeypot field is not exposed to screen readers as a normal requested field.
-- [ ] [TODO] **SW-0105 · P1 · Audit current state** — Test duplicate-submit protection by tapping submit twice quickly.
+- [x] [DONE] **SW-0105 · P1 · Audit current state** — Test duplicate-submit protection by tapping submit twice quickly. — Verified 10 Nov 2026: existing synchronous in-flight guards in `ContactForm`, `CorrectionForm`, `BusinessSubmissionForm` and `ClaimForm` reject same-tick duplicate submits and release after failed requests. Merged PR #63 (head `47a669081cbd82c6252c389bd4756d2c2e59d783`, merge `4c2505bdbc66f51c9d3316d2db44ab41a50148cb`) added seven focused regression cases covering preview, claim, For Businesses, correction, business submission, general contact and retry after failure. Exact-head Quality Gate #42439206147 passed: TypeScript, ESLint (0 errors; 25 warnings), 29 test files/191 tests, production build and disposable PostgreSQL migration/security/concurrency checks. The PR merge is an ancestor of READY Production commit `c660943e42e24a8cffa9955b1075e0a8e9cc15e3`; `forms.tsx` and `claim-form.tsx` source blobs match between main and Production. No Production form submission was made because it would write a live customer/business record.
 - [ ] [TODO] **SW-0106 · P2 · Audit current state** — Rate-limit abusive form traffic without blocking ordinary users behind shared networks.
 - [ ] [TODO] **SW-0107 · P2 · Audit current state** — Confirm anti-spam logs do not retain unnecessary identifying data.
 - [ ] [TODO] **SW-0108 · P2 · Audit current state** — Check whether form notifications reach the intended private inbox or admin queue.
