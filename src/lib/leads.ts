@@ -22,6 +22,34 @@ export function countByStatus(rows: { status: string }[]): Record<LeadStatus | "
   return out;
 }
 
+/** Elapsed time in the currently saved lead stage. New leads fall back to their creation time. */
+export type LeadStageDurationUnit = "minute" | "hour" | "day" | "month" | "year";
+export type LeadStageDuration = { value: number; unit: LeadStageDurationUnit; lessThanMinute?: boolean };
+
+export function leadStageDuration(
+  status: string,
+  createdAt: string | null | undefined,
+  statusChangedAt: string | null | undefined,
+  now = Date.now(),
+): LeadStageDuration | null {
+  const stageStartedAt = statusChangedAt?.trim() || (status === "new" ? createdAt : null);
+  if (!stageStartedAt) return null;
+  const startedAt = Date.parse(stageStartedAt);
+  const elapsedMs = now - startedAt;
+  if (!Number.isFinite(startedAt) || elapsedMs < 0) return null;
+  if (elapsedMs < 60_000) return { value: 1, unit: "minute", lessThanMinute: true };
+
+  const minutes = Math.floor(elapsedMs / 60_000);
+  if (minutes < 60) return { value: minutes, unit: "minute" };
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return { value: hours, unit: "hour" };
+  const days = Math.floor(hours / 24);
+  if (days < 30) return { value: days, unit: "day" };
+  const months = Math.floor(days / 30);
+  if (months < 12) return { value: months, unit: "month" };
+  return { value: Math.floor(months / 12), unit: "year" };
+}
+
 /** A tel: link for a Nepali number, or null when it isn't one we can dial. */
 export function leadTel(phone: string | null | undefined): string | null {
   const d = (phone ?? "").replace(/\D/g, "");

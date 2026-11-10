@@ -36,6 +36,7 @@ import {
   countByStatus,
   isLeadStatus,
   leadSource,
+  leadStageDuration,
   leadStatuses,
   leadTel,
   leadWhatsapp,
@@ -1131,13 +1132,22 @@ function LeadCard({
   m: Tables<"contact_messages">;
   onSaved: (row: Tables<"contact_messages">) => void;
 }) {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const [status, setStatus] = useState<LeadStatus>(isLeadStatus(m.status) ? m.status : "new");
   const [note, setNote] = useState(m.admin_note ?? "");
   const [quoteAmount, setQuoteAmount] = useState(m.quote_amount_npr?.toString() ?? "");
   const [paidAmount, setPaidAmount] = useState(String(m.paid_amount_npr ?? 0));
   const [paymentStatus, setPaymentStatus] = useState<PaymentStatus>(isPaymentStatus(m.payment_status) ? m.payment_status : "not_quoted");
   const [state, setState] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const stageAge = leadStageDuration(m.status, m.created_at, m.status_changed_at);
+  const stageAgeText = stageAge
+    ? stageAge.lessThanMinute
+      ? t("adLeadStageUnderMinute")
+      : t(`adLeadStage${stageAge.unit}${stageAge.value === 1 ? "" : "s"}` as Key).replace(
+          "{n}",
+          new Intl.NumberFormat(lang === "ne" ? "ne-NP" : "en-GB").format(stageAge.value),
+        )
+    : t("adLeadStageAgeUnknown");
   const showCommercial = m.page === "for-businesses" || m.page === "preview" || !!m.service_package;
   const dirty = status !== m.status || note.trim() !== (m.admin_note ?? "") || quoteAmount !== (m.quote_amount_npr?.toString() ?? "") || paidAmount !== String(m.paid_amount_npr ?? 0) || paymentStatus !== m.payment_status;
   const src = leadSource(m.page);
@@ -1331,6 +1341,9 @@ function LeadCard({
               {t("adLeadSaveError")}
             </span>
           )}
+          <span className="text-sm text-muted-foreground">
+            {t("adLeadStageAge").replace("{d}", stageAgeText)}
+          </span>
           {m.status_changed_at && state !== "saved" && (
             <span className="text-sm text-muted-foreground">
               {t("adLeadChanged").replace("{d}", leadWhen(m.status_changed_at))}
