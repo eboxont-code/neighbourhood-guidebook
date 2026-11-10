@@ -2,7 +2,7 @@
 
 > **Single source of truth for SEWA/Boxont execution. Read the whole file before each work session and update it before ending. This file combines the repository plan, revenue-first strategy and the 1,000-task register.**
 >
-> **Last reviewed:** 8 November 2026
+> **Last reviewed:** 10 November 2026
 >
 > **Merged inputs:** existing repository `MASTER_TODO.md`, the revenue-first strategy and 1,000-point checklist, and the matching 1,000-row CSV task register. The CSV and checklist IDs, priorities and task descriptions were reconciled. This file is now the only project execution plan.
 >
@@ -142,6 +142,20 @@ Never mark work [DONE] merely because code exists, a PR is merged, or a preview 
 ---
 
 ## 3. Repository snapshot and history
+
+
+### Latest verified refresh — 10 November 2026, 21:56 Brisbane (read-only)
+
+- GitHub `main` is `373bcbb45f85735843c6e8c71a0087344ca72b99` (`docs(sewa): correct task register totals in audit`). The repository has 74 open pull requests and 0 open issues. The root `AGENTS.md` is the only repository instruction file. No local checkout is mounted, so a clean or dirty local working-tree status cannot be claimed.
+- The current Production deployment is READY: [Vercel deployment `dpl_8MjK6Zvse8hjpsUr8APsNM5GFMdM`](https://vercel.com/boxont/neighbourhood-guidebook/8MjK6Zvse8hjpsUr8APsNM5GFMdM), URL `neighbourhood-guidebook-9bmvaa3as-boxont.vercel.app`, with `sewa.boxont.com` attached. Its Git source is exactly current `main` SHA `373bcbb45f85735843c6e8c71a0087344ca72b99`. This confirms the current main branch has reached Production; it does not include the unmerged SW-0204 copy change.
+- Main Quality Gate [#42810168643](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42810168643) failed three seconds after the push. Both jobs ended without a runner or any execution steps. The latest exact-head Quality Gate for PR #66 [#42740539636](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42740539636) failed the same way. TypeScript, lint, unit/component tests, production build and disposable PostgreSQL checks did not execute. The job-log endpoint returned no downloadable logs, so the underlying runner-allocation cause is not exposed; no unchanged manual retry was attempted.
+- PR [#66](https://github.com/eboxont-code/neighbourhood-guidebook/pull/66) is open/draft, targets `main`, and has no submitted human reviews or unresolved review threads. Before this run's refresh, its exact head was `c1e02b5d69b17a58cc5a15e2b3226c11947864e6`; comparison against current main showed 10 commits ahead and 12 behind. Its READY preview [`dpl_4pZvzHEBn3ocnv1sSBMKjHFEMc9M`](https://vercel.com/boxont/neighbourhood-guidebook/4pZvzHEBn3ocnv1sSBMKjHFEMc9M) belongs to that older head, not current main. The preview and Production pages could not be fetched from this runtime because DNS resolution is unavailable; no live page behaviour is claimed.
+- Existing P0 security work remains in draft PRs #67, #68, #72 and #73. The latest recorded exact-head checks in those PRs failed before job steps; do not duplicate their audits or retry unchanged. SW-0770 still needs the owner-controlled recovery inbox and an authorised admin test session.
+- The only open PR returned as non-draft is [#43](https://github.com/eboxont-code/neighbourhood-guidebook/pull/43). Its old Quality Gate [#42381690492](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42381690492) passed, but its branch is 2 commits ahead / 60 behind current main and GitHub reports it is not mergeable. It is not a safe merge candidate.
+- Read-only Production Supabase inspection: project `zvbavpcsyvibvpkxjzkn` is ACTIVE_HEALTHY on PostgreSQL 17.11, with 8 applied migrations and 10 public tables. Aggregate counts only: 52 listings, 10 analytics events, 3 form-rate rows, 1 admin role row, and 0 contact messages, correction reports, business submissions, business claims, slug redirects or promotions. No customer rows were read. Security Advisor reports 3 findings; Performance Advisor reports 22 findings; Health Advisor reports none. No records, permissions, policies, migrations, Auth settings or secrets were changed.
+- The required repository checks are documented in `AGENTS.md` and `.github/workflows/quality.yml`: install dependencies, typecheck, lint, run tests, build, and run disposable PostgreSQL migration/security checks. The Lovable north-star file `.lovable/north-star/north-star.md` remains unchanged (blob `9d748d0f22dd60969680c61964f18ea4fe6900df`).
+- No production database writes or migrations, production configuration changes, outreach, pricing changes, customer/business data changes or paid resources were made. Additional spend: $0.
+
 
 ### Latest verified snapshot — 8 November 2026, automation run 11 (read-only)
 
@@ -762,6 +776,15 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 - Next selected task remains the next independent item in the existing priority order; this audit does not unblock owner-only, migration-dependent or deployment-gated work.
 
 
+### Automation run 14 — SW-0204 existing-branch refresh (10 November 2026)
+
+- Selected SW-0204 first because it is the first unfinished P0 item and already has an implementation in PR #66. No duplicate PR was created.
+- Refreshed the existing PR branch from current main `373bcbb45f85735843c6e8c71a0087344ca72b99`, preserving only the two SW-0204 application/test files from the branch and replacing its stale plan copy with this current plan. The Lovable north-star file is inherited unchanged from main.
+- The previous PR head `c1e02b5d69b17a58cc5a15e2b3226c11947864e6` had a READY preview, but the current main Production deployment is still on the older preview wording. The refreshed head, new Quality Gate result and any new preview deployment will be recorded in the follow-up evidence below.
+- SW-0204 remains BLOCKED until the exact refreshed head passes the complete required checks and its Production deployment and live wording are verified. No merge or Production release is authorised while those checks are unavailable.
+- No Production database changes or additional spend. Next candidate after SW-0204: continue the existing P0 security work in PRs #67/#68/#72/#73, beginning with SW-0764, once the required checks can actually run. If GitHub Actions still cannot assign runners, no further task is currently eligible.
+
+
 ## 10. Instruction for every future AI session
 
 Before doing SEWA/Boxont work:
@@ -1030,7 +1053,7 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [BLOCKED] **SW-0201 · P0 · Audit current state** — Write the single clearest sentence describing the website-design service for Kathmandu businesses. — Existing implementation and tests are in open draft PR #45; owner review is required before treating the change as released. Do not duplicate it. — Verified 8 Nov 2026: implementation is in draft PR #45; branch is 29 commits behind current main and GitHub reports mergeable=false. Reconcile conflicts and rerun CI before merge.
 - [ ] [BLOCKED] **SW-0202 · P0 · Audit current state** — Define the ideal first customer segment based on need and deliverability rather than assumed budget. — Requires owner-approved first-customer criteria and verified prospect evidence; the original 20-business CSV remains unavailable. — Verified 8 Nov 2026: requires owner-approved first-customer criteria and the original verified 20-business prospect CSV; the separate 18-candidate preview workbook is not a substitute.
 - [x] [DONE] **SW-0203 · P0 · Audit current state** — Explain the difference between the free directory listing and a paid website project. — Verified on current main and deployed production commit `41065104ea2bb6906f060d05fc6b2d4abbe5c6bc`: English/Nepali `fbPricingBody`, `fbPricingNote`, `fbQ2` and `fbA2` explicitly separate the always-free SEWA listing from optional website/sponsored services. `src/routes/for-businesses.tsx` is identical between main and production; the cited translation keys match. No code change was needed.
-- [ ] [TODO] **SW-0204 · P0 · Audit current state** — Explain the difference between a preview concept and a launched website.
+- [ ] [BLOCKED] **SW-0204 · P0 · Audit current state** — Explain the difference between a preview concept and a launched website. — Existing PR #66 contains the bilingual copy and regression test, but its exact-head Quality Gate failed before any runner or test step ran; the branch was 10 commits ahead / 12 behind current main before this run's refresh. Unlock: the refreshed exact head must receive a runner and pass TypeScript, lint, unit/component tests, production build and disposable PostgreSQL checks; then the change must reach READY Production and the affected live pages must be smoke-checked.
 - [ ] [TODO] **SW-0205 · P1 · Audit current state** — List the website deliverables that can reliably be provided today.
 - [ ] [TODO] **SW-0206 · P1 · Audit current state** — List optional deliverables that require a separate quote.
 - [ ] [TODO] **SW-0207 · P1 · Audit current state** — Define what a basic one-page website includes before taking payment.
