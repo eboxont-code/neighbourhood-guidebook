@@ -916,6 +916,43 @@ const SEARCH_SYNONYMS: Record<string, string[]> = {
   डाक्टर: ["clinics"],
   दाँत: ["clinics"],
 };
+
+/** A coarse analytics label only. Never return arbitrary visitor-entered search text. */
+const normaliseAnalyticsToken = (value: string) =>
+  value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+
+export function searchAnalyticsLabel(query: string, area?: string): string {
+  const words = query.toLowerCase().split(/[^\p{L}\p{M}\p{N}]+/u).filter(Boolean);
+  const matchedCategories = new Set<string>();
+
+  for (const word of words) {
+    const normalised = normaliseAnalyticsToken(word);
+    const synonyms =
+      SEARCH_SYNONYMS[word] ??
+      SEARCH_SYNONYMS[normalised] ??
+      SEARCH_SYNONYMS[normalised.replace(/s$/, "")] ??
+      [];
+    synonyms.forEach((slug) => matchedCategories.add(slug));
+
+    for (const category of categories) {
+      const labels = [category.slug, category.name, category.nameNe].map(normaliseAnalyticsToken);
+      if (labels.some((label) => label === normalised || label.replace(/s$/, "") === normalised)) {
+        matchedCategories.add(category.slug);
+      }
+    }
+  }
+
+  const categoryLabel =
+    matchedCategories.size === 1
+      ? `category:${[...matchedCategories][0]}`
+      : matchedCategories.size > 1
+        ? "category:mixed"
+        : null;
+  const areaLabel = areas.some((item) => item.slug === area) ? `area:${area}` : null;
+
+  return [categoryLabel, areaLabel].filter(Boolean).join(";") || "other";
+}
+
 const STOP_WORDS = new Set(["in", "near", "at", "the", "a", "an", "around", "मा", "नजिक", "नजिकै"]);
 
 /** Levenshtein distance, stopping early once it passes max. */
