@@ -479,7 +479,7 @@ Historical audit baseline (not a verified current count): 52 businesses, 8 categ
 ### SEO and structured discovery
 
 - [ ] [TODO] Audit indexing and canonical URLs.
-- [ ] [TODO] Verify sitemap and robots rules.
+- [x] [DONE] Verify sitemap and robots rules. Evidence (10 Nov 2026): /sitemap.xml and /robots.txt return 200; sitemap lists 41 Kathmandu neighbourhood/category URLs, 2 local pages and 37 listing pages; no admin, search, saved or website-preview URLs; robots disallows /admin for all agents. No changes needed.
 - [ ] [BLOCKED] Submit the sitemap in Google Search Console. Waiting on Boxont.
 - [x] [DONE] Validate LocalBusiness structured data. LocalBusiness schema added. Shipped by GuideBook bot, 26-31 Oct 2026.
 - [x] [DONE] Improve useful neighbourhood and category landing pages. Local pages /a/durbar-marg/salons and /a/lazimpat/spas added and listed in the sitemap. Shipped by GuideBook bot, 26-31 Oct 2026.
