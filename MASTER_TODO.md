@@ -492,7 +492,7 @@ Historical audit baseline (not a verified current count): 52 businesses, 8 categ
 ### User experience
 
 - [ ] [TODO] Audit mobile experience on common Android devices and browsers.
-- [ ] [TODO] Audit desktop layouts.
+- [x] [DONE] Audit desktop layouts. Evidence (11 Nov 2026): reviewed browser screenshots in EN/NE at 390×844 first, then 1024×1800, 1280×1800 and 1536×1800 for home, search (initial, results and no-match), listing profile, Saved and About. No horizontal page overflow at any width; no cramped columns, overlapping text or clearly inconsistent spacing found. Also saved four real listings through the UI, confirmed all four appear on Saved, opened a saved profile, and checked expanded search filters; Saved uses 317px columns at 1024px and 360px columns at wider desktop widths. These additional checks reported no runtime errors; current preview log reports build OK. No layout changes needed; checklist only, no tests rerun, publishing, deployment or migrations. Evidence: `/tmp/browser/desktop-layout/` screenshots and audit outputs (temporary sandbox files).
 - [ ] [TODO] Improve loading speed and remove unnecessary client-side code.
 - [ ] [IN PROGRESS] Test accessibility and keyboard navigation. Auditing home, search, listing profile, Saved, About and preview/quote in EN/NE at 390px first, then desktop; presentation only, no publishing or migrations.
 - [ ] [TODO] Test English/Nepali switching across public and admin journeys.
