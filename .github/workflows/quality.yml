@@ -1,14 +1,15 @@
 name: SEWA Quality Gate
 
 on:
+  # Test the integration branch and reviewed changes only. Feature-branch
+  # pushes are covered by the pull_request event once the work is proposed.
+  # This avoids running the full two-job suite for every pre-PR commit.
   push:
     branches:
       - main
-      - "sewa/**"
   pull_request:
     branches:
       - main
-      - "sewa/**"
 
 permissions:
   contents: read
