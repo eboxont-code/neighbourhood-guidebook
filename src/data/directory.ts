@@ -19,6 +19,16 @@ export interface Area {
 } // city slug
 
 export type ListingPromotionPlacement = "area_featured" | "category_featured";
+
+export type CoverRights = "owner_provided" | "licensed";
+
+/** A business photo is displayable only with recorded owner permission or a compatible licence. A source credit alone is not permission. */
+export interface BusinessCover {
+  url: string;
+  credit: string;
+  rights: CoverRights;
+  rightsEvidence: string;
+}
 export interface LiveListingPromotion {
   placement: ListingPromotionPlacement;
   target_area: string | null;
@@ -51,7 +61,7 @@ export interface Business {
   verification: Verification;
   lastChecked?: string | undefined; // ISO date, only when a check happened
   demo: boolean;
-  cover?: { url: string; credit: string }; // only photos the business published
+  cover?: BusinessCover; // only rights-cleared photos with recorded evidence
   sourceUrl?: string | undefined;
   lat?: number | undefined; // only from a reliable source; never guessed
   lng?: number | undefined;
@@ -93,10 +103,6 @@ export const businesses: Business[] = [
     ...base,
     id: "b1",
     slug: "aavaran-durbar-marg",
-    cover: {
-      url: "https://www.aavaranskin.com/uploaded_images/seo/aavaran-skin-clinic-225940.JPG",
-      credit: "aavaranskin.com",
-    },
     name: "Aavaran Skin & Hair Clinic",
     category: "clinics",
     area: "durbar-marg",
@@ -199,10 +205,6 @@ export const businesses: Business[] = [
     ...base,
     id: "b6",
     slug: "tranquility-spa",
-    cover: {
-      url: "https://www.tranquilityspa.com.np/uploads/images/galleries/03534099-dc1e-46d4-b007-0a62f39a0cf9.jpg",
-      credit: "tranquilityspa.com.np",
-    },
     name: "Tranquility Spa",
     category: "spas",
     area: "lazimpat",

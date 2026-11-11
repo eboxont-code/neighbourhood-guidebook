@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { BedDouble, Coffee, Dumbbell, Leaf, Scissors, Stethoscope, Store, UtensilsCrossed } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
+import type { BusinessCover } from "@/data/directory";
+import { hasRightsClearedCover } from "@/lib/cover-rights";
 
 function RazorIcon({ className }: { className?: string }) {
   return (
@@ -28,17 +30,18 @@ export function CatIcon({ category, className }: { category: string; className?:
   return <Icon {...(className ? { className } : {})} />;
 }
 
-export function Cover({ cover, name, category }: { cover?: { url: string; credit: string } | undefined; name: string; category: string }) {
+export function Cover({ cover, name, category }: { cover?: BusinessCover; name: string; category: string }) {
   const { t } = useI18n();
   const [failed, setFailed] = useState(false);
   const img = useRef<HTMLImageElement>(null);
+  const approvedCover = hasRightsClearedCover(cover) ? cover : undefined;
   // An image can fail before hydration attaches onError; check once mounted.
   useEffect(() => {
     const el = img.current;
-    if (el && el.complete && el.naturalWidth === 0) setFailed(true);
-  }, []);
+    if (approvedCover && el && el.complete && el.naturalWidth === 0) setFailed(true);
+  }, [approvedCover?.url]);
 
-  if (!cover || failed) {
+  if (!approvedCover || failed) {
     return (
       <div className={`venue-placeholder cat-${category}`} aria-hidden>
         <div className="mx-auto flex h-full max-w-2xl items-center gap-3 px-5 pb-7 lg:max-w-6xl">
@@ -50,9 +53,9 @@ export function Cover({ cover, name, category }: { cover?: { url: string; credit
   return (
     <figure className="relative">
       <div className="venue-cover">
-        <img ref={img} src={cover.url} alt="" onError={() => setFailed(true)} className="h-full w-full object-cover" />
+        <img ref={img} src={approvedCover.url} alt="" onError={() => setFailed(true)} className="h-full w-full object-cover" />
       </div>
-      <figcaption className="cover-credit">{t("photo")}: {cover.credit}</figcaption>
+      <figcaption className="cover-credit">{t("photo")}: {approvedCover.credit}</figcaption>
     </figure>
   );
 }

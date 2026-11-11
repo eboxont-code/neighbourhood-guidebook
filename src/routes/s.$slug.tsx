@@ -20,6 +20,7 @@ import { ProvenanceDisclosure } from "@/components/provenance-disclosure";
 import { nearbyPlaces } from "@/lib/nearby";
 import { otherBranches } from "@/lib/branches";
 import { shareImage, shareText } from "@/lib/social-meta";
+import { hasRightsClearedCover } from "@/lib/cover-rights";
 
 export const Route = createFileRoute("/s/$slug")({
   loader: ({ params }) => {
@@ -34,7 +35,7 @@ export const Route = createFileRoute("/s/$slug")({
     const b = loaderData.business;
     const area = getArea(b.area)?.name ?? "";
     const place = [area, getCity(getArea(b.area)?.city ?? "")?.name].filter(Boolean).join(", ");
-    const head = pageMeta(listingTitle(b.name, area), shareText("shareListingDescription", { name: b.name, place }), `/s/${b.slug}`, { type: "business.business", ...shareImage(b.cover, b.name) });
+    const head = pageMeta(listingTitle(b.name, area), shareText("shareListingDescription", { name: b.name, place }), `/s/${b.slug}`, { type: "business.business", ...shareImage() });
     return { ...head, scripts: [{ type: "application/ld+json", children: JSON.stringify(businessJsonLd(b)) }, { type: "application/ld+json", children: JSON.stringify(breadcrumbJsonLd(b)) }] };
   },
   notFoundComponent: NotFoundView,
@@ -119,6 +120,7 @@ function useToast() {
 
 function ShopPage() {
   const { business: b } = Route.useLoaderData();
+  const cover = hasRightsClearedCover(b.cover) ? b.cover : undefined;
   const { t, lang } = useI18n();
   const router = useRouter();
   const cat = getCategory(b.category)!;
@@ -177,10 +179,10 @@ function ShopPage() {
       </div>
 
       <div ref={headRef} className="relative">
-        {b.cover ? (
+        {cover ? (
           <figure className="relative">
-            <div className="venue-cover"><img src={b.cover.url} alt="" className="h-full w-full object-cover" /></div>
-            <figcaption className="cover-credit">{t("photo")}: {b.cover.credit}</figcaption>
+            <div className="venue-cover"><img src={cover.url} alt="" className="h-full w-full object-cover" /></div>
+            <figcaption className="cover-credit">{t("photo")}: {cover.credit}</figcaption>
           </figure>
         ) : (
           <div className={`venue-thumb cat-${b.category} h-[200px] !rounded-none md:h-[260px]`} aria-hidden>

@@ -90,6 +90,8 @@ const businessDataSchema = z.object({
   cover: z.object({
     url: z.string().trim().max(2048).url().refine(isHttpUrl),
     credit: z.string().trim().min(1).max(150),
+    rights: z.enum(["owner_provided", "licensed"]),
+    rightsEvidence: z.string().trim().min(1).max(500),
   }).strip().optional().catch(undefined),
   sourceUrl: safeHttpUrl,
   lat: z.number().finite().min(-90).max(90).optional().catch(undefined),

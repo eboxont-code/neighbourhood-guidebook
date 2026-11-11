@@ -11,6 +11,7 @@ import { useI18n, type Key } from "@/lib/i18n";
 import { pageMeta } from "@/lib/seo";
 import { offersPreview } from "@/lib/preview";
 import { statusDetail, weekTable } from "@/lib/venue";
+import { hasRightsClearedCover } from "@/lib/cover-rights";
 
 /**
  * One shared template: a free one-page website preview built only from the listing's own
@@ -134,7 +135,7 @@ function PreviewPage() {
   const socials = socialLinks(b);
   const style = { "--pv-h": HUE[b.category] ?? 262 } as CSSProperties;
   const nav: [string, Key][] = [["about", "tabAbout"], ["hours", "tabHours"], ["visit", "pvNavVisit"], ["contact", "pvNavContact"]];
-  // Only photos the business published; if one fails to load, the code-made hero art is used instead.
+  // Only owner-provided or licensed photos with recorded evidence are shown; failed or unproven photos use code-made hero art.
   const [failed, setFailed] = useState(false);
   const img = useRef<HTMLImageElement>(null);
   useEffect(() => {
@@ -143,7 +144,8 @@ function PreviewPage() {
     if (el && el.complete && el.naturalWidth === 0) setFailed(true);
   }, [b.slug]);
   useEffect(() => { track("preview_view", { slug: b.slug }); }, [b.slug]);
-  const photo = b.cover && !failed ? b.cover : undefined;
+  const cover = hasRightsClearedCover(b.cover) ? b.cover : undefined;
+  const photo = cover && !failed ? cover : undefined;
   const ownerLink = { to: "/contact" as const, search: { from: "preview" as const, listing: b.slug, business: b.name } };
   const steps: [Key, Key][] = [["pvNext1Title", "pvNext1Body"], ["pvNext2Title", "pvNext2Body"], ["pvNext3Title", "pvNext3Body"]];
 

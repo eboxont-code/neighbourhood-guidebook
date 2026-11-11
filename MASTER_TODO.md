@@ -143,6 +143,16 @@ Never mark work [DONE] merely because code exists, a PR is merged, or a preview 
 
 ## 3. Repository snapshot and history
 
+### Latest refresh — 12 November 2026 — SW-0180 image rights
+- The bundled directory and production listings metadata contained two business-photo records: one hosted by Aavaran Skin Clinic and one by Tranquility Spa. Their official sites display all-rights-reserved notices; no compatible reuse licence or owner-provided permission was recorded in the repository. A source credit alone is not permission.
+- Read-only production check: the published listings table contains exactly two cover URLs, one from each of those official domains. No production row was changed.
+- This branch removes both bundled photo references and their copied share-card asset references. Business photos are now accepted only when the listing data includes an owner-provided/licensed rights classification and non-empty evidence. Older production JSON without those fields is ignored by the public parser; listing cards, detail pages, website previews, structured data and social cards fall back to SEWA / Boxont or category artwork.
+- Added focused tests for the rights check. Full repository checks and production behaviour are not yet verified; the change remains in draft review until exact-head checks pass and the production deployment is confirmed.
+- Implementation branch: `sewa/sw-0180-rights-cleared-imagery-20261112-run11`. No production database writes, migrations, asset-storage deletions, or hosting-setting changes. Additional spend: $0.
+- Existing release blockers remain: PR #66's latest Quality Gate and the main-branch run both failed before a runner or any test step started; connected access cannot read account Actions usage/budget or repository Actions policy. Do not retry unchanged failures or claim application tests passed.
+- Next eligible independent work after SW-0180: SW-0183 — verify the preview route remains excluded from the sitemap and search indexing. SW-0181/SW-0182 copy changes remain in the blocked PR #66.
+
+
 ### Latest verified snapshot — 8 November 2026, automation run 11 (read-only)
 
 - GitHub `main` after the SW-0042 implementation and plan-evidence merges: `64f884c1e7d184270386bc8eeb3c470d11d51fc3` (PR #64 merge commit). There are 41 open pull requests and 0 open issues. PRs #63 and #64 are merged; stale plan-only PRs #33 and #62 are closed unmerged as superseded.
@@ -989,7 +999,7 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [TODO] **SW-0177 · P1 · Audit current state** — Check the template at 390px wide before checking larger breakpoints.
 - [ ] [TODO] **SW-0178 · P1 · Audit current state** — Check a long business name and a long location name for wrapping or overflow.
 - [ ] [TODO] **SW-0179 · P1 · Audit current state** — Check missing-logo and missing-photo states without placeholder claims that look real.
-- [ ] [TODO] **SW-0180 · P1 · Audit current state** — Use only properly licensed, owner-provided, or clearly non-misleading imagery.
+- [ ] [REVIEW] **SW-0180 · P1 · Rights-cleared business imagery** — Removed the two unproven business photos from the bundled snapshot and share cards; legacy database photos without owner-permission/licence evidence are rejected by the public data parser and display fallbacks. Exact-head checks and production verification are still required; production records remain unchanged.
 - [ ] [TODO] **SW-0181 · P1 · Audit current state** — Clarify above the fold that the page is a private website concept, not the owner's live site.
 - [ ] [TODO] **SW-0182 · P1 · Audit current state** — Clarify that the owner has not yet approved or claimed the preview.
 - [ ] [TODO] **SW-0183 · P1 · Audit current state** — Keep the existing preview route out of the sitemap and search indexing.
