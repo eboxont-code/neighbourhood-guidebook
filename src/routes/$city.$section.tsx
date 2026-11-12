@@ -1,10 +1,11 @@
 import { createFileRoute, Link, notFound, redirect, useNavigate } from "@tanstack/react-router";
 import { List, Map as MapIcon } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 import { Maximize2 } from "lucide-react";
 import { NotFoundView, Page, pageMeta, useNow } from "@/components/site";
 import { FullMap, MapView } from "@/components/map-view";
 import { EmptyState } from "@/components/site";
+import { LocationCard } from "@/components/venue";
 import { requestLocation, sortByDistance, useLocation } from "@/lib/geo";
 import { CatIcon } from "@/components/cover";
 import { AreaGuide } from "@/components/area-page";
@@ -77,7 +78,6 @@ function CategoryPage() {
   const sponsored = !f.area ? sponsoredFor(shown, "category_featured", c.slug) : [];
   const sponsoredIds = new Set(sponsored.map((b) => b.id));
   const organic = shown.filter((b) => !sponsoredIds.has(b.id));
-  useEffect(() => { if (f.sort === "near" && loc.state.status === "idle") requestLocation(); }, [f.sort]); // eslint-disable-line react-hooks/exhaustive-deps
   const setView = (v: "list" | "map") => set({ view: v === "map" ? "map" : undefined });
   const closeMap = useCallback(() => setView("list"), []); // eslint-disable-line react-hooks/exhaustive-deps
   const cityName = lang === "ne" ? city.nameNe : city.name;
@@ -116,6 +116,8 @@ function CategoryPage() {
       </div>
       <Page wide>
         <div className="mx-auto max-w-3xl">
+          {/* A shared sort=near URL is not consent; keep the request behind the visitor's location button. */}
+          {f.sort === "near" && loc.state.status !== "nepal" && <LocationCard />}
           {localAreas.length > 0 && <nav aria-label={t("localAreaLinks").replace("{cat}", lang === "ne" ? c.nameNe : c.name)} className="mb-4 flex flex-wrap gap-x-4 gap-y-1">
             {localAreas.map(({ area }) => <Link key={area.slug} to="/a/$areaSlug/$categorySlug" params={{ areaSlug: area.slug, categorySlug: c.slug }} className="inline-flex min-h-11 items-center text-sm font-semibold text-primary underline underline-offset-4">{placeName(area, lang)}</Link>)}
           </nav>}
@@ -123,7 +125,11 @@ function CategoryPage() {
           <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
             <label className="flex items-center gap-2 text-sm text-muted-foreground">
               {t("sortLabel")}
-              <select value={f.sort ?? "name"} onChange={(e) => set({ sort: e.target.value === "open" || e.target.value === "near" ? e.target.value : undefined })} className="min-h-11 rounded-full border border-border bg-card px-3 text-sm text-foreground">
+              <select value={f.sort ?? "name"} onChange={(e) => {
+                const sort = e.target.value === "open" || e.target.value === "near" ? e.target.value : undefined;
+                if (sort === "near" && loc.state.status === "idle") requestLocation();
+                set({ sort });
+              }} className="min-h-11 rounded-full border border-border bg-card px-3 text-sm text-foreground">
                 <option value="name">{t("sortName")}</option>
                 <option value="open">{t("sortOpen")}</option>
                 <option value="near">{t("sortNear")}</option>
