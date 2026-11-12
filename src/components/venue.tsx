@@ -7,6 +7,7 @@ import { CatIcon } from "@/components/cover";
 import { EmptyState, useNow } from "@/components/site";
 import { getArea, getCategory, placeName, citiesInUse, type Business } from "@/data/directory";
 import { badgesFor, statusBadge, type Badge } from "@/lib/venue";
+import { hasRightsClearedCover } from "@/lib/cover-rights";
 
 /** At most one status chip, then the New badge if there is room. */
 function cardBadges(b: Business, now: Date | null): Badge[] {
@@ -45,9 +46,10 @@ export function HeartButton({ slug, name, className = "" }: { slug: string; name
 
 export function Thumb({ b, className = "" }: { b: Business; className?: string }) {
   const [failed, setFailed] = useState(false);
+  const cover = hasRightsClearedCover(b.cover) ? b.cover : undefined;
   return (
     <div className={`venue-thumb cat-${b.category} ${className}`}>
-      {b.cover && !failed ? <img src={b.cover.url} alt="" loading="lazy" onError={() => setFailed(true)} className="h-full w-full object-cover" />
+      {cover && !failed ? <img src={cover.url} alt="" loading="lazy" onError={() => setFailed(true)} className="h-full w-full object-cover" />
         : (
           <span aria-hidden className="venue-mono">{b.name.charAt(0)}<span className="venue-mono-icon"><CatIcon category={b.category} className="h-3 w-3" /></span></span>
         )}

@@ -1,4 +1,5 @@
 import { openingHoursSpecification } from "@/lib/hours";
+import { hasRightsClearedCover } from "@/lib/cover-rights";
 import { SITE_NAME, SITE_URL } from "@/config";
 import { getArea, getCategory, getCity, intlDigits, parseDays, parseRange, socialLinks, websiteButton, type Business } from "@/data/directory";
 
@@ -85,7 +86,7 @@ export function businessJsonLd(b: Business): Record<string, unknown> {
   if (ohs) ld["openingHoursSpecification"] = ohs;
   const social = socialLinks(b).map((s) => s.url);
   if (social.length) ld["sameAs"] = social;
-  if (b.cover) ld["image"] = b.cover.url;
+  if (hasRightsClearedCover(b.cover)) ld["image"] = b.cover.url;
   if (typeof b.lat === "number" && typeof b.lng === "number") ld["geo"] = { "@type": "GeoCoordinates", latitude: b.lat, longitude: b.lng };
   return ld;
 }
