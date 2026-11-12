@@ -3,6 +3,7 @@ import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 import type { Business } from "@/data/directory";
 import { z } from "zod";
+import { safeExternalHttpUrl } from "@/lib/urls";
 
 export type ListingsPayload = { items: Business[]; redirects: Record<string, string> } | null;
 
@@ -11,14 +12,7 @@ type Row = { id: string; slug: string; name: string; area: string; category: str
 /** Turns untrusted database JSON into the safe Business shape every screen uses. */
 const optionalText = (max: number) => z.string().trim().max(max).optional().catch(undefined);
 
-const isHttpUrl = (value: string) => {
-  try {
-    const protocol = new URL(value).protocol;
-    return protocol === "http:" || protocol === "https:";
-  } catch {
-    return false;
-  }
-};
+const isHttpUrl = (value: string) => safeExternalHttpUrl(value) !== null;
 
 const safeHttpUrl = z
   .string()

@@ -1,4 +1,5 @@
 import { parseDays, parseRange, type Business } from "@/data/directory";
+import { safeExternalHttpUrl } from "@/lib/urls";
 
 export type DayValue = { kind: "open"; from: string; to: string } | { kind: "closed" } | { kind: "unknown" };
 const SHORT = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -50,7 +51,7 @@ export function normalizePhone(raw: string): string | null {
 }
 
 export function validUrl(s: string): boolean {
-  try { const u = new URL(s); return (u.protocol === "https:" || u.protocol === "http:") && u.hostname.includes("."); } catch { return false; }
+  return safeExternalHttpUrl(s) !== null;
 }
 
 export const osmLink = (lat: number, lng: number) => `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lng}#map=18/${lat}/${lng}`;

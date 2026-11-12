@@ -5,6 +5,7 @@ import type { Tables } from '@/integrations/supabase/types';
 import { claimStatuses, claimRoles, claimWants } from '@/lib/claims';
 import { useI18n } from '@/lib/i18n';
 import { Button } from '@/components/ui/button';
+import { externalUrlHost, safeExternalHttpUrl } from '@/lib/urls';
 
 type Claim = Tables<'business_claims'>;
 const card = 'rounded-2xl border border-border bg-card p-4 space-y-3';
@@ -20,11 +21,20 @@ function ClaimCard({ row, onSaved }: { row: Claim; onSaved: (row: Claim) => void
     onSaved(data); setState('saved');
   }
   const role = claimRoles.find((r) => r === row.role);
+  const proofUrl = safeExternalHttpUrl(row.proof_url);
+  const proofHost = proofUrl ? externalUrlHost(proofUrl) : null;
   return <li className={card}>
     <div className="flex flex-wrap justify-between gap-2"><Link to="/s/$slug" params={{ slug: row.listing_slug }} className="inline-flex min-h-11 items-center break-words text-primary underline">{row.listing_slug}</Link><time className="text-sm text-muted-foreground">{new Date(row.created_at).toLocaleDateString(lang === 'ne' ? 'ne-NP' : 'en-GB', { timeZone: 'Asia/Kathmandu' })}</time></div>
     <p className="break-words font-semibold">{row.name}{role && <> · {t(`claimRole_${role}`)}</>}</p>
     <p className="break-words text-sm">{t('subContact')}: {row.contact}</p>
-    <a href={row.proof_url} target="_blank" rel="noopener noreferrer nofollow" className="inline-flex min-h-11 max-w-full items-center break-all text-sm text-primary underline">{t('claimProof')}</a>
+    {proofUrl ? (
+      <div className="space-y-1">
+        <a href={proofUrl} target="_blank" rel="noopener noreferrer nofollow" title={proofUrl} className="inline-flex min-h-11 max-w-full items-center break-all text-sm text-primary underline">
+          {t('claimProof')}: {proofHost}
+        </a>
+        <p className="text-xs text-muted-foreground">{t('adExternalLinkWarning')}</p>
+      </div>
+    ) : <p className="text-sm text-muted-foreground">{t('adInvalidExternalLink')}</p>}
     <div className="flex flex-wrap gap-2">{claimWants.filter((w) => row.wants.includes(w)).map((w) => <span key={w} className="rounded-full bg-muted px-2.5 py-1 text-xs">{t(`claimWant_${w}`)}</span>)}</div>
     {row.note && <p className="whitespace-pre-wrap break-words text-sm">{row.note}</p>}
     <div role="group" aria-label={t('adStatus')} className="flex flex-wrap gap-2">{claimStatuses.map((s) => <Button key={s} type="button" disabled={state === 'saving'} aria-pressed={row.status === s} onClick={() => save(s)} className={`chip h-auto min-h-11 ${row.status === s ? 'chip-on' : ''}`}>{t(`claimStatus_${s}`)}</Button>)}</div>
