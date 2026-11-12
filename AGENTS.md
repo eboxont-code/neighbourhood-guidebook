@@ -39,6 +39,7 @@
 
 - Development-mode preview builds place Nitro public assets in `dist`; production keeps Nitro defaults to preserve the existing hosting output.
 - Interface strings go through `src/lib/i18n.tsx`. Business names and business-supplied data are not translated.
+- Write project-authored interface copy in natural, human English and Nepali rather than word-for-word translation. Keep the same meaning, tone and action in both languages, and keep translation keys and interpolation placeholders aligned. Avoid em dashes in UI copy; prefer full stops, commas, colons or parentheses. Preserve business-supplied names and descriptions. If wording is ambiguous or culturally sensitive, request fluent review rather than guessing.
 - Kathmandu opening status uses `Asia/Kathmandu` time. Do not guess opening status when the recorded schedule is missing or cannot be parsed.
 - Field provenance is derived by `src/lib/provenance.ts`. Verification and freshness rules belong in `src/lib/verification.ts`.
 - Location data is stored only for the local discovery feature and must not be sent to analytics. Sanitise errors and breadcrumbs before logging.
@@ -51,6 +52,12 @@
 - City-based area/category combinations below the shared threshold remain noindex browsing pages; qualifying combinations redirect permanently to `/a/<area>/<category>`, the only combination URLs in the sitemap, to avoid thin or duplicate indexable pages.
 - Lazy-load map code on the client. Do not let browser-only mapping code execute during server rendering.
 - Owner claims and website previews must continue to use the shared listing record and existing eligibility rules.
+
+### Call-to-action discipline
+- Within one page, section, card or form context, show one primary call-to-action for the same next step. Do not repeat the same action within one context.
+- Repeated labels are acceptable only when each control belongs to a distinct choice (for example, one package-selection button per package card), or when a persistent shortcut has a clear destination and is hidden while that destination is visible. Document the reason and add a focused regression test.
+- Keep primary conversion actions distinct from navigation, listing-specific contact actions and form-submit controls; these are different intents, not duplicate CTAs.
+- On mobile, a sticky CTA must not cover or duplicate the visible form action. When its destination form is visible, hide the sticky CTA and remove it from keyboard navigation.
 
 ## Quality gate
 
