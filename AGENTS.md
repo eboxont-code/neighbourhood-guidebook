@@ -48,6 +48,7 @@
 - Selected public leaf routes use `social-meta` for compact brand cards or source-matched resized listing covers; keep share images out of root metadata and preserve the canonical origin independently.
 - Search pages and private administration pages must not be indexed. Website previews remain noindex and must stay out of the sitemap.
 - Local landing pages must meet the real-listing threshold owned by `src/lib/local-pages.ts`. Keep page links and sitemap eligibility consistent.
+- City-based area/category combinations below the shared threshold remain noindex browsing pages; qualifying combinations redirect permanently to `/a/<area>/<category>`, the only combination URLs in the sitemap, to avoid thin or duplicate indexable pages.
 - Lazy-load map code on the client. Do not let browser-only mapping code execute during server rendering.
 - Owner claims and website previews must continue to use the shared listing record and existing eligibility rules.
 

@@ -6,4 +6,4 @@ export const SITE_NAME = "SEWA";
 export const SITE_CONTACT = { phone: "", whatsapp: "", email: "" };
 
 // Production origin used by canonical URLs, structured data, breadcrumbs and the sitemap.
-export const SITE_URL = "https://sewa.boxont.com";
+export const SITE_URL = "https://neighbourhood-guidebook.lovable.app";
