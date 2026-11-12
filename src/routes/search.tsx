@@ -12,6 +12,7 @@ import {
   getArea,
   hasPin,
   placeName,
+  searchAnalyticsLabel,
   searchBusinesses,
 } from "@/data/directory";
 import {
@@ -90,9 +91,10 @@ function SearchPage() {
   useEffect(() => {
     const v = q.trim();
     if (v.length < 2) return;
-    const id = setTimeout(() => track(results.length ? "search" : "search_zero", { query: v }), 1500);
+    const searchClass = searchAnalyticsLabel(v, area);
+    const id = setTimeout(() => track(results.length ? "search" : "search_zero", { searchClass }), 1500);
     return () => clearTimeout(id);
-  }, [q, results.length]);
+  }, [q, area, results.length]);
   // Remember a query on this device once the person has paused on it and it found something.
   useEffect(() => {
     const v = q.trim();

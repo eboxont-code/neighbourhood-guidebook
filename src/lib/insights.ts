@@ -1,3 +1,5 @@
+import { safeSearchClass } from "@/lib/search-analytics";
+
 export type EventRow = { event: string; listing_slug: string | null; query: string | null; created_at: string };
 export type Counted = [string, number][];
 
@@ -10,8 +12,12 @@ export function summarise(rows: EventRow[], days: number, now = new Date()) {
   const searches = new Map<string, number>(), zero = new Map<string, number>(), clicks = new Map<string, number>(), listings = new Map<string, number>();
   for (const r of rows) {
     if (new Date(r.created_at).getTime() < since) continue;
-    if (r.event === "search" && r.query) bump(searches, r.query);
-    else if (r.event === "search_zero" && r.query) { bump(zero, r.query); bump(searches, r.query); }
+    if (r.event === "search") bump(searches, safeSearchClass(r.query ?? undefined));
+    else if (r.event === "search_zero") {
+      const label = safeSearchClass(r.query ?? undefined);
+      bump(zero, label);
+      bump(searches, label);
+    }
     else if (r.event !== "search" && r.event !== "search_zero") {
       bump(clicks, r.event);
       if (r.listing_slug) bump(listings, r.listing_slug);

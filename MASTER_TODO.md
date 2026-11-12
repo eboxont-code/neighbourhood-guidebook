@@ -143,6 +143,19 @@ Never mark work [DONE] merely because code exists, a PR is merged, or a preview 
 
 ## 3. Repository snapshot and history
 
+### Latest verified snapshot — 10 November 2026, automation run 11 (read-only)
+
+- **GitHub main:** latest observed commit `906f31c473a34c7346f02183d94e4f8465b89372`. The repository has 66 open pull requests and 0 open issues after PR #90 was opened. No local checkout is mounted in this runtime, so a local working-tree status cannot be claimed.
+- **P0 release blockers:** SW-0204 remains blocked: PR #66 is open/draft and its exact-head Quality Gate run [#42710303925](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42710303925) failed before any job step or test ran. Existing P0 security work for SW-0764–SW-0769 is already in PRs #67, #68, #72 and #73; those branches need reconciliation against current main and their checks have not completed. SW-0770 and SW-0771 require the owner-controlled recovery inbox and an authorised administrator session; SW-0774 requires an approved disposable non-admin account and authorised direct-request testing.
+- **Earlier P1 work:** SW-0011/0013 are in PR #69; SW-0014/0015 in PRs #70/#89; SW-0016–SW-0020 in PR #71; SW-0021–SW-0023 and SW-0025 in PRs #80–#82; SW-0205/0206 in PRs #78/#79. These are existing open review items, not new work to duplicate. SW-0012 is blocked pending owner-approved listing criteria and the original 20-business CSV. SW-0024 remains blocked because the correct Lovable workspace is not connected or positively identified.
+- **Analytics sequence:** SW-0051/0052 and SW-0056/0057 are blocked by missing migration-history reconciliation and explicit authorization for forward-only production migrations. SW-0053–SW-0055 already have verification work in PRs #86–#88. SW-0058 is submitted in PR #90. SW-0059–SW-0061 require new event values or lead-attribution fields and the same migration-history/authorization prerequisites.
+- **Vercel production path:** project `neighbourhood-guidebook` is Git-connected to `eboxont-code/neighbourhood-guidebook`, with production branch `main` and domain `sewa.boxont.com`. The latest READY production deployment is [`dpl_2fFbgQ9n8EJKUmqdANwJTnnasiH8`](https://vercel.com/boxont/neighbourhood-guidebook/2fFbgQ9n8EJKUmqdANwJTnnasiH8), deployed from commit `6766c5a1d70a58db6c856050a4167df2854079fa`. Current main is four commits ahead of production. Merging to main triggers the connected production deployment. The current main status reports the free daily publishing limit; no paid upgrade or workaround is permitted.
+- **CI:** no GitHub workflow run was returned for the current main head. Its combined status contains the Vercel publishing failure. PR #66's exact-head Quality Gate failed before runner assignment; do not retry that unchanged blocker.
+- **Production Supabase:** project status ACTIVE_HEALTHY, PostgreSQL 17.11, 8 applied migrations. The `analytics_events` table has RLS enabled, an anonymous/authenticated INSERT policy and an admin SELECT policy. Its event check already permits `search_zero`; the nullable `query` text column is limited to 80 lowercase/trimmed characters but is not restricted to a safe taxonomy. Read-only aggregate inspection found 10 analytics events, including 2 `search_zero` events. No raw event rows or search terms were read. Security advisor: 3 findings; performance advisor: 17 RLS initialization-plan findings, 3 unused indexes and 2 multiple-permissive-policy findings; health advisor: 0 findings.
+- **SW-0058 privacy boundary:** main currently sends raw free-text values for both `search` and `search_zero`. PR #90 changes application-generated events to category/area labels or `other`, and buckets historical non-classified values under `other` in admin insights. The live database still accepts arbitrary direct-client query text; enforcing the same allowlist at database level needs a separately authorized migration. Historical raw values remain stored and were not read, changed or deleted.
+- **Current task-register counts by Markdown task row:** 12 DONE, 77 BLOCKED, 43 REVIEW, 867 TODO, 0 IN PROGRESS (999 rows, 1,000 unique task IDs). No production records, schema, settings, secrets or migrations were changed. Additional spend: $0.
+
+
 ### Latest verified snapshot — 8 November 2026, automation run 11 (read-only)
 
 - GitHub `main` after the SW-0042 implementation and plan-evidence merges: `64f884c1e7d184270386bc8eeb3c470d11d51fc3` (PR #64 merge commit). There are 41 open pull requests and 0 open issues. PRs #63 and #64 are merged; stale plan-only PRs #33 and #62 are closed unmerged as superseded.
@@ -680,6 +693,7 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 | 8 | Isolate and review Proposal Composer after its dependencies | BLOCKED — depends on Bundle 7 and Bundle 8 release |
 | 9 | Use the funnel baseline to fix the largest conversion leak | BLOCKED — requires an owner-approved evaluation window and sufficient real conversion evidence; do not infer a leak from clicks alone |
 | 10 | Improve directory quality and coverage based on real user demand and lead value | BLOCKED — original 20-business prospect CSV and verified demand evidence are unavailable; the separate 18-candidate preview workbook is not a substitute |
+| 11 | Track zero-result searches with a privacy-reviewed event schema (SW-0058) | REVIEW — PR #90 open/draft; safe category/area labels and regression tests submitted; exact-head checks and production release pending |
 
 ### Task 1 verification notes — 6 November 2026
 
@@ -749,6 +763,22 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 - Production enquiry end-to-end testing remains blocked until an owner-authorised browser/admin session and approved disposable test account are available. The production anonymous privilege remediation remains separate from SW-0042 and must respect migration-history/release controls.
 
 
+
+### Latest autonomous run — 10 November 2026: SW-0058
+
+**Task:** Track zero-result searches with a privacy-reviewed event schema.
+
+- Confirmed the existing `search_zero` event is already allowed by the live database schema, so no new event value or migration is needed.
+- Found that the current search page sends raw free-text in both `search` and `search_zero` analytics events. The PR now sends only known category/area labels or `other`; the tracker rejects raw/malformed search labels; admin insights buckets historical free-text values as `other` rather than displaying them; English and Nepali privacy wording is updated.
+- Added focused regression tests for known categories/areas, contact-like free text, malformed labels, raw-query rejection, legacy-row bucketing and preservation of non-search metadata.
+- **PR:** [#90 — Make zero-result search analytics privacy-safe](https://github.com/eboxont-code/neighbourhood-guidebook/pull/90). Implementation commit at PR creation: `7d97df6854d2c824ba6d9a59690cd05749483e5c`. The PR remains draft; no merge commit exists.
+- **Tests:** inline source/logic assertions passed. The repository test suite, lint, typecheck and build have not run locally because no checkout is available; exact-head GitHub checks are pending. The Vercel preview and production release have not been verified.
+- **Production/database impact:** none. Production database inspection was read-only; no raw search terms were read, no analytics rows were changed or deleted, and no migration or deployment was performed.
+- **Residual database limitation:** the production `query` constraint remains length/lowercase-only, so a direct anonymous API caller could still submit arbitrary text. Database-level allowlist enforcement requires migration-history reconciliation and explicit owner authorization. Historical free-text values remain stored.
+- **Cost:** $0.
+- **Next eligible task:** SW-0062 — verify preview source mapping survives redirects and form-validation errors using disposable/local test fixtures. SW-0059–SW-0061 remain blocked because their new event/attribution fields require a forward-only migration, a verified migration-history crosswalk and task-specific owner authorization.
+
+
 ---
 
 ## 10. Instruction for every future AI session
@@ -796,21 +826,21 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [BLOCKED] **SW-0008 · P0 · Audit current state** — Set an initial decision window for evaluating the current funnel before redesigning it again. — Verified 8 Nov 2026: requires an owner-approved initial funnel evaluation window; no approval or conversion baseline has been supplied.
 - [ ] [BLOCKED] **SW-0009 · P1 · Audit current state** — Create a decision log for changes that affect the business model or brand position. — Verified 8 Nov 2026: business-model decision log remains in open draft PR #44; commercial/brand decisions require owner review.
 - [ ] [BLOCKED] **SW-0010 · P1 · Audit current state** — Record the original three phases: trust foundation, lead-generation funnel, then bookings after traction. — Verified 8 Nov 2026: implementation is in draft PR #51, but its base is 29 commits behind current main and GitHub reports mergeable=false; reconcile branch conflicts and rerun CI before merge.
-- [ ] [TODO] **SW-0011 · P1 · Audit current state** — Keep the current money-first strategy while using data quality as a conversion enabler.
-- [ ] [TODO] **SW-0012 · P1 · Audit current state** — Define what qualifies as a high-value listing for the sales funnel: no site, broken site, or clearly weak site.
-- [ ] [TODO] **SW-0013 · P1 · Audit current state** — Keep existing free directory inclusion separate from any future paid placement offer.
-- [ ] [TODO] **SW-0014 · P1 · Audit current state** — Keep bookings explicitly deferred until the booking launch gate is met.
-- [ ] [TODO] **SW-0015 · P1 · Audit current state** — Record that no price may be published without the owner's approval.
-- [ ] [TODO] **SW-0016 · P1 · Audit current state** — Record that no outreach message may be sent without the owner's explicit approval.
-- [ ] [TODO] **SW-0017 · P1 · Audit current state** — Record that the owner's personal phone number must not be published on Sewa.
-- [ ] [TODO] **SW-0018 · P1 · Audit current state** — Record that the public contact form is the only public route for contacting the operator unless the owner changes that rule.
-- [ ] [TODO] **SW-0019 · P1 · Audit current state** — Set the language standard: natural human English and Nepali, with no em dashes.
-- [ ] [TODO] **SW-0020 · P1 · Audit current state** — Set the interface rule that a button or repeated CTA appears once per context unless testing proves otherwise.
-- [ ] [TODO] **SW-0021 · P1 · Audit current state** — Set the mobile-first review width to approximately 390 CSS pixels.
-- [ ] [TODO] **SW-0022 · P1 · Audit current state** — Require the reviewer to inspect actual phone-width screenshots before calling a design change complete.
-- [ ] [TODO] **SW-0023 · P1 · Audit current state** — Keep Lovable prompts long, goal-led, and acceptance-criteria-driven when the connector is used for design-heavy work.
-- [ ] [TODO] **SW-0024 · P1 · Audit current state** — Use the connected Lovable project only when the correct project can be positively identified; do not guess or edit a different project.
-- [ ] [TODO] **SW-0025 · P1 · Audit current state** — Use GitHub/Vercel workflow for code changes when that is the established production path; confirm repository and deployment target first.
+- [ ] [REVIEW] **SW-0011 · P1 · Audit current state** — Keep the current money-first strategy while using data quality as a conversion enabler.
+- [ ] [BLOCKED] **SW-0012 · P1 · Audit current state** — Define what qualifies as a high-value listing for the sales funnel: no site, broken site, or clearly weak site. — Requires owner-approved high-value listing criteria and the original verified 20-business prospect CSV; the separate 18-candidate workbook is not a substitute.
+- [ ] [REVIEW] **SW-0013 · P1 · Audit current state** — Keep existing free directory inclusion separate from any future paid placement offer.
+- [ ] [REVIEW] **SW-0014 · P1 · Audit current state** — Keep bookings explicitly deferred until the booking launch gate is met.
+- [ ] [REVIEW] **SW-0015 · P1 · Audit current state** — Record that no price may be published without the owner's approval.
+- [ ] [REVIEW] **SW-0016 · P1 · Audit current state** — Record that no outreach message may be sent without the owner's explicit approval.
+- [ ] [REVIEW] **SW-0017 · P1 · Audit current state** — Record that the owner's personal phone number must not be published on Sewa.
+- [ ] [REVIEW] **SW-0018 · P1 · Audit current state** — Record that the public contact form is the only public route for contacting the operator unless the owner changes that rule.
+- [ ] [REVIEW] **SW-0019 · P1 · Audit current state** — Set the language standard: natural human English and Nepali, with no em dashes.
+- [ ] [REVIEW] **SW-0020 · P1 · Audit current state** — Set the interface rule that a button or repeated CTA appears once per context unless testing proves otherwise.
+- [ ] [REVIEW] **SW-0021 · P1 · Audit current state** — Set the mobile-first review width to approximately 390 CSS pixels.
+- [ ] [REVIEW] **SW-0022 · P1 · Audit current state** — Require the reviewer to inspect actual phone-width screenshots before calling a design change complete.
+- [ ] [REVIEW] **SW-0023 · P1 · Audit current state** — Keep Lovable prompts long, goal-led, and acceptance-criteria-driven when the connector is used for design-heavy work.
+- [ ] [BLOCKED] **SW-0024 · P1 · Audit current state** — Use the connected Lovable project only when the correct project can be positively identified; do not guess or edit a different project.
+- [ ] [REVIEW] **SW-0025 · P1 · Audit current state** — Use GitHub/Vercel workflow for code changes when that is the established production path; confirm repository and deployment target first.
 - [ ] [TODO] **SW-0026 · P2 · Audit current state** — Keep Supabase ownership and access independent from a builder-specific database where already configured.
 - [ ] [TODO] **SW-0027 · P2 · Audit current state** — Use Picsart only when ordinary CSS, SVG, or existing assets cannot meet the need.
 - [ ] [TODO] **SW-0028 · P2 · Audit current state** — Use the connected Lovable tools instead of logging in through a browser for Lovable work.
@@ -842,17 +872,17 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [BLOCKED] **SW-0048 · P0 · Audit current state** — Track the primary preview CTA click without sending personal form data to analytics. — Verified 8 Nov 2026: implementation is in draft PR #32, stacked on PR #31; parent branch reconciliation and fresh CI are required.
 - [ ] [BLOCKED] **SW-0049 · P0 · Audit current state** — Track website-enquiry form starts and successful submissions as separate events. — Verified 8 Nov 2026: implementation is in draft PR #35, stacked on PR #34; parent branch reconciliation and fresh CI are required.
 - [ ] [BLOCKED] **SW-0050 · P0 · Audit current state** — Track claim-flow starts and completed claim submissions separately. — Verified 8 Nov 2026: implementation is in draft PR #36, stacked on PR #35; parent branch reconciliation and fresh CI are required.
-- [ ] [TODO] **SW-0051 · P1 · Audit current state** — Track For Businesses page views and CTA clicks.
-- [ ] [TODO] **SW-0052 · P1 · Audit current state** — Track contact-form starts and successful submissions.
-- [ ] [TODO] **SW-0053 · P1 · Audit current state** — Track click-to-call events only where the user clicks a listed business's public number.
-- [ ] [TODO] **SW-0054 · P1 · Audit current state** — Track outbound website clicks from business listings.
-- [ ] [TODO] **SW-0055 · P1 · Audit current state** — Track map/directions clicks from listing pages.
-- [ ] [TODO] **SW-0056 · P1 · Audit current state** — Track save-place actions and whether a saved-place feature is used again in the same session.
-- [ ] [TODO] **SW-0057 · P1 · Audit current state** — Track search submissions and search result counts without storing precise personal location.
-- [ ] [TODO] **SW-0058 · P1 · Audit current state** — Track zero-result searches with a privacy-reviewed event schema.
-- [ ] [TODO] **SW-0059 · P1 · Audit current state** — Track language-switch usage to see whether Nepali content is being used.
-- [ ] [TODO] **SW-0060 · P1 · Audit current state** — Track visits from each unique campaign link using UTMs.
-- [ ] [TODO] **SW-0061 · P1 · Audit current state** — Track each lead's landing route and referring page in the lead record.
+- [ ] [BLOCKED] **SW-0051 · P1 · Audit current state** — Track For Businesses page views and CTA clicks.
+- [ ] [BLOCKED] **SW-0052 · P1 · Audit current state** — Track contact-form starts and successful submissions.
+- [ ] [REVIEW] **SW-0053 · P1 · Audit current state** — Track click-to-call events only where the user clicks a listed business's public number.
+- [ ] [REVIEW] **SW-0054 · P1 · Audit current state** — Track outbound website clicks from business listings.
+- [ ] [REVIEW] **SW-0055 · P1 · Audit current state** — Track map/directions clicks from listing pages.
+- [ ] [BLOCKED] **SW-0056 · P1 · Audit current state** — Track save-place actions and whether a saved-place feature is used again in the same session.
+- [ ] [BLOCKED] **SW-0057 · P1 · Audit current state** — Track search submissions and search result counts without storing precise personal location.
+- [ ] [REVIEW] **SW-0058 · P1 · Audit current state** — Track zero-result searches with a privacy-reviewed event schema. PR #90 sends only allowlisted category/area labels or `other`; exact-head checks and release pending. The live database still permits arbitrary direct-client query text; database enforcement requires a separately authorized migration.
+- [ ] [BLOCKED] **SW-0059 · P1 · Audit current state** — Track language-switch usage to see whether Nepali content is being used.
+- [ ] [BLOCKED] **SW-0060 · P1 · Audit current state** — Track visits from each unique campaign link using UTMs.
+- [ ] [BLOCKED] **SW-0061 · P1 · Audit current state** — Track each lead's landing route and referring page in the lead record.
 - [ ] [REVIEW] **SW-0062 · P1 · Audit current state** — Preserve the preview-to-lead source mapping through redirects and form validation errors. Current code retains `page=preview` and the listing slug from the preview CTA; browser submission and validation-error continuity still need an end-to-end check.
 - [ ] [TODO] **SW-0063 · P2 · Audit current state** — Create a funnel report from preview viewed to CTA clicked to enquiry submitted.
 - [ ] [TODO] **SW-0064 · P2 · Audit current state** — Create a separate report from listing viewed to preview clicked to enquiry submitted.
@@ -1019,9 +1049,9 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [BLOCKED] **SW-0201 · P0 · Audit current state** — Write the single clearest sentence describing the website-design service for Kathmandu businesses. — Existing implementation and tests are in open draft PR #45; owner review is required before treating the change as released. Do not duplicate it. — Verified 8 Nov 2026: implementation is in draft PR #45; branch is 29 commits behind current main and GitHub reports mergeable=false. Reconcile conflicts and rerun CI before merge.
 - [ ] [BLOCKED] **SW-0202 · P0 · Audit current state** — Define the ideal first customer segment based on need and deliverability rather than assumed budget. — Requires owner-approved first-customer criteria and verified prospect evidence; the original 20-business CSV remains unavailable. — Verified 8 Nov 2026: requires owner-approved first-customer criteria and the original verified 20-business prospect CSV; the separate 18-candidate preview workbook is not a substitute.
 - [x] [DONE] **SW-0203 · P0 · Audit current state** — Explain the difference between the free directory listing and a paid website project. — Verified on current main and deployed production commit `41065104ea2bb6906f060d05fc6b2d4abbe5c6bc`: English/Nepali `fbPricingBody`, `fbPricingNote`, `fbQ2` and `fbA2` explicitly separate the always-free SEWA listing from optional website/sponsored services. `src/routes/for-businesses.tsx` is identical between main and production; the cited translation keys match. No code change was needed.
-- [ ] [TODO] **SW-0204 · P0 · Audit current state** — Explain the difference between a preview concept and a launched website.
-- [ ] [TODO] **SW-0205 · P1 · Audit current state** — List the website deliverables that can reliably be provided today.
-- [ ] [TODO] **SW-0206 · P1 · Audit current state** — List optional deliverables that require a separate quote.
+- [ ] [BLOCKED] **SW-0204 · P0 · Audit current state** — Explain the difference between a preview concept and a launched website.
+- [ ] [REVIEW] **SW-0205 · P1 · Audit current state** — List the website deliverables that can reliably be provided today.
+- [ ] [REVIEW] **SW-0206 · P1 · Audit current state** — List optional deliverables that require a separate quote.
 - [ ] [TODO] **SW-0207 · P1 · Audit current state** — Define what a basic one-page website includes before taking payment.
 - [ ] [TODO] **SW-0208 · P1 · Audit current state** — Define what is explicitly outside a one-page website scope.
 - [ ] [TODO] **SW-0209 · P1 · Audit current state** — Document whether domain purchase is included, excluded, or passed through at cost after owner approval.
@@ -1662,24 +1692,24 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [BLOCKED] **SW-0761 · P0 · Admin area reported; regression-test access boundary** — Verify the /admin area redirects unauthorised visitors to a safe authentication state. — Requires an owner-authorised browser/admin session to verify the live redirect boundary.
 - [ ] [BLOCKED] **SW-0762 · P0 · Audit current state** — Verify an unauthenticated request cannot access lead data through a direct API call. — A direct anonymous PostgREST API request cannot be issued from this runtime; read-only SQL inspection is not a substitute. Requires a runnable API test environment.
 - [ ] [BLOCKED] **SW-0763 · P0 · Audit current state** — Verify an authenticated but unauthorised user cannot change admin data. — Requires a disposable authenticated non-admin test account/session; none is available.
-- [ ] [TODO] **SW-0764 · P0 · Audit current state** — Check database row-level security policies for every table that holds leads or private notes.
-- [ ] [TODO] **SW-0765 · P0 · Audit current state** — Check public read access exposes only fields intended for listing pages.
-- [ ] [TODO] **SW-0766 · P0 · Audit current state** — Check public write access is limited to validated form actions.
-- [ ] [TODO] **SW-0767 · P0 · Audit current state** — Review Supabase keys and ensure a service-role key is never shipped to the browser.
-- [ ] [TODO] **SW-0768 · P0 · Audit current state** — Review environment variables used in the production build.
-- [ ] [TODO] **SW-0769 · P0 · Audit current state** — Remove secrets, credentials, private tokens, and internal admin URLs from logs and public assets.
-- [ ] [TODO] **SW-0770 · P0 · Audit current state** — Ensure password reset and admin session flows behave safely.
-- [ ] [TODO] **SW-0771 · P1 · Audit current state** — Review session expiry and logout behaviour.
-- [ ] [TODO] **SW-0772 · P1 · Audit current state** — Verify admin pages are not indexable by search engines.
-- [ ] [TODO] **SW-0773 · P1 · Audit current state** — Keep noindex separate from access control; never rely on robots.txt to protect private data.
-- [ ] [TODO] **SW-0774 · P1 · Audit current state** — Check direct URLs to lead details require authorisation.
-- [ ] [TODO] **SW-0775 · P1 · Audit current state** — Review API rate limits for form endpoints.
-- [ ] [TODO] **SW-0776 · P1 · Audit current state** — Sanitise and validate user-supplied text before rendering it in the admin.
-- [ ] [TODO] **SW-0777 · P1 · Audit current state** — Validate URLs to reduce XSS, phishing, and unsafe redirect risks.
-- [ ] [TODO] **SW-0778 · P1 · Audit current state** — Escape exported CSV fields that could be interpreted as spreadsheet formulas.
-- [ ] [TODO] **SW-0779 · P1 · Audit current state** — Check third-party analytics do not receive raw form messages or contact data.
-- [ ] [TODO] **SW-0780 · P1 · Audit current state** — Check precise browser geolocation is not sent to the server contrary to the privacy statement.
-- [ ] [TODO] **SW-0781 · P1 · Audit current state** — Check location permission is requested only after a clear user action.
+- [ ] [REVIEW] **SW-0764 · P0 · Audit current state** — Check database row-level security policies for every table that holds leads or private notes.
+- [ ] [REVIEW] **SW-0765 · P0 · Audit current state** — Check public read access exposes only fields intended for listing pages.
+- [ ] [REVIEW] **SW-0766 · P0 · Audit current state** — Check public write access is limited to validated form actions.
+- [ ] [REVIEW] **SW-0767 · P0 · Audit current state** — Review Supabase keys and ensure a service-role key is never shipped to the browser.
+- [ ] [REVIEW] **SW-0768 · P0 · Audit current state** — Review environment variables used in the production build.
+- [ ] [REVIEW] **SW-0769 · P0 · Audit current state** — Remove secrets, credentials, private tokens, and internal admin URLs from logs and public assets.
+- [ ] [BLOCKED] **SW-0770 · P0 · Audit current state** — Ensure password reset and admin session flows behave safely.
+- [ ] [BLOCKED] **SW-0771 · P1 · Audit current state** — Review session expiry and logout behaviour.
+- [ ] [REVIEW] **SW-0772 · P1 · Audit current state** — Verify admin pages are not indexable by search engines.
+- [ ] [REVIEW] **SW-0773 · P1 · Audit current state** — Keep noindex separate from access control; never rely on robots.txt to protect private data.
+- [ ] [BLOCKED] **SW-0774 · P1 · Audit current state** — Check direct URLs to lead details require authorisation. — Direct lead-URL authorization needs an approved disposable non-admin account and an authorised direct-request test session; neither is available.
+- [ ] [REVIEW] **SW-0775 · P1 · Audit current state** — Review API rate limits for form endpoints.
+- [ ] [REVIEW] **SW-0776 · P1 · Audit current state** — Sanitise and validate user-supplied text before rendering it in the admin.
+- [ ] [REVIEW] **SW-0777 · P1 · Audit current state** — Validate URLs to reduce XSS, phishing, and unsafe redirect risks.
+- [ ] [REVIEW] **SW-0778 · P1 · Audit current state** — Escape exported CSV fields that could be interpreted as spreadsheet formulas.
+- [ ] [REVIEW] **SW-0779 · P1 · Audit current state** — Check third-party analytics do not receive raw form messages or contact data.
+- [ ] [REVIEW] **SW-0780 · P1 · Audit current state** — Check precise browser geolocation is not sent to the server contrary to the privacy statement.
+- [ ] [REVIEW] **SW-0781 · P1 · Audit current state** — Check location permission is requested only after a clear user action.
 - [ ] [TODO] **SW-0782 · P1 · Audit current state** — Check “location stays on this device” matches actual network and analytics behaviour.
 - [ ] [TODO] **SW-0783 · P2 · Audit current state** — Document the types of data saved by each form.
 - [ ] [TODO] **SW-0784 · P2 · Audit current state** — Document which provider receives each form field and for what purpose.
