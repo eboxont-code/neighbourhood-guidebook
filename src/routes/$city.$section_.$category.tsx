@@ -11,6 +11,7 @@ import { comboBreadcrumbJsonLd, itemListJsonLd } from "@/lib/seo";
 import { sortByDistance, useLocation } from "@/lib/geo";
 import { useI18n } from "@/lib/i18n";
 import { shareImage } from "@/lib/social-meta";
+import { qualifiesLocalPage } from "@/lib/local-pages";
 
 /** Listings in one area and one category. Only combos with at least one listing exist. */
 function comboItems(city: string, area: string, category: string): Business[] {
@@ -27,6 +28,9 @@ export const Route = createFileRoute("/$city/$section_/$category")({
     if (moved) throw redirect({ to: "/$city/$section/$category", params: { city: city.slug, section: area.slug, category: moved }, statusCode: 301 });
     const cat = getCategory(params.category);
     if (!cat || comboItems(city.slug, area.slug, cat.slug).length === 0) throw notFound();
+    if (qualifiesLocalPage(area.slug, cat.slug)) {
+      throw redirect({ to: "/a/$areaSlug/$categorySlug", params: { areaSlug: area.slug, categorySlug: cat.slug }, statusCode: 301 });
+    }
     return { city, area, cat };
   },
   head: ({ loaderData }) => {
@@ -37,7 +41,7 @@ export const Route = createFileRoute("/$city/$section_/$category")({
     const n = items.length;
     const desc = `${n === 1 ? "1 place" : `${n} places`} in ${area.name}, ${city.name} listed under ${cat.name.toLowerCase()}, with phone numbers, opening hours, directions and whether each website works.`;
     const head = pageMeta(name, desc, `/${city.slug}/${area.slug}/${cat.slug}`, shareImage());
-    return { ...head, scripts: [
+    return { ...head, meta: [...head.meta, { name: "robots", content: "noindex,follow" }], scripts: [
       { type: "application/ld+json", children: JSON.stringify(comboBreadcrumbJsonLd(city, area, cat)) },
       { type: "application/ld+json", children: JSON.stringify(itemListJsonLd(name, items)) },
     ] };

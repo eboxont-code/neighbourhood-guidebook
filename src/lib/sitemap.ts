@@ -10,8 +10,8 @@ export function sitemapPaths(): string[] {
     paths.push(`/${city.slug}`);
     for (const a of areasIn(items)) paths.push(`/${city.slug}/${a.slug}`);
     for (const c of categoriesIn(items)) paths.push(`/${city.slug}/${c.slug}`);
-    // Area + category pages, only for combos with at least one listing.
-    for (const a of areasIn(items)) for (const c of categoriesIn(items.filter((b) => b.area === a.slug))) paths.push(`/${city.slug}/${a.slug}/${c.slug}`);
+    // City-based combinations are either noindex browsing pages or redirects to /a.
+    // Only qualifying /a pages below are indexable combination destinations.
   }
   for (const b of businesses) paths.push(`/s/${b.slug}`);
   for (const { area, category } of localCombinations()) paths.push(`/a/${area.slug}/${category.slug}`);

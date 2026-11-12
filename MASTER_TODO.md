@@ -479,7 +479,7 @@ Historical audit baseline (not a verified current count): 52 businesses, 8 categ
 
 ### SEO and structured discovery
 
-- [ ] [TODO] Audit indexing and canonical URLs.
+- [ ] [IN PROGRESS] Audit indexing and canonical URLs. Initial preview audit (12 Nov 2026): all 79 neighbourhood/category/combination/listing sitemap URLs returned 200 with unique titles/descriptions and one canonical; found 23 thin city-based combinations and two duplicate combination destinations. Approved correction aligns the shared origin to the supplied published address, excludes thin browsing pages from indexing/sitemap, and redirects qualifying duplicates to /a. Final verification pending; no publishing or migrations.
 - [x] [DONE] Verify sitemap and robots rules. Evidence (10 Nov 2026): /sitemap.xml and /robots.txt return 200; sitemap lists 41 Kathmandu neighbourhood/category URLs, 2 local pages and 37 listing pages; no admin, search, saved or website-preview URLs; robots disallows /admin for all agents. No changes needed.
 - [ ] [BLOCKED] Submit the sitemap in Google Search Console. Waiting on Boxont.
 - [x] [DONE] Validate LocalBusiness structured data. LocalBusiness schema added. Shipped by GuideBook bot, 26-31 Oct 2026.
