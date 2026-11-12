@@ -2,7 +2,7 @@
 
 > **Single source of truth for SEWA/Boxont execution. Read the whole file before each work session and update it before ending. This file combines the repository plan, revenue-first strategy and the 1,000-task register.**
 >
-> **Last reviewed:** 8 November 2026
+> **Last reviewed:** 9 November 2026
 >
 > **Merged inputs:** existing repository `MASTER_TODO.md`, the revenue-first strategy and 1,000-point checklist, and the matching 1,000-row CSV task register. The CSV and checklist IDs, priorities and task descriptions were reconciled. This file is now the only project execution plan.
 >
@@ -1674,7 +1674,7 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [TODO] **SW-0773 · P1 · Audit current state** — Keep noindex separate from access control; never rely on robots.txt to protect private data.
 - [ ] [TODO] **SW-0774 · P1 · Audit current state** — Check direct URLs to lead details require authorisation.
 - [ ] [TODO] **SW-0775 · P1 · Audit current state** — Review API rate limits for form endpoints.
-- [ ] [TODO] **SW-0776 · P1 · Audit current state** — Sanitise and validate user-supplied text before rendering it in the admin.
+- [ ] [REVIEW] **SW-0776 · P1 · Audit current state** — Sanitise and validate user-supplied text before rendering it in the admin. — Source audit complete 9 Nov 2026; user-submitted plain text is rendered through React text nodes or controlled input values, which escape HTML. No raw HTML rendering sinks were found. Zod and database length limits were checked; whitespace-only direct API values remain a separate SW-0766 validation gap. URL attributes are deferred to SW-0777. Documentation and exact-head verification remain outstanding.
 - [ ] [TODO] **SW-0777 · P1 · Audit current state** — Validate URLs to reduce XSS, phishing, and unsafe redirect risks.
 - [ ] [TODO] **SW-0778 · P1 · Audit current state** — Escape exported CSV fields that could be interpreted as spreadsheet formulas.
 - [ ] [TODO] **SW-0779 · P1 · Audit current state** — Check third-party analytics do not receive raw form messages or contact data.
@@ -1935,3 +1935,26 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [TODO] **SW-0998 · P2 · Audit current state** — Add a safe test for the core lead-stage transitions.
 - [ ] [TODO] **SW-0999 · P2 · Audit current state** — Keep production seed/test records clearly marked so they do not look like real customers.
 - [ ] [TODO] **SW-1000 · P2 · Audit current state** — Document the database schema for listings, fields, sources, leads, and claims.
+
+---
+
+### SW-0776 — Admin text-rendering safety audit (9 November 2026)
+
+- Reviewed the admin lead, correction, business-submission, claim, promotion and insights rendering paths in src/routes/admin.tsx, src/components/admin-claims.tsx, src/components/admin-promotions.tsx and src/components/admin-insights.tsx. User-supplied names, messages, notes, contact details, addresses and opening-hour text are inserted as ordinary JSX text expressions or controlled input values. React escapes text content; stripping HTML from these values is unnecessary and would alter legitimate messages.
+- A static scan of the four admin render files found zero dangerouslySetInnerHTML, innerHTML assignments, insertAdjacentHTML calls or document.write calls. The audit counted 19 relevant user-text expression references. No runtime code change was required.
+- The public form schemas trim and limit text before submission: contact name 100, business name 150, phone 30 and message 2,000 characters; correction details 2,000 and contact 150; business submission name 150, address 500, opening hours 1,000 and note 2,000; claim name 100, contact 150 and note 2,000. Admin-note inputs are limited to 2,000 and are trimmed/sliced before saving.
+- Read-only Production catalog inspection confirmed matching database length checks on the relevant columns. Some contact/correction checks use char_length without btrim, so whitespace-only values can still pass a direct API insert even though the browser schemas trim them. This is a validation gap for the separate SW-0766 public-write audit; it is not an HTML-rendering bypass. No production migration or grant change is authorised here.
+- URL attributes are a separate rendering context: the admin currently uses submitted website/proof URLs in links and normalises telephone/WhatsApp actions. These are not plain-text sinks and remain in scope for SW-0777's URL-safety audit. No phishing/redirect safety claim is made here.
+- No test account, real admin session, form submission or customer message was used. No production row values were read. This was a source and schema audit; no application code changed.
+- Current GitHub main: 906f31c473a34c7346f02183d94e4f8465b89372. The exact-main Quality Gate #42545646764 failed before runner assignment: both required jobs have runner ID 0 and no steps. Typecheck, lint, unit/component tests, production build and disposable PostgreSQL tests did not execute.
+- Production Vercel remains READY on deployment dpl_2fFbgQ9n8EJKUmqdANwJTnnasiH8, deployed commit 6766c5a1d70a58db6c856050a4167df2854079fa; current main is four commits ahead. Read-only GET checks returned HTTP 200 for the homepage, /admin, /contact and /for-businesses; /admin returns noindex, nofollow. This does not verify an authenticated admin session.
+- Production Supabase remains ACTIVE_HEALTHY on PostgreSQL 17.11 with eight applied migrations. Security Advisor reports three findings; Performance Advisor reports 17 RLS initialization-plan, three unused-index and two multiple-permissive-policy findings; Health Advisor has no findings. Only catalog/constraint metadata was queried.
+- PRs #66, #67, #72 and #73 remain open/draft with checks or preview release blocked; no merge was attempted. The repository has 49 open PRs and zero open issues. The branch-protection endpoint returned HTTP 403 to this connection; no local checkout is mounted, so a local working-tree status cannot be claimed.
+- Status: REVIEW — source audit is complete, but the documentation update still needs exact-head CI and release. No Production rows, grants, policies, migrations, secrets, Auth settings, hosting settings or customer/business data were changed. Additional spend: $0.
+
+- Documentation PR #74: https://github.com/eboxont-code/neighbourhood-guidebook/pull/74 (audit commit 627ea1b39ca4df1bc8692f62bad1915ddd0dfa70). It targets main at 906f31c473a34c7346f02183d94e4f8465b89372; at opening it was one commit ahead and zero behind, open/draft, mergeable, with no reviews or unresolved threads.
+- Exact-audit-commit Quality Gate [#42554166708](https://github.com/eboxont-code/neighbourhood-guidebook/actions/runs/42554166708) failed before runner allocation; both jobs returned no steps or logs, so no test, typecheck, lint, build or disposable PostgreSQL result exists.
+- Vercel preview [dpl_D4turUE7mggqKdQqKtPoqHx4Ts9L](https://vercel.com/boxont/neighbourhood-guidebook/D4turUE7mggqKdQqKtPoqHx4Ts9L) reached READY for audit commit 627ea1b39ca4df1bc8692f62bad1915ddd0dfa70 at https://neighbourhood-guidebook-jpcv5mu7h-boxont.vercel.app. The preview page fetch did not return a verifiable HTTP status, so no preview smoke check is claimed. This is not a Production deployment.
+- No merge occurred and no merge-triggered Production deployment occurred. Production remains READY on dpl_2fFbgQ9n8EJKUmqdANwJTnnasiH8 at 6766c5a1d70a58db6c856050a4167df2854079fa. The 1,000-ID register remains intact (999 rows); status counts after this update are 12 DONE, 64 BLOCKED, 10 REVIEW, 914 TODO and 0 IN PROGRESS.
+
+Next eligible task: SW-0777 — validate user-supplied URLs and other link targets in the admin and public form flows. Do not repeat the SW-0776 text-node audit. Keep the existing P0 PRs and owner/session blockers in their current review/blocked states until new runner, review, deployment or owner evidence appears.
