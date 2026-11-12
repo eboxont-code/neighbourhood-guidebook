@@ -2,7 +2,7 @@
 
 > **Single source of truth for SEWA/Boxont execution. Read the whole file before each work session and update it before ending. This file combines the repository plan, revenue-first strategy and the 1,000-task register.**
 >
-> **Last reviewed:** 8 November 2026
+> **Last reviewed:** 10 November 2026
 >
 > **Merged inputs:** existing repository `MASTER_TODO.md`, the revenue-first strategy and 1,000-point checklist, and the matching 1,000-row CSV task register. The CSV and checklist IDs, priorities and task descriptions were reconciled. This file is now the only project execution plan.
 >
@@ -12,6 +12,43 @@
 > **Owner / commercial brand:** Boxont  
 > **Primary market:** Kathmandu, Nepal  
 > **Financial rule: $0 additional spend. Ask in bold before any action that could cost money.**
+
+---
+
+## Latest verified snapshot — 10 November 2026
+
+> This snapshot supersedes older “Current task” and deployment notes below. Historical notes are retained for audit context.
+
+### Repository and delivery state
+- Current `main`: `906f31c473a34c7346f02183d94e4f8465b89372`. No GitHub workflow run was returned for this exact commit; its combined status contains only the Vercel free daily deployment-limit failure. The local repository is not mounted in this runtime, so no local working-tree claim is made.
+- Open pull requests: 62. Open issues: 0. Relevant existing work is already in PRs #66–#86; do not create duplicate audits or retry unchanged failures.
+- PR #66 (SW-0204) is open/draft at head `9ea0c62e6f39309ae6753570dd8e4d99e139ee0e`, last recorded against main `6766c5a1d70a58db6c856050a4167df2854079fa`. Its exact-head Quality Gate failed before runner assignment and no exact-head Preview exists because of the free daily deployment limit.
+- PR #86 (SW-0053) is open/draft and changes only this plan. Its current head is `27f0d7de59a21f7df5ffbdc832878a61077bb87c`; no reviews or unresolved threads are present. Vercel's bot reports the free daily deployment limit. It has not been merged.
+- Existing security work is documented in PRs #67, #68, #72–#77 and #83–#85. Their current checks/release states are recorded on the affected task rows below; do not repeat their audits while those PRs remain under review.
+
+### Production and database
+- Vercel project: `neighbourhood-guidebook`. Latest Production deployment is READY: [`dpl_2fFbgQ9n8EJKUmqdANwJTnnasiH8`](https://vercel.com/boxont/neighbourhood-guidebook/2fFbgQ9n8EJKUmqdANwJTnnasiH8), deployed commit `6766c5a1d70a58db6c856050a4167df2854079fa`, alias `sewa.boxont.com`. Current main is four commits ahead. No merge or Production deployment was triggered in this run.
+- Production Supabase project `zvbavpcsyvibvpkxjzkn` is ACTIVE_HEALTHY on PostgreSQL 17.11 with 8 applied migrations. Read-only metadata shows 52 published listings and 10 analytics events; no customer/form rows were read.
+- `analytics_events` has RLS enabled. Its event check constraint includes `click_website`; the applied migration `20261029004600_analytics_funnel_events` is present. Policies allow anonymous/authenticated INSERT with bounded metadata and administrator-only SELECT. Existing broader table grants remain part of the separate SW-0766 security remediation; no grants, policies, records or migrations were changed.
+- The production website and exact deployment URL could not be fetched by the live-page inspection runtime. No live HTTP smoke result is claimed.
+
+### SW-0054 — outbound website click tracking
+- Verified on current main and the exact READY Production commit: `TRACK_EVENTS` contains `click_website`; the public listing action is present only when a website URL is eligible for display; its click handler sends the event with the listing slug; the external link opens in a new tab with `noopener noreferrer`.
+- The shared tracker stores only the event, listing slug, bounded search query, language and path; it does not send the website URL or phone number and respects Do Not Track.
+- The tracker file is byte-identical between current main and Production. The Production listing route contains the same website-click handler, and the live database constraint accepts the event.
+- Eleven focused source/schema assertions passed. No application change was needed. No synthetic Production click was generated because it would write an analytics row; the live page GET was unavailable. This task is marked DONE based on deployed-source and schema verification, with the interactive click deliberately not generated.
+
+### Queue and blockers
+- SW-0051 and SW-0052 are BLOCKED: their distinct view/CTA and contact-start event values are absent from the client allow-list and Production constraint. A coordinated migration requires the migration-history crosswalk (13 Drizzle journal entries versus 8 Production migrations) and explicit task-specific authorization; Production remains read-only.
+- SW-0053 and SW-0054 are DONE. SW-0204 is BLOCKED by PR #66's stale base, failed-before-runner checks and unavailable exact-head Preview.
+- SW-0764–SW-0765 and SW-0767–SW-0769 are REVIEW in existing security PRs. SW-0766 is BLOCKED pending migration-history reconciliation and explicit authorization for corrective Production migration. SW-0770, SW-0771 and SW-0774 are BLOCKED pending owner-controlled inbox/admin or disposable non-admin request-test access.
+- SW-0772–SW-0773, SW-0775–SW-0779 and SW-0780–SW-0781 are REVIEW in their existing PRs; required checks did not execute or exact-head previews are unavailable. No duplicate audits were started.
+- **Next eligible task: SW-0055 — track map/directions clicks from listing pages.** It follows the verified SW-0054 task in the earlier P1 analytics workstream; existing higher-priority security tasks are already in review or blocked by their recorded dependencies.
+
+### Verification and cost
+- Eleven focused source/schema assertions passed for SW-0054. Full Vitest/typecheck/lint/build jobs were not run in this environment; GitHub returned no runner-backed workflow for current main.
+- Production and database inspection was read-only. No customer/business data, analytics rows, permissions, policies, migrations, secrets, hosting settings or DNS were changed.
+- Additional spend: $0.
 
 ---
 
@@ -740,7 +777,7 @@ Only one task may be marked [IN PROGRESS] at a time. Validate existing work befo
 - PR #33 (stale SW-0042 plan-only branch) and PR #62 (stale branch-comparison-only plan update) were commented and closed unmerged as superseded. Their useful branch-comparison evidence is incorporated here. PR #12 and PR #31 remain open because they contain other independent tasks.
 - Production database: read-only snapshot remains 52 published listings, 10 analytics events, 0 contact messages, 0 business submissions and 8 applied migrations. No Production writes or migrations. Additional spend: $0.
 
-**Next eligible task: SW-0204 — explain the difference between a preview concept and a launched website.** This is the first remaining P0 TODO in register order; the later P0 security checks SW-0764–SW-0770 follow it.
+**Historical next-task selection (8 November 2026; superseded by the Latest verified snapshot above): SW-0204 — explain the difference between a preview concept and a launched website.** PR #66 is now recorded as BLOCKED pending current-main reconciliation, runner-backed checks and an exact-head Preview.
 - SW-0041 remains blocked by its parent PR #27 / PR #26 decision stack. SW-0043–SW-0044 remain blocked by owner-approved privacy/identity/retention rules and verified Search Console or equivalent attribution evidence.
 - SW-0045–SW-0050 remain in existing PRs #30–#36; PR #30/#34 are stale/conflicted and later PRs are stacked on them. Reconcile after SW-0204; do not duplicate the existing implementation.
 - SW-0081–SW-0084 require an owner-authorised browser/admin session and disposable test account. SW-0085–SW-0088 and SW-0091–SW-0095 remain in stale/conflicted PR #12; SW-0089 requires a physical keyboard-only session; SW-0090/0096 depend on stale PRs #38/#39.
@@ -842,10 +879,10 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [BLOCKED] **SW-0048 · P0 · Audit current state** — Track the primary preview CTA click without sending personal form data to analytics. — Verified 8 Nov 2026: implementation is in draft PR #32, stacked on PR #31; parent branch reconciliation and fresh CI are required.
 - [ ] [BLOCKED] **SW-0049 · P0 · Audit current state** — Track website-enquiry form starts and successful submissions as separate events. — Verified 8 Nov 2026: implementation is in draft PR #35, stacked on PR #34; parent branch reconciliation and fresh CI are required.
 - [ ] [BLOCKED] **SW-0050 · P0 · Audit current state** — Track claim-flow starts and completed claim submissions separately. — Verified 8 Nov 2026: implementation is in draft PR #36, stacked on PR #35; parent branch reconciliation and fresh CI are required.
-- [ ] [TODO] **SW-0051 · P1 · Audit current state** — Track For Businesses page views and CTA clicks.
-- [ ] [TODO] **SW-0052 · P1 · Audit current state** — Track contact-form starts and successful submissions.
-- [ ] [TODO] **SW-0053 · P1 · Audit current state** — Track click-to-call events only where the user clicks a listed business's public number.
-- [ ] [TODO] **SW-0054 · P1 · Audit current state** — Track outbound website clicks from business listings.
+- [ ] [BLOCKED] **SW-0051 · P1 · Audit current state** — Track For Businesses page views and CTA clicks. — Verified 10 Nov 2026: required For Businesses view/CTA event names are absent from TRACK_EVENTS and the deployed analytics_events event constraint. Adding them requires the migration-history crosswalk (13 Drizzle journal entries versus 8 Production migrations) and explicit task-specific authorization for any forward-only Production migration; Production remains read-only.
+- [ ] [BLOCKED] **SW-0052 · P1 · Audit current state** — Track contact-form starts and successful submissions. — Verified 10 Nov 2026: successful enquiry tracking exists, but a distinct contact-form-start event is absent from TRACK_EVENTS and the deployed analytics_events event constraint. A coordinated forward-only migration is blocked pending migration-history reconciliation and explicit task-specific authorization; Production remains read-only.
+- [x] [DONE] **SW-0053 · P1 · Audit current state** — Track click-to-call events only where the user clicks a listed business's public number. — Verified 10 Nov 2026: PR #86 records the public-phone click handler, click_call allow-list and deployed Production constraint. No synthetic call was generated because it would write an analytics row; the deployed source/schema evidence is sufficient for this audit. No application or Production change.
+- [x] [DONE] **SW-0054 · P1 · Audit current state** — Track outbound website clicks from business listings. — Verified 10 Nov 2026: 11 focused source/schema assertions passed. TRACK_EVENTS includes click_website; ListingActions shows the link only for a listed website, records the listing slug on click, opens safely in a new tab, and the tracker respects Do Not Track without sending the URL or phone. The tracker source blob matches Production; the deployed listing route contains the same click handler; the applied funnel migration and live event constraint accept click_website. No synthetic click was generated because it would write to Production analytics. Direct live-page GET was unavailable from this runtime; no application change was needed.
 - [ ] [TODO] **SW-0055 · P1 · Audit current state** — Track map/directions clicks from listing pages.
 - [ ] [TODO] **SW-0056 · P1 · Audit current state** — Track save-place actions and whether a saved-place feature is used again in the same session.
 - [ ] [TODO] **SW-0057 · P1 · Audit current state** — Track search submissions and search result counts without storing precise personal location.
@@ -1019,7 +1056,7 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [BLOCKED] **SW-0201 · P0 · Audit current state** — Write the single clearest sentence describing the website-design service for Kathmandu businesses. — Existing implementation and tests are in open draft PR #45; owner review is required before treating the change as released. Do not duplicate it. — Verified 8 Nov 2026: implementation is in draft PR #45; branch is 29 commits behind current main and GitHub reports mergeable=false. Reconcile conflicts and rerun CI before merge.
 - [ ] [BLOCKED] **SW-0202 · P0 · Audit current state** — Define the ideal first customer segment based on need and deliverability rather than assumed budget. — Requires owner-approved first-customer criteria and verified prospect evidence; the original 20-business CSV remains unavailable. — Verified 8 Nov 2026: requires owner-approved first-customer criteria and the original verified 20-business prospect CSV; the separate 18-candidate preview workbook is not a substitute.
 - [x] [DONE] **SW-0203 · P0 · Audit current state** — Explain the difference between the free directory listing and a paid website project. — Verified on current main and deployed production commit `41065104ea2bb6906f060d05fc6b2d4abbe5c6bc`: English/Nepali `fbPricingBody`, `fbPricingNote`, `fbQ2` and `fbA2` explicitly separate the always-free SEWA listing from optional website/sponsored services. `src/routes/for-businesses.tsx` is identical between main and production; the cited translation keys match. No code change was needed.
-- [ ] [TODO] **SW-0204 · P0 · Audit current state** — Explain the difference between a preview concept and a launched website.
+- [ ] [BLOCKED] **SW-0204 · P0 · Audit current state** — Explain the difference between a preview concept and a launched website. — Verified 10 Nov 2026: PR #66 remains open/draft at head 9ea0c62e6f39309ae6753570dd8e4d99e139ee0e, last recorded against main 6766c5a1d70a58db6c856050a4167df2854079fa while current main is 906f31c473a34c7346f02183d94e4f8465b89372. Exact-head Quality Gate #42543071096 failed before runner assignment (zero steps); no exact-head Preview exists because the free daily deployment limit was reached. Reconcile to current main and wait for checks/Preview to become available; do not retry unchanged.
 - [ ] [TODO] **SW-0205 · P1 · Audit current state** — List the website deliverables that can reliably be provided today.
 - [ ] [TODO] **SW-0206 · P1 · Audit current state** — List optional deliverables that require a separate quote.
 - [ ] [TODO] **SW-0207 · P1 · Audit current state** — Define what a basic one-page website includes before taking payment.
@@ -1662,24 +1699,24 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [BLOCKED] **SW-0761 · P0 · Admin area reported; regression-test access boundary** — Verify the /admin area redirects unauthorised visitors to a safe authentication state. — Requires an owner-authorised browser/admin session to verify the live redirect boundary.
 - [ ] [BLOCKED] **SW-0762 · P0 · Audit current state** — Verify an unauthenticated request cannot access lead data through a direct API call. — A direct anonymous PostgREST API request cannot be issued from this runtime; read-only SQL inspection is not a substitute. Requires a runnable API test environment.
 - [ ] [BLOCKED] **SW-0763 · P0 · Audit current state** — Verify an authenticated but unauthorised user cannot change admin data. — Requires a disposable authenticated non-admin test account/session; none is available.
-- [ ] [TODO] **SW-0764 · P0 · Audit current state** — Check database row-level security policies for every table that holds leads or private notes.
-- [ ] [TODO] **SW-0765 · P0 · Audit current state** — Check public read access exposes only fields intended for listing pages.
-- [ ] [TODO] **SW-0766 · P0 · Audit current state** — Check public write access is limited to validated form actions.
-- [ ] [TODO] **SW-0767 · P0 · Audit current state** — Review Supabase keys and ensure a service-role key is never shipped to the browser.
-- [ ] [TODO] **SW-0768 · P0 · Audit current state** — Review environment variables used in the production build.
-- [ ] [TODO] **SW-0769 · P0 · Audit current state** — Remove secrets, credentials, private tokens, and internal admin URLs from logs and public assets.
-- [ ] [TODO] **SW-0770 · P0 · Audit current state** — Ensure password reset and admin session flows behave safely.
-- [ ] [TODO] **SW-0771 · P1 · Audit current state** — Review session expiry and logout behaviour.
-- [ ] [TODO] **SW-0772 · P1 · Audit current state** — Verify admin pages are not indexable by search engines.
-- [ ] [TODO] **SW-0773 · P1 · Audit current state** — Keep noindex separate from access control; never rely on robots.txt to protect private data.
-- [ ] [TODO] **SW-0774 · P1 · Audit current state** — Check direct URLs to lead details require authorisation.
-- [ ] [TODO] **SW-0775 · P1 · Audit current state** — Review API rate limits for form endpoints.
-- [ ] [TODO] **SW-0776 · P1 · Audit current state** — Sanitise and validate user-supplied text before rendering it in the admin.
-- [ ] [TODO] **SW-0777 · P1 · Audit current state** — Validate URLs to reduce XSS, phishing, and unsafe redirect risks.
-- [ ] [TODO] **SW-0778 · P1 · Audit current state** — Escape exported CSV fields that could be interpreted as spreadsheet formulas.
-- [ ] [TODO] **SW-0779 · P1 · Audit current state** — Check third-party analytics do not receive raw form messages or contact data.
-- [ ] [TODO] **SW-0780 · P1 · Audit current state** — Check precise browser geolocation is not sent to the server contrary to the privacy statement.
-- [ ] [TODO] **SW-0781 · P1 · Audit current state** — Check location permission is requested only after a clear user action.
+- [ ] [REVIEW] **SW-0764 · P0 · Audit current state** — Check database row-level security policies for every table that holds leads or private notes. — Verified 10 Nov 2026: read-only RLS audit is documented in PRs #68 and #73. Both remain open/draft; exact-head checks did not execute. No Production policy or data changes.
+- [ ] [REVIEW] **SW-0765 · P0 · Audit current state** — Check public read access exposes only fields intended for listing pages. — Verified 10 Nov 2026: public-column exposure audit is documented in PR #68. It identifies broad anonymous SELECT grants; remediation is not included. PR remains open/draft pending checks and review.
+- [ ] [BLOCKED] **SW-0766 · P0 · Audit current state** — Check public write access is limited to validated form actions. — Verified 10 Nov 2026: PRs #67/#68 document broad anonymous grants, including TRUNCATE, and permissive form checks. Corrective Production remediation requires the 13-entry Drizzle versus 8-entry Production migration crosswalk and explicit task-specific authorization for a forward-only least-privilege migration. No Production changes.
+- [ ] [REVIEW] **SW-0767 · P0 · Audit current state** — Review Supabase keys and ensure a service-role key is never shipped to the browser. — Verified 10 Nov 2026: service-role key exposure audit is documented in PR #72. Source review found the key in the server-only module; compiled Production bundle scan was not performed. PR remains open/draft; exact-head checks are unavailable.
+- [ ] [REVIEW] **SW-0768 · P0 · Audit current state** — Review environment variables used in the production build. — Verified 10 Nov 2026: Production build-variable audit is documented in PR #67. Variable names/targets were inspected without decrypting values; URL/key equivalence remains unverified. PR remains open/draft.
+- [ ] [REVIEW] **SW-0769 · P0 · Audit current state** — Remove secrets, credentials, private tokens, and internal admin URLs from logs and public assets. — Verified 10 Nov 2026: sensitive-log/public-asset audit is documented in PR #67. Keep pending exact-head checks and review; no secrets or Production settings were changed.
+- [ ] [BLOCKED] **SW-0770 · P0 · Audit current state** — Ensure password reset and admin session flows behave safely. — Requires the owner-controlled recovery inbox and an authorised administrator recovery/session test. No such session is available; do not simulate or use Production writes.
+- [ ] [BLOCKED] **SW-0771 · P1 · Audit current state** — Review session expiry and logout behaviour. — Static session/logout review is recorded in PR #72, but actual expiry/logout behaviour requires an owner-authorised admin and preview test session. No authorised session is available.
+- [ ] [REVIEW] **SW-0772 · P1 · Audit current state** — Verify admin pages are not indexable by search engines. — Indexing correction and regression coverage are in PR #83. Exact-head checks/Preview are unavailable; Production crawler behaviour has not been newly smoke-tested.
+- [ ] [REVIEW] **SW-0773 · P1 · Audit current state** — Keep noindex separate from access control; never rely on robots.txt to protect private data. — The noindex/access-control distinction is documented in PR #83. Direct anonymous/non-admin API verification remains separately blocked; PR #83 is open/draft pending checks.
+- [ ] [BLOCKED] **SW-0774 · P1 · Audit current state** — Check direct URLs to lead details require authorisation. — Direct lead-detail/API authorization testing requires a runnable request-test environment and disposable authenticated non-admin account/session; neither is available. Read-only SQL inspection is not a substitute.
+- [ ] [REVIEW] **SW-0775 · P1 · Audit current state** — Review API rate limits for form endpoints. — Read-only rate-limit audit is documented in PR #72: four public form triggers, shared 3-per-10-minute and 100-per-hour buckets, and a static database-contract test. No live POST/concurrency test was run; PR remains open/draft and exact-head checks are unavailable.
+- [ ] [REVIEW] **SW-0776 · P1 · Audit current state** — Sanitise and validate user-supplied text before rendering it in the admin. — Admin text-rendering audit is documented in PR #74; static scan found no unsafe HTML sinks. Exact-head automated checks did not execute; PR remains open/draft.
+- [ ] [REVIEW] **SW-0777 · P1 · Audit current state** — Validate URLs to reduce XSS, phishing, and unsafe redirect risks. — External-URL validation change and regression tests are in PR #75. Tests have not executed because the runner was unavailable; no Production migration or change.
+- [ ] [REVIEW] **SW-0778 · P1 · Audit current state** — Escape exported CSV fields that could be interpreted as spreadsheet formulas. — CSV formula-injection audit is documented in PR #76; no CSV export surface currently exists. The future-export guardrail is recorded; PR remains open/draft pending checks.
+- [ ] [REVIEW] **SW-0779 · P1 · Audit current state** — Check third-party analytics do not receive raw form messages or contact data. — First-party analytics privacy audit is documented in PR #77. No third-party analytics SDK was found; free-text search queries remain a privacy caveat. PR remains open/draft pending checks.
+- [ ] [REVIEW] **SW-0780 · P1 · Audit current state** — Check precise browser geolocation is not sent to the server contrary to the privacy statement. — Device-local geolocation source/schema audit is documented in PR #84. No live network capture was performed; exact-head checks failed before runner assignment and no exact-head Preview exists.
+- [ ] [REVIEW] **SW-0781 · P1 · Audit current state** — Check location permission is requested only after a clear user action. — Explicit-action location-permission fix and component regression tests are in PR #85. Exact-head checks failed before runner assignment; no exact-head Preview exists. Do not claim it is live.
 - [ ] [TODO] **SW-0782 · P1 · Audit current state** — Check “location stays on this device” matches actual network and analytics behaviour.
 - [ ] [TODO] **SW-0783 · P2 · Audit current state** — Document the types of data saved by each form.
 - [ ] [TODO] **SW-0784 · P2 · Audit current state** — Document which provider receives each form field and for what purpose.
