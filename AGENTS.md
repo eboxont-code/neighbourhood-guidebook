@@ -47,6 +47,7 @@
 - Listing metadata and JSON-LD must only use recorded facts. Never invent addresses, hours, ratings, coordinates or official websites.
 - Selected public leaf routes use `social-meta` for compact brand cards or source-matched resized listing covers; keep share images out of root metadata and preserve the canonical origin independently.
 - Search pages and private administration pages must not be indexed. Website previews remain noindex and must stay out of the sitemap.
+- `robots.txt` and `noindex` are crawler directives, not access controls. Never rely on them to protect private pages or data; require authentication and database row-level security for private reads and writes, and verify those boundaries independently.
 - Local landing pages must meet the real-listing threshold owned by `src/lib/local-pages.ts`. Keep page links and sitemap eligibility consistent.
 - City-based area/category combinations below the shared threshold remain noindex browsing pages; qualifying combinations redirect permanently to `/a/<area>/<category>`, the only combination URLs in the sitemap, to avoid thin or duplicate indexable pages.
 - Lazy-load map code on the client. Do not let browser-only mapping code execute during server rendering.
