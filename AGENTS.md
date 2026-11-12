@@ -66,7 +66,7 @@ npm run build
 
 Also review:
 
-- Mobile layouts at narrow widths, including 390px.
+- Use 390 CSS pixels as the primary phone-width review viewport (typically 390 × 844); review wider desktop layouts separately.
 - English and Nepali interface journeys.
 - Anonymous versus administrator database permissions.
 - Migration ordering and rollback/recovery implications.
