@@ -8,6 +8,7 @@ import {
   type InputHTMLAttributes,
 } from "react";
 import type { Session } from "@supabase/supabase-js";
+import { adminAccessState } from "@/lib/admin-access";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
 import {
@@ -127,19 +128,23 @@ function AdminPage() {
       .then(({ data }) => setIsAdmin(data === true));
   }, [session?.user.id]);
 
+  const access = adminAccessState(
+    session === undefined ? "loading" : session ? "signed-in" : "signed-out",
+    isAdmin,
+  );
   let body: ReactNode;
   if (recoveryMode)
     body = <PasswordRecovery onComplete={() => setRecoveryMode(false)} />;
-  else if (session === undefined || (session && isAdmin === null))
+  else if (access === "loading" || access === "checking")
     body = <p className="text-muted-foreground">{t("adLoading")}</p>;
-  else if (!session) body = <SignIn />;
-  else if (!isAdmin)
+  else if (access === "sign-in") body = <SignIn />;
+  else if (access === "denied")
     body = (
       <div className={card}>
         <h2 className="text-lg font-semibold">{t("adNoAccessTitle")}</h2>
         <p className="mt-2 text-muted-foreground">{t("adNoAccessBody")}</p>
         <p className="mt-2 text-sm text-muted-foreground">
-          {t("adSignedInAs").replace("{e}", session.user.email ?? "")}
+          {t("adSignedInAs").replace("{e}", session?.user.email ?? "")}
         </p>
         <button
           type="button"
@@ -150,7 +155,7 @@ function AdminPage() {
         </button>
       </div>
     );
-  else body = <Dashboard email={session.user.email ?? ""} />;
+  else body = <Dashboard email={session?.user.email ?? ""} />;
   return (
     <main className="mx-auto max-w-4xl px-5 py-6 pb-28 lg:py-10">
       <h1 className="mb-5 text-2xl font-semibold tracking-tight">{t("adTitle")}</h1>
