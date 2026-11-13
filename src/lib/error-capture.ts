@@ -1,4 +1,5 @@
 import { redactLocation, redactLocationText } from "@/lib/location-redaction";
+import { redactSensitiveData, redactSensitiveText } from "@/lib/log-redaction";
 
 // Captures the original Error out-of-band so server.ts can recover the stack
 // when h3 has already swallowed the throw into a generic 500 Response.
@@ -30,7 +31,7 @@ export function describeError(error: unknown): string {
     parts.push(`${label}${current.stack ?? `${current.name}: ${current.message}`}${status}`);
     current = current.cause;
   }
-  return parts.join("\n").slice(0, DESCRIPTION_LENGTH_LIMIT);
+  return redactSensitiveText(redactLocationText(parts.join("\n"))).slice(0, DESCRIPTION_LENGTH_LIMIT);
 }
 
 function describeStatus(error: Error): string {
@@ -41,7 +42,7 @@ function describeStatus(error: Error): string {
 
 function safeStringify(value: unknown): string {
   try {
-    return JSON.stringify(value) ?? String(value);
+    return JSON.stringify(redactSensitiveData(value)) ?? String(value);
   } catch {
     return String(value);
   }
@@ -57,9 +58,9 @@ function isErrorLike(value: unknown): value is Error {
 const originalConsoleError = console.error.bind(console);
 console.error = (...args: unknown[]) => {
   const expanded = args.map((arg) => {
-    if (!isErrorLike(arg)) return redactLocation(arg);
+    if (!isErrorLike(arg)) return redactSensitiveData(redactLocation(arg));
     record(arg);
-    return redactLocationText(describeError(arg));
+    return redactSensitiveText(redactLocationText(describeError(arg)));
   });
   originalConsoleError(...expanded);
 };
@@ -81,3 +82,9 @@ export function consumeLastCapturedError(): unknown {
   lastCapturedError = undefined;
   return error;
 }
+
+
+const originalConsoleWarn = console.warn.bind(console);
+console.warn = (...args: unknown[]) => {
+  originalConsoleWarn(...args.map((arg) => redactSensitiveData(redactLocation(arg))));
+};
