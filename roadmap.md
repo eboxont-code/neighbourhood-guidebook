@@ -8,6 +8,8 @@ This file is retained as a simple navigation entry point so older links do not b
 
 ## Start here
 
+Daily batch, 14 November 2026: audit duplicates/staleness; audit field gaps; document freshness; review admin queue; verify map interaction; test Kathmandu/overnight hours; check qualifying local pages; audit Android layouts; align architecture docs. Status and evidence remain in MASTER_TODO.md. No listing writes, migrations or publishing.
+
 1. Read `MASTER_TODO.md` from top to bottom before project work.
 2. Check the verified repository snapshot and current production / database state.
 3. Continue the single task marked `[IN PROGRESS]`.
