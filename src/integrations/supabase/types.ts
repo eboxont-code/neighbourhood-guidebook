@@ -355,6 +355,103 @@ export type Database = {
         }
         Relationships: []
       }
+      business_sales_activities: {
+        Row: {
+          activity_type: string
+          amount_npr: number | null
+          created_at: string
+          created_by: string
+          happened_at: string
+          id: string
+          prospect_id: string
+          summary: string
+        }
+        Insert: {
+          activity_type: string
+          amount_npr?: number | null
+          created_at?: string
+          created_by?: string
+          happened_at?: string
+          id?: string
+          prospect_id: string
+          summary: string
+        }
+        Update: {
+          activity_type?: string
+          amount_npr?: number | null
+          created_at?: string
+          created_by?: string
+          happened_at?: string
+          id?: string
+          prospect_id?: string
+          summary?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_sales_activities_prospect_id_fkey"
+            columns: ["prospect_id"]
+            isOneToOne: false
+            referencedRelation: "business_sales_prospects"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      business_sales_prospects: {
+        Row: {
+          contact_channel: string
+          created_at: string
+          created_by: string
+          id: string
+          last_contacted_at: string | null
+          listing_id: string
+          next_follow_up_at: string | null
+          notes: string | null
+          paid_amount_npr: number
+          quote_amount_npr: number | null
+          service_interest: string
+          stage: string
+          updated_at: string
+        }
+        Insert: {
+          contact_channel?: string
+          created_at?: string
+          created_by?: string
+          id?: string
+          last_contacted_at?: string | null
+          listing_id: string
+          next_follow_up_at?: string | null
+          notes?: string | null
+          paid_amount_npr?: number
+          quote_amount_npr?: number | null
+          service_interest?: string
+          stage?: string
+          updated_at?: string
+        }
+        Update: {
+          contact_channel?: string
+          created_at?: string
+          created_by?: string
+          id?: string
+          last_contacted_at?: string | null
+          listing_id?: string
+          next_follow_up_at?: string | null
+          notes?: string | null
+          paid_amount_npr?: number
+          quote_amount_npr?: number | null
+          service_interest?: string
+          stage?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_sales_prospects_listing_id_fkey"
+            columns: ["listing_id"]
+            isOneToOne: true
+            referencedRelation: "listings"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       slug_redirects: {
         Row: {
           created_at: string

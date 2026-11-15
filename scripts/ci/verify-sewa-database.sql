@@ -18,12 +18,14 @@ BEGIN
       'business_submissions',
       'business_claims',
       'analytics_events',
-      'listing_promotions'
+      'listing_promotions',
+      'business_sales_prospects',
+      'business_sales_activities'
     ])
     AND c.relrowsecurity;
 
-  IF secured_tables <> 6 THEN
-    RAISE EXCEPTION 'expected RLS on five private tables and listing_promotions; found %', secured_tables;
+  IF secured_tables <> 8 THEN
+    RAISE EXCEPTION 'expected RLS on five private forms, listing_promotions and two private sales tables; found %', secured_tables;
   END IF;
 
   SELECT count(*)
@@ -37,12 +39,13 @@ BEGIN
       'validate_business_claim',
       'listings_before_update',
       'touch_lead_status',
-      'guard_listing_promotion_slot'
+      'guard_listing_promotion_slot',
+      'set_business_sales_prospect_updated_at'
     ])
     AND p.proconfig @> ARRAY['search_path=pg_catalog'];
 
-  IF hardened_functions <> 6 THEN
-    RAISE EXCEPTION 'expected six functions with pg_catalog-only search_path; found %', hardened_functions;
+  IF hardened_functions <> 7 THEN
+    RAISE EXCEPTION 'expected seven functions with pg_catalog-only search_path; found %', hardened_functions;
   END IF;
 
   IF has_function_privilege('anon', 'public.has_role(uuid, public.app_role)', 'EXECUTE') THEN
@@ -64,7 +67,9 @@ BEGIN
     'correction_reports',
     'business_submissions',
     'business_claims',
-    'analytics_events'
+    'analytics_events',
+    'business_sales_prospects',
+    'business_sales_activities'
   ] LOOP
     IF has_table_privilege('anon', format('public.%I', table_name), 'SELECT')
        OR has_table_privilege('anon', format('public.%I', table_name), 'UPDATE')
@@ -126,6 +131,16 @@ BEGIN
      OR has_table_privilege('anon', 'public.listing_promotions', 'DELETE') THEN
     RAISE EXCEPTION 'anonymous campaign permissions are incorrect';
   END IF;
+  IF has_table_privilege('anon', 'public.business_sales_prospects', 'SELECT')
+     OR has_table_privilege('anon', 'public.business_sales_prospects', 'INSERT')
+     OR has_table_privilege('anon', 'public.business_sales_prospects', 'UPDATE')
+     OR has_table_privilege('anon', 'public.business_sales_prospects', 'DELETE')
+     OR has_table_privilege('anon', 'public.business_sales_activities', 'SELECT')
+     OR has_table_privilege('anon', 'public.business_sales_activities', 'INSERT')
+     OR has_table_privilege('anon', 'public.business_sales_activities', 'UPDATE')
+     OR has_table_privilege('anon', 'public.business_sales_activities', 'DELETE') THEN
+    RAISE EXCEPTION 'anonymous role has access to the private Boxont sales pipeline';
+  END IF;
 END
 $$;
 
@@ -165,6 +180,63 @@ BEGIN
   END IF;
 END
 $$;
+RESET ROLE;
+
+-- Admin-only prospect and activity writes; payment history remains attached to the prospect.
+SET ROLE authenticated;
+SELECT set_config('request.jwt.claim.sub', '22222222-2222-4222-8222-222222222222', false);
+INSERT INTO public.business_sales_prospects
+  (listing_id, stage, service_interest, contact_channel, next_follow_up_at, notes)
+VALUES
+  ('b1', 'identified', 'website', 'whatsapp', now() + interval '2 days',
+   'Disposable sales pipeline CI fixture');
+INSERT INTO public.business_sales_activities
+  (prospect_id, activity_type, summary)
+SELECT id, 'whatsapp', 'Disposable CI contact activity'
+FROM public.business_sales_prospects WHERE listing_id = 'b1';
+INSERT INTO public.business_sales_activities
+  (prospect_id, activity_type, summary, amount_npr)
+SELECT id, 'payment', 'Disposable CI receipt activity', 5000
+FROM public.business_sales_prospects WHERE listing_id = 'b1';
+UPDATE public.business_sales_prospects
+  SET stage = 'proposal', quote_amount_npr = 15000
+  WHERE listing_id = 'b1';
+UPDATE public.business_sales_prospects
+  SET stage = 'won', paid_amount_npr = 5000
+  WHERE listing_id = 'b1';
+DO $sales$
+DECLARE
+  cash_lock boolean := false;
+BEGIN
+  IF (SELECT count(*) FROM public.business_sales_prospects WHERE listing_id = 'b1'
+      AND stage = 'won' AND quote_amount_npr = 15000 AND paid_amount_npr = 5000
+      AND created_by = auth.uid()) <> 1 THEN
+    RAISE EXCEPTION 'admin sales prospect or recorded cash did not persist';
+  END IF;
+  IF (SELECT count(*) FROM public.business_sales_activities a
+      JOIN public.business_sales_prospects p ON p.id = a.prospect_id
+      WHERE p.listing_id = 'b1') <> 2 THEN
+    RAISE EXCEPTION 'admin sales activity history did not persist';
+  END IF;
+  IF (SELECT count(*) FROM public.business_sales_activities a
+      JOIN public.business_sales_prospects p ON p.id = a.prospect_id
+      WHERE p.listing_id = 'b1' AND a.amount_npr = 5000
+      AND a.activity_type = 'payment') <> 1 THEN
+    RAISE EXCEPTION 'recorded cash activity did not persist';
+  END IF;
+  BEGIN
+    UPDATE public.business_sales_prospects
+      SET paid_amount_npr = 4000
+      WHERE listing_id = 'b1';
+  EXCEPTION WHEN SQLSTATE 'P0001' THEN
+    IF SQLERRM <> 'sales_cash_cannot_decrease' THEN RAISE; END IF;
+    cash_lock := true;
+  END;
+  IF NOT cash_lock THEN
+    RAISE EXCEPTION 'recorded sales cash could be silently decreased';
+  END IF;
+END
+$sales$;
 RESET ROLE;
 
 -- A paid receipt and terminal campaign state cannot be silently rewritten.
@@ -292,6 +364,17 @@ BEGIN
   IF (SELECT count(*) FROM public.listing_promotions) <> 1 THEN
     RAISE EXCEPTION 'a non-admin caller could not see the public active campaign';
   END IF;
+  IF (SELECT count(*) FROM public.business_sales_prospects) <> 0
+     OR (SELECT count(*) FROM public.business_sales_activities) <> 0 THEN
+    RAISE EXCEPTION 'a non-admin caller read private Boxont sales records';
+  END IF;
+  BEGIN
+    INSERT INTO public.business_sales_prospects (listing_id, stage)
+    VALUES ('b2', 'identified');
+    RAISE EXCEPTION 'a non-admin caller inserted a sales prospect';
+  EXCEPTION WHEN insufficient_privilege THEN
+    NULL;
+  END;
   BEGIN
     INSERT INTO public.listing_promotions
       (listing_id, placement, target_category, starts_at, ends_at, status)
@@ -321,6 +404,12 @@ BEGIN
   END IF;
   IF (SELECT count(*) FROM public.contact_messages WHERE name = 'SEWA CI Rate Test') <> 3 THEN
     RAISE EXCEPTION 'the administrator could not read private contact messages';
+  END IF;
+  IF (SELECT count(*) FROM public.business_sales_prospects WHERE listing_id = 'b1') <> 1
+     OR (SELECT count(*) FROM public.business_sales_activities a
+         JOIN public.business_sales_prospects p ON p.id = a.prospect_id
+         WHERE p.listing_id = 'b1') <> 2 THEN
+    RAISE EXCEPTION 'the administrator could not read private prospect history';
   END IF;
   UPDATE public.contact_messages
     SET quote_amount_npr = 15000, payment_status = 'quoted'
