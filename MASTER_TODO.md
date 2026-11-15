@@ -920,7 +920,7 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [BLOCKED] **SW-0096 · P0 · Audit current state** — Capture business name as a separate field from the person's name. — Verified 8 Nov 2026: implementation is in draft PR #39, stacked on PR #38; parent branch is stale and not mergeable.
 - [ ] [TODO] **SW-0097 · P1 · Audit current state** — Capture a reply method that the user can reasonably respond to, without demanding excessive data.
 - [ ] [TODO] **SW-0098 · P1 · Audit current state** — Make phone optional when email or another agreed reply method is sufficient.
-- [ ] [TODO] **SW-0099 · P1 · Audit current state** — Avoid collecting home address, precise location, or unrelated personal information in sales forms.
+- [ ] [REVIEW] **SW-0099 · P1 · Audit current state** — Avoid collecting home address, precise location, or unrelated personal information in sales forms. (Bilingual business-area-only wording and a focused regression test are in draft PR #91; exact-head checks have not executed and the change is not live.)
 - [ ] [TODO] **SW-0100 · P1 · Audit current state** — Add a human-readable privacy note beside form submission.
 - [ ] [TODO] **SW-0101 · P1 · Audit current state** — Make the quote form explain what happens after submission.
 - [ ] [TODO] **SW-0102 · P1 · Audit current state** — Set an honest response expectation only after the owner has approved a service standard.
