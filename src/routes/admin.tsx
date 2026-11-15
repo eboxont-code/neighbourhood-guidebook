@@ -37,6 +37,7 @@ import { useI18n, type Key } from "@/lib/i18n";
 import {
   countByStatus,
   isLeadStatus,
+  leadListingLinks,
   leadSource,
   leadStatuses,
   leadContactActions,
@@ -1160,7 +1161,8 @@ function LeadCard({
   const src = leadSource(m.page);
   const topicKey = m.topic ? optionLabel("topic", m.topic) : null;
   const slug = m.source_listing_slug;
-  const listing = slug ? businesses.find((b) => b.slug === slug) : undefined;
+  const links = leadListingLinks(slug);
+  const listing = links?.business;
   const who = m.business_name || listing?.name || m.name;
   const waText = (m.business_name ? t("adLeadWaText") : t("adLeadWaTextShort"))
     .replace("{n}", m.name)
@@ -1243,10 +1245,10 @@ function LeadCard({
       </p>
       {slug && (
         <div className="flex flex-wrap gap-x-5 gap-y-1 text-sm">
-          {listing ? (
+          {links ? (
             <Link
               to="/s/$slug"
-              params={{ slug }}
+              params={{ slug: links.slug }}
               target="_blank"
               className="inline-flex min-h-11 items-center text-primary underline"
             >
@@ -1257,9 +1259,9 @@ function LeadCard({
               {t("adMsgListing")}: {slug}
             </span>
           )}
-          {listing && offersPreview(listing) && (
+          {links?.previewPath && (
             <a
-              href={previewPath(slug)}
+              href={links.previewPath}
               target="_blank"
               rel="noreferrer"
               className="inline-flex min-h-11 items-center text-primary underline"
