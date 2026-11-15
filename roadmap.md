@@ -8,7 +8,7 @@ This file is retained as a simple navigation entry point so older links do not b
 
 ## Start here
 
-Daily batch, 14 November 2026: audit duplicates/staleness; audit field gaps; document freshness; review admin queue; verify map interaction; test Kathmandu/overnight hours; check qualifying local pages; audit Android layouts; align architecture docs. Status and evidence remain in MASTER_TODO.md. No listing writes, migrations or publishing.
+Daily batch, 15 November 2026: review coordinates, unsupported verification, MFA, leaked-password protection, RLS, indexes, backups, admin audit logging, privacy/retention, dependency advisories, migration parity and hosting recovery, in that order. Status and evidence remain in MASTER_TODO.md. Read-only backend review; documentation and clearly inaccurate bilingual privacy copy only. No listing writes, migrations, settings changes or publishing. Git commits are managed by the platform; no branch, PR or manual commit operation is performed.
 
 1. Read `MASTER_TODO.md` from top to bottom before project work.
 2. Check the verified repository snapshot and current production / database state.
