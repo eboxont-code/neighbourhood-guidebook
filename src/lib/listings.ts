@@ -1,5 +1,6 @@
 import { businesses, liveSlugRedirects, setListings } from "@/data/directory";
 import { fetchPublishedListings } from "@/lib/listings.functions";
+import { reportSewaError } from "@/lib/sewa-error-reporting";
 
 /** How long a loaded set of listings is reused before asking the database again. */
 export const LISTINGS_TTL_MS = 60_000;
@@ -15,7 +16,10 @@ export function ensureListings(): Promise<void> {
   if (Date.now() - loadedAt < LISTINGS_TTL_MS) return Promise.resolve();
   inflight ??= fetchPublishedListings()
     .then((r) => { if (r) setListings(r.items, r.redirects); })
-    .catch((e) => console.error("[listings] refresh failed, keeping current set", e))
+    .catch((e) => {
+      if (typeof window !== "undefined") reportSewaError(e, { source: "listings-refresh" });
+      else console.error("[listings] refresh failed, keeping current set", e);
+    })
     .finally(() => { loadedAt = Date.now(); inflight = null; });
   return inflight;
 }

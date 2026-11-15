@@ -1,4 +1,5 @@
 import { redactLocation, redactLocationText } from "@/lib/location-redaction";
+import { redactSensitiveData, redactSensitiveText } from "@/lib/log-redaction";
 
 function describeThrown(error: unknown): string {
   if (error instanceof Response) return `Request failed with status ${error.status}.`;
@@ -6,7 +7,7 @@ function describeThrown(error: unknown): string {
   if (typeof error === "string") return error;
 
   try {
-    return JSON.stringify(redactLocation(error))?.slice(0, 2_000) ?? String(error);
+    return JSON.stringify(redactSensitiveData(redactLocation(error)))?.slice(0, 2_000) ?? String(error);
   } catch {
     return "An unknown application error occurred.";
   }
@@ -19,18 +20,18 @@ export function reportSewaError(
 ): void {
   if (typeof window === "undefined") return;
 
-  const safeError = redactLocation(error);
-  const safeMessage = redactLocationText(describeThrown(safeError));
-  const safeContext = redactLocation(context) as Record<string, unknown>;
+  const safeError = error instanceof Response ? error : redactSensitiveData(redactLocation(error));
+  const safeMessage = redactSensitiveText(redactLocationText(describeThrown(safeError)));
+  const safeContext = redactSensitiveData(redactLocation(context)) as Record<string, unknown>;
   const stack =
     safeError instanceof Error && safeError.stack
-      ? redactLocationText(safeError.stack)
+      ? redactSensitiveText(redactLocationText(safeError.stack))
       : undefined;
 
   console.error("[SEWA] Application error", {
     message: safeMessage,
     ...(stack ? { stack } : {}),
-    route: redactLocationText(window.location.pathname),
+    route: redactSensitiveText(redactLocationText(window.location.pathname)),
     context: safeContext,
   });
 }
