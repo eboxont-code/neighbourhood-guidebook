@@ -13,6 +13,23 @@ export const SALES_STAGES = [
 ] as const;
 export type SalesStage = (typeof SALES_STAGES)[number];
 
+/** Counts every configured stage from the complete prospect collection. */
+export function salesStageCounts(prospects: ReadonlyArray<{ stage: string }>): Record<SalesStage, number> {
+  const counts = Object.fromEntries(SALES_STAGES.map((stage) => [stage, 0])) as Record<SalesStage, number>;
+  for (const prospect of prospects) {
+    if (Object.prototype.hasOwnProperty.call(counts, prospect.stage)) {
+      counts[prospect.stage as SalesStage] += 1;
+    }
+  }
+  return counts;
+}
+
+/** Returns a new prospect list with a saved row replaced, or a new row prepended. */
+export function upsertSalesProspect<T extends { id: string }>(prospects: readonly T[], updated: T): T[] {
+  if (!prospects.some((prospect) => prospect.id === updated.id)) return [updated, ...prospects];
+  return prospects.map((prospect) => prospect.id === updated.id ? updated : prospect);
+}
+
 export const SALES_INTERESTS = ["website", "redesign", "care", "sponsored_placement", "unsure"] as const;
 export type SalesInterest = (typeof SALES_INTERESTS)[number];
 

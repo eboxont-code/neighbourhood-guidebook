@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildSalesOutreachDraft, buildServiceProposalDraft, inboundLeadInterest, inboundLeadStage, isOpenSalesStage, salesFollowUpState } from "@/lib/sales-pipeline";
+import { buildSalesOutreachDraft, buildServiceProposalDraft, inboundLeadInterest, inboundLeadStage, isOpenSalesStage, salesFollowUpState, salesStageCounts, upsertSalesProspect } from "@/lib/sales-pipeline";
 
 const business = { name: "Sample Salon", area: "naxal" };
 
@@ -83,6 +83,42 @@ describe("Boxont sales pipeline", () => {
     expect(isOpenSalesStage("won")).toBe(false);
     expect(isOpenSalesStage("lost")).toBe(false);
     expect(isOpenSalesStage("do_not_contact")).toBe(false);
+  });
+
+  it("updates every stage count immediately after a saved prospect changes stage", () => {
+    const initial = [
+      { id: "a", stage: "identified" },
+      { id: "b", stage: "identified" },
+      { id: "c", stage: "qualified" },
+      { id: "d", stage: "proposal" },
+      { id: "e", stage: "do_not_contact" },
+    ];
+    expect(salesStageCounts(initial)).toEqual({
+      identified: 2,
+      qualified: 1,
+      contacted: 0,
+      replied: 0,
+      meeting: 0,
+      proposal: 1,
+      won: 0,
+      lost: 0,
+      do_not_contact: 1,
+    });
+
+    const updated = upsertSalesProspect(initial, { ...initial[0]!, stage: "contacted" });
+    expect(updated).not.toBe(initial);
+    expect(salesStageCounts(updated)).toEqual({
+      identified: 1,
+      qualified: 1,
+      contacted: 1,
+      replied: 0,
+      meeting: 0,
+      proposal: 1,
+      won: 0,
+      lost: 0,
+      do_not_contact: 1,
+    });
+    expect(salesStageCounts(initial).identified).toBe(2);
   });
 
   it("classifies follow-up dates into overdue, due, later and none", () => {
