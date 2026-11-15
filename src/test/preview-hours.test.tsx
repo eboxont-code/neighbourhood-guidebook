@@ -85,6 +85,21 @@ describe("website preview hours trust", () => {
     expect(document.querySelector("dl dd")?.textContent).not.toBe(dict.en.pvAddThis);
   });
 
+  it("does not invent hours for a listing with no recorded schedule", () => {
+    const business = getBusiness("kathmandu-spa-thamel");
+    if (!business) throw new Error("Missing no-hours test business");
+    expect(business.hours).toBeUndefined();
+    expect(business.hoursSource).toBeUndefined();
+    const document = renderPreview(business);
+
+    expect(document.querySelector("header h1 + p")?.textContent?.trim()).toBe("");
+    expect(document.querySelector("dl dd")?.textContent).toBe(dict.en.pvAddThis);
+    const hours = document.querySelector("#hours");
+    expect(hours?.textContent).toContain(dict.en.pvAddThis);
+    expect(hours?.querySelectorAll("li")).toHaveLength(0);
+    expect(hours?.textContent).not.toMatch(/\\b\\d{1,2}:\\d{2}\\b/);
+  });
+
   it("does not display hours when the listing has no recorded source", () => {
     const sourceListing = getBusiness("tranquility-spa");
     if (!sourceListing) throw new Error("Missing test business");
