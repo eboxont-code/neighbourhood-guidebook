@@ -830,7 +830,7 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [TODO] **SW-0018 · P1 · Audit current state** — Record that the public contact form is the only public route for contacting the operator unless the owner changes that rule.
 - [ ] [TODO] **SW-0019 · P1 · Audit current state** — Set the language standard: natural human English and Nepali, with no em dashes.
 - [ ] [TODO] **SW-0020 · P1 · Audit current state** — Set the interface rule that a button or repeated CTA appears once per context unless testing proves otherwise.
-- [ ] [TODO] **SW-0021 · P1 · Audit current state** — Set the mobile-first review width to approximately 390 CSS pixels.
+- [ ] [BLOCKED] **SW-0021 · P1 · Audit current state** — The 390 CSS-pixel primary review-width rule is updated in `AGENTS.md` in draft PR #80 (implementation commit `eb3b2e0ca6a653c1f69d9cda077c07e406daf26e`). Unlock: the exact-head repository checks must execute successfully before merge.
 - [ ] [TODO] **SW-0022 · P1 · Audit current state** — Require the reviewer to inspect actual phone-width screenshots before calling a design change complete.
 - [ ] [TODO] **SW-0023 · P1 · Audit current state** — Keep Lovable prompts long, goal-led, and acceptance-criteria-driven when the connector is used for design-heavy work.
 - [ ] [TODO] **SW-0024 · P1 · Audit current state** — Use the connected Lovable project only when the correct project can be positively identified; do not guess or edit a different project.
