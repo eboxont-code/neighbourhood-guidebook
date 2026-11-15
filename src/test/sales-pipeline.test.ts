@@ -121,6 +121,30 @@ describe("Boxont sales pipeline", () => {
     expect(salesStageCounts(initial).identified).toBe(2);
   });
 
+  it("allows an accidental Won stage to be corrected backward without losing quote or cash", () => {
+    const initial = [
+      { id: "a", stage: "won", quote_amount_npr: 15000, paid_amount_npr: 5000 },
+      { id: "b", stage: "qualified", quote_amount_npr: null, paid_amount_npr: 0 },
+    ];
+
+    const corrected = upsertSalesProspect(initial, {
+      ...initial[0]!,
+      stage: "qualified",
+    });
+
+    expect(corrected).not.toBe(initial);
+    expect(corrected[0]).toEqual({
+      id: "a",
+      stage: "qualified",
+      quote_amount_npr: 15000,
+      paid_amount_npr: 5000,
+    });
+    expect(isOpenSalesStage(corrected[0]!.stage)).toBe(true);
+    expect(salesStageCounts(corrected)).toMatchObject({ qualified: 2, won: 0 });
+    expect(salesStageCounts(initial)).toMatchObject({ qualified: 1, won: 1 });
+    expect(initial[0]).toMatchObject({ stage: "won", quote_amount_npr: 15000, paid_amount_npr: 5000 });
+  });
+
   it("classifies follow-up dates into overdue, due, later and none", () => {
     const now = Date.parse("2026-11-04T00:00:00Z");
     expect(salesFollowUpState("2026-11-03T23:59:00Z", now)).toBe("overdue");
