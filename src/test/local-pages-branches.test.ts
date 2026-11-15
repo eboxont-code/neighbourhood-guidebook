@@ -30,8 +30,8 @@ describe("local page qualification", () => {
     expect(paths).not.toContain("/kathmandu/durbar-marg/salons");
     expect(paths).not.toContain("/a/baluwatar/hotels");
     expect(sitemapXml()).not.toContain("<lastmod>");
-    expect(sitemapXml()).toContain("https://neighbourhood-guidebook.lovable.app/a/durbar-marg/salons");
-    expect(sitemapXml()).not.toContain("https://sewa.boxont.com");
+    expect(sitemapXml()).toContain("https://sewa.boxont.com/a/durbar-marg/salons");
+    expect(sitemapXml()).not.toContain("https://neighbourhood-guidebook.lovable.app");
   });
   it("counts mapped, Saturday and official-source verified facts only", () => {
     const records = [sample("one", { lat: 27.7, lng: 85.3, hours: [{ days: "Sat", time: "10:00–18:00" }], website: "https://example.com", lastChecked: "2026-10-11" }), sample("two", { lat: undefined, lng: undefined, hours: undefined, website: undefined, social: [], lastChecked: undefined } as never)];

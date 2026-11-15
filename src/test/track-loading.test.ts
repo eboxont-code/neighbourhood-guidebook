@@ -33,12 +33,12 @@ describe("on-demand anonymous analytics", () => {
     const { track } = await import("@/lib/track");
     history.replaceState({}, "", "/search?q=spa");
     localStorage.setItem("dir-lang", "ne");
-    track("search", { query: "  SPA  " });
+    track("search", { searchClass: "category:spas" });
     history.replaceState({}, "", "/about");
     localStorage.setItem("dir-lang", "en");
     await vi.waitFor(() => expect(insert).toHaveBeenCalledTimes(1));
     expect(insert).toHaveBeenCalledWith({
-      event: "search", listing_slug: null, query: "spa", lang: "ne", path: "/search",
+      event: "search", listing_slug: null, query: "category:spas", lang: "ne", path: "/search",
     });
   });
 

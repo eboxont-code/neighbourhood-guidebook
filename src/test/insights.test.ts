@@ -14,8 +14,8 @@ describe("admin insights", () => {
       { event: "click_call", query: null, listing_slug: "a", created_at: at(1) },
       { event: "click_call", query: null, listing_slug: "a", created_at: at(20) },
     ], 7, now);
-    expect(s.zero).toEqual([["vet", 2]]);
-    expect(s.searches[0]).toEqual(["vet", 2]);
+    expect(s.zero).toEqual([["other", 2]]);
+    expect(s.searches[0]).toEqual(["other", 3]);
     expect(s.clicks).toEqual([["click_call", 1]]);
     expect(s.listings).toEqual([["a", 1]]);
   });
@@ -32,7 +32,8 @@ describe("admin insights", () => {
   it("sends no personal data or location", () => {
     const p = trackPayload("search", { query: "  Hair   SALON " });
     expect(Object.keys(p).sort()).toEqual(["event", "lang", "listing_slug", "path", "query"]);
-    expect(p.query).toBe("hair salon");
+    expect(p.query).toBe("other");
+    expect(trackPayload("search", { searchClass: "category:clinics;area:thamel" }).query).toBe("category:clinics;area:thamel");
     expect(TRACK_EVENTS).toContain("search_zero");
   });
 });

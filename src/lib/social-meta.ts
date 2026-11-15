@@ -4,7 +4,7 @@ import tranquility from "@/assets/tranquility-cover.jpg.asset.json";
 import { dict, type Key } from "@/lib/i18n";
 
 // Share assets are served by the published app; this does not change canonical URLs.
-const ASSET_ORIGIN = "https://neighbourhood-guidebook.lovable.app";
+const ASSET_ORIGIN = "https://sewa.boxont.com";
 
 export function shareText(key: Key, values: Record<string, string> = {}) {
   return Object.entries(values).reduce((text, [name, value]) => text.replaceAll(`{${name}}`, value), String(dict.en[key]));

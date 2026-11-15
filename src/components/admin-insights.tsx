@@ -28,6 +28,7 @@ export function AdminInsights() {
   const f = funnel(rows, days);
   const contactActions = summariseContactActions(rows, days);
   const clickLabel = (k: string) => { const key = `inEv_${k}` as Key; return t(key); };
+  const searchLabel = (k: string) => k === "other" ? t("inSearchOther") : k;
   return <div className="space-y-4">
     <p className="text-sm text-muted-foreground">{t("inIntro")}</p>
     <div role="group" aria-label={t("inPeriod")} className="chip-row">
@@ -48,8 +49,8 @@ export function AdminInsights() {
     </section>
     <Table title={t("inTopContactListings")} rows={contactActions.listings} />
     <Table title={t("inTopPreviews")} rows={f.topPreviews} />
-    <Table title={t("inZero")} rows={s.zero} />
-    <Table title={t("inSearches")} rows={s.searches} />
+    <Table title={t("inZero")} rows={s.zero} label={searchLabel} />
+    <Table title={t("inSearches")} rows={s.searches} label={searchLabel} />
     <Table title={t("inClicks")} rows={s.clicks} label={clickLabel} />
     <Table title={t("inListings")} rows={s.listings} />
   </div>;
