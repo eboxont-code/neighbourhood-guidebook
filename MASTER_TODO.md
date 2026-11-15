@@ -1699,7 +1699,7 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [TODO] **SW-0774 · P1 · Audit current state** — Check direct URLs to lead details require authorisation.
 - [ ] [TODO] **SW-0775 · P1 · Audit current state** — Review API rate limits for form endpoints.
 - [ ] [TODO] **SW-0776 · P1 · Audit current state** — Sanitise and validate user-supplied text before rendering it in the admin.
-- [ ] [TODO] **SW-0777 · P1 · Audit current state** — Validate URLs to reduce XSS, phishing, and unsafe redirect risks.
+- [ ] [REVIEW] **SW-0777 · P1 · Audit current state** — Validate URLs to reduce XSS, phishing, and unsafe redirect risks. — Implementation and regression tests are in draft PR [#75](https://github.com/eboxont-code/neighbourhood-guidebook/pull/75); code commit `bb625a545cf5cbfd2ff51e5643496448f82fa9ed`. Shared HTTP(S) validation now rejects credentials, malformed/local/IP hosts and unsafe schemes; public schemas, listing normalisation, admin link rendering and provenance use it. Admin links display the host and external-link warning. Exact-code-head Quality Gate #42560054986 failed before runner assignment; tests have not executed. Await successful exact-head checks and release.
 - [ ] [TODO] **SW-0778 · P1 · Audit current state** — Escape exported CSV fields that could be interpreted as spreadsheet formulas.
 - [ ] [TODO] **SW-0779 · P1 · Audit current state** — Check third-party analytics do not receive raw form messages or contact data.
 - [ ] [TODO] **SW-0780 · P1 · Audit current state** — Check precise browser geolocation is not sent to the server contrary to the privacy statement.

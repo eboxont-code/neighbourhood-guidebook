@@ -1,10 +1,11 @@
 import { hasPin, type Business } from '@/data/directory';
+import { safeExternalHttpUrl } from '@/lib/urls';
 import { checkedDate, officialWebsite } from '@/lib/verification';
 
 export type SourceField = 'phone' | 'hours' | 'address' | 'website' | 'location';
 export type FieldSource = NonNullable<Business['fieldSources']>[SourceField];
 export function sourceUrl(url: string | undefined): string | undefined {
-  try { const u = new URL(url ?? ''); return /^https?:$/.test(u.protocol) ? u.href : undefined; } catch { return undefined; }
+  return safeExternalHttpUrl(url) ?? undefined;
 }
 function tierFromUrl(b: Business, url: string): NonNullable<FieldSource>['tier'] {
   const host = new URL(url).hostname.toLowerCase().replace(/^www\./, '');
