@@ -97,6 +97,19 @@ describe("website preview location accuracy", () => {
     expect(directionsHref(fallback)).toBe(mapsLink(`${business.name}, ${business.address}`));
   });
 
+  it("keeps a recorded street-level address eligible for directions fallback", () => {
+    const business = getBusiness("filli-cafe-lazimpat");
+    if (!business) throw new Error("Missing street-address test business");
+    expect(business.address).toBe("Lazimpat Road, Kathmandu");
+
+    const withoutExplicitDirections: Business = { ...business };
+    delete withoutExplicitDirections.directions;
+    const document = renderPreview(withoutExplicitDirections);
+
+    expect(visitAddress(document)).toBe("Lazimpat Road, Kathmandu");
+    expect(directionsHref(document)).toBe(mapsLink(business.name + ", " + business.address));
+  });
+
   it("keeps an area-only address at its recorded level without adding street detail", () => {
     const business = getBusiness("the-new-barber-boudha");
     if (!business) throw new Error("Missing area-only address test business");
@@ -143,6 +156,36 @@ describe("website preview location accuracy", () => {
 
     renderPreview(business);
     expect(mapMocks.MapView).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not create a directions link from an area-and-city-only address", () => {
+    const business = getBusiness("the-new-barber-boudha");
+    if (!business) throw new Error("Missing area-only address test business");
+
+    const withoutExplicitDirections: Business = { ...business };
+    delete withoutExplicitDirections.directions;
+    const document = renderPreview(withoutExplicitDirections);
+
+    expect(visitAddress(document)).toBe("Boudha, Kathmandu");
+    expect(directionsHref(document)).toBeUndefined();
+    expect(mapMocks.MapView).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    { label: "a missing latitude", lat: undefined, lng: 85.3110464 },
+    { label: "a missing longitude", lat: 27.716144, lng: undefined },
+    { label: "a non-finite latitude", lat: Number.NaN, lng: 85.3110464 },
+    { label: "a non-finite longitude", lat: 27.716144, lng: Number.POSITIVE_INFINITY },
+    { label: "a latitude above 90 degrees", lat: 90.0001, lng: 85.3110464 },
+    { label: "a latitude below -90 degrees", lat: -90.0001, lng: 85.3110464 },
+    { label: "a longitude above 180 degrees", lat: 27.716144, lng: 180.0001 },
+    { label: "a longitude below -180 degrees", lat: 27.716144, lng: -180.0001 },
+  ])("does not render a map for $label", ({ lat, lng }) => {
+    const business = getBusiness("kathmandu-spa-thamel");
+    if (!business) throw new Error("Missing pinned test business");
+
+    renderPreview({ ...business, lat, lng });
+    expect(mapMocks.MapView).not.toHaveBeenCalled();
   });
 });
 
