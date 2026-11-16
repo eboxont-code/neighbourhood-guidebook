@@ -8,7 +8,7 @@ This file is retained as a simple navigation entry point so older links do not b
 
 ## Start here
 
-Daily batch, 15 November 2026: review coordinates, unsupported verification, MFA, leaked-password protection, RLS, indexes, backups, admin audit logging, privacy/retention, dependency advisories, migration parity and hosting recovery, in that order. Status and evidence remain in MASTER_TODO.md. Read-only backend review; documentation and clearly inaccurate bilingual privacy copy only. No listing writes, migrations, settings changes or publishing. Git commits are managed by the platform; no branch, PR or manual commit operation is performed.
+Daily batch, 16 November 2026: implement the 27 requested items in order. All statuses and evidence live in MASTER_TODO.md. No production writes, migrations, publishing, deployment, branches or manual Git operations. Settings-dependent and schema-dependent work must remain explicitly blocked. Platform-managed commits only.
 
 1. Read `MASTER_TODO.md` from top to bottom before project work.
 2. Check the verified repository snapshot and current production / database state.

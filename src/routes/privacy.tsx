@@ -12,10 +12,13 @@ function Privacy() {
   return (
     <Page>
       <h1 className="text-2xl font-semibold sm:text-3xl">{t("footPrivacy")}</h1>
-      <div className="form-card mt-5 space-y-3 leading-relaxed">
+      <div className="mt-5 space-y-6 leading-relaxed">
         <p>{t("privacyBody")}</p>
-        <p>{t("privacyLocation")}</p>
-        <p>{t("privacyCounts")}</p>
+        {([['privacyFormsTitle', 'privacyForms'], ['privacyAnalyticsTitle', 'privacyCounts'], ['privacyLocationTitle', 'privacyLocation'], ['privacyProvidersTitle', 'privacyProviders'], ['privacyVisitorTitle', 'privacyVisitor'], ['privacyRetentionTitle', 'privacyRetention']] as const).map(([title, body]) => <section key={title}>
+          <h2 className="mb-2 text-lg font-semibold">{t(title)}</h2>
+          <p>{t(body)}</p>
+          {title === 'privacyVisitorTitle' && <a className="inline-flex min-h-11 items-center underline underline-offset-4" href="https://lovable.dev/privacy" target="_blank" rel="noopener noreferrer">{t('privacyProviderPolicy')}</a>}
+        </section>)}
       </div>
     </Page>
   );
