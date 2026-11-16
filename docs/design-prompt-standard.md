@@ -1,6 +1,6 @@
-# Lovable design-prompt standard for SEWA / Boxont
+# Design-prompt standard for SEWA / Boxont
 
-Use this standard when a task needs substantial layout, interaction, responsive-design or user-journey work through the connected Lovable project. It is a prompt-writing standard, not permission to select an uncertain project, change production, publish, deploy or spend money.
+Use this standard when a task needs substantial layout, interaction, responsive-design or user-journey work through the connected project. It is a prompt-writing standard, not permission to select an uncertain project, change production, publish, deploy or spend money.
 
 A good prompt is detailed and self-contained. It should be long enough that the goal, existing context, boundaries and proof of completion are clear without relying on old chat messages. Do not add filler or invent facts to make it longer.
 
@@ -12,9 +12,9 @@ A good prompt is detailed and self-contained. It should be long enough that the 
    - Explain what successful behaviour looks like and what must not be optimised at the expense of trust, accessibility or accuracy.
 
 2. **Exact project and current state**
-   - Identify the exact Lovable project and the pages/routes involved.
+   - Identify the exact project and the pages/routes involved.
    - Inspect the current implementation before editing: existing components, styles/tokens, responsive behaviour, translations, data sources, integrations and tests.
-   - Locate and read the existing Lovable north-star/knowledge file. Preserve it verbatim; do not replace or silently rewrite it.
+   - Locate and read the existing north-star/knowledge file. Preserve it verbatim; do not replace or silently rewrite it.
    - Separate verified current behaviour from assumptions. If the project or required source material cannot be positively identified, do not guess.
 
 3. **User journey and states**
@@ -61,7 +61,7 @@ A good prompt is detailed and self-contained. It should be long enough that the 
 
 Copy this structure and replace every bracketed item with verified project-specific information. Remove sections that genuinely do not apply, but do not omit the goal, scope, constraints, acceptance criteria or verification plan.
 
-> **Project:** [Exact Lovable project name/identifier, positively confirmed]
+> **Project:** [Exact project name/identifier, positively confirmed]
 >
 > **Goal:** [User problem and measurable business/user outcome]
 >
@@ -69,7 +69,7 @@ Copy this structure and replace every bracketed item with verified project-speci
 >
 > **Current state and evidence:** [Exact routes/screens, existing behaviour, relevant components/data, screenshots and known defects. Distinguish observed facts from assumptions.]
 >
-> **North-star and existing patterns:** Read and preserve the existing Lovable north-star/knowledge file verbatim. Reuse [existing components, design tokens, navigation, translations and interaction patterns]. Do not silently change the product direction.
+> **North-star and existing patterns:** Read and preserve the existing north-star/knowledge file verbatim. Reuse [existing components, design tokens, navigation, translations and interaction patterns]. Do not silently change the product direction.
 >
 > **Requested changes:** [Numbered list of the precise screens, content, layout and interactions to change]
 >

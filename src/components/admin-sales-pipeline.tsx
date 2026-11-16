@@ -1,4 +1,3 @@
-// @ts-nocheck -- sales tables are not in the generated database types yet.
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
@@ -10,18 +9,39 @@ import {
   buildSalesOutreachDraft,
   inboundLeadInterest,
   inboundLeadStage,
+  isMissingSalesTableError,
   isOpenSalesStage,
   salesFollowUpState,
   salesStageCounts,
   upsertSalesProspect,
+  type SalesActivityRow,
   type SalesActivityType,
-  type SalesInterest,
-  type SalesStage,
   type SalesChannel,
+  type SalesInterest,
+  type SalesProspectRow,
+  type SalesStage,
 } from "@/lib/sales-pipeline";
 
-type Prospect = Tables<"business_sales_prospects">;
-type Activity = Tables<"business_sales_activities">;
+type Prospect = SalesProspectRow;
+type Activity = SalesActivityRow;
+
+type SalesError = { code?: string; message: string };
+type SalesResult<T> = { data: T | null; error: SalesError | null };
+
+type SalesQuery<T> = {
+  select: (columns: string) => SalesQuery<T>;
+  insert: (values: object | object[]) => SalesQuery<T>;
+  update: (values: object) => SalesQuery<T>;
+  eq: (column: string, value: string) => SalesQuery<T>;
+  order: (column: string, options?: { ascending?: boolean }) => SalesQuery<T>;
+  limit: (count: number) => SalesQuery<T>;
+  single: () => SalesQuery<T>;
+} & Promise<SalesResult<T>>;
+
+/** Narrow untyped access for sales tables that are not in the generated Database type. */
+function salesTable<T>(name: "business_sales_prospects" | "business_sales_activities"): SalesQuery<T> {
+  return (supabase as unknown as { from: (table: string) => SalesQuery<T> }).from(name);
+}
 type InboundMessage = Tables<"contact_messages">;
 type ListingRow = Pick<Tables<"listings">, "id" | "slug" | "name" | "area" | "category" | "data">;
 type ProspectForm = {
@@ -131,7 +151,7 @@ export function AdminSalesPipeline() {
   const [businesses, setBusinesses] = useState<Business[]>([]);
   const [activities, setActivities] = useState<Activity[]>([]);
   const [inboundMessages, setInboundMessages] = useState<InboundMessage[]>([]);
-  const [failed, setFailed] = useState(false);
+  const [loadError, setLoadError] = useState<"missing" | "failed" | null>(null);
   const [busy, setBusy] = useState(false);
   const [note, setNote] = useState<string | null>(null);
   const [form, setForm] = useState<ProspectForm>(() => emptyForm());
@@ -142,15 +162,20 @@ export function AdminSalesPipeline() {
   const [activitySummary, setActivitySummary] = useState("");
 
   async function load() {
-    setFailed(false);
+    setLoadError(null);
     const [p, l, a, m] = await Promise.all([
-      supabase.from("business_sales_prospects").select("*").order("updated_at", { ascending: false }),
+      salesTable<Prospect[]>("business_sales_prospects").select("*").order("updated_at", { ascending: false }),
       supabase.from("listings").select("id,slug,name,area,category,data").eq("status", "published").order("name"),
-      supabase.from("business_sales_activities").select("*").order("happened_at", { ascending: false }).limit(1000),
+      salesTable<Activity[]>("business_sales_activities").select("*").order("happened_at", { ascending: false }).limit(1000),
       supabase.from("contact_messages").select("*").order("created_at", { ascending: false }).limit(300),
     ]);
+    const salesMissing = isMissingSalesTableError(p.error) || isMissingSalesTableError(a.error);
+    if (salesMissing && !l.error && !m.error) {
+      setLoadError("missing");
+      return;
+    }
     if (p.error || l.error || a.error || m.error) {
-      setFailed(true);
+      setLoadError("failed");
       return;
     }
     const linkedIds = (p.data ?? []).map((prospect) => prospect.contact_message_id).filter((id): id is string => Boolean(id));
@@ -160,7 +185,7 @@ export function AdminSalesPipeline() {
     if (missingIds.length > 0) {
       const linked = await supabase.from("contact_messages").select("*").in("id", missingIds);
       if (linked.error) {
-        setFailed(true);
+        setLoadError("failed");
         return;
       }
       linkedMessages = linked.data ?? [];
@@ -286,16 +311,17 @@ export function AdminSalesPipeline() {
     setBusy(true);
     setNote(null);
     const result = form.id
-      ? await supabase.from("business_sales_prospects").update(payload).eq("id", form.id).select("*").single()
-      : await supabase.from("business_sales_prospects").insert(payload).select("*").single();
+      ? await salesTable<Prospect>("business_sales_prospects").update(payload).eq("id", form.id).select("*").single()
+      : await salesTable<Prospect>("business_sales_prospects").insert(payload).select("*").single();
     if (result.error || !result.data) {
       setBusy(false);
       setNote(result.error?.code === "23505" ? t("salesDuplicate") : t("salesSaveError"));
       return;
     }
+    const saved = result.data;
 
     // Reflect the saved stage change immediately; activity logging and the full refresh follow.
-    setProspects((current) => current ? upsertSalesProspect(current, result.data) : current);
+    setProspects((current) => current ? upsertSalesProspect(current, saved) : current);
 
     const events: {
       prospect_id: string;
@@ -305,20 +331,20 @@ export function AdminSalesPipeline() {
     }[] = [];
     if (!existing) {
       events.push({
-        prospect_id: result.data.id,
+        prospect_id: saved.id,
         activity_type: "note",
         summary: "Prospect added from the published SEWA directory.",
       });
-    } else if (existing.stage !== result.data.stage) {
+    } else if (existing.stage !== saved.stage) {
       events.push({
-        prospect_id: result.data.id,
+        prospect_id: saved.id,
         activity_type: "stage_change",
-        summary: `Stage changed from ${existing.stage} to ${result.data.stage}.`,
+        summary: `Stage changed from ${existing.stage} to ${saved.stage}.`,
       });
     }
     if (paid > (existing?.paid_amount_npr ?? 0)) {
       events.push({
-        prospect_id: result.data.id,
+        prospect_id: saved.id,
         activity_type: "payment",
         summary: t("salesPaymentLog"),
         amount_npr: paid - (existing?.paid_amount_npr ?? 0),
@@ -326,11 +352,11 @@ export function AdminSalesPipeline() {
     }
     let historyWarning = false;
     if (events.length) {
-      const logged = await supabase.from("business_sales_activities").insert(events);
+      const logged = await salesTable("business_sales_activities").insert(events);
       historyWarning = Boolean(logged.error);
     }
     await load();
-    editProspect(result.data);
+    editProspect(saved);
     setBusy(false);
     setNote(historyWarning ? t("salesSavedHistoryWarning") : t("salesSaved"));
   }
@@ -340,7 +366,7 @@ export function AdminSalesPipeline() {
     setBusy(true);
     setNote(null);
     const listing = businesses.find((business) => business.slug === message.source_listing_slug);
-    const result = await supabase.from("business_sales_prospects").insert({
+    const result = await salesTable<Prospect>("business_sales_prospects").insert({
       listing_id: listing?.id ?? null,
       contact_message_id: message.id,
       stage: inboundLeadStage(message.status),
@@ -355,7 +381,7 @@ export function AdminSalesPipeline() {
       await load();
       return;
     }
-    const logged = await supabase.from("business_sales_activities").insert({
+    const logged = await salesTable("business_sales_activities").insert({
       prospect_id: result.data.id,
       activity_type: "note",
       summary: "Linked an existing inbound SEWA enquiry. Contact details, quotes and payments remain in the original contact message.",
@@ -370,7 +396,7 @@ export function AdminSalesPipeline() {
     if (!selected || busy || !activitySummary.trim()) return;
     setBusy(true);
     setNote(null);
-    const result = await supabase.from("business_sales_activities").insert({
+    const result = await salesTable("business_sales_activities").insert({
       prospect_id: selected.id,
       activity_type: activityType,
       summary: activitySummary.trim(),
@@ -381,7 +407,7 @@ export function AdminSalesPipeline() {
       return;
     }
     if (["call", "whatsapp", "email", "meeting"].includes(activityType)) {
-      const updated = await supabase.from("business_sales_prospects")
+      const updated = await salesTable("business_sales_prospects")
         .update({ last_contacted_at: new Date().toISOString() })
         .eq("id", selected.id);
       if (updated.error) {
@@ -412,9 +438,11 @@ export function AdminSalesPipeline() {
   const interestLabel = (interest: string) => t((interestKeys[interest as SalesInterest] ?? "salesInterestUnsure"));
   const followUpLabel = (prospect: Prospect) => salesFollowUpState(prospect.next_follow_up_at, now);
 
-  if (failed) return (
+  if (loadError) return (
     <div className="rounded-2xl border border-border bg-card p-4">
-      <p className="text-sm text-error">{t("salesLoadError")}</p>
+      <p className={loadError === "missing" ? "text-sm text-muted-foreground" : "text-sm text-error"}>
+        {t(loadError === "missing" ? "salesNotSetUp" : "salesLoadError")}
+      </p>
       <button type="button" className="action-btn action-secondary mt-3" onClick={() => void load()}>{t("adRetry")}</button>
     </div>
   );

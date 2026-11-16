@@ -25,4 +25,9 @@ describe("bilingual interface copy", () => {
     const copy = [...Object.values(dict.en), ...Object.values(dict.ne), ...Object.values(hoursSourceNe)];
     expect(copy.filter((value) => value.includes("\u2014"))).toEqual([]);
   });
+
+  it("keeps interface copy free of connected-editor vendor branding", () => {
+    const copy = [...Object.values(dict.en), ...Object.values(dict.ne)];
+    expect(copy.filter((value) => value.toLowerCase().includes("lovable"))).toEqual([]);
+  });
 });

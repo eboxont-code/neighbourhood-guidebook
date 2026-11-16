@@ -2,7 +2,7 @@
 
 ## Checked first
 - Audited all 79 neighbourhood, category, combined neighbourhood/category, and listing URLs in the current preview sitemap. All returned HTTP 200 with a unique title, a unique description, and exactly one canonical.
-- Every canonical points to `https://sewa.boxont.com`, rather than the supplied published address `https://neighbourhood-guidebook.lovable.app`.
+- Every canonical points to `https://sewa.boxont.com`, rather than the former preview address.
 - 23 combined neighbourhood/category pages contain fewer than three real listings but are currently indexable and included in the sitemap.
 - Two qualifying combinations have two public page addresses: the city-based URL and `/a/<area>/<category>`.
 - Existing SEO scanner results are stale or unavailable, so these findings come from current source and server-rendered preview responses, not a current scanner verdict or Google indexing report.

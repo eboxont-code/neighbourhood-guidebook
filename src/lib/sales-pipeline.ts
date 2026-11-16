@@ -49,6 +49,44 @@ export const SALES_ACTIVITY_TYPES = [
 ] as const;
 export type SalesActivityType = (typeof SALES_ACTIVITY_TYPES)[number];
 
+/** Local row types for sales tables that are not in the generated database types yet. */
+export type SalesProspectRow = {
+  contact_channel: string;
+  contact_message_id: string | null;
+  created_at: string;
+  created_by: string;
+  id: string;
+  last_contacted_at: string | null;
+  listing_id: string | null;
+  next_follow_up_at: string | null;
+  notes: string | null;
+  paid_amount_npr: number;
+  quote_amount_npr: number | null;
+  service_interest: string;
+  stage: string;
+  updated_at: string;
+};
+
+export type SalesActivityRow = {
+  activity_type: string;
+  amount_npr: number | null;
+  created_at: string;
+  created_by: string;
+  happened_at: string;
+  id: string;
+  prospect_id: string;
+  summary: string;
+};
+
+/** True when a query failed because the sales-pipeline tables are not in the database. */
+export function isMissingSalesTableError(error: { code?: string; message?: string } | null | undefined): boolean {
+  if (!error) return false;
+  const code = error.code ?? "";
+  if (code === "42P01" || code === "PGRST205") return true;
+  const message = (error.message ?? "").toLowerCase();
+  return /does not exist|could not find the table|schema cache/.test(message);
+}
+
 const interestCopy = {
   en: {
     website: "a mobile-friendly business website",

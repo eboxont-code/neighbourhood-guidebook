@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildSalesOutreachDraft, buildServiceProposalDraft, inboundLeadInterest, inboundLeadStage, isOpenSalesStage, salesFollowUpState, salesStageCounts, upsertSalesProspect } from "@/lib/sales-pipeline";
+import { buildSalesOutreachDraft, buildServiceProposalDraft, inboundLeadInterest, inboundLeadStage, isMissingSalesTableError, isOpenSalesStage, salesFollowUpState, salesStageCounts, upsertSalesProspect } from "@/lib/sales-pipeline";
 
 const business = { name: "Sample Salon", area: "naxal" };
 
@@ -151,5 +151,22 @@ describe("Boxont sales pipeline", () => {
     expect(salesFollowUpState("2026-11-05T00:00:00Z", now)).toBe("due");
     expect(salesFollowUpState("2026-11-20T00:00:00Z", now)).toBe("later");
     expect(salesFollowUpState(null, now)).toBe("none");
+  });
+});
+
+describe("missing sales-pipeline tables", () => {
+  it("recognises Postgres and PostgREST missing-table errors", () => {
+    expect(isMissingSalesTableError({ code: "42P01", message: "relation does not exist" })).toBe(true);
+    expect(isMissingSalesTableError({
+      code: "PGRST205",
+      message: "Could not find the table 'public.business_sales_prospects' in the schema cache",
+    })).toBe(true);
+    expect(isMissingSalesTableError({ message: "Could not find the table public.business_sales_activities in the schema cache" })).toBe(true);
+  });
+
+  it("does not treat other query failures as a missing table", () => {
+    expect(isMissingSalesTableError(null)).toBe(false);
+    expect(isMissingSalesTableError({ code: "42501", message: "permission denied" })).toBe(false);
+    expect(isMissingSalesTableError({ code: "PGRST301", message: "JWT expired" })).toBe(false);
   });
 });
