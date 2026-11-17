@@ -52,6 +52,18 @@ describe("listing owner destinations", () => {
   it("does not offer a preview for a working website", () => {
     expect(listingLinks("working").filter((href) => href.includes("website-preview"))).toHaveLength(0);
   });
+  it.each(["failed", "not_checked", "none_found", "owner_no_site"] as const)("omits an unconfirmed official website action for %s while keeping the phone", (status) => {
+    const original = getBusiness("nuad-thai-lazimpat");
+    if (!original?.website || !original.phone) throw new Error("Missing recorded website or phone");
+    const links = listingLinks(status);
+    expect(links).not.toContain(original.website);
+    expect(links.some((href) => href.startsWith("tel:"))).toBe(true);
+  });
+  it("shows the confirmed working official website action", () => {
+    const original = getBusiness("nuad-thai-lazimpat");
+    if (!original?.website) throw new Error("Missing recorded website");
+    expect(listingLinks("working")).toContain(original.website);
+  });
 });
 
 describe("listing preview analytics", () => {

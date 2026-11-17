@@ -49,6 +49,7 @@ describe("business contact-action insights", () => {
       { event: "click_call", listing_slug: null, query: null, created_at: at(1) },
       { event: "click_call", listing_slug: "salon-a", query: null, created_at: at(10) },
       { event: "click_call", listing_slug: "future", query: null, created_at: new Date(now.getTime() + 86400000).toISOString() },
+      { event: "click_call", listing_slug: "invalid", query: null, created_at: "not-a-date" },
     ], 7, now);
 
     expect(result).toEqual({
