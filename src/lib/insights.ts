@@ -11,7 +11,8 @@ export function summarise(rows: EventRow[], days: number, now = new Date()) {
   const since = now.getTime() - days * 86400000;
   const searches = new Map<string, number>(), zero = new Map<string, number>(), clicks = new Map<string, number>(), listings = new Map<string, number>();
   for (const r of rows) {
-    if (new Date(r.created_at).getTime() < since) continue;
+    const time = Date.parse(r.created_at);
+    if (!Number.isFinite(time) || time < since || time > now.getTime()) continue;
     if (r.event === "search") bump(searches, safeSearchClass(r.query ?? undefined));
     else if (r.event === "search_zero") {
       const label = safeSearchClass(r.query ?? undefined);
@@ -34,13 +35,15 @@ export function funnel(rows: EventRow[], days: number, now = new Date()) {
   const since = now.getTime() - days * 86400000;
   const counts = new Map<string, number>(), views = new Map<string, number>();
   for (const r of rows) {
-    if (new Date(r.created_at).getTime() < since) continue;
+    const time = Date.parse(r.created_at);
+    if (!Number.isFinite(time) || time < since || time > now.getTime()) continue;
     bump(counts, r.event);
     if (r.event === "preview_view" && r.listing_slug) bump(views, r.listing_slug);
   }
   const steps: FunnelStep[] = FUNNEL_STEPS.map((event, i) => {
     const count = counts.get(event) ?? 0;
-    const prev = i ? counts.get(FUNNEL_STEPS[i - 1]!) ?? 0 : 0;
+    const previous = FUNNEL_STEPS[i - 1];
+    const prev = previous ? counts.get(previous) ?? 0 : 0;
     return { event, count, rate: i && prev ? Math.round((count / prev) * 100) : null };
   });
   return { steps, topPreviews: top(views, 10) };

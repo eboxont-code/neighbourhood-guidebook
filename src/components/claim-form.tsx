@@ -17,6 +17,8 @@ export function ClaimForm({ listing }: { listing: string }) {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [status, setStatus] = useState<'idle' | 'sending' | 'done' | 'error' | 'limited'>('idle');
   const submitting = useRef(false);
+  const started = useRef(false);
+  const startClaim = () => { if (!started.current) { started.current = true; track('claim_start', slug ? { slug } : {}); } };
   const b = getBusiness(slug);
   const items = query.trim() ? searchBusinesses(query) : businesses;
   async function submit(e: FormEvent) {
@@ -44,7 +46,7 @@ export function ClaimForm({ listing }: { listing: string }) {
   }
   if (status === 'done') return <Done text={t('claimThanks')} />;
   const input = (key: 'name' | 'contact' | 'proof_url', label: string, max: number, type: string, autoComplete?: string) => <Field id={`claim-${key}`} label={label} required error={errors[key]} hint={key === 'proof_url' ? t('claimProofHint') : undefined}><input id={`claim-${key}`} className="field min-h-11 text-base" type={type} autoComplete={autoComplete} maxLength={max} required enterKeyHint="next" aria-invalid={!!errors[key]} aria-describedby={errors[key] ? `claim-${key}-error` : undefined} value={v[key]} onChange={(e) => setV({ ...v, [key]: e.target.value })} /></Field>;
-  return <form onSubmit={submit} noValidate className="relative space-y-5">
+  return <form onSubmit={submit} onChange={startClaim} noValidate className="relative space-y-5">
     {b && <h2 className="text-xl font-semibold break-words">{b.name}</h2>}
     {!getBusiness(listing) && <div className="space-y-3"><Field id="claim-search" label={t('claimSearch')}><input id="claim-search" type="search" className="field min-h-11 text-base" maxLength={100} value={query} onChange={(e) => setQuery(e.target.value)} /></Field><Field id="claim-listing_slug" label={t('fListing')} required error={errors["listing_slug"]}><select id="claim-listing_slug" className="field min-h-11 text-base" value={slug} onChange={(e) => setSlug(e.target.value)}><option value="">{t('fChoose')}</option>{items.map((x) => <option key={x.slug} value={x.slug}>{x.name}</option>)}</select></Field>{items.length === 0 && <p className="text-sm text-muted-foreground">{t('claimEmpty')}</p>}</div>}
     {input('name', t('fName'), 100, 'text', 'name')}

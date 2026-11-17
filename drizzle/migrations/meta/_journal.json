@@ -106,6 +106,27 @@
       "when": 1793753100000,
       "tag": "0014_inbound_enquiry_conversion",
       "breakpoints": true
+    },
+    {
+      "idx": 15,
+      "version": "7",
+      "when": 1794879000000,
+      "tag": "0015_listing_view",
+      "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1794879060000,
+      "tag": "0016_website_enquiry_start",
+      "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1794879120000,
+      "tag": "0017_claim_start",
+      "breakpoints": true
     }
   ]
 }

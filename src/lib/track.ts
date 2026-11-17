@@ -1,7 +1,7 @@
 import { safeSearchClass } from "@/lib/search-analytics";
 
 /** Anonymous, first-party counts only: no names, no IDs, no cookies, never any location. */
-export const TRACK_EVENTS = ["search", "search_zero", "click_call", "click_whatsapp", "click_directions", "click_website", "click_instagram", "save", "claim_click", "preview_click", "preview_view", "preview_enquiry_click", "claim_submit", "enquiry_submit", "nearby_click", "service_package_select", "service_quote_submit", "sponsored_click"] as const;
+export const TRACK_EVENTS = ["listing_view", "website_enquiry_start", "claim_start", "search", "search_zero", "click_call", "click_whatsapp", "click_directions", "click_website", "click_instagram", "save", "claim_click", "preview_click", "preview_view", "preview_enquiry_click", "claim_submit", "enquiry_submit", "nearby_click", "service_package_select", "service_quote_submit", "sponsored_click"] as const;
 export type TrackEvent = (typeof TRACK_EVENTS)[number];
 
 

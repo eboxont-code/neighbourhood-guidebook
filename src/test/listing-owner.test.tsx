@@ -5,7 +5,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 const { trackMock } = vi.hoisted(() => ({ trackMock: vi.fn() }));
 vi.mock("@/lib/track", () => ({ track: trackMock }));
-afterEach(() => vi.unstubAllGlobals());
+afterEach(() => { vi.unstubAllGlobals(); trackMock.mockClear(); });
 import { getBusiness, type WebsiteStatus } from "@/data/directory";
 import { Route } from "@/routes/s.$slug";
 
@@ -86,7 +86,8 @@ describe("listing preview analytics", () => {
         'a[href="/s/nuad-thai-lazimpat/website-preview"]',
       );
       if (!previewLink) throw new Error("Missing listing preview link");
-      expect(trackMock).not.toHaveBeenCalled();
+      expect(trackMock).toHaveBeenCalledWith("listing_view", { slug: original.slug });
+      trackMock.mockClear();
       fireEvent.click(previewLink);
       expect(trackMock).toHaveBeenCalledTimes(1);
       expect(trackMock).toHaveBeenCalledWith("preview_click", { slug: original.slug });
