@@ -119,6 +119,7 @@ function useToast() {
 
 function ShopPage() {
   const { business: b } = Route.useLoaderData();
+  useEffect(() => { track("listing_view", { slug: b.slug }); }, [b.slug]);
   const { t, lang } = useI18n();
   const router = useRouter();
   const cat = getCategory(b.category)!;

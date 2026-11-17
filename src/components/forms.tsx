@@ -124,6 +124,13 @@ export function ContactForm({ business, listing, page, message = "", doneText, s
   const [errors, setErrors] = useState<{ [k: string]: string | undefined }>({});
   const [status, setStatus] = useState<Status>("idle");
   const submitting = useRef(false);
+  const started = useRef(false);
+  const startEnquiry = () => {
+    if (!started.current && (topic === "website" || page === "preview" || page === "for-businesses" || serviceOptions)) {
+      started.current = true;
+      track("website_enquiry_start", listing ? { slug: listing } : {});
+    }
+  };
   const [hp, setHp] = useState("");
   if (status === "done") return <Done text={doneText ?? t("thanksContact")} />;
 
@@ -167,7 +174,7 @@ export function ContactForm({ business, listing, page, message = "", doneText, s
   }
 
   return (
-    <form onSubmit={submit} noValidate className="relative min-w-0 space-y-5">
+    <form onSubmit={submit} onChange={startEnquiry} noValidate className="relative min-w-0 space-y-5">
       {topicPicker && <Field id="topic" label={t("contactTopic")} required error={errors["topic"]}><select id="topic" className="field min-h-11 text-base" required aria-invalid={!!errors["topic"]} aria-describedby={errors["topic"] ? "topic-error" : undefined} value={topic} onChange={(e) => { setTopic(e.target.value as ContactTopic | ""); setErrors({}); }}><option value="">{t("chooseOption")}</option>{contactTopics.map((x) => <option key={x} value={x}>{t(`topic_${x}`)}</option>)}</select></Field>}
       {topic === "add" ? <div><p className="text-muted-foreground">{t("contactAddHint")}</p><Link to="/add-a-business" className="inline-flex min-h-11 items-center text-primary underline">{t("footAdd")}</Link></div> : <>
       <Field id="name" label={t("fName")} required error={errors["name"]}>

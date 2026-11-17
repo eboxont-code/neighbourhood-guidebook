@@ -5,7 +5,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 const { trackMock } = vi.hoisted(() => ({ trackMock: vi.fn() }));
 vi.mock("@/lib/track", () => ({ track: trackMock }));
-afterEach(() => vi.unstubAllGlobals());
+afterEach(() => { vi.unstubAllGlobals(); trackMock.mockClear(); });
 import { getBusiness, type WebsiteStatus } from "@/data/directory";
 import { Route } from "@/routes/s.$slug";
 
@@ -29,8 +29,8 @@ vi.mock("@/lib/geo", async (importOriginal) => ({
 vi.mock("@/components/map-view", () => ({ MapView: () => null }));
 vi.mock("@/components/venue", () => ({ HeartButton: () => null, VenueRow: () => null }));
 
-function listingLinks(status: WebsiteStatus) {
-  const original = getBusiness("nuad-thai-lazimpat");
+function listingLinks(status: WebsiteStatus, slug = "nuad-thai-lazimpat") {
+  const original = getBusiness(slug);
   if (!original) throw new Error("Missing test listing");
   const component = Route.options.component;
   if (!component) throw new Error("Missing listing page");
@@ -51,6 +51,18 @@ describe("listing owner destinations", () => {
   });
   it("does not offer a preview for a working website", () => {
     expect(listingLinks("working").filter((href) => href.includes("website-preview"))).toHaveLength(0);
+  });
+  it.each(["failed", "not_checked", "none_found", "owner_no_site"] as const)("omits an unconfirmed official website action for %s while keeping the phone", (status) => {
+    const original = getBusiness("aavaran-durbar-marg");
+    if (!original?.website || !original.phone) throw new Error("Missing recorded website or phone");
+    const links = listingLinks(status, original.slug);
+    expect(links).not.toContain(original.website);
+    expect(links.some((href) => href.startsWith("tel:"))).toBe(true);
+  });
+  it("shows the confirmed working official website action", () => {
+    const original = getBusiness("aavaran-durbar-marg");
+    if (!original?.website) throw new Error("Missing recorded website");
+    expect(listingLinks("working", original.slug)).toContain(original.website);
   });
 });
 
@@ -74,7 +86,8 @@ describe("listing preview analytics", () => {
         'a[href="/s/nuad-thai-lazimpat/website-preview"]',
       );
       if (!previewLink) throw new Error("Missing listing preview link");
-      expect(trackMock).not.toHaveBeenCalled();
+      expect(trackMock).toHaveBeenCalledWith("listing_view", { slug: original.slug });
+      trackMock.mockClear();
       fireEvent.click(previewLink);
       expect(trackMock).toHaveBeenCalledTimes(1);
       expect(trackMock).toHaveBeenCalledWith("preview_click", { slug: original.slug });

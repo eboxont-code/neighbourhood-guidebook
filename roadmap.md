@@ -8,7 +8,7 @@ This file is retained as a simple navigation entry point so older links do not b
 
 ## Start here
 
-Daily batch, 16 November 2026: implement the 27 requested items in order. All statuses and evidence live in MASTER_TODO.md. No production writes, migrations, publishing, deployment, branches or manual Git operations. Settings-dependent and schema-dependent work must remain explicitly blocked. Platform-managed commits only.
+Daily batch, 17 November 2026: implement A1–A6 and items 1–46 in order. All statuses and evidence live in MASTER_TODO.md. No production writes, applied migrations, publishing, deployment, branches or manual Git operations. Settings-dependent and schema-dependent work must remain explicitly blocked. Commits are managed automatically.
 
 1. Read `MASTER_TODO.md` from top to bottom before project work.
 2. Check the verified repository snapshot and current production / database state.

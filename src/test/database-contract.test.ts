@@ -15,9 +15,9 @@ function extractAllowedEvents(sql: string): string[] {
 }
 
 describe("SEWA database contracts", () => {
-  it("keeps frontend analytics events aligned with the deployed SQL migration", () => {
+  it("keeps frontend analytics events aligned with the latest staged SQL migration", () => {
     const sql = readProjectFile(
-      "supabase/migrations/20261104100000_listing_promotions.sql",
+      "supabase/migrations/20261117013200_claim_start.sql",
     );
     const allowed = extractAllowedEvents(sql);
 
