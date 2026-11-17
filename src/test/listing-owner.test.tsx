@@ -29,8 +29,8 @@ vi.mock("@/lib/geo", async (importOriginal) => ({
 vi.mock("@/components/map-view", () => ({ MapView: () => null }));
 vi.mock("@/components/venue", () => ({ HeartButton: () => null, VenueRow: () => null }));
 
-function listingLinks(status: WebsiteStatus) {
-  const original = getBusiness("nuad-thai-lazimpat");
+function listingLinks(status: WebsiteStatus, slug = "nuad-thai-lazimpat") {
+  const original = getBusiness(slug);
   if (!original) throw new Error("Missing test listing");
   const component = Route.options.component;
   if (!component) throw new Error("Missing listing page");
@@ -53,16 +53,16 @@ describe("listing owner destinations", () => {
     expect(listingLinks("working").filter((href) => href.includes("website-preview"))).toHaveLength(0);
   });
   it.each(["failed", "not_checked", "none_found", "owner_no_site"] as const)("omits an unconfirmed official website action for %s while keeping the phone", (status) => {
-    const original = getBusiness("nuad-thai-lazimpat");
+    const original = getBusiness("aavaran-durbar-marg");
     if (!original?.website || !original.phone) throw new Error("Missing recorded website or phone");
-    const links = listingLinks(status);
+    const links = listingLinks(status, original.slug);
     expect(links).not.toContain(original.website);
     expect(links.some((href) => href.startsWith("tel:"))).toBe(true);
   });
   it("shows the confirmed working official website action", () => {
-    const original = getBusiness("nuad-thai-lazimpat");
+    const original = getBusiness("aavaran-durbar-marg");
     if (!original?.website) throw new Error("Missing recorded website");
-    expect(listingLinks("working")).toContain(original.website);
+    expect(listingLinks("working", original.slug)).toContain(original.website);
   });
 });
 
