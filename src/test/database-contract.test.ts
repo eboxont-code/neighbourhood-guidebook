@@ -198,7 +198,7 @@ describe("SEWA database contracts", () => {
     expect(drizzle).toMatch(/paid_amount_npr <= coalesce\(quote_amount_npr, 0\)/);
     expect(drizzle).toMatch(/set_business_sales_prospect_updated_at/);
     expect(drizzle).toMatch(/sales_cash_cannot_decrease/);
-    expect(readProjectFile("scripts/ci/test-sewa-database.sh")).toMatch(/migration_count" -ne 15/);
+    expect(readProjectFile("scripts/ci/test-sewa-database.sh")).toMatch(/migration_count" -ne 18/);
     expect(readProjectFile("scripts/ci/verify-sewa-database.sql")).toMatch(/private Boxont sales pipeline/);
   });
 
@@ -217,7 +217,7 @@ describe("SEWA database contracts", () => {
     expect(drizzle).toMatch(/listing_or_message_check/i);
     expect(drizzle).toMatch(/ADD CONSTRAINT business_sales_prospects_contact_message_id_key UNIQUE \(contact_message_id\)/i);
     expect(drizzle).not.toMatch(/ADD COLUMN (?:quote_amount_npr|paid_amount_npr)/i);
-    expect(readProjectFile("scripts/ci/test-sewa-database.sh")).toMatch(/migration_count" -ne 15/);
+    expect(readProjectFile("scripts/ci/test-sewa-database.sh")).toMatch(/migration_count" -ne 18/);
     expect(readProjectFile("scripts/ci/verify-sewa-database.sql")).toMatch(/duplicate inbound enquiry link/i);
   });
 

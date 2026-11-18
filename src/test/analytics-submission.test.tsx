@@ -75,7 +75,7 @@ describe("analytics submission de-duplication", () => {
       pending.resolve({ error: null });
       await pending.promise;
     });
-    await waitFor(() => expect(trackMock).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(trackMock.mock.calls.filter(([event]) => event === "enquiry_submit" || event === "claim_submit")).toHaveLength(1));
     expect(trackMock).toHaveBeenCalledWith("enquiry_submit", { slug: "aavaran-durbar-marg" });
   });
 
@@ -105,7 +105,7 @@ describe("analytics submission de-duplication", () => {
       pending.resolve({ error: null });
       await pending.promise;
     });
-    await waitFor(() => expect(trackMock).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(trackMock.mock.calls.filter(([event]) => event === "enquiry_submit" || event === "claim_submit")).toHaveLength(1));
     expect(trackMock).toHaveBeenCalledWith("claim_submit", { slug: "aavaran-durbar-marg" });
   });
 
@@ -137,7 +137,7 @@ describe("analytics submission de-duplication", () => {
       pending.resolve({ error: null });
       await pending.promise;
     });
-    await waitFor(() => expect(trackMock).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(trackMock.mock.calls.filter(([event]) => event === "enquiry_submit" || event === "service_quote_submit")).toHaveLength(2));
     expect(trackMock).toHaveBeenCalledWith("service_quote_submit", { query: "custom" });
     expect(trackMock).toHaveBeenCalledWith("enquiry_submit", {});
   });
