@@ -1,4 +1,6 @@
 import { track } from "@/lib/track";
+import { publicCover } from "@/lib/photo-rights";
+import { verifiedHours } from "@/lib/verification";
 import { createFileRoute, Link, notFound, redirect } from "@tanstack/react-router";
 import { ArrowRight, Clock, Facebook, Instagram, MapPin, MessageCircle, Music2, Navigation, Phone, Sparkles, Youtube } from "lucide-react";
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
@@ -50,7 +52,7 @@ function Status({ b, light = false }: { b: Business; light?: boolean }) {
   const { t } = useI18n();
   const now = useNow();
   // Only show an "open/closed now" claim when the business's own source verified its hours.
-  if (!b.hoursVerified || !b.hoursSource?.trim()) return null;
+  if (!verifiedHours(b)) return null;
   const d = now ? statusDetail(b.hours, now) : null;
   if (!d) return null;
   const open = d.kind === "open" || d.kind === "open24";
@@ -114,7 +116,7 @@ function Week({ b }: { b: Business }) {
           {hours.map((h, i) => <li key={i} className="flex min-h-12 items-center justify-between gap-3 px-1 text-[15px]"><span>{dayLabel(h.days, lang)}</span><span className="text-right tabular-nums">{timeLabel(h.time, lang)}</span></li>)}
         </ul>
       )}
-      {b.hoursSource && !b.hoursVerified && <p className="mt-3 text-[13px] text-muted-foreground">{t("hoursUnverified")} {b.hoursSource}</p>}
+      {b.hoursSource && !verifiedHours(b) && <p className="mt-3 text-[13px] text-muted-foreground">{t("hoursUnverified")} {t("notYetVerified")} {b.hoursSource}</p>}
     </div>
   );
 }
@@ -152,7 +154,7 @@ function PreviewPage() {
     if (el && el.complete && el.naturalWidth === 0) setFailed(true);
   }, [b.slug]);
   useEffect(() => { track("preview_view", { slug: b.slug }); }, [b.slug]);
-  const photo = b.cover && !failed ? b.cover : undefined;
+  const photo = !failed ? publicCover(b.cover) : undefined;
   const ownerLink = { to: "/contact" as const, search: { from: "preview" as const, listing: b.slug, business: b.name } };
   const steps: [Key, Key][] = [["pvNext1Title", "pvNext1Body"], ["pvNext2Title", "pvNext2Body"], ["pvNext3Title", "pvNext3Body"]];
 

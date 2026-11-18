@@ -1,4 +1,5 @@
 import { track } from "@/lib/track";
+import { publicCover } from "@/lib/photo-rights";
 import { VerificationBadge } from "@/components/verification-badge";
 import { Link } from "@tanstack/react-router";
 import { useState, type ReactNode } from "react";
@@ -45,9 +46,10 @@ export function HeartButton({ slug, name, className = "" }: { slug: string; name
 
 export function Thumb({ b, className = "" }: { b: Business; className?: string }) {
   const [failed, setFailed] = useState(false);
+  const cover = publicCover(b.cover);
   return (
     <div className={`venue-thumb cat-${b.category} ${className}`}>
-      {b.cover && !failed ? <img src={b.cover.url} alt="" loading="lazy" onError={() => setFailed(true)} className="h-full w-full object-cover" />
+      {cover && !failed ? <img src={cover.url} alt="" loading="lazy" onError={() => setFailed(true)} className="h-full w-full object-cover" />
         : (
           <span aria-hidden className="venue-mono">{b.name.charAt(0)}<span className="venue-mono-icon"><CatIcon category={b.category} className="h-3 w-3" /></span></span>
         )}

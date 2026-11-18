@@ -45,6 +45,7 @@ import {
   type LeadStatus,
 } from "@/lib/leads";
 import { AdminClaims } from "@/components/admin-claims";
+import { AdminDataReview } from "@/components/admin-data-review";
 import { AdminInsights } from "@/components/admin-insights";
 import { AdminPromotions } from "@/components/admin-promotions";
 import { AdminSalesPipeline } from "@/components/admin-sales-pipeline";
@@ -508,6 +509,7 @@ function Listings() {
   const counts = Object.fromEntries(freshnessBuckets.map((bucket) => [bucket, rows.filter((r) => freshnessBucket(rowToBusiness(r), now) === bucket).length]));
   return (
     <div className="space-y-4">
+      <AdminDataReview listings={rows.filter((r) => r.status === "published").map(rowToBusiness)} />
       <div><h2 className="mb-2 text-sm font-semibold">{t('freshnessTitle')}</h2><ul className="flex flex-wrap gap-2">{freshnessBuckets.map((bucket) => <li key={bucket} className={`rounded-lg px-2 py-1 text-xs ${freshnessClasses[bucket]}`}>{t(`freshness_${bucket}`)}: {new Intl.NumberFormat(lang === 'ne' ? 'ne-NP' : 'en').format(counts[bucket] ?? 0)}</li>)}</ul></div>
       {note && (
         <p
@@ -676,6 +678,8 @@ function Editor({
     lng: b?.lng?.toString() ?? "",
     coverUrl: b?.cover?.url ?? "",
     coverCredit: b?.cover?.credit ?? "",
+    coverRights: b?.cover?.rights ?? "",
+    coverEvidence: b?.cover?.evidence ?? "",
     sourceNotes: b?.sourceNotes ?? "",
     sourceUrl: b?.sourceUrl ?? "",
     verification: b?.verification ?? "source_checked",
@@ -745,7 +749,9 @@ function Editor({
       lat,
       lng,
       cover: v.coverUrl.trim()
-        ? { url: v.coverUrl.trim(), credit: v.coverCredit.trim() }
+        ? { url: v.coverUrl.trim(), credit: v.coverCredit.trim(),
+            ...(v.coverRights === "owner_provided" || v.coverRights === "licensed" ? { rights: v.coverRights } : {}),
+            ...(v.coverEvidence.trim() ? { evidence: v.coverEvidence.trim() } : {}) }
         : undefined,
       sourceNotes: v.sourceNotes.trim(),
       sourceUrl: opt(v.sourceUrl),
@@ -1050,6 +1056,17 @@ function Editor({
           {inp("coverUrl", { type: "url" })}
         </Field>
         <Field label={t("adCoverCredit")}>{inp("coverCredit")}</Field>
+        <Field label={t("adCoverRights")}>
+          <select className="field min-h-11" value={v.coverRights} onChange={(e) => set("coverRights", e.target.value)}>
+            <option value="">{t("adCoverRightsUnknown")}</option>
+            <option value="owner_provided">{t("adCoverOwnerProvided")}</option>
+            <option value="licensed">{t("adCoverLicensed")}</option>
+          </select>
+        </Field>
+        <Field label={t("adCoverEvidence")} hint={t("adCoverEvidenceHint")}>
+          <textarea className="field min-h-24" maxLength={2000} value={v.coverEvidence} onChange={(e) => set("coverEvidence", e.target.value)} />
+        </Field>
+        {v.coverUrl && (!v.coverRights || !v.coverEvidence.trim()) && <p role="status" className="text-sm text-warning">{t("adCoverRightsUnknown")}</p>}
       </section>
 
       <section className={`${card} space-y-4`}>

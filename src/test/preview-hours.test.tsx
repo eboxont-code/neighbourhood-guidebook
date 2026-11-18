@@ -79,7 +79,7 @@ describe("website preview hours trust", () => {
     const business = getBusiness("nuad-thai-lazimpat");
     if (!business) throw new Error("Missing test business");
     expect(business.hoursVerified).toBe(true);
-    const document = renderPreview(business);
+    const document = renderPreview({ ...business, lastChecked: "2026-10-28" });
 
     expect(document.querySelector("header h1 + p")?.textContent).toContain("Open now");
     expect(document.querySelector("dl dd")?.textContent).not.toBe(dict.en.pvAddThis);

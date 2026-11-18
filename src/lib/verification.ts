@@ -14,9 +14,13 @@ export function officialWebsite(b: Business): boolean {
 }
 export function verificationLevel(b: Business): VerificationLevel {
   const date = checkedDate(b);
+  if (!date) return 'needed';
   if (date && officialWebsite(b)) return 'website';
   if (date && !officialWebsite(b) && socialLinks(b).some((s) => s.platform === 'Instagram' || s.platform === 'Facebook')) return 'social';
   return b.sourceNotes?.trim() || b.sourceUrl || b.hoursSource ? 'partial' : 'needed';
+}
+export function verifiedHours(b: Business): boolean {
+  return Boolean(b.hoursVerified && checkedDate(b) && b.hoursSource?.trim());
 }
 /** Calendar days in Kathmandu, never a guessed or future date. */
 export function checkedDaysAgo(b: Business, now: Date): number | null {

@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { BedDouble, Coffee, Dumbbell, Leaf, Scissors, Stethoscope, Store, UtensilsCrossed } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
+import { publicCover } from "@/lib/photo-rights";
+import type { Business } from "@/data/directory";
 
 function RazorIcon({ className }: { className?: string }) {
   return (
@@ -28,7 +30,8 @@ export function CatIcon({ category, className }: { category: string; className?:
   return <Icon {...(className ? { className } : {})} />;
 }
 
-export function Cover({ cover, name, category }: { cover?: { url: string; credit: string } | undefined; name: string; category: string }) {
+export function Cover({ cover: storedCover, name, category }: { cover?: Business["cover"]; name: string; category: string }) {
+  const cover = publicCover(storedCover);
   const { t } = useI18n();
   const [failed, setFailed] = useState(false);
   const img = useRef<HTMLImageElement>(null);

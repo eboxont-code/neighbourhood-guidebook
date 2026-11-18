@@ -51,7 +51,7 @@ export interface Business {
   verification: Verification;
   lastChecked?: string | undefined; // ISO date, only when a check happened
   demo: boolean;
-  cover?: { url: string; credit: string }; // only photos the business published
+  cover?: { url: string; credit: string; rights?: "owner_provided" | "licensed"; evidence?: string }; // public display requires recorded permission
   sourceUrl?: string | undefined;
   lat?: number | undefined; // only from a reliable source; never guessed
   lng?: number | undefined;

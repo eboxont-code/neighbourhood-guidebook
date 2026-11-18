@@ -66,6 +66,8 @@ function previewBusiness(
     cover: {
       url: `https://images.example.test/${handle}.jpg`,
       credit: `${marker}_PHOTO_CREDIT`,
+      rights: "owner_provided",
+      evidence: `${marker}_TEST_PERMISSION`,
     },
   };
 }
@@ -94,7 +96,8 @@ describe("shared website-preview slug isolation", () => {
 
       const alphaImage = container.querySelector(`img[src="${alpha.cover?.url}"]`);
       expect(alphaImage).toBeInTheDocument();
-      fireEvent.error(alphaImage!);
+      if (!alphaImage) throw new Error("Missing permitted test image");
+      fireEvent.error(alphaImage);
       await waitFor(() => {
         expect(container.querySelector(`img[src="${alpha.cover?.url}"]`)).not.toBeInTheDocument();
       });

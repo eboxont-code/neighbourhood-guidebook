@@ -1,4 +1,6 @@
 import { track } from "@/lib/track";
+import { publicCover } from "@/lib/photo-rights";
+import { verifiedHours } from "@/lib/verification";
 import { createFileRoute, Link, notFound, redirect, useRouter } from "@tanstack/react-router";
 import { ArrowLeft, ArrowRight, ChevronRight, Globe, MapPin, Navigation, Phone, Share2, ShieldCheck, ShieldQuestion, Sparkles } from "lucide-react";
 import { useEffect, useRef, useState, type ReactNode } from "react";
@@ -105,7 +107,7 @@ function OpeningTimes({ b }: { b: Business }) {
         </ul>
       ) : b.hours.map((h, i) => <p key={i}><span className="mr-2">{dayLabel(h.days, lang)}</span>{timeLabel(h.time, lang)}</p>)}
       {b.hoursSource && (
-        <p className={`mt-2 text-sm ${b.hoursVerified ? "text-muted-foreground" : "text-unverified"}`}>{b.hoursVerified ? t("hoursFrom") : t("hoursUnverified")} {hoursSourceLabel(b.hoursSource, lang)}</p>
+        <p className={`mt-2 text-sm ${verifiedHours(b) ? "text-muted-foreground" : "text-unverified"}`}>{verifiedHours(b) ? t("hoursFrom") : t("notYetVerified")} {hoursSourceLabel(b.hoursSource, lang)}</p>
       )}
     </div>
   );
@@ -119,6 +121,7 @@ function useToast() {
 
 function ShopPage() {
   const { business: b } = Route.useLoaderData();
+  const cover = publicCover(b.cover);
   useEffect(() => { track("listing_view", { slug: b.slug }); }, [b.slug]);
   const { t, lang } = useI18n();
   const router = useRouter();
@@ -178,10 +181,10 @@ function ShopPage() {
       </div>
 
       <div ref={headRef} className="relative">
-        {b.cover ? (
+        {cover ? (
           <figure className="relative">
-            <div className="venue-cover"><img src={b.cover.url} alt="" className="h-full w-full object-cover" /></div>
-            <figcaption className="cover-credit">{t("photo")}: {b.cover.credit}</figcaption>
+            <div className="venue-cover"><img src={cover.url} alt="" className="h-full w-full object-cover" /></div>
+            <figcaption className="cover-credit">{t("photo")}: {cover.credit}</figcaption>
           </figure>
         ) : (
           <div className={`venue-thumb cat-${b.category} h-[200px] !rounded-none md:h-[260px]`} aria-hidden>

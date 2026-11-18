@@ -2,6 +2,8 @@ import logo from "@/assets/boxont-mark.jpg.asset.json";
 import aavaran from "@/assets/aavaran-cover.jpg.asset.json";
 import tranquility from "@/assets/tranquility-cover.jpg.asset.json";
 import { dict, type Key } from "@/lib/i18n";
+import { publicCover } from "@/lib/photo-rights";
+import type { Business } from "@/data/directory";
 
 // Share assets are served by the published app; this does not change canonical URLs.
 const ASSET_ORIGIN = "https://sewa.boxont.com";
@@ -16,7 +18,8 @@ const covers: Record<string, { url: string }> = {
   "https://www.tranquilityspa.com.np/uploads/images/galleries/03534099-dc1e-46d4-b007-0a62f39a0cf9.jpg": tranquility,
 };
 
-export function shareImage(cover?: { url: string }, name?: string) {
+export function shareImage(storedCover?: Business["cover"], name?: string) {
+  const cover = publicCover(storedCover);
   if (cover) {
     const resized = covers[cover.url];
     // Unknown covers stay with the host's page preview rather than tagging an unsized original.
