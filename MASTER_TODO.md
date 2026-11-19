@@ -1974,3 +1974,6 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [x] [DONE] 3. Privacy retention review recorded in docs/privacy-retention.md; EN/NE phone/desktop screenshots inspected, no overflow.
 - [ ] [BLOCKED] 4. Missing-coordinate panel exists with EN/NE labels and published-only live rows; authenticated 390px verification unavailable because the connected database has no auth users (session mint failed). No account or configuration created.
 - [x] [DONE] 5. Trust-date regression passes; docs/audits/unverified-labels.md records all 20 affected names/ids and corrects the hours-flag count to 8.
+- [ ] [BLOCKED] 6. Lockfile-only advisory repair failed inside npm (edgesOut); docs/dependency-advisories.md records current advisories. Manifest/major-version changes require owner approval; no patches claimed.
+
+Items 7–34 remain TODO: credits ended before implementation. No production writes, applied migrations, account/configuration changes, publishing or deployment.
