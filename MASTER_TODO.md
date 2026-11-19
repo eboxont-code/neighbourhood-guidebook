@@ -544,7 +544,7 @@ Historical audit baseline (not a verified current count): 52 businesses, 8 categ
 - [ ] [TODO] Establish and test a backup/recovery process using existing included capabilities.
 - [ ] [TODO] Review audit logging for sensitive administrator actions. Admin audit history view still to build.
 - [ ] [TODO] Remove personal data and sensitive details from analytics/logs.
-- [ ] [TODO] Review privacy disclosures and data retention.
+- [x] [DONE] Review privacy disclosures and data retention. Evidence: docs/privacy-retention.md, 19 November code/EN/NE phone and desktop review; deletion-period decisions remain outstanding.
 - [x] [DONE] Privacy line stating that location stays on the phone. Shipped by GuideBook bot, 26-31 Oct 2026.
 - [x] [DONE] Public /how-we-verify page. Shipped by GuideBook bot, 26-31 Oct 2026.
 
@@ -1971,3 +1971,4 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 
 - [x] [DONE] 1. Lockfile synchronized with unchanged package.json; npm ci succeeds, 353 tests pass, lint has 0 errors (26 warnings). Automatic preview type/build check is recorded separately; no manual build or typecheck was run.
 - [ ] [REVIEW] 2. SW-0180: publicCover and admin rights/evidence preserved; replaced public monogram fallbacks with existing Boxont mark; 353 tests pass, lint 0 errors. Phone/desktop EN/NE images inspected; profile SSR still serves stale markup and reports hydration mismatch, so full completion is not claimed. Admin verification blocked by no auth users.
+- [x] [DONE] 3. Privacy retention review recorded in docs/privacy-retention.md; EN/NE phone/desktop screenshots inspected, no overflow.

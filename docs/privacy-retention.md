@@ -12,3 +12,6 @@ Reviewed 18 November 2026 against forms, first-party event payloads and local di
 - Use the public contact form for data requests. Verify the requester before deleting private records. Do not disclose other submitters' details.
 
 Public privacy page checked in English and Nepali at 390 × 844 and 1280 × 1800: no horizontal overflow. No layout change required. Screenshots reviewed in this session; temporary capture directory `/tmp/browser/sewa-18/`. Production settings and deletion behaviour remain unverified.
+## 19 November implementation review
+
+Public copy matches the stored enquiry, claim, submission and correction fields, category/area-only search classification, device-only discovery location and trigger-based rate-limit cleanup. No automatic deletion job is configured for forms, account records, review notes or analytics. Owner decisions remain needed for deletion periods, export retention and requester verification. Backup inventory and current production hosting are not independently verified. EN/NE privacy screenshots inspected at 390 × 844 and 1280 × 1800 on 19 November; no overflow.
