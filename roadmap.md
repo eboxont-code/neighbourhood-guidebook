@@ -8,7 +8,7 @@ This file is retained as a simple navigation entry point so older links do not b
 
 ## Start here
 
-Daily batch, 18 November 2026: fix CI first, then implement items 5–28 in order. All statuses and evidence live in MASTER_TODO.md. No production writes, applied migrations, publishing, deployment, branches or manual Git operations. Settings-dependent and schema-dependent work must remain explicitly blocked. Commit completed changes on the current main checkout.
+Daily batch, 19 November 2026: fix the lockfile first, then implement the numbered batch in order. All statuses and evidence live in MASTER_TODO.md. No production writes, applied migrations, publishing, deployment, branches. Settings-dependent and schema-dependent work must remain explicitly blocked. Commit completed changes on the current main checkout.
 
 1. Read `MASTER_TODO.md` from top to bottom before project work.
 2. Check the verified repository snapshot and current production / database state.
