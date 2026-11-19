@@ -452,7 +452,7 @@ Historical audit baseline (not a verified current count): 52 businesses, 8 categ
 - [ ] [TODO] Re-measure map-coordinate coverage and validate each pin. The 21-of-52 figure is a historical baseline from 31 Oct 2026, not a verified current count. Target 95%+ mapped. Previously unmatched names must be rechecked against authoritative sources before any coordinate is added.
 - [ ] [TODO] Identify duplicates, closed businesses and stale records.
 - [ ] [TODO] Identify missing or unverified phone numbers, websites and hours.
-- [ ] [TODO] Identify unsupported claims and correct their verification status.
+- [x] [DONE] Identify unsupported claims and correct their verification status. Public date-gated labels tested; docs/audits/unverified-labels.md records 20 undated sources, including 8 hours flags. Stored data unchanged.
 - [ ] [TODO] Expand genuine coverage across underrepresented Kathmandu neighbourhoods.
 - [ ] [TODO] Grow to 1,000 verified businesses (52 as of 31 Oct 2026) without lowering verification standards.
 - [ ] [TODO] Improve category balance.
@@ -1973,3 +1973,4 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 - [ ] [REVIEW] 2. SW-0180: publicCover and admin rights/evidence preserved; replaced public monogram fallbacks with existing Boxont mark; 353 tests pass, lint 0 errors. Phone/desktop EN/NE images inspected; profile SSR still serves stale markup and reports hydration mismatch, so full completion is not claimed. Admin verification blocked by no auth users.
 - [x] [DONE] 3. Privacy retention review recorded in docs/privacy-retention.md; EN/NE phone/desktop screenshots inspected, no overflow.
 - [ ] [BLOCKED] 4. Missing-coordinate panel exists with EN/NE labels and published-only live rows; authenticated 390px verification unavailable because the connected database has no auth users (session mint failed). No account or configuration created.
+- [x] [DONE] 5. Trust-date regression passes; docs/audits/unverified-labels.md records all 20 affected names/ids and corrects the hours-flag count to 8.
