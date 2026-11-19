@@ -1970,3 +1970,4 @@ The CSV is no longer required to understand or execute the plan. The checklist b
 ## Daily implementation, 19 November 2026
 
 - [x] [DONE] 1. Lockfile synchronized with unchanged package.json; npm ci succeeds, 353 tests pass, lint has 0 errors (26 warnings). Automatic preview type/build check is recorded separately; no manual build or typecheck was run.
+- [ ] [REVIEW] 2. SW-0180: publicCover and admin rights/evidence preserved; replaced public monogram fallbacks with existing Boxont mark; 353 tests pass, lint 0 errors. Phone/desktop EN/NE images inspected; profile SSR still serves stale markup and reports hydration mismatch, so full completion is not claimed. Admin verification blocked by no auth users.

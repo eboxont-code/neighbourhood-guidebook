@@ -3,6 +3,7 @@ import { BedDouble, Coffee, Dumbbell, Leaf, Scissors, Stethoscope, Store, Utensi
 import { useI18n } from "@/lib/i18n";
 import { publicCover } from "@/lib/photo-rights";
 import type { Business } from "@/data/directory";
+import brandMark from "@/assets/boxont-mark.jpg.asset.json";
 
 function RazorIcon({ className }: { className?: string }) {
   return (
@@ -30,7 +31,7 @@ export function CatIcon({ category, className }: { category: string; className?:
   return <Icon {...(className ? { className } : {})} />;
 }
 
-export function Cover({ cover: storedCover, name, category }: { cover?: Business["cover"]; name: string; category: string }) {
+export function Cover({ cover: storedCover, category }: { cover?: Business["cover"]; name: string; category: string }) {
   const cover = publicCover(storedCover);
   const { t } = useI18n();
   const [failed, setFailed] = useState(false);
@@ -45,7 +46,7 @@ export function Cover({ cover: storedCover, name, category }: { cover?: Business
     return (
       <div className={`venue-placeholder cat-${category}`} aria-hidden>
         <div className="mx-auto flex h-full max-w-2xl items-center gap-3 px-5 pb-7 lg:max-w-6xl">
-          <span className="relative flex h-16 w-16 items-center justify-center rounded-2xl border border-current/15 bg-panel text-[1.75rem] leading-none font-semibold shadow-[var(--shadow-card)] md:h-[4.5rem] md:w-[4.5rem]">{name.charAt(0)}<span className="absolute -right-1.5 -bottom-1.5 flex h-7 w-7 items-center justify-center rounded-full border-2 border-panel bg-[var(--ph-ink)] text-panel"><CatIcon category={category} className="h-3.5 w-3.5" /></span></span>
+          <img src={brandMark.url} alt="" className="h-16 w-16 rounded-lg object-contain md:h-[4.5rem] md:w-[4.5rem]" />
         </div>
       </div>
     );

@@ -1,5 +1,6 @@
 import { track } from "@/lib/track";
 import { publicCover } from "@/lib/photo-rights";
+import brandMark from "@/assets/boxont-mark.jpg.asset.json";
 import { verifiedHours } from "@/lib/verification";
 import { createFileRoute, Link, notFound, redirect } from "@tanstack/react-router";
 import { ArrowRight, Clock, Facebook, Instagram, MapPin, MessageCircle, Music2, Navigation, Phone, Sparkles, Youtube } from "lucide-react";
@@ -145,7 +146,7 @@ function PreviewPage() {
   const socials = socialLinks(b);
   const style = { "--pv-h": HUE[b.category] ?? 262 } as CSSProperties;
   const nav: [string, Key][] = [["about", "tabAbout"], ["hours", "tabHours"], ["visit", "pvNavVisit"], ["contact", "pvNavContact"]];
-  // Only photos the business published; if one fails to load, the code-made hero art is used instead.
+  // Documented permission is required; unavailable photos use the Sewa / Boxont mark.
   const [failed, setFailed] = useState(false);
   const img = useRef<HTMLImageElement>(null);
   useEffect(() => {
@@ -184,9 +185,7 @@ function PreviewPage() {
           </>
         )}
         {!photo && (
-          <span aria-hidden className="pointer-events-none absolute -right-16 -bottom-10 -z-10 text-[var(--pv-glow)] opacity-[0.13] sm:right-0">
-            <CatIcon category={b.category} className="h-[22rem] w-[22rem] stroke-[0.6]" />
-          </span>
+          <img src={brandMark.url} alt="" className="pointer-events-none absolute right-6 bottom-12 -z-10 h-32 w-32 object-contain opacity-20 sm:right-12" />
         )}
         <div className="mx-auto max-w-5xl px-6">
           <nav className="flex items-center justify-between gap-3 py-4" aria-label={t("sections")}>

@@ -1,10 +1,10 @@
 import { track } from "@/lib/track";
 import { publicCover } from "@/lib/photo-rights";
+import brandMark from "@/assets/boxont-mark.jpg.asset.json";
 import { VerificationBadge } from "@/components/verification-badge";
 import { Link } from "@tanstack/react-router";
 import { useState, type ReactNode } from "react";
 import { Heart, LocateFixed, MapPinOff } from "lucide-react";
-import { CatIcon } from "@/components/cover";
 import { EmptyState, useNow } from "@/components/site";
 import { getArea, getCategory, placeName, citiesInUse, type Business } from "@/data/directory";
 import { badgesFor, statusBadge, type Badge } from "@/lib/venue";
@@ -51,7 +51,7 @@ export function Thumb({ b, className = "" }: { b: Business; className?: string }
     <div className={`venue-thumb cat-${b.category} ${className}`}>
       {cover && !failed ? <img src={cover.url} alt="" loading="lazy" onError={() => setFailed(true)} className="h-full w-full object-cover" />
         : (
-          <span aria-hidden className="venue-mono">{b.name.charAt(0)}<span className="venue-mono-icon"><CatIcon category={b.category} className="h-3 w-3" /></span></span>
+          <img src={brandMark.url} alt="" className="h-16 w-16 object-contain" />
         )}
     </div>
   );

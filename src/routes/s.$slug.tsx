@@ -1,11 +1,11 @@
 import { track } from "@/lib/track";
 import { publicCover } from "@/lib/photo-rights";
+import brandMark from "@/assets/boxont-mark.jpg.asset.json";
 import { verifiedHours } from "@/lib/verification";
 import { createFileRoute, Link, notFound, redirect, useRouter } from "@tanstack/react-router";
 import { ArrowLeft, ArrowRight, ChevronRight, Globe, MapPin, Navigation, Phone, Share2, ShieldCheck, ShieldQuestion, Sparkles } from "lucide-react";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { NotFoundView, HoursLine, pageMeta, useNow } from "@/components/site";
-import { CatIcon } from "@/components/cover";
 import { SectionHead } from "@/components/blocks";
 import { HeartButton, VenueRow } from "@/components/venue";
 import { MapView } from "@/components/map-view";
@@ -188,7 +188,7 @@ function ShopPage() {
           </figure>
         ) : (
           <div className={`venue-thumb cat-${b.category} h-[200px] !rounded-none md:h-[260px]`} aria-hidden>
-            <span className="venue-mono !h-20 !w-20 !text-[2rem]">{b.name.charAt(0)}<span className="venue-mono-icon !h-7 !w-7"><CatIcon category={b.category} className="h-3.5 w-3.5" /></span></span>
+            <img src={brandMark.url} alt="" className="h-20 w-20 object-contain" />
           </div>
         )}
         <div className="absolute inset-x-0 top-0 mx-auto flex max-w-6xl items-center justify-between px-4 pt-3">
